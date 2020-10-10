@@ -16,69 +16,93 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import * as b2 from "@box2d";
-import * as testbed from "../testbed.js";
+import {
+    b2PolygonShape,
+    b2Transform,
+    b2Vec2,
+    b2_pi,
+    b2Manifold,
+    b2CollidePolygons,
+    b2WorldManifold,
+    b2Color,
+} from "@box2d/core";
 
-export class PolyCollision extends testbed.Test {
-    public m_polygonA = new b2.PolygonShape();
-    public m_polygonB = new b2.PolygonShape();
-    public m_transformA = new b2.Transform();
-    public m_transformB = new b2.Transform();
-    public m_positionB = new b2.Vec2();
+import { Test } from "../../test";
+import { Settings } from "../../settings";
+import { g_debugDraw } from "../../utils/draw";
+import { HotKey, hotKey } from "../../utils/hotkeys";
+
+export class PolyCollision extends Test {
+    public m_polygonA = new b2PolygonShape();
+
+    public m_polygonB = new b2PolygonShape();
+
+    public m_transformA = new b2Transform();
+
+    public m_transformB = new b2Transform();
+
+    public m_positionB = new b2Vec2();
+
     public m_angleB = 0;
+
+    private move = {
+        x: 0,
+        y: 0,
+        angle: 0,
+    };
 
     constructor() {
         super();
 
-        {
-            this.m_polygonA.SetAsBox(0.2, 0.4);
-            this.m_transformA.SetPositionAngle(new b2.Vec2(0.0, 0.0), 0.0);
-        }
-
-        {
-            this.m_polygonB.SetAsBox(0.5, 0.5);
-            this.m_positionB.Set(19.345284, 1.5632932);
-            this.m_angleB = 1.9160721;
-            this.m_transformB.SetPositionAngle(this.m_positionB, this.m_angleB);
-        }
-    }
-
-    public Keyboard(key: string) {
-        switch (key) {
-            case "a":
-                this.m_positionB.x -= 0.1;
-                break;
-
-            case "d":
-                this.m_positionB.x += 0.1;
-                break;
-
-            case "s":
-                this.m_positionB.y -= 0.1;
-                break;
-
-            case "w":
-                this.m_positionB.y += 0.1;
-                break;
-
-            case "q":
-                this.m_angleB += 0.1 * b2.pi;
-                break;
-
-            case "e":
-                this.m_angleB -= 0.1 * b2.pi;
-                break;
-        }
-
+        this.m_polygonA.SetAsBox(0.2, 0.4);
+        this.m_transformA.SetPositionAngle(new b2Vec2(0.0, 0.0), 0.0);
+        this.m_polygonB.SetAsBox(0.5, 0.5);
+        this.m_positionB.Set(4, 1);
+        this.m_angleB = 1.9160721;
         this.m_transformB.SetPositionAngle(this.m_positionB, this.m_angleB);
     }
 
-    public Step(settings: testbed.Settings): void {
-        // super.Step(settings);
-        const manifold = new b2.Manifold();
-        b2.CollidePolygons(manifold, this.m_polygonA, this.m_transformA, this.m_polygonB, this.m_transformB);
+    public GetDefaultViewZoom() {
+        return 100;
+    }
 
-        const worldManifold = new b2.WorldManifold();
+    getHotkeys(): HotKey[] {
+        return [
+            hotKey([], "a", "Move Left", (down) => {
+                this.move.x = down ? -0.1 : 0;
+            }),
+            hotKey([], "d", "Move Right", (down) => {
+                this.move.x = down ? 0.1 : 0;
+            }),
+            hotKey([], "s", "Move Down", (down) => {
+                this.move.y = down ? -0.1 : 0;
+            }),
+            hotKey([], "w", "Move Up", (down) => {
+                this.move.y = down ? 0.1 : 0;
+            }),
+            hotKey([], "q", "Turn Left", (down) => {
+                this.move.angle = down ? 0.02 * b2_pi : 0;
+            }),
+            hotKey([], "e", "Turn Right", (down) => {
+                this.move.angle = down ? -0.02 * b2_pi : 0;
+            }),
+        ];
+    }
+
+    private Adjust(x: number, y: number, angle: number) {
+        this.m_positionB.x += x;
+        this.m_positionB.y += y;
+        this.m_angleB += angle;
+        this.m_transformB.SetPositionAngle(this.m_positionB, this.m_angleB);
+    }
+
+    public Step(settings: Settings, timeStep: number): void {
+        this.Adjust(this.move.x, this.move.y, this.move.angle);
+        super.Step(settings, timeStep);
+        const manifold = new b2Manifold();
+        b2CollidePolygons(manifold, this.m_polygonA, this.m_transformA, this.m_polygonB, this.m_transformB);
+
+        const worldManifold = new b2WorldManifold();
         worldManifold.Initialize(
             manifold,
             this.m_transformA,
@@ -87,29 +111,24 @@ export class PolyCollision extends testbed.Test {
             this.m_polygonB.m_radius
         );
 
-        testbed.g_debugDraw.DrawString(5, this.m_textLine, `point count = ${manifold.pointCount}`);
-        this.m_textLine += testbed.DRAW_STRING_NEW_LINE;
+        this.addDebug("Point Count", manifold.pointCount);
 
         {
-            const color = new b2.Color(0.9, 0.9, 0.9);
+            const color = new b2Color(0.9, 0.9, 0.9);
             const v = [];
             for (let i = 0; i < this.m_polygonA.m_count; ++i) {
-                v[i] = b2.Transform.MulXV(this.m_transformA, this.m_polygonA.m_vertices[i], new b2.Vec2());
+                v[i] = b2Transform.MulXV(this.m_transformA, this.m_polygonA.m_vertices[i], new b2Vec2());
             }
-            testbed.g_debugDraw.DrawPolygon(v, this.m_polygonA.m_count, color);
+            g_debugDraw.DrawPolygon(v, this.m_polygonA.m_count, color);
 
             for (let i = 0; i < this.m_polygonB.m_count; ++i) {
-                v[i] = b2.Transform.MulXV(this.m_transformB, this.m_polygonB.m_vertices[i], new b2.Vec2());
+                v[i] = b2Transform.MulXV(this.m_transformB, this.m_polygonB.m_vertices[i], new b2Vec2());
             }
-            testbed.g_debugDraw.DrawPolygon(v, this.m_polygonB.m_count, color);
+            g_debugDraw.DrawPolygon(v, this.m_polygonB.m_count, color);
         }
 
         for (let i = 0; i < manifold.pointCount; ++i) {
-            testbed.g_debugDraw.DrawPoint(worldManifold.points[i], 4.0, new b2.Color(0.9, 0.3, 0.3));
+            g_debugDraw.DrawPoint(worldManifold.points[i], 4.0, new b2Color(0.9, 0.3, 0.3));
         }
-    }
-
-    public static Create(): testbed.Test {
-        return new PolyCollision();
     }
 }

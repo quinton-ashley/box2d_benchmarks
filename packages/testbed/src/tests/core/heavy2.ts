@@ -16,36 +16,38 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import * as b2 from "@box2d";
-import * as testbed from "../testbed.js";
+import { b2Body, b2BodyDef, b2EdgeShape, b2Vec2, b2BodyType, b2CircleShape } from "@box2d/core";
 
-export class HeavyOnLightTwo extends testbed.Test {
-    public m_heavy: b2.Body | null = null;
+import { HotKey, hotKeyPress } from "../../utils/hotkeys";
+import { Test } from "../../test";
+
+export class HeavyOnLightTwo extends Test {
+    public m_heavy: b2Body | null = null;
 
     constructor() {
         super();
 
         {
-            /*b2.BodyDef*/
-            const bd = new b2.BodyDef();
-            /*b2.Body*/
+            /* b2BodyDef */
+            const bd = new b2BodyDef();
+            /* b2Body */
             const ground = this.m_world.CreateBody(bd);
 
-            /*b2.EdgeShape*/
-            const shape = new b2.EdgeShape();
-            shape.SetTwoSided(new b2.Vec2(-40.0, 0.0), new b2.Vec2(40.0, 0.0));
+            /* b2EdgeShape */
+            const shape = new b2EdgeShape();
+            shape.SetTwoSided(new b2Vec2(-40.0, 0.0), new b2Vec2(40.0, 0.0));
             ground.CreateFixture(shape, 0.0);
         }
 
-        /*b2.BodyDef*/
-        const bd = new b2.BodyDef();
-        bd.type = b2.BodyType.b2_dynamicBody;
+        /* b2BodyDef */
+        const bd = new b2BodyDef();
+        bd.type = b2BodyType.b2_dynamicBody;
         bd.position.Set(0.0, 2.5);
-        /*b2.Body*/
+        /* b2Body */
         let body = this.m_world.CreateBody(bd);
 
-        /*b2.CircleShape*/
-        const shape = new b2.CircleShape();
+        /* b2CircleShape */
+        const shape = new b2CircleShape();
         shape.m_radius = 0.5;
         body.CreateFixture(shape, 10.0);
 
@@ -59,28 +61,20 @@ export class HeavyOnLightTwo extends testbed.Test {
             this.m_world.DestroyBody(this.m_heavy);
             this.m_heavy = null;
         } else {
-            /*b2.BodyDef*/
-            const bd = new b2.BodyDef();
-            bd.type = b2.BodyType.b2_dynamicBody;
+            /* b2BodyDef */
+            const bd = new b2BodyDef();
+            bd.type = b2BodyType.b2_dynamicBody;
             bd.position.Set(0.0, 9.0);
             this.m_heavy = this.m_world.CreateBody(bd);
 
-            /*b2.CircleShape*/
-            const shape = new b2.CircleShape();
+            /* b2CircleShape */
+            const shape = new b2CircleShape();
             shape.m_radius = 5.0;
             this.m_heavy.CreateFixture(shape, 10.0);
         }
     }
 
-    public Keyboard(key: string) {
-        switch (key) {
-            case "h":
-                this.ToggleHeavy();
-                break;
-        }
-    }
-
-    public static Create() {
-        return new HeavyOnLightTwo();
+    getHotkeys(): HotKey[] {
+        return [hotKeyPress([], "h", "Toggle Heavy", () => this.ToggleHeavy())];
     }
 }

@@ -16,24 +16,25 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-// #if B2_ENABLE_PARTICLE
+import { b2BodyDef, b2PolygonShape, b2Vec2, XY } from "@box2d/core";
+import { b2ParticleFlag, b2ParticleDef } from "@box2d/particles";
 
-import * as b2 from "@box2d";
-import * as testbed from "../testbed.js";
+import { Test } from "../../test";
+import { Settings } from "../../settings";
 
 /**
  * Test the behavior of particles falling onto a concave
  * ambiguous Body contact fixture junction.
  */
 
-export class AntiPointy extends testbed.Test {
+export class AntiPointy extends Test {
     public m_particlesToCreate = 300;
 
     constructor() {
         super();
 
         {
-            const bd = new b2.BodyDef();
+            const bd = new b2BodyDef();
             const ground = this.m_world.CreateBody(bd);
 
             // Construct a valley out of many polygons to ensure there's no
@@ -43,18 +44,18 @@ export class AntiPointy extends testbed.Test {
             const step = 1.0;
 
             for (let i = -10.0; i < 10.0; i += step) {
-                const shape = new b2.PolygonShape();
-                const vertices = [new b2.Vec2(i, -10.0), new b2.Vec2(i + step, -10.0), new b2.Vec2(0.0, 15.0)];
+                const shape = new b2PolygonShape();
+                const vertices = [new b2Vec2(i, -10.0), new b2Vec2(i + step, -10.0), new b2Vec2(0.0, 15.0)];
                 shape.Set(vertices, 3);
                 ground.CreateFixture(shape, 0.0);
             }
             for (let i = -10.0; i < 35.0; i += step) {
-                const shape = new b2.PolygonShape();
-                const vertices = [new b2.Vec2(-10.0, i), new b2.Vec2(-10.0, i + step), new b2.Vec2(0.0, 15.0)];
+                const shape = new b2PolygonShape();
+                const vertices = [new b2Vec2(-10.0, i), new b2Vec2(-10.0, i + step), new b2Vec2(0.0, 15.0)];
                 shape.Set(vertices, 3);
                 ground.CreateFixture(shape, 0.0);
 
-                const vertices2 = [new b2.Vec2(10.0, i), new b2.Vec2(10.0, i + step), new b2.Vec2(0.0, 15.0)];
+                const vertices2 = [new b2Vec2(10.0, i), new b2Vec2(10.0, i + step), new b2Vec2(0.0, 15.0)];
                 shape.Set(vertices2, 3);
                 ground.CreateFixture(shape, 0.0);
             }
@@ -64,14 +65,14 @@ export class AntiPointy extends testbed.Test {
         this.m_particlesToCreate = 300;
 
         this.m_particleSystem.SetRadius(0.25 * 2); // HACK: increase particle radius
-        const particleType = testbed.Test.GetParticleParameterValue();
-        if (particleType === b2.ParticleFlag.b2_waterParticle) {
+        const particleType = Test.GetParticleParameterValue();
+        if (particleType === b2ParticleFlag.b2_waterParticle) {
             this.m_particleSystem.SetDamping(0.2);
         }
     }
 
-    public Step(settings: testbed.Settings) {
-        super.Step(settings);
+    public Step(settings: Settings, timeStep: number) {
+        super.Step(settings, timeStep);
 
         if (this.m_particlesToCreate <= 0) {
             return;
@@ -79,25 +80,26 @@ export class AntiPointy extends testbed.Test {
 
         --this.m_particlesToCreate;
 
-        const flags = testbed.Test.GetParticleParameterValue();
-        const pd = new b2.ParticleDef();
+        const flags = Test.GetParticleParameterValue();
+        const pd = new b2ParticleDef();
 
         pd.position.Set(0.0, 40.0);
         pd.velocity.Set(0.0, -1.0);
         pd.flags = flags;
 
-        if (flags & (b2.ParticleFlag.b2_springParticle | b2.ParticleFlag.b2_elasticParticle)) {
+        if (flags & (b2ParticleFlag.b2_springParticle | b2ParticleFlag.b2_elasticParticle)) {
             const count = this.m_particleSystem.GetParticleCount();
             pd.velocity.Set(count & 1 ? -1.0 : 1.0, -5.0);
-            pd.flags |= b2.ParticleFlag.b2_reactiveParticle;
+            pd.flags |= b2ParticleFlag.b2_reactiveParticle;
         }
 
         this.m_particleSystem.CreateParticle(pd);
     }
 
-    public static Create() {
-        return new AntiPointy();
+    public getCenter(): XY {
+        return {
+            x: 0,
+            y: 20,
+        };
     }
 }
-
-// #endif

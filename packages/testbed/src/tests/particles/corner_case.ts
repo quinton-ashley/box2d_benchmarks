@@ -16,17 +16,17 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-// #if B2_ENABLE_PARTICLE
+import { b2BodyDef, b2PolygonShape, b2Vec2, b2CircleShape, XY } from "@box2d/core";
+import { b2ParticleGroupDef, b2ParticleFlag } from "@box2d/particles";
 
-import * as b2 from "@box2d";
-import * as testbed from "../testbed.js";
+import { Test } from "../../test";
 
-export class CornerCase extends testbed.Test {
+export class CornerCase extends Test {
     constructor() {
         super();
 
         {
-            const bd = new b2.BodyDef();
+            const bd = new b2BodyDef();
             const ground = this.m_world.CreateBody(bd);
 
             // Construct a pathological corner intersection out of many
@@ -35,63 +35,65 @@ export class CornerCase extends testbed.Test {
 
             // left edge
             {
-                const shape = new b2.PolygonShape();
+                const shape = new b2PolygonShape();
                 const vertices = [
-                    new b2.Vec2(-20.0, 30.0),
-                    new b2.Vec2(-20.0, 0.0),
-                    new b2.Vec2(-25.0, 0.0),
-                    new b2.Vec2(-25.0, 30.0),
+                    new b2Vec2(-20.0, 30.0),
+                    new b2Vec2(-20.0, 0.0),
+                    new b2Vec2(-25.0, 0.0),
+                    new b2Vec2(-25.0, 30.0),
                 ];
                 shape.Set(vertices);
                 ground.CreateFixture(shape, 0.0);
             }
 
-            const yrange = 30.0,
-                ystep = yrange / 10.0,
-                xrange = 20.0,
-                xstep = xrange / 2.0;
+            const yrange = 30.0;
+            const ystep = yrange / 10.0;
+            const xrange = 20.0;
+            const xstep = xrange / 2.0;
 
             {
-                const shape = new b2.PolygonShape();
-                const vertices = [new b2.Vec2(-25.0, 0.0), new b2.Vec2(20.0, 15.0), new b2.Vec2(25.0, 0.0)];
+                const shape = new b2PolygonShape();
+                const vertices = [new b2Vec2(-25.0, 0.0), new b2Vec2(20.0, 15.0), new b2Vec2(25.0, 0.0)];
                 shape.Set(vertices);
                 ground.CreateFixture(shape, 0.0);
             }
 
             for (let x = -xrange; x < xrange; x += xstep) {
-                const shape = new b2.PolygonShape();
-                const vertices = [new b2.Vec2(-25.0, 0.0), new b2.Vec2(x, 15.0), new b2.Vec2(x + xstep, 15.0)];
+                const shape = new b2PolygonShape();
+                const vertices = [new b2Vec2(-25.0, 0.0), new b2Vec2(x, 15.0), new b2Vec2(x + xstep, 15.0)];
                 shape.Set(vertices);
                 ground.CreateFixture(shape, 0.0);
             }
 
             for (let y = 0.0; y < yrange; y += ystep) {
-                const shape = new b2.PolygonShape();
-                const vertices = [new b2.Vec2(25.0, y), new b2.Vec2(25.0, y + ystep), new b2.Vec2(20.0, 15.0)];
+                const shape = new b2PolygonShape();
+                const vertices = [new b2Vec2(25.0, y), new b2Vec2(25.0, y + ystep), new b2Vec2(20.0, 15.0)];
                 shape.Set(vertices);
                 ground.CreateFixture(shape, 0.0);
             }
         }
 
         this.m_particleSystem.SetRadius(1.0);
-        const particleType = testbed.Test.GetParticleParameterValue();
+        const particleType = Test.GetParticleParameterValue();
 
         {
-            const shape = new b2.CircleShape();
+            const shape = new b2CircleShape();
             shape.m_p.Set(0, 35);
             shape.m_radius = 12;
-            const pd = new b2.ParticleGroupDef();
+            const pd = new b2ParticleGroupDef();
             pd.flags = particleType;
             pd.shape = shape;
             const group = this.m_particleSystem.CreateParticleGroup(pd);
-            if (pd.flags & b2.ParticleFlag.b2_colorMixingParticle) {
+            if (pd.flags & b2ParticleFlag.b2_colorMixingParticle) {
                 this.ColorParticleGroup(group, 0);
             }
         }
     }
-    public static Create() {
-        return new CornerCase();
+
+    public getCenter(): XY {
+        return {
+            x: 0,
+            y: 20,
+        };
     }
 }
-
-// #endif

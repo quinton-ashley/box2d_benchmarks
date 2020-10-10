@@ -1,11 +1,18 @@
-// DEBUG: import { b2Assert } from "../common/b2_settings.js";
-import { b2_maxManifoldPoints } from "../common/b2_settings.js";
-import { b2Min, b2Vec2, b2Rot, b2Transform } from "../common/b2_math.js";
-import { b2ContactFeatureType, b2ContactID } from "./b2_collision.js";
-import { b2Manifold, b2ManifoldType, b2ManifoldPoint, b2ClipVertex, b2ClipSegmentToLine } from "./b2_collision.js";
-import { b2CircleShape } from "./b2_circle_shape.js";
-import { b2PolygonShape } from "./b2_polygon_shape.js";
-import { b2EdgeShape } from "./b2_edge_shape.js";
+// DEBUG: import { b2Assert } from "../common/b2_settings";
+import { b2_maxManifoldPoints } from "../common/b2_settings";
+import { b2Min, b2Vec2, b2Rot, b2Transform } from "../common/b2_math";
+import {
+    b2ContactFeatureType,
+    b2ContactID,
+    b2Manifold,
+    b2ManifoldType,
+    b2ManifoldPoint,
+    b2ClipVertex,
+    b2ClipSegmentToLine,
+} from "./b2_collision";
+import { b2CircleShape } from "./b2_circle_shape";
+import { b2PolygonShape } from "./b2_polygon_shape";
+import { b2EdgeShape } from "./b2_edge_shape";
 
 const b2CollideEdgeAndCircle_s_Q: b2Vec2 = new b2Vec2();
 const b2CollideEdgeAndCircle_s_e: b2Vec2 = new b2Vec2();
@@ -165,27 +172,40 @@ enum b2EPAxisType {
 
 class b2EPAxis {
     public normal: b2Vec2 = new b2Vec2();
+
     public type: b2EPAxisType = b2EPAxisType.e_unknown;
-    public index: number = 0;
-    public separation: number = 0;
+
+    public index = 0;
+
+    public separation = 0;
 }
 
 class b2TempPolygon {
     public vertices: b2Vec2[] = [];
+
     public normals: b2Vec2[] = [];
-    public count: number = 0;
+
+    public count = 0;
 }
 
 class b2ReferenceFace {
-    public i1: number = 0;
-    public i2: number = 0;
+    public i1 = 0;
+
+    public i2 = 0;
+
     public readonly v1: b2Vec2 = new b2Vec2();
+
     public readonly v2: b2Vec2 = new b2Vec2();
+
     public readonly normal: b2Vec2 = new b2Vec2();
+
     public readonly sideNormal1: b2Vec2 = new b2Vec2();
-    public sideOffset1: number = 0;
+
+    public sideOffset1 = 0;
+
     public readonly sideNormal2: b2Vec2 = new b2Vec2();
-    public sideOffset2: number = 0;
+
+    public sideOffset2 = 0;
 }
 
 // static b2EPAxis b2ComputeEdgeSeparation(const b2TempPolygon& polygonB, const b2Vec2& v1, const b2Vec2& normal1)
@@ -347,8 +367,8 @@ export function b2CollideEdgeAndPolygon(
     }
 
     // Use hysteresis for jitter reduction.
-    const k_relativeTol: number = 0.98;
-    const k_absoluteTol: number = 0.001;
+    const k_relativeTol = 0.98;
+    const k_absoluteTol = 0.001;
 
     // b2EPAxis primaryAxis;
     let primaryAxis: b2EPAxis;
@@ -376,7 +396,7 @@ export function b2CollideEdgeAndPolygon(
         const normal2: b2Vec2 = b2CollideEdgeAndPolygon_s_normal2.Set(edge2.y, -edge2.x);
         const convex2: boolean = b2Vec2.CrossVV(edge1, edge2) >= 0.0;
 
-        const sinTol: number = 0.1;
+        const sinTol = 0.1;
         const side1: boolean = b2Vec2.DotVV(primaryAxis.normal, edge1) <= 0.0;
 
         // Check Gauss Map
@@ -392,18 +412,16 @@ export function b2CollideEdgeAndPolygon(
                 // Snap region
                 primaryAxis = edgeAxis;
             }
-        } else {
-            if (convex2) {
-                if (b2Vec2.CrossVV(normal2, primaryAxis.normal) > sinTol) {
-                    // Skip region
-                    return;
-                }
-
-                // Admit region
-            } else {
-                // Snap region
-                primaryAxis = edgeAxis;
+        } else if (convex2) {
+            if (b2Vec2.CrossVV(normal2, primaryAxis.normal) > sinTol) {
+                // Skip region
+                return;
             }
+
+            // Admit region
+        } else {
+            // Snap region
+            primaryAxis = edgeAxis;
         }
     }
 
@@ -415,7 +433,7 @@ export function b2CollideEdgeAndPolygon(
         manifold.type = b2ManifoldType.e_faceA;
 
         // Search for the polygon normal that is most anti-parallel to the edge normal.
-        let bestIndex: number = 0;
+        let bestIndex = 0;
         let bestValue: number = b2Vec2.DotVV(primaryAxis.normal, tempPolygonB.normals[0]);
         for (let i = 1; i < tempPolygonB.count; ++i) {
             const value: number = b2Vec2.DotVV(primaryAxis.normal, tempPolygonB.normals[i]);

@@ -16,59 +16,70 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-// #if B2_ENABLE_PARTICLE
+import { b2Vec2, b2Color, b2BodyDef, b2PolygonShape, b2BodyType, b2MassData, XY } from "@box2d/core";
+import { b2ParticleSystem, b2ParticleSystemDef } from "@box2d/particles";
 
-import * as b2 from "@box2d";
-import * as testbed from "../testbed.js";
+import { Test } from "../../test";
+import { Settings } from "../../settings";
+import { RadialEmitter } from "../../utils/particles/particle_emitter";
 
-export class MultipleParticleSystems extends testbed.Test {
-    public m_particleSystem2: b2.ParticleSystem;
-    public m_emitters: testbed.RadialEmitter[];
+export class MultipleParticleSystems extends Test {
+    public m_particleSystem2: b2ParticleSystem;
+
+    public m_emitters: RadialEmitter[];
 
     /**
      * Maximum number of particles per system.
      */
     public static readonly k_maxParticleCount = 500;
+
     /**
      * Size of the box which is pushed around by particles.
      */
-    public static readonly k_dynamicBoxSize = new b2.Vec2(0.5, 0.5);
+    public static readonly k_dynamicBoxSize = new b2Vec2(0.5, 0.5);
+
     /**
      * Mass of the box.
      */
     public static readonly k_boxMass = 1.0;
+
     /**
      * Emit rate of the emitters in particles per second.
      */
     public static readonly k_emitRate = 100.0;
+
     /**
      * Location of the left emitter (the position of the right one
      * is mirrored along the y-axis).
      */
-    public static readonly k_emitterPosition = new b2.Vec2(-5.0, 4.0);
+    public static readonly k_emitterPosition = new b2Vec2(-5.0, 4.0);
+
     /**
      * Starting velocity of particles from the left emitter (the
      * velocity of particles from the right emitter are mirrored
      * along the y-axis).
      */
-    public static readonly k_emitterVelocity = new b2.Vec2(7.0, -4.0);
+    public static readonly k_emitterVelocity = new b2Vec2(7.0, -4.0);
+
     /**
      * Size of particle emitters.
      */
-    public static readonly k_emitterSize = new b2.Vec2(1.0, 1.0);
+    public static readonly k_emitterSize = new b2Vec2(1.0, 1.0);
+
     /**
      * Color of the left emitter's particles.
      */
-    public static readonly k_leftEmitterColor = new b2.Color().SetByteRGBA(0x22, 0x33, 0xff, 0xff);
+    public static readonly k_leftEmitterColor = new b2Color().SetByteRGBA(0x22, 0x33, 0xff, 0xff);
+
     /**
      * Color of the right emitter's particles.
      */
-    public static readonly k_rightEmitterColor = new b2.Color().SetByteRGBA(0xff, 0x22, 0x11, 0xff);
+    public static readonly k_rightEmitterColor = new b2Color().SetByteRGBA(0xff, 0x22, 0x11, 0xff);
 
     constructor() {
         super();
 
-        this.m_emitters = [new testbed.RadialEmitter(), new testbed.RadialEmitter()];
+        this.m_emitters = [new RadialEmitter(), new RadialEmitter()];
 
         // Configure the default particle system's parameters.
         this.m_particleSystem.SetRadius(0.05);
@@ -76,31 +87,31 @@ export class MultipleParticleSystems extends testbed.Test {
         this.m_particleSystem.SetDestructionByAge(true);
 
         // Create a secondary particle system.
-        const particleSystemDef = new b2.ParticleSystemDef();
+        const particleSystemDef = new b2ParticleSystemDef();
         particleSystemDef.radius = this.m_particleSystem.GetRadius();
         particleSystemDef.destroyByAge = true;
         this.m_particleSystem2 = this.m_world.CreateParticleSystem(particleSystemDef);
         this.m_particleSystem2.SetMaxParticleCount(MultipleParticleSystems.k_maxParticleCount);
 
         // Don't restart the test when changing particle types.
-        testbed.Test.SetRestartOnParticleParameterChange(false);
+        Test.SetRestartOnParticleParameterChange(false);
 
         // Create the ground.
         {
-            const bd = new b2.BodyDef();
+            const bd = new b2BodyDef();
             const ground = this.m_world.CreateBody(bd);
-            const shape = new b2.PolygonShape();
+            const shape = new b2PolygonShape();
             shape.SetAsBox(5.0, 0.1);
             ground.CreateFixture(shape, 0.0);
         }
 
         // Create a dynamic body to push around.
         {
-            const bd = new b2.BodyDef();
-            bd.type = b2.BodyType.b2_dynamicBody;
+            const bd = new b2BodyDef();
+            bd.type = b2BodyType.b2_dynamicBody;
             const body = this.m_world.CreateBody(bd);
-            const shape = new b2.PolygonShape();
-            const center = new b2.Vec2(0.0, 1.2);
+            const shape = new b2PolygonShape();
+            const center = new b2Vec2(0.0, 1.2);
             shape.SetAsBox(
                 MultipleParticleSystems.k_dynamicBoxSize.x,
                 MultipleParticleSystems.k_dynamicBoxSize.y,
@@ -109,7 +120,7 @@ export class MultipleParticleSystems extends testbed.Test {
             );
             body.CreateFixture(shape, 0.0);
             ///  b2MassData massData = { MultipleParticleSystems.k_boxMass, center, 0.0 };
-            const massData = new b2.MassData();
+            const massData = new b2MassData();
             massData.mass = MultipleParticleSystems.k_boxMass;
             massData.center.Copy(center);
             massData.I = 0.0;
@@ -121,14 +132,14 @@ export class MultipleParticleSystems extends testbed.Test {
             const mirrorAlongY = i & 1 ? -1.0 : 1.0;
             const emitter = this.m_emitters[i];
             emitter.SetPosition(
-                new b2.Vec2(
+                new b2Vec2(
                     MultipleParticleSystems.k_emitterPosition.x * mirrorAlongY,
                     MultipleParticleSystems.k_emitterPosition.y
                 )
             );
             emitter.SetSize(MultipleParticleSystems.k_emitterSize);
             emitter.SetVelocity(
-                new b2.Vec2(
+                new b2Vec2(
                     MultipleParticleSystems.k_emitterVelocity.x * mirrorAlongY,
                     MultipleParticleSystems.k_emitterVelocity.y
                 )
@@ -141,26 +152,27 @@ export class MultipleParticleSystems extends testbed.Test {
         }
     }
 
-    public Step(settings: testbed.Settings) {
+    public Step(settings: Settings, timeStep: number) {
         let dt = settings.m_hertz > 0.0 ? 1.0 / settings.m_hertz : 0.0;
         if (settings.m_pause && !settings.m_singleStep) {
             dt = 0.0;
         }
 
-        super.Step(settings);
+        super.Step(settings, timeStep);
 
-        for (let i = 0; i < this.m_emitters.length; ++i) {
-            this.m_emitters[i].Step(dt);
+        for (const emitter of this.m_emitters) {
+            emitter.Step(dt);
         }
     }
 
     public GetDefaultViewZoom() {
-        return 0.1;
+        return 250;
     }
 
-    public static Create() {
-        return new MultipleParticleSystems();
+    public getCenter(): XY {
+        return {
+            x: 0,
+            y: 1,
+        };
     }
 }
-
-// #endif

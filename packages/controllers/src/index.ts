@@ -16,4 +16,22 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-export class b2BlockAllocator {}
+/**
+ * \mainpage Box2D API Documentation
+ * \section intro_sec Getting Started
+ * For documentation please see http://box2d.org/documentation.html
+ * For discussion please visit http://box2d.org/forum
+ */
+
+// These include files constitute the Box2D controller API
+
+import "./dynamics/b2_world";
+import "./dynamics/b2_body";
+
+export * from "./controller/b2_controller";
+export * from "./controller/b2_buoyancy_controller";
+export * from "./controller/b2_constant_accel_controller";
+export * from "./controller/b2_constant_force_controller";
+export * from "./controller/b2_gravity_controller";
+export * from "./controller/b2_tensor_damping_controller";
+export * from "./controller/b2_controller_draw_helper";

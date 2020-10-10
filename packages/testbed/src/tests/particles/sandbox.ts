@@ -16,10 +16,38 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-// #if B2_ENABLE_PARTICLE
+import {
+    b2DestructionListener,
+    b2World,
+    b2Color,
+    b2Joint,
+    b2Fixture,
+    b2Vec2,
+    b2PolygonShape,
+    b2Transform,
+    b2Body,
+    b2BodyDef,
+    b2CircleShape,
+    b2BodyType,
+    b2Shape,
+    b2PrismaticJointDef,
+    b2Contact,
+    b2Manifold,
+    b2ContactImpulse,
+    XY,
+} from "@box2d/core";
+import { b2ParticleHandle, b2ParticleSystem, b2ParticleFlag, b2ParticleGroup } from "@box2d/particles";
 
-import * as b2 from "@box2d";
-import * as testbed from "../testbed.js";
+import { Test } from "../../test";
+import { Settings } from "../../settings";
+import {
+    ParticleParameterValue,
+    ParticleParameter,
+    ParticleParameterOptions,
+    ParticleParameterDefinition,
+} from "../../utils/particles/particle_parameter";
+import { RadialEmitter } from "../../utils/particles/particle_emitter";
+import { HotKey, hotKeyPress } from "../../utils/hotkeys";
 
 // /**
 //  * The following parameters are not static const members of the
@@ -32,50 +60,61 @@ export class SandboxParams {
      * Total possible pump squares
      */
     public static readonly k_maxPumps: number = 5;
+
     /**
      * Total possible emitters
      */
     public static readonly k_maxEmitters: number = 5;
+
     /**
      * Number of seconds to push one direction or the other on the
      * pumps
      */
     public static readonly k_flipTime: number = 6;
+
     /**
      * Radius of a tile
      */
     public static readonly k_tileRadius: number = 2;
+
     /**
      * Diameter of a tile
      */
     public static readonly k_tileDiameter: number = 4;
+
     /**
      * Pump radius; slightly smaller than a tile
      */
     public static readonly k_pumpRadius: number = 2.0 - 0.05;
 
     public static readonly k_playfieldLeftEdge: number = -20;
+
     public static readonly k_playfieldRightEdge: number = 20;
+
     public static readonly k_playfieldBottomEdge: number = 40;
 
     /**
      * The world size in the TILE
      */
     public static readonly k_tileWidth: number = 10;
+
     public static readonly k_tileHeight: number = 11;
 
     /**
      * Particles/second
      */
     public static readonly k_defaultEmitterRate: number = 30;
+
     /**
      * Fit cleanly inside one block
      */
     public static readonly k_defaultEmitterSize: number = 3;
+
     /**
      * How fast particles coming out of the particles should drop
      */
     public static readonly k_particleExitSpeedY: number = -9.8;
+
     /**
      * How hard the pumps can push
      */
@@ -91,26 +130,29 @@ export class SandboxParams {
  * Class which tracks a set of particles and applies a special
  * effect to them.
  */
-export class SpecialParticleTracker extends b2.DestructionListener {
+export class SpecialParticleTracker extends b2DestructionListener {
     /**
      * Set of particle handles used to track special particles.
      */
-    public m_particles: b2.ParticleHandle[] = [];
+    public m_particles: b2ParticleHandle[] = [];
 
     /**
      * Pointer to the world used to enable / disable this class as a
      * destruction listener.
      */
-    public m_world: b2.World;
+    public m_world: b2World;
+
     /**
      * Pointer to the particle system used to retrieve particle
      * handles.
      */
-    public m_particleSystem: b2.ParticleSystem;
+    public m_particleSystem: b2ParticleSystem;
+
     /**
      * Current offset into this.m_colorOscillationPeriod.
      */
     public m_colorOscillationTime = 0.0;
+
     /**
      * Color oscillation period in seconds.
      */
@@ -120,16 +162,16 @@ export class SpecialParticleTracker extends b2.DestructionListener {
      * Register this class as a destruction listener so that it's
      * possible to keep track of special particles.
      */
-    constructor(world: b2.World, system: b2.ParticleSystem) {
+    constructor(world: b2World, system: b2ParticleSystem) {
         super();
-        // DEBUG: b2.Assert(world !== null);
-        // DEBUG: b2.Assert(system !== null);
+        // DEBUG: b2Assert(world !== null);
+        // DEBUG: b2Assert(system !== null);
         this.m_world = world;
         this.m_particleSystem = system;
         this.m_world.SetDestructionListener(this);
     }
 
-    public __dtor__(): void {
+    public Destroy(): void {
         this.m_world.SetDestructionListener(null);
     }
 
@@ -138,7 +180,7 @@ export class SpecialParticleTracker extends b2.DestructionListener {
      * particles.
      */
     public Add(particleIndices: number[], numberOfParticles: number) {
-        // DEBUG: b2.Assert(this.m_particleSystem !== null);
+        // DEBUG: b2Assert(this.m_particleSystem !== null);
         for (
             let i = 0;
             i < numberOfParticles && this.m_particles.length < SandboxParams.k_numberOfSpecialParticles;
@@ -147,7 +189,7 @@ export class SpecialParticleTracker extends b2.DestructionListener {
             const particleIndex = particleIndices[i];
             this.m_particleSystem.SetParticleFlags(
                 particleIndex,
-                this.m_particleSystem.GetFlagsBuffer()[particleIndex] | b2.ParticleFlag.b2_destructionListenerParticle
+                this.m_particleSystem.GetFlagsBuffer()[particleIndex] | b2ParticleFlag.b2_destructionListenerParticle
             );
             this.m_particles.push(this.m_particleSystem.GetParticleHandleFromIndex(particleIndex));
         }
@@ -163,29 +205,29 @@ export class SpecialParticleTracker extends b2.DestructionListener {
         // Oscillate the shade of color over this.m_colorOscillationPeriod seconds.
         this.m_colorOscillationTime = fmod(this.m_colorOscillationTime + dt, this.m_colorOscillationPeriod);
         const colorCoeff = 2.0 * Math.abs(this.m_colorOscillationTime / this.m_colorOscillationPeriod - 0.5);
-        const color = new b2.Color().SetByteRGBA(
+        const color = new b2Color().SetByteRGBA(
             128 + 128.0 * (1.0 - colorCoeff),
             128 + 256.0 * Math.abs(0.5 - colorCoeff),
             128 + 128.0 * colorCoeff,
             255
         );
         // Update the color of all special particles.
-        for (let i = 0; i < this.m_particles.length; ++i) {
-            this.m_particleSystem.GetColorBuffer()[this.m_particles[i].GetIndex()].Copy(color);
+        for (const particle of this.m_particles) {
+            this.m_particleSystem.GetColorBuffer()[particle.GetIndex()].Copy(color);
         }
     }
 
-    public SayGoodbyeJoint(joint: b2.Joint): void {}
+    public SayGoodbyeJoint(_joint: b2Joint): void {}
 
-    public SayGoodbyeFixture(fixture: b2.Fixture): void {}
+    public SayGoodbyeFixture(_fixture: b2Fixture): void {}
 
-    public SayGoodbyeParticleGroup(group: b2.ParticleGroup): void {}
+    public SayGoodbyeParticleGroup(_group: b2ParticleGroup): void {}
 
     /**
      * When a particle is about to be destroyed, remove it from the
      * list of special particles as the handle will become invalid.
      */
-    public SayGoodbyeParticle(particleSystem: b2.ParticleSystem, index: number): void {
+    public SayGoodbyeParticle(particleSystem: b2ParticleSystem, index: number): void {
         if (particleSystem !== this.m_particleSystem) {
             return;
         }
@@ -196,7 +238,7 @@ export class SpecialParticleTracker extends b2.DestructionListener {
         this.m_particles = this.m_particles.filter((value) => {
             return value.GetIndex() !== index;
         });
-        // DEBUG: b2.Assert((length - this.m_particles.length) === 1);
+        // DEBUG: b2Assert((length - this.m_particles.length) === 1);
     }
 }
 
@@ -207,11 +249,12 @@ export class SpecialParticleTracker extends b2.DestructionListener {
  * add new maze elements!
  */
 
-export class Sandbox extends testbed.Test {
+export class Sandbox extends Test {
     /**
      * Count of faucets in the world
      */
     public m_faucetEmitterIndex = 0;
+
     /**
      * Count of pumps in the world
      */
@@ -221,6 +264,7 @@ export class Sandbox extends testbed.Test {
      * How long have we been pushing the pumps?
      */
     public m_pumpTimer = 0.0;
+
     /**
      * Particle creation flags
      */
@@ -229,22 +273,24 @@ export class Sandbox extends testbed.Test {
     /**
      * Pump force
      */
-    public readonly m_pumpForce: b2.Vec2 = new b2.Vec2();
+    public readonly m_pumpForce: b2Vec2 = new b2Vec2();
 
     /**
      * The shape we will use for the killfield
      */
-    public m_killFieldShape: b2.PolygonShape;
+    public m_killFieldShape: b2PolygonShape;
+
     /**
      * Transform for the killfield shape
      */
-    public m_killFieldTransform: b2.Transform;
+    public m_killFieldTransform: b2Transform;
 
     /**
      * Pumps and emitters
      */
-    public readonly m_pumps: Array<b2.Body | null> = [];
-    public readonly m_emitters: Array<testbed.RadialEmitter | null> = [];
+    public readonly m_pumps: Array<b2Body | null> = [];
+
+    public readonly m_emitters: Array<RadialEmitter | null> = [];
 
     /**
      * Special particle tracker.
@@ -252,61 +298,46 @@ export class Sandbox extends testbed.Test {
     public m_specialTracker: SpecialParticleTracker;
 
     public static readonly k_paramValues = [
-        new testbed.ParticleParameterValue(
-            b2.ParticleFlag.b2_waterParticle,
-            testbed.ParticleParameter.k_DefaultOptions,
-            "water"
-        ),
-        new testbed.ParticleParameterValue(
-            b2.ParticleFlag.b2_waterParticle,
-            testbed.ParticleParameter.k_DefaultOptions | testbed.ParticleParameterOptions.OptionStrictContacts,
+        new ParticleParameterValue(b2ParticleFlag.b2_waterParticle, ParticleParameter.k_DefaultOptions, "water"),
+        new ParticleParameterValue(
+            b2ParticleFlag.b2_waterParticle,
+            ParticleParameter.k_DefaultOptions | ParticleParameterOptions.OptionStrictContacts,
             "water (strict)"
         ),
-        new testbed.ParticleParameterValue(
-            b2.ParticleFlag.b2_powderParticle,
-            testbed.ParticleParameter.k_DefaultOptions,
-            "powder"
-        ),
-        new testbed.ParticleParameterValue(
-            b2.ParticleFlag.b2_tensileParticle,
-            testbed.ParticleParameter.k_DefaultOptions,
-            "tensile"
-        ),
-        new testbed.ParticleParameterValue(
-            b2.ParticleFlag.b2_viscousParticle,
-            testbed.ParticleParameter.k_DefaultOptions,
-            "viscous"
-        ),
-        new testbed.ParticleParameterValue(
-            b2.ParticleFlag.b2_tensileParticle | b2.ParticleFlag.b2_powderParticle,
-            testbed.ParticleParameter.k_DefaultOptions,
+        new ParticleParameterValue(b2ParticleFlag.b2_powderParticle, ParticleParameter.k_DefaultOptions, "powder"),
+        new ParticleParameterValue(b2ParticleFlag.b2_tensileParticle, ParticleParameter.k_DefaultOptions, "tensile"),
+        new ParticleParameterValue(b2ParticleFlag.b2_viscousParticle, ParticleParameter.k_DefaultOptions, "viscous"),
+        new ParticleParameterValue(
+            b2ParticleFlag.b2_tensileParticle | b2ParticleFlag.b2_powderParticle,
+            ParticleParameter.k_DefaultOptions,
             "tensile powder"
         ),
-        new testbed.ParticleParameterValue(
-            b2.ParticleFlag.b2_viscousParticle | b2.ParticleFlag.b2_powderParticle,
-            testbed.ParticleParameter.k_DefaultOptions,
+        new ParticleParameterValue(
+            b2ParticleFlag.b2_viscousParticle | b2ParticleFlag.b2_powderParticle,
+            ParticleParameter.k_DefaultOptions,
             "viscous powder"
         ),
-        new testbed.ParticleParameterValue(
-            b2.ParticleFlag.b2_viscousParticle | b2.ParticleFlag.b2_tensileParticle | b2.ParticleFlag.b2_powderParticle,
-            testbed.ParticleParameter.k_DefaultOptions,
+        new ParticleParameterValue(
+            b2ParticleFlag.b2_viscousParticle | b2ParticleFlag.b2_tensileParticle | b2ParticleFlag.b2_powderParticle,
+            ParticleParameter.k_DefaultOptions,
             "viscous tensile powder"
         ),
-        new testbed.ParticleParameterValue(
-            b2.ParticleFlag.b2_viscousParticle | b2.ParticleFlag.b2_tensileParticle,
-            testbed.ParticleParameter.k_DefaultOptions,
+        new ParticleParameterValue(
+            b2ParticleFlag.b2_viscousParticle | b2ParticleFlag.b2_tensileParticle,
+            ParticleParameter.k_DefaultOptions,
             "tensile viscous water"
         ),
     ];
 
-    public static readonly k_paramDef = [new testbed.ParticleParameterDefinition(Sandbox.k_paramValues)];
+    public static readonly k_paramDef = [new ParticleParameterDefinition(Sandbox.k_paramValues)];
+
     public static readonly k_paramDefCount = Sandbox.k_paramDef.length;
 
     constructor() {
-        super();
+        super({ x: 0, y: -20 });
 
         // We need some ground for the pumps to slide against
-        const bd = new b2.BodyDef();
+        const bd = new b2BodyDef();
         const ground = this.m_world.CreateBody(bd);
 
         // Reset our pointers
@@ -318,40 +349,36 @@ export class Sandbox extends testbed.Test {
             this.m_pumps[i] = null;
         }
 
-        this.m_world.SetGravity(new b2.Vec2(0.0, -20));
-
         // Create physical box, no top
         {
-            {
-                const shape = new b2.PolygonShape();
-                const vertices = [new b2.Vec2(-40, -10), new b2.Vec2(40, -10), new b2.Vec2(40, 0), new b2.Vec2(-40, 0)];
-                shape.Set(vertices, 4);
-                ground.CreateFixture(shape, 0.0);
-            }
+            const shape = new b2PolygonShape();
+            const vertices = [new b2Vec2(-40, -10), new b2Vec2(40, -10), new b2Vec2(40, 0), new b2Vec2(-40, 0)];
+            shape.Set(vertices, 4);
+            ground.CreateFixture(shape, 0.0);
+        }
 
-            {
-                const shape = new b2.PolygonShape();
-                const vertices = [
-                    new b2.Vec2(SandboxParams.k_playfieldLeftEdge - 20, -1),
-                    new b2.Vec2(SandboxParams.k_playfieldLeftEdge, -1),
-                    new b2.Vec2(SandboxParams.k_playfieldLeftEdge, 50),
-                    new b2.Vec2(SandboxParams.k_playfieldLeftEdge - 20, 50),
-                ];
-                shape.Set(vertices, 4);
-                ground.CreateFixture(shape, 0.0);
-            }
+        {
+            const shape = new b2PolygonShape();
+            const vertices = [
+                new b2Vec2(SandboxParams.k_playfieldLeftEdge - 20, -1),
+                new b2Vec2(SandboxParams.k_playfieldLeftEdge, -1),
+                new b2Vec2(SandboxParams.k_playfieldLeftEdge, 50),
+                new b2Vec2(SandboxParams.k_playfieldLeftEdge - 20, 50),
+            ];
+            shape.Set(vertices, 4);
+            ground.CreateFixture(shape, 0.0);
+        }
 
-            {
-                const shape = new b2.PolygonShape();
-                const vertices = [
-                    new b2.Vec2(SandboxParams.k_playfieldRightEdge, -1),
-                    new b2.Vec2(SandboxParams.k_playfieldRightEdge + 20, -1),
-                    new b2.Vec2(SandboxParams.k_playfieldRightEdge + 20, 50),
-                    new b2.Vec2(SandboxParams.k_playfieldRightEdge, 50),
-                ];
-                shape.Set(vertices, 4);
-                ground.CreateFixture(shape, 0.0);
-            }
+        {
+            const shape = new b2PolygonShape();
+            const vertices = [
+                new b2Vec2(SandboxParams.k_playfieldRightEdge, -1),
+                new b2Vec2(SandboxParams.k_playfieldRightEdge + 20, -1),
+                new b2Vec2(SandboxParams.k_playfieldRightEdge + 20, 50),
+                new b2Vec2(SandboxParams.k_playfieldRightEdge, 50),
+            ];
+            shape.Set(vertices, 4);
+            ground.CreateFixture(shape, 0.0);
         }
 
         this.m_particleSystem.SetRadius(0.25);
@@ -363,21 +390,21 @@ export class Sandbox extends testbed.Test {
         this.SetupMaze();
 
         // Create killfield shape and transform
-        this.m_killFieldShape = new b2.PolygonShape();
+        this.m_killFieldShape = new b2PolygonShape();
         this.m_killFieldShape.SetAsBox(SandboxParams.k_playfieldRightEdge - SandboxParams.k_playfieldLeftEdge, 1);
 
         // Put this at the bottom of the world
-        this.m_killFieldTransform = new b2.Transform();
-        const loc = new b2.Vec2(-20, 1);
+        this.m_killFieldTransform = new b2Transform();
+        const loc = new b2Vec2(-20, 1);
         this.m_killFieldTransform.SetPositionAngle(loc, 0);
 
         // Setup particle parameters.
-        testbed.Test.SetParticleParameters(Sandbox.k_paramDef, Sandbox.k_paramDefCount);
-        this.m_particleFlags = testbed.Test.GetParticleParameterValue();
-        testbed.Test.SetRestartOnParticleParameterChange(false);
+        Test.SetParticleParameters(Sandbox.k_paramDef, Sandbox.k_paramDefCount);
+        this.m_particleFlags = Test.GetParticleParameterValue();
+        Test.SetRestartOnParticleParameterChange(false);
     }
 
-    public __dtor__() {
+    public Destroy() {
         // deallocate our emitters
         for (let i = 0; i < this.m_faucetEmitterIndex; i++) {
             ///  delete this.m_emitters[i];
@@ -412,34 +439,34 @@ export class Sandbox extends testbed.Test {
             "A        /" +
             "#####KK###";
 
-        // DEBUG: b2.Assert(maze.length === SandboxParams.k_tileWidth * SandboxParams.k_tileHeight);
+        // DEBUG: b2Assert(maze.length === SandboxParams.k_tileWidth * SandboxParams.k_tileHeight);
 
         this.m_faucetEmitterIndex = 0;
         this.m_pumpIndex = 0;
 
         // Set up some standard shapes/vertices we'll use later.
-        const boxShape = new b2.PolygonShape();
+        const boxShape = new b2PolygonShape();
         boxShape.SetAsBox(SandboxParams.k_tileRadius, SandboxParams.k_tileRadius);
 
         ///  b2Vec2 triangle[3];
-        const triangle = b2.Vec2.MakeArray(3);
+        const triangle = b2Vec2.MakeArray(3);
         triangle[0].Set(-SandboxParams.k_tileRadius, -SandboxParams.k_tileRadius);
         triangle[1].Set(SandboxParams.k_tileRadius, SandboxParams.k_tileRadius);
         triangle[2].Set(SandboxParams.k_tileRadius, -SandboxParams.k_tileRadius);
-        const rightTriangleShape = new b2.PolygonShape();
+        const rightTriangleShape = new b2PolygonShape();
         rightTriangleShape.Set(triangle, 3);
 
         triangle[1].Set(-SandboxParams.k_tileRadius, SandboxParams.k_tileRadius);
-        const leftTriangleShape = new b2.PolygonShape();
+        const leftTriangleShape = new b2PolygonShape();
         leftTriangleShape.Set(triangle, 3);
 
         // Make these just a touch smaller than a tile
-        const circleShape = new b2.CircleShape();
+        const circleShape = new b2CircleShape();
         circleShape.m_radius = SandboxParams.k_tileRadius * 0.7;
 
-        const red = new b2.Color().SetByteRGBA(255, 128, 128, 255);
-        const green = new b2.Color().SetByteRGBA(128, 255, 128, 255);
-        const blue = new b2.Color().SetByteRGBA(128, 128, 255, 255);
+        const red = new b2Color().SetByteRGBA(255, 128, 128, 255);
+        const green = new b2Color().SetByteRGBA(128, 255, 128, 255);
+        const blue = new b2Color().SetByteRGBA(128, 128, 255, 255);
 
         this.m_pumpForce.Set(SandboxParams.k_pumpForce, 0);
 
@@ -448,7 +475,7 @@ export class Sandbox extends testbed.Test {
                 const item = maze[j * SandboxParams.k_tileWidth + i];
 
                 // Calculate center of this square
-                const center = new b2.Vec2(
+                const center = new b2Vec2(
                     SandboxParams.k_playfieldLeftEdge + SandboxParams.k_tileRadius * 2 * i + SandboxParams.k_tileRadius,
                     SandboxParams.k_playfieldBottomEdge -
                         SandboxParams.k_tileRadius * 2 * j +
@@ -459,19 +486,19 @@ export class Sandbox extends testbed.Test {
                 switch (item) {
                     case "#":
                         // Block
-                        this.CreateBody(center, boxShape, b2.BodyType.b2_staticBody);
+                        this.CreateBody(center, boxShape, b2BodyType.b2_staticBody);
                         break;
                     case "A":
                         // Left-to-right ramp
-                        this.CreateBody(center, leftTriangleShape, b2.BodyType.b2_staticBody);
+                        this.CreateBody(center, leftTriangleShape, b2BodyType.b2_staticBody);
                         break;
                     case "/":
                         // Right-to-left ramp
-                        this.CreateBody(center, rightTriangleShape, b2.BodyType.b2_staticBody);
+                        this.CreateBody(center, rightTriangleShape, b2BodyType.b2_staticBody);
                         break;
                     case "C":
                         // A circle to play with
-                        this.CreateBody(center, circleShape, b2.BodyType.b2_dynamicBody);
+                        this.CreateBody(center, circleShape, b2BodyType.b2_dynamicBody);
                         break;
                     case "p":
                         this.AddPump(center);
@@ -496,8 +523,8 @@ export class Sandbox extends testbed.Test {
         }
     }
 
-    public CreateBody(center: b2.Vec2, shape: b2.Shape, type: b2.BodyType) {
-        const def = new b2.BodyDef();
+    public CreateBody(center: b2Vec2, shape: b2Shape, type: b2BodyType) {
+        const def = new b2BodyDef();
         def.position.Copy(center);
         def.type = type;
         const body = this.m_world.CreateBody(def);
@@ -505,23 +532,23 @@ export class Sandbox extends testbed.Test {
     }
 
     // Inititalizes a pump and its prismatic joint, and adds it to the world
-    public AddPump(center: b2.Vec2) {
+    public AddPump(center: b2Vec2) {
         // Don't make too many pumps
-        // DEBUG: b2.Assert(this.m_pumpIndex < SandboxParams.k_maxPumps);
+        // DEBUG: b2Assert(this.m_pumpIndex < SandboxParams.k_maxPumps);
 
-        const shape = new b2.PolygonShape();
+        const shape = new b2PolygonShape();
         shape.SetAsBox(SandboxParams.k_pumpRadius, SandboxParams.k_pumpRadius);
 
-        const def = new b2.BodyDef();
+        const def = new b2BodyDef();
         def.position.Copy(center);
-        def.type = b2.BodyType.b2_dynamicBody;
+        def.type = b2BodyType.b2_dynamicBody;
         def.angle = 0;
         const body = this.m_world.CreateBody(def);
         body.CreateFixture(shape, 5.0);
 
         // Create a prismatic joint and connect to the ground, and have it
         // slide along the x axis.
-        const prismaticJointDef = new b2.PrismaticJointDef();
+        const prismaticJointDef = new b2PrismaticJointDef();
         prismaticJointDef.bodyA = this.m_groundBody;
         prismaticJointDef.bodyB = body;
         prismaticJointDef.collideConnected = false;
@@ -535,107 +562,89 @@ export class Sandbox extends testbed.Test {
     }
 
     // Initializes and adds a faucet emitter
-    public AddFaucetEmitter(center: b2.Vec2, color: b2.Color) {
+    public AddFaucetEmitter(center: b2Vec2, color: b2Color) {
         // Don't make too many emitters
-        // DEBUG: b2.Assert(this.m_faucetEmitterIndex < SandboxParams.k_maxPumps);
+        // DEBUG: b2Assert(this.m_faucetEmitterIndex < SandboxParams.k_maxPumps);
 
-        const startingVelocity = new b2.Vec2(0, SandboxParams.k_particleExitSpeedY);
+        const startingVelocity = new b2Vec2(0, SandboxParams.k_particleExitSpeedY);
 
-        const emitter = new testbed.RadialEmitter();
+        const emitter = new RadialEmitter();
         emitter.SetParticleSystem(this.m_particleSystem);
         emitter.SetPosition(center);
         emitter.SetVelocity(startingVelocity);
-        emitter.SetSize(new b2.Vec2(SandboxParams.k_defaultEmitterSize, 0.0));
+        emitter.SetSize(new b2Vec2(SandboxParams.k_defaultEmitterSize, 0.0));
         emitter.SetEmitRate(SandboxParams.k_defaultEmitterRate);
         emitter.SetColor(color);
         this.m_emitters[this.m_faucetEmitterIndex] = emitter;
         this.m_faucetEmitterIndex++;
     }
 
-    public JointDestroyed(joint: b2.Joint): void {
+    public JointDestroyed(joint: b2Joint): void {
         super.JointDestroyed(joint);
     }
 
-    public ParticleGroupDestroyed(group: b2.ParticleGroup): void {
+    public ParticleGroupDestroyed(group: b2ParticleGroup): void {
         super.ParticleGroupDestroyed(group);
     }
 
-    public BeginContact(contact: b2.Contact): void {
+    public BeginContact(contact: b2Contact): void {
         super.BeginContact(contact);
     }
 
-    public EndContact(contact: b2.Contact): void {
+    public EndContact(contact: b2Contact): void {
         super.EndContact(contact);
     }
 
-    public PreSolve(contact: b2.Contact, oldManifold: b2.Manifold): void {
+    public PreSolve(contact: b2Contact, oldManifold: b2Manifold): void {
         super.PreSolve(contact, oldManifold);
     }
 
-    public PostSolve(contact: b2.Contact, impulse: b2.ContactImpulse): void {
+    public PostSolve(contact: b2Contact, impulse: b2ContactImpulse): void {
         super.PostSolve(contact, impulse);
     }
 
-    /**
-     * Allows you to set particle flags on devices with keyboards
-     */
-    public Keyboard(key: string): void {
-        super.Keyboard(key);
-        let toggle = 0;
-        switch (key) {
-            case "a":
-                this.m_particleFlags = 0;
-                break;
-            case "q":
-                toggle = b2.ParticleFlag.b2_powderParticle;
-                break;
-            case "t":
-                toggle = b2.ParticleFlag.b2_tensileParticle;
-                break;
-            case "v":
-                toggle = b2.ParticleFlag.b2_viscousParticle;
-                break;
-            case "w":
-                toggle = b2.ParticleFlag.b2_wallParticle;
-                break;
+    getHotkeys(): HotKey[] {
+        return [
+            hotKeyPress([], "a", "Remove All Flags (Water)", () => this.ResetFlags()),
+            hotKeyPress([], "q", "Toggle Powder Flag", () => this.ToggleFlag(b2ParticleFlag.b2_powderParticle)),
+            hotKeyPress([], "t", "Toggle Tensile Flag", () => this.ToggleFlag(b2ParticleFlag.b2_tensileParticle)),
+            hotKeyPress([], "v", "Toggle Viscous Flag", () => this.ToggleFlag(b2ParticleFlag.b2_viscousParticle)),
+            hotKeyPress([], "q", "Toggle Wall Flag", () => this.ToggleFlag(b2ParticleFlag.b2_wallParticle)),
+        ];
+    }
+
+    public getCenter(): XY {
+        return {
+            x: 0,
+            y: 20,
+        };
+    }
+
+    private ResetFlags() {
+        this.m_particleFlags = 0;
+        Test.SetParticleParameterValue(0);
+    }
+
+    private ToggleFlag(flag: b2ParticleFlag) {
+        if (this.m_particleFlags & flag) {
+            this.m_particleFlags &= ~flag;
+        } else {
+            this.m_particleFlags |= flag;
         }
-        if (toggle) {
-            if (this.m_particleFlags & toggle) {
-                this.m_particleFlags = this.m_particleFlags & ~toggle;
-            } else {
-                this.m_particleFlags = this.m_particleFlags | toggle;
-            }
-        }
-        testbed.Test.SetParticleParameterValue(this.m_particleFlags);
-    }
-
-    public KeyboardUp(key: string): void {
-        super.KeyboardUp(key);
-    }
-
-    public MouseDown(p: b2.Vec2): void {
-        super.MouseDown(p);
-    }
-
-    public MouseUp(p: b2.Vec2): void {
-        super.MouseUp(p);
-    }
-
-    public MouseMove(p: b2.Vec2): void {
-        super.MouseMove(p);
+        Test.SetParticleParameterValue(this.m_particleFlags);
     }
 
     /**
      * Per-frame step updater overridden from Test
      */
-    public Step(settings: testbed.Settings): void {
+    public Step(settings: Settings, timeStep: number): void {
         let dt = settings.m_hertz > 0.0 ? 1.0 / settings.m_hertz : 0.0;
         if (settings.m_pause && !settings.m_singleStep) {
             dt = 0.0;
         }
-        super.Step(settings);
+        super.Step(settings, timeStep);
 
-        this.m_particleFlags = testbed.Test.GetParticleParameterValue();
+        this.m_particleFlags = Test.GetParticleParameterValue();
 
         // Step all the emitters
         for (let i = 0; i < this.m_faucetEmitterIndex; i++) {
@@ -672,20 +681,5 @@ export class Sandbox extends testbed.Test {
                 this.m_pumpForce.x *= -1;
             }
         }
-
-        testbed.g_debugDraw.DrawString(5, this.m_textLine, "Keys: (a) zero out (water), (q) powder");
-        this.m_textLine += testbed.DRAW_STRING_NEW_LINE;
-        testbed.g_debugDraw.DrawString(5, this.m_textLine, "      (t) tensile, (v) viscous");
-        this.m_textLine += testbed.DRAW_STRING_NEW_LINE;
-    }
-
-    public GetDefaultViewZoom(): number {
-        return super.GetDefaultViewZoom();
-    }
-
-    public static Create() {
-        return new Sandbox();
     }
 }
-
-// #endif

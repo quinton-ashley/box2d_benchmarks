@@ -16,18 +16,15 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-// DEBUG: import { b2Assert } from "../common/b2_settings.js";
-// DEBUG: import { b2IsValid } from "../common/b2_math.js";
-import { b2Maybe } from "../common/b2_settings.js";
-import { b2Vec2, b2Rot, b2Transform, b2Sweep, XY } from "../common/b2_math.js";
-import { b2Shape, b2MassData } from "../collision/b2_shape.js";
-import { b2ContactEdge } from "./b2_contact.js";
-import { b2JointEdge } from "./b2_joint.js";
-import { b2Fixture, b2FixtureDef, b2IFixtureDef } from "./b2_fixture.js";
-import { b2World } from "./b2_world.js";
-// #if B2_ENABLE_CONTROLLER
-import { b2ControllerEdge } from "../controllers/b2_controller.js";
-// #endif
+// DEBUG: import { b2Assert } from "../common/b2_settings";
+// DEBUG: import { b2IsValid } from "../common/b2_math";
+import { b2Maybe } from "../common/b2_settings";
+import { b2Vec2, b2Rot, b2Transform, b2Sweep, XY } from "../common/b2_math";
+import { b2Shape, b2MassData } from "../collision/b2_shape";
+import type { b2ContactEdge } from "./b2_contact";
+import { b2JointEdge } from "./b2_joint";
+import { b2Fixture, b2FixtureDef, b2IFixtureDef } from "./b2_fixture";
+import type { b2World } from "./b2_world";
 
 /// The body type.
 /// static: zero mass, zero velocity, may be manually moved
@@ -111,105 +108,114 @@ export class b2BodyDef implements b2IBodyDef {
     public readonly position: b2Vec2 = new b2Vec2(0, 0);
 
     /// The world angle of the body in radians.
-    public angle: number = 0;
+    public angle = 0;
 
     /// The linear velocity of the body's origin in world co-ordinates.
     public readonly linearVelocity: b2Vec2 = new b2Vec2(0, 0);
 
     /// The angular velocity of the body.
-    public angularVelocity: number = 0;
+    public angularVelocity = 0;
 
     /// Linear damping is use to reduce the linear velocity. The damping parameter
     /// can be larger than 1.0f but the damping effect becomes sensitive to the
     /// time step when the damping parameter is large.
-    public linearDamping: number = 0;
+    public linearDamping = 0;
 
     /// Angular damping is use to reduce the angular velocity. The damping parameter
     /// can be larger than 1.0f but the damping effect becomes sensitive to the
     /// time step when the damping parameter is large.
-    public angularDamping: number = 0;
+    public angularDamping = 0;
 
     /// Set this flag to false if this body should never fall asleep. Note that
     /// this increases CPU usage.
-    public allowSleep: boolean = true;
+    public allowSleep = true;
 
     /// Is this body initially awake or sleeping?
-    public awake: boolean = true;
+    public awake = true;
 
     /// Should this body be prevented from rotating? Useful for characters.
-    public fixedRotation: boolean = false;
+    public fixedRotation = false;
 
     /// Is this a fast moving body that should be prevented from tunneling through
     /// other moving bodies? Note that all bodies are prevented from tunneling through
     /// kinematic and static bodies. This setting is only considered on dynamic bodies.
     /// @warning You should use this flag sparingly since it increases processing time.
-    public bullet: boolean = false;
+    public bullet = false;
 
     /// Does this body start out enabled?
-    public enabled: boolean = true;
+    public enabled = true;
 
     /// Use this to store application specific body data.
     public userData: any = null;
 
     /// Scale the gravity applied to this body.
-    public gravityScale: number = 1;
+    public gravityScale = 1;
 }
 
 /// A rigid body. These are created via b2World::CreateBody.
 export class b2Body {
     public m_type: b2BodyType = b2BodyType.b2_staticBody;
 
-    public m_islandFlag: boolean = false;
-    public m_awakeFlag: boolean = false;
-    public m_autoSleepFlag: boolean = false;
-    public m_bulletFlag: boolean = false;
-    public m_fixedRotationFlag: boolean = false;
-    public m_enabledFlag: boolean = false;
-    public m_toiFlag: boolean = false;
+    public m_islandFlag = false;
 
-    public m_islandIndex: number = 0;
+    public m_awakeFlag = false;
+
+    public m_autoSleepFlag = false;
+
+    public m_bulletFlag = false;
+
+    public m_fixedRotationFlag = false;
+
+    public m_enabledFlag = false;
+
+    public m_toiFlag = false;
+
+    public m_islandIndex = 0;
 
     public readonly m_xf: b2Transform = new b2Transform(); // the body origin transform
-    // #if B2_ENABLE_PARTICLE
-    public readonly m_xf0: b2Transform = new b2Transform();
-    // #endif
+
     public readonly m_sweep: b2Sweep = new b2Sweep(); // the swept motion for CCD
 
     public readonly m_linearVelocity: b2Vec2 = new b2Vec2();
-    public m_angularVelocity: number = 0;
+
+    public m_angularVelocity = 0;
 
     public readonly m_force: b2Vec2 = new b2Vec2();
-    public m_torque: number = 0;
+
+    public m_torque = 0;
 
     public m_world: b2World;
+
     public m_prev: b2Body | null = null;
+
     public m_next: b2Body | null = null;
 
     public m_fixtureList: b2Fixture | null = null;
-    public m_fixtureCount: number = 0;
+
+    public m_fixtureCount = 0;
 
     public m_jointList: b2JointEdge | null = null;
+
     public m_contactList: b2ContactEdge | null = null;
 
-    public m_mass: number = 1;
-    public m_invMass: number = 1;
+    public m_mass = 1;
+
+    public m_invMass = 1;
 
     // Rotational inertia about the center of mass.
-    public m_I: number = 0;
-    public m_invI: number = 0;
+    public m_I = 0;
 
-    public m_linearDamping: number = 0;
-    public m_angularDamping: number = 0;
-    public m_gravityScale: number = 1;
+    public m_invI = 0;
 
-    public m_sleepTime: number = 0;
+    public m_linearDamping = 0;
+
+    public m_angularDamping = 0;
+
+    public m_gravityScale = 1;
+
+    public m_sleepTime = 0;
 
     public m_userData: any = null;
-
-    // #if B2_ENABLE_CONTROLLER
-    public m_controllerList: b2ControllerEdge | null = null;
-    public m_controllerCount: number = 0;
-    // #endif
 
     constructor(bd: b2IBodyDef, world: b2World) {
         this.m_bulletFlag = b2Maybe(bd.bullet, false);
@@ -227,9 +233,6 @@ export class b2Body {
         // DEBUG: b2Assert(this.m_xf.p.IsValid());
         this.m_xf.q.SetAngle(b2Maybe(bd.angle, 0));
         // DEBUG: b2Assert(b2IsValid(this.m_xf.q.GetAngle()));
-        // #if B2_ENABLE_PARTICLE
-        this.m_xf0.Copy(this.m_xf);
-        // #endif
 
         this.m_sweep.localCenter.SetZero();
         this.m_sweep.c0.Copy(this.m_xf.p);
@@ -266,22 +269,19 @@ export class b2Body {
 
         this.m_fixtureList = null;
         this.m_fixtureCount = 0;
-
-        // #if B2_ENABLE_CONTROLLER
-        this.m_controllerList = null;
-        this.m_controllerCount = 0;
-        // #endif
     }
 
     public CreateFixture(def: b2IFixtureDef): b2Fixture;
+
     public CreateFixture(shape: b2Shape): b2Fixture;
+
     public CreateFixture(shape: b2Shape, density: number): b2Fixture;
-    public CreateFixture(a: b2IFixtureDef | b2Shape, b: number = 0): b2Fixture {
+
+    public CreateFixture(a: b2IFixtureDef | b2Shape, b = 0): b2Fixture {
         if (a instanceof b2Shape) {
             return this.CreateFixtureShapeDensity(a, b);
-        } else {
-            return this.CreateFixtureDef(a);
         }
+        return this.CreateFixtureDef(a);
     }
 
     /// Creates a fixture and attach it to this body. Use this function if you need
@@ -328,7 +328,8 @@ export class b2Body {
     /// @param density the shape density (set to zero for static bodies).
     /// @warning This function is locked during callbacks.
     private static CreateFixtureShapeDensity_s_def: b2FixtureDef = new b2FixtureDef();
-    public CreateFixtureShapeDensity(shape: b2Shape, density: number = 0): b2Fixture {
+
+    public CreateFixtureShapeDensity(shape: b2Shape, density = 0): b2Fixture {
         const def: b2FixtureDef = b2Body.CreateFixtureShapeDensity_s_def;
         def.shape = shape;
         def.density = density;
@@ -418,9 +419,6 @@ export class b2Body {
 
         this.m_xf.q.SetAngle(angle);
         this.m_xf.p.Set(x, y);
-        // #if B2_ENABLE_PARTICLE
-        this.m_xf0.Copy(this.m_xf);
-        // #endif
 
         b2Transform.MulXV(this.m_xf, this.m_sweep.localCenter, this.m_sweep.c);
         this.m_sweep.a = angle;
@@ -542,7 +540,7 @@ export class b2Body {
     /// @param force the world force vector, usually in Newtons (N).
     /// @param point the world position of the point of application.
     /// @param wake also wake up the body
-    public ApplyForce(force: XY, point: XY, wake: boolean = true): void {
+    public ApplyForce(force: XY, point: XY, wake = true): void {
         if (this.m_type !== b2BodyType.b2_dynamicBody) {
             return;
         }
@@ -562,7 +560,7 @@ export class b2Body {
     /// Apply a force to the center of mass. This wakes up the body.
     /// @param force the world force vector, usually in Newtons (N).
     /// @param wake also wake up the body
-    public ApplyForceToCenter(force: XY, wake: boolean = true): void {
+    public ApplyForceToCenter(force: XY, wake = true): void {
         if (this.m_type !== b2BodyType.b2_dynamicBody) {
             return;
         }
@@ -582,7 +580,7 @@ export class b2Body {
     /// without affecting the linear velocity of the center of mass.
     /// @param torque about the z-axis (out of the screen), usually in N-m.
     /// @param wake also wake up the body
-    public ApplyTorque(torque: number, wake: boolean = true): void {
+    public ApplyTorque(torque: number, wake = true): void {
         if (this.m_type !== b2BodyType.b2_dynamicBody) {
             return;
         }
@@ -603,7 +601,7 @@ export class b2Body {
     /// @param impulse the world impulse vector, usually in N-seconds or kg-m/s.
     /// @param point the world position of the point of application.
     /// @param wake also wake up the body
-    public ApplyLinearImpulse(impulse: XY, point: XY, wake: boolean = true): void {
+    public ApplyLinearImpulse(impulse: XY, point: XY, wake = true): void {
         if (this.m_type !== b2BodyType.b2_dynamicBody) {
             return;
         }
@@ -624,7 +622,7 @@ export class b2Body {
     /// Apply an impulse at the center of gravity. This immediately modifies the velocity.
     /// @param impulse the world impulse vector, usually in N-seconds or kg-m/s.
     /// @param wake also wake up the body
-    public ApplyLinearImpulseToCenter(impulse: XY, wake: boolean = true): void {
+    public ApplyLinearImpulseToCenter(impulse: XY, wake = true): void {
         if (this.m_type !== b2BodyType.b2_dynamicBody) {
             return;
         }
@@ -643,7 +641,7 @@ export class b2Body {
     /// Apply an angular impulse.
     /// @param impulse the angular impulse in units of kg*m*m/s
     /// @param wake also wake up the body
-    public ApplyAngularImpulse(impulse: number, wake: boolean = true): void {
+    public ApplyAngularImpulse(impulse: number, wake = true): void {
         if (this.m_type !== b2BodyType.b2_dynamicBody) {
             return;
         }
@@ -685,6 +683,7 @@ export class b2Body {
     /// This function has no effect if the body isn't dynamic.
     /// @param massData the mass properties.
     private static SetMassData_s_oldCenter: b2Vec2 = new b2Vec2();
+
     public SetMassData(massData: b2MassData): void {
         if (this.m_world.IsLocked()) {
             throw new Error();
@@ -730,8 +729,11 @@ export class b2Body {
     /// This normally does not need to be called unless you called SetMassData to override
     /// the mass and you later want to reset the mass.
     private static ResetMassData_s_localCenter: b2Vec2 = new b2Vec2();
+
     private static ResetMassData_s_oldCenter: b2Vec2 = new b2Vec2();
+
     private static ResetMassData_s_massData: b2MassData = new b2MassData();
+
     public ResetMassData(): void {
         // Compute mass data from shapes. Each shape has its own density.
         this.m_mass = 0;
@@ -1084,7 +1086,7 @@ export class b2Body {
 
         log("{\n");
         log("  const bd: b2BodyDef = new b2BodyDef();\n");
-        let type_str: string = "";
+        let type_str = "";
         switch (this.m_type) {
             case b2BodyType.b2_staticBody:
                 type_str = "b2BodyType.b2_staticBody";
@@ -1124,6 +1126,7 @@ export class b2Body {
     }
 
     private static SynchronizeFixtures_s_xf1: b2Transform = new b2Transform();
+
     public SynchronizeFixtures(): void {
         if (this.m_awakeFlag) {
             const xf1: b2Transform = b2Body.SynchronizeFixtures_s_xf1;
@@ -1179,14 +1182,4 @@ export class b2Body {
         b2Rot.MulRV(this.m_xf.q, this.m_sweep.localCenter, this.m_xf.p);
         b2Vec2.SubVV(this.m_sweep.c, this.m_xf.p, this.m_xf.p);
     }
-
-    // #if B2_ENABLE_CONTROLLER
-    public GetControllerList(): b2ControllerEdge | null {
-        return this.m_controllerList;
-    }
-
-    public GetControllerCount(): number {
-        return this.m_controllerCount;
-    }
-    // #endif
 }

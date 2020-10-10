@@ -16,9 +16,9 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import { b2Vec2, XY } from "../common/b2_math.js";
-import { b2AABB, b2RayCastInput } from "./b2_collision.js";
-import { b2TreeNode, b2DynamicTree } from "./b2_dynamic_tree.js";
+import { b2Vec2, XY } from "../common/b2_math";
+import { b2AABB, b2RayCastInput } from "./b2_collision";
+import { b2TreeNode, b2DynamicTree } from "./b2_dynamic_tree";
 
 export class b2Pair<T> {
     constructor(public proxyA: b2TreeNode<T>, public proxyB: b2TreeNode<T>) {}
@@ -29,12 +29,17 @@ export class b2Pair<T> {
 /// It is up to the client to consume the new pairs and to track subsequent overlap.
 export class b2BroadPhase<T> {
     public readonly m_tree: b2DynamicTree<T> = new b2DynamicTree<T>();
-    public m_proxyCount: number = 0;
+
+    public m_proxyCount = 0;
+
     // public m_moveCapacity: number = 16;
-    public m_moveCount: number = 0;
+    public m_moveCount = 0;
+
     public readonly m_moveBuffer: Array<b2TreeNode<T> | null> = [];
+
     // public m_pairCapacity: number = 16;
-    public m_pairCount: number = 0;
+    public m_pairCount = 0;
+
     public readonly m_pairBuffer: Array<b2Pair<T>> = [];
     // public m_queryProxyId: number = 0;
 
@@ -96,13 +101,13 @@ export class b2BroadPhase<T> {
         this.m_pairCount = 0;
 
         // Perform tree queries for all moving proxies.
-        for (let i: number = 0; i < this.m_moveCount; ++i) {
+        for (let i = 0; i < this.m_moveCount; ++i) {
             const queryProxy: b2TreeNode<T> | null = this.m_moveBuffer[i];
             if (queryProxy === null) {
                 continue;
             }
 
-            // This is called from b2.DynamicTree::Query when we are gathering pairs.
+            // This is called from box2d.b2DynamicTree::Query when we are gathering pairs.
             // boolean b2BroadPhase::QueryCallback(int32 proxyId);
 
             // We have to query the tree with the fat AABB so that
@@ -116,7 +121,7 @@ export class b2BroadPhase<T> {
                     return true;
                 }
 
-                const moved: boolean = proxy.moved; // this.m_tree.WasMoved(proxy);
+                const { moved } = proxy; // this.m_tree.WasMoved(proxy);
                 if (moved && proxy.m_id > queryProxy.m_id) {
                     // Both proxies are moving. Avoid duplicate pairs.
                     return true;

@@ -16,20 +16,42 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import * as b2 from "@box2d";
-import * as testbed from "../testbed.js";
+import {
+    b2Body,
+    b2Vec2,
+    b2PolygonShape,
+    b2Fixture,
+    b2BodyDef,
+    b2EdgeShape,
+    b2BodyType,
+    b2_pi,
+    b2Contact,
+    b2ContactImpulse,
+    b2Max,
+} from "@box2d/core";
 
-export class Breakable extends testbed.Test {
+import { Test } from "../../test";
+import { Settings } from "../../settings";
+
+export class Breakable extends Test {
     public static readonly e_count = 7;
 
-    public readonly m_body1: b2.Body;
-    public readonly m_velocity = new b2.Vec2();
+    public readonly m_body1: b2Body;
+
+    public readonly m_velocity = new b2Vec2();
+
     public m_angularVelocity = 0;
-    public readonly m_shape1 = new b2.PolygonShape();
-    public readonly m_shape2 = new b2.PolygonShape();
-    public m_piece1: b2.Fixture | null = null;
-    public m_piece2: b2.Fixture | null = null;
+
+    public readonly m_shape1 = new b2PolygonShape();
+
+    public readonly m_shape2 = new b2PolygonShape();
+
+    public m_piece1: b2Fixture;
+
+    public m_piece2: b2Fixture;
+
     public m_broke = false;
+
     public m_break = false;
 
     constructor() {
@@ -37,50 +59,50 @@ export class Breakable extends testbed.Test {
 
         // Ground body
         {
-            /*b2.BodyDef*/
-            const bd = new b2.BodyDef();
-            /*b2.Body*/
+            /* b2BodyDef */
+            const bd = new b2BodyDef();
+            /* b2Body */
             const ground = this.m_world.CreateBody(bd);
 
-            /*b2.EdgeShape*/
-            const shape = new b2.EdgeShape();
-            shape.SetTwoSided(new b2.Vec2(-40.0, 0.0), new b2.Vec2(40.0, 0.0));
+            /* b2EdgeShape */
+            const shape = new b2EdgeShape();
+            shape.SetTwoSided(new b2Vec2(-40.0, 0.0), new b2Vec2(40.0, 0.0));
             ground.CreateFixture(shape, 0.0);
         }
 
         // Breakable dynamic body
         {
-            /*b2.BodyDef*/
-            const bd = new b2.BodyDef();
-            bd.type = b2.BodyType.b2_dynamicBody;
+            /* b2BodyDef */
+            const bd = new b2BodyDef();
+            bd.type = b2BodyType.b2_dynamicBody;
             bd.position.Set(0.0, 40.0);
-            bd.angle = 0.25 * b2.pi;
+            bd.angle = 0.25 * b2_pi;
             this.m_body1 = this.m_world.CreateBody(bd);
 
-            this.m_shape1 = new b2.PolygonShape();
-            this.m_shape1.SetAsBox(0.5, 0.5, new b2.Vec2(-0.5, 0.0), 0.0);
+            this.m_shape1 = new b2PolygonShape();
+            this.m_shape1.SetAsBox(0.5, 0.5, new b2Vec2(-0.5, 0.0), 0.0);
             this.m_piece1 = this.m_body1.CreateFixture(this.m_shape1, 1.0);
 
-            this.m_shape2 = new b2.PolygonShape();
-            this.m_shape2.SetAsBox(0.5, 0.5, new b2.Vec2(0.5, 0.0), 0.0);
+            this.m_shape2 = new b2PolygonShape();
+            this.m_shape2.SetAsBox(0.5, 0.5, new b2Vec2(0.5, 0.0), 0.0);
             this.m_piece2 = this.m_body1.CreateFixture(this.m_shape2, 1.0);
         }
     }
 
-    public PostSolve(contact: b2.Contact, impulse: b2.ContactImpulse) {
+    public PostSolve(contact: b2Contact, impulse: b2ContactImpulse) {
         if (this.m_broke) {
             // The body already broke.
             return;
         }
 
         // Should the body break?
-        /*int*/
+        /* int */
         const count = contact.GetManifold().pointCount;
 
-        /*float32*/
+        /* float32 */
         let maxImpulse = 0.0;
         for (let i = 0; i < count; ++i) {
-            maxImpulse = b2.Max(maxImpulse, impulse.normalImpulses[i]);
+            maxImpulse = b2Max(maxImpulse, impulse.normalImpulses[i]);
         }
 
         if (maxImpulse > 40.0) {
@@ -90,49 +112,44 @@ export class Breakable extends testbed.Test {
     }
 
     public Break() {
-        if (this.m_piece1 === null) {
-            return;
-        }
-        if (this.m_piece2 === null) {
-            return;
-        }
         // Create two bodies from one.
+        /* b2Body */
         const body1 = this.m_piece1.GetBody();
+        /* b2Vec2 */
         const center = body1.GetWorldCenter();
 
         body1.DestroyFixture(this.m_piece2);
-        this.m_piece2 = null;
 
-        /*b2.BodyDef*/
-        const bd = new b2.BodyDef();
-        bd.type = b2.BodyType.b2_dynamicBody;
+        /* b2BodyDef */
+        const bd = new b2BodyDef();
+        bd.type = b2BodyType.b2_dynamicBody;
         bd.position.Copy(body1.GetPosition());
         bd.angle = body1.GetAngle();
 
-        /*b2.Body*/
+        /* b2Body */
         const body2 = this.m_world.CreateBody(bd);
         this.m_piece2 = body2.CreateFixture(this.m_shape2, 1.0);
 
         // Compute consistent velocities for new bodies based on
         // cached velocity.
-        /*b2.Vec2*/
+        /* b2Vec2 */
         const center1 = body1.GetWorldCenter();
-        /*b2.Vec2*/
+        /* b2Vec2 */
         const center2 = body2.GetWorldCenter();
 
-        /*b2.Vec2*/
-        const velocity1 = b2.Vec2.AddVCrossSV(
+        /* b2Vec2 */
+        const velocity1 = b2Vec2.AddVCrossSV(
             this.m_velocity,
             this.m_angularVelocity,
-            b2.Vec2.SubVV(center1, center, b2.Vec2.s_t0),
-            new b2.Vec2()
+            b2Vec2.SubVV(center1, center, b2Vec2.s_t0),
+            new b2Vec2()
         );
-        /*b2.Vec2*/
-        const velocity2 = b2.Vec2.AddVCrossSV(
+        /* b2Vec2 */
+        const velocity2 = b2Vec2.AddVCrossSV(
             this.m_velocity,
             this.m_angularVelocity,
-            b2.Vec2.SubVV(center2, center, b2.Vec2.s_t0),
-            new b2.Vec2()
+            b2Vec2.SubVV(center2, center, b2Vec2.s_t0),
+            new b2Vec2()
         );
 
         body1.SetAngularVelocity(this.m_angularVelocity);
@@ -142,7 +159,7 @@ export class Breakable extends testbed.Test {
         body2.SetLinearVelocity(velocity2);
     }
 
-    public Step(settings: testbed.Settings): void {
+    public Step(settings: Settings, timeStep: number): void {
         if (this.m_break) {
             this.Break();
             this.m_broke = true;
@@ -155,10 +172,6 @@ export class Breakable extends testbed.Test {
             this.m_angularVelocity = this.m_body1.GetAngularVelocity();
         }
 
-        super.Step(settings);
-    }
-
-    public static Create(): testbed.Test {
-        return new Breakable();
+        super.Step(settings, timeStep);
     }
 }

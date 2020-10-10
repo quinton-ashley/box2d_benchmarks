@@ -16,11 +16,22 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import * as b2 from "@box2d";
-import * as testbed from "../testbed.js";
+import {
+    b2PulleyJoint,
+    b2BodyDef,
+    b2CircleShape,
+    b2PolygonShape,
+    b2BodyType,
+    b2PulleyJointDef,
+    b2Vec2,
+    XY,
+} from "@box2d/core";
 
-export class Pulleys extends testbed.Test {
-    public m_joint1: b2.PulleyJoint;
+import { Test } from "../../test";
+import { Settings } from "../../settings";
+
+export class Pulleys extends Test {
+    public m_joint1: b2PulleyJoint;
 
     constructor() {
         super();
@@ -32,11 +43,11 @@ export class Pulleys extends testbed.Test {
 
         let ground = null;
         {
-            const bd = new b2.BodyDef();
+            const bd = new b2BodyDef();
             ground = this.m_world.CreateBody(bd);
 
-            /*b2.CircleShape*/
-            const circle = new b2.CircleShape();
+            /* b2CircleShape */
+            const circle = new b2CircleShape();
             circle.m_radius = 2.0;
 
             circle.m_p.Set(-10.0, y + b + L);
@@ -47,13 +58,13 @@ export class Pulleys extends testbed.Test {
         }
 
         {
-            const shape = new b2.PolygonShape();
+            const shape = new b2PolygonShape();
             shape.SetAsBox(a, b);
 
-            const bd = new b2.BodyDef();
-            bd.type = b2.BodyType.b2_dynamicBody;
+            const bd = new b2BodyDef();
+            bd.type = b2BodyType.b2_dynamicBody;
 
-            //bd.fixedRotation = true;
+            // bd.fixedRotation = true;
             bd.position.Set(-10.0, y);
             const body1 = this.m_world.CreateBody(bd);
             body1.CreateFixture(shape, 5.0);
@@ -62,26 +73,29 @@ export class Pulleys extends testbed.Test {
             const body2 = this.m_world.CreateBody(bd);
             body2.CreateFixture(shape, 5.0);
 
-            const pulleyDef = new b2.PulleyJointDef();
-            const anchor1 = new b2.Vec2(-10.0, y + b);
-            const anchor2 = new b2.Vec2(10.0, y + b);
-            const groundAnchor1 = new b2.Vec2(-10.0, y + b + L);
-            const groundAnchor2 = new b2.Vec2(10.0, y + b + L);
+            const pulleyDef = new b2PulleyJointDef();
+            const anchor1 = new b2Vec2(-10.0, y + b);
+            const anchor2 = new b2Vec2(10.0, y + b);
+            const groundAnchor1 = new b2Vec2(-10.0, y + b + L);
+            const groundAnchor2 = new b2Vec2(10.0, y + b + L);
             pulleyDef.Initialize(body1, body2, groundAnchor1, groundAnchor2, anchor1, anchor2, 1.5);
 
             this.m_joint1 = this.m_world.CreateJoint(pulleyDef);
         }
     }
 
-    public Step(settings: testbed.Settings): void {
-        super.Step(settings);
-        const ratio = this.m_joint1.GetRatio();
-        const L = this.m_joint1.GetCurrentLengthA() + ratio * this.m_joint1.GetCurrentLengthB();
-        testbed.g_debugDraw.DrawString(5, this.m_textLine, `L1 + ${ratio.toFixed(2)} * L2 = ${L.toFixed(2)}`);
-        this.m_textLine += testbed.DRAW_STRING_NEW_LINE;
+    public getCenter(): XY {
+        return {
+            x: 0,
+            y: 15,
+        };
     }
 
-    public static Create(): testbed.Test {
-        return new Pulleys();
+    public Step(settings: Settings, timeStep: number): void {
+        super.Step(settings, timeStep);
+        const ratio = this.m_joint1.GetRatio();
+        const L = this.m_joint1.GetCurrentLengthA() + ratio * this.m_joint1.GetCurrentLengthB();
+        this.addDebug("L1", ratio.toFixed(2));
+        this.addDebug("L2", L.toFixed(2));
     }
 }

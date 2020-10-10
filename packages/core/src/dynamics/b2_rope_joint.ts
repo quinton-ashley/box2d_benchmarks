@@ -16,10 +16,10 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import { b2_linearSlop, b2_maxLinearCorrection, b2Maybe } from "../common/b2_settings.js";
-import { b2Min, b2Clamp, b2Vec2, b2Rot, XY } from "../common/b2_math.js";
-import { b2Joint, b2JointDef, b2JointType, b2IJointDef } from "./b2_joint.js";
-import { b2SolverData } from "./b2_time_step.js";
+import { b2_linearSlop, b2_maxLinearCorrection, b2Maybe } from "../common/b2_settings";
+import { b2Min, b2Clamp, b2Vec2, b2Rot, XY } from "../common/b2_math";
+import { b2Joint, b2JointDef, b2JointType, b2IJointDef } from "./b2_joint";
+import { b2SolverData } from "./b2_time_step";
 
 export interface b2IRopeJointDef extends b2IJointDef {
     localAnchorA?: XY;
@@ -38,7 +38,7 @@ export class b2RopeJointDef extends b2JointDef implements b2IRopeJointDef {
 
     public readonly localAnchorB: b2Vec2 = new b2Vec2(1, 0);
 
-    public maxLength: number = 0;
+    public maxLength = 0;
 
     constructor() {
         super(b2JointType.e_ropeJoint);
@@ -48,28 +48,46 @@ export class b2RopeJointDef extends b2JointDef implements b2IRopeJointDef {
 export class b2RopeJoint extends b2Joint {
     // Solver shared
     public readonly m_localAnchorA: b2Vec2 = new b2Vec2();
+
     public readonly m_localAnchorB: b2Vec2 = new b2Vec2();
-    public m_maxLength: number = 0;
-    public m_length: number = 0;
-    public m_impulse: number = 0;
+
+    public m_maxLength = 0;
+
+    public m_length = 0;
+
+    public m_impulse = 0;
 
     // Solver temp
-    public m_indexA: number = 0;
-    public m_indexB: number = 0;
+    public m_indexA = 0;
+
+    public m_indexB = 0;
+
     public readonly m_u: b2Vec2 = new b2Vec2();
+
     public readonly m_rA: b2Vec2 = new b2Vec2();
+
     public readonly m_rB: b2Vec2 = new b2Vec2();
+
     public readonly m_localCenterA: b2Vec2 = new b2Vec2();
+
     public readonly m_localCenterB: b2Vec2 = new b2Vec2();
-    public m_invMassA: number = 0;
-    public m_invMassB: number = 0;
-    public m_invIA: number = 0;
-    public m_invIB: number = 0;
-    public m_mass: number = 0;
+
+    public m_invMassA = 0;
+
+    public m_invMassB = 0;
+
+    public m_invIA = 0;
+
+    public m_invIB = 0;
+
+    public m_mass = 0;
 
     public readonly m_qA: b2Rot = new b2Rot();
+
     public readonly m_qB: b2Rot = new b2Rot();
+
     public readonly m_lalcA: b2Vec2 = new b2Vec2();
+
     public readonly m_lalcB: b2Vec2 = new b2Vec2();
 
     constructor(def: b2IRopeJointDef) {
@@ -81,6 +99,7 @@ export class b2RopeJoint extends b2Joint {
     }
 
     private static InitVelocityConstraints_s_P = new b2Vec2();
+
     public InitVelocityConstraints(data: b2SolverData): void {
         this.m_indexA = this.m_bodyA.m_islandIndex;
         this.m_indexB = this.m_bodyB.m_islandIndex;
@@ -101,8 +120,8 @@ export class b2RopeJoint extends b2Joint {
         const vB: b2Vec2 = data.velocities[this.m_indexB].v;
         let wB: number = data.velocities[this.m_indexB].w;
 
-        const qA: b2Rot = this.m_qA.SetAngle(aA),
-            qB: b2Rot = this.m_qB.SetAngle(aB);
+        const qA: b2Rot = this.m_qA.SetAngle(aA);
+        const qB: b2Rot = this.m_qB.SetAngle(aB);
 
         // this.m_rA = b2Mul(qA, this.m_localAnchorA - this.m_localCenterA);
         b2Vec2.SubVV(this.m_localAnchorA, this.m_localCenterA, this.m_lalcA);
@@ -154,8 +173,11 @@ export class b2RopeJoint extends b2Joint {
     }
 
     private static SolveVelocityConstraints_s_vpA = new b2Vec2();
+
     private static SolveVelocityConstraints_s_vpB = new b2Vec2();
+
     private static SolveVelocityConstraints_s_P = new b2Vec2();
+
     public SolveVelocityConstraints(data: b2SolverData): void {
         const vA: b2Vec2 = data.velocities[this.m_indexA].v;
         let wA: number = data.velocities[this.m_indexA].w;
@@ -198,14 +220,15 @@ export class b2RopeJoint extends b2Joint {
     }
 
     private static SolvePositionConstraints_s_P = new b2Vec2();
+
     public SolvePositionConstraints(data: b2SolverData): boolean {
         const cA: b2Vec2 = data.positions[this.m_indexA].c;
         let aA: number = data.positions[this.m_indexA].a;
         const cB: b2Vec2 = data.positions[this.m_indexB].c;
         let aB: number = data.positions[this.m_indexB].a;
 
-        const qA: b2Rot = this.m_qA.SetAngle(aA),
-            qB: b2Rot = this.m_qB.SetAngle(aB);
+        const qA: b2Rot = this.m_qA.SetAngle(aA);
+        const qB: b2Rot = this.m_qB.SetAngle(aB);
 
         // b2Vec2 rA = b2Mul(qA, this.m_localAnchorA - this.m_localCenterA);
         b2Vec2.SubVV(this.m_localAnchorA, this.m_localCenterA, this.m_lalcA);
@@ -253,7 +276,7 @@ export class b2RopeJoint extends b2Joint {
         return b2Vec2.MulSV(inv_dt * this.m_impulse, this.m_u, out);
     }
 
-    public GetReactionTorque(inv_dt: number): number {
+    public GetReactionTorque(_inv_dt: number): number {
         return 0;
     }
 
@@ -268,6 +291,7 @@ export class b2RopeJoint extends b2Joint {
     public SetMaxLength(length: number): void {
         this.m_maxLength = length;
     }
+
     public GetMaxLength(): number {
         return this.m_maxLength;
     }

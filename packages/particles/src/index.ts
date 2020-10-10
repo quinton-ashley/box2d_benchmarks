@@ -16,4 +16,21 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-export class b2StackAllocator {}
+/**
+ * \mainpage Box2D API Documentation
+ * \section intro_sec Getting Started
+ * For documentation please see http://box2d.org/documentation.html
+ * For discussion please visit http://box2d.org/forum
+ */
+
+// These include files constitute the main Box2D API
+
+import "./dynamics/b2_world";
+import "./dynamics/b2_body";
+import "./dynamics/b2_world_callbacks";
+import "./dynamics/b2_time_step";
+
+export * from "./particle/b2_particle";
+export * from "./particle/b2_particle_group";
+export * from "./particle/b2_particle_system";
+export * from "./particle/b2_particle_draw_helper";

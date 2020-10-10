@@ -16,12 +16,29 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import * as b2 from "@box2d";
-import * as testbed from "../testbed.js";
+import {
+    b2MotorJoint,
+    b2BodyDef,
+    b2EdgeShape,
+    b2Vec2,
+    b2FixtureDef,
+    b2BodyType,
+    b2PolygonShape,
+    b2MotorJointDef,
+    b2Sin,
+    b2Color,
+} from "@box2d/core";
 
-export class MotorJoint extends testbed.Test {
-    public m_joint: b2.MotorJoint;
+import { Test } from "../../test";
+import { Settings } from "../../settings";
+import { g_debugDraw } from "../../utils/draw";
+import { HotKey, hotKeyPress } from "../../utils/hotkeys";
+
+export class MotorJoint extends Test {
+    public m_joint: b2MotorJoint;
+
     public m_time = 0;
+
     public m_go = false;
 
     constructor() {
@@ -30,13 +47,13 @@ export class MotorJoint extends testbed.Test {
         let ground = null;
 
         {
-            const bd = new b2.BodyDef();
+            const bd = new b2BodyDef();
             ground = this.m_world.CreateBody(bd);
 
-            const shape = new b2.EdgeShape();
-            shape.SetTwoSided(new b2.Vec2(-20.0, 0.0), new b2.Vec2(20.0, 0.0));
+            const shape = new b2EdgeShape();
+            shape.SetTwoSided(new b2Vec2(-20.0, 0.0), new b2Vec2(20.0, 0.0));
 
-            const fd = new b2.FixtureDef();
+            const fd = new b2FixtureDef();
             fd.shape = shape;
 
             ground.CreateFixture(fd);
@@ -44,22 +61,22 @@ export class MotorJoint extends testbed.Test {
 
         // Define motorized body
         {
-            const bd = new b2.BodyDef();
-            bd.type = b2.BodyType.b2_dynamicBody;
+            const bd = new b2BodyDef();
+            bd.type = b2BodyType.b2_dynamicBody;
             bd.position.Set(0.0, 8.0);
-            /*b2Body*/
+            /* b2Body */
             const body = this.m_world.CreateBody(bd);
 
-            const shape = new b2.PolygonShape();
+            const shape = new b2PolygonShape();
             shape.SetAsBox(2.0, 0.5);
 
-            const fd = new b2.FixtureDef();
+            const fd = new b2FixtureDef();
             fd.shape = shape;
             fd.friction = 0.6;
             fd.density = 2.0;
             body.CreateFixture(fd);
 
-            const mjd = new b2.MotorJointDef();
+            const mjd = new b2MotorJointDef();
             mjd.Initialize(ground, body);
             mjd.maxForce = 1000.0;
             mjd.maxTorque = 1000.0;
@@ -70,38 +87,32 @@ export class MotorJoint extends testbed.Test {
         this.m_time = 0.0;
     }
 
-    public Keyboard(key: string) {
-        switch (key) {
-            case "s":
+    getHotkeys(): HotKey[] {
+        return [
+            hotKeyPress([], "s", "Start/Stop", () => {
                 this.m_go = !this.m_go;
-                break;
-        }
+            }),
+        ];
     }
 
-    public Step(settings: testbed.Settings): void {
+    public Step(settings: Settings, timeStep: number): void {
         if (this.m_go && settings.m_hertz > 0.0) {
             this.m_time += 1.0 / settings.m_hertz;
         }
 
-        /*b2Vec2*/
-        const linearOffset = new b2.Vec2();
-        linearOffset.x = 6.0 * b2.Sin(2.0 * this.m_time);
-        linearOffset.y = 8.0 + 4.0 * b2.Sin(1.0 * this.m_time);
+        /* b2Vec2 */
+        const linearOffset = new b2Vec2();
+        linearOffset.x = 6.0 * b2Sin(2.0 * this.m_time);
+        linearOffset.y = 8.0 + 4.0 * b2Sin(1.0 * this.m_time);
 
-        /*float32*/
+        /* float32 */
         const angularOffset = 4.0 * this.m_time;
 
         this.m_joint.SetLinearOffset(linearOffset);
         this.m_joint.SetAngularOffset(angularOffset);
 
-        testbed.g_debugDraw.DrawPoint(linearOffset, 4.0, new b2.Color(0.9, 0.9, 0.9));
+        g_debugDraw.DrawPoint(linearOffset, 4.0, new b2Color(0.9, 0.9, 0.9));
 
-        super.Step(settings);
-        testbed.g_debugDraw.DrawString(5, this.m_textLine, "Keys: (s) pause");
-        this.m_textLine += testbed.DRAW_STRING_NEW_LINE;
-    }
-
-    public static Create(): testbed.Test {
-        return new MotorJoint();
+        super.Step(settings, timeStep);
     }
 }

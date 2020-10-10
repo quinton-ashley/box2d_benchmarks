@@ -16,26 +16,36 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import * as b2 from "@box2d";
-import * as testbed from "../testbed.js";
+import {
+    b2BodyDef,
+    b2Vec2,
+    b2Vec2_zero,
+    b2RevoluteJointDef,
+    b2Body,
+    b2BodyType,
+    b2PolygonShape,
+    XY,
+} from "@box2d/core";
 
-export class Mobile extends testbed.Test {
+import { Test } from "../../test";
+
+export class Mobile extends Test {
     public static readonly e_depth = 4;
 
     constructor() {
         super();
 
         // Create ground body.
-        const bodyDef = new b2.BodyDef();
+        const bodyDef = new b2BodyDef();
         bodyDef.position.Set(0.0, 20.0);
         const ground = this.m_world.CreateBody(bodyDef);
 
         const a = 0.5;
-        const h = new b2.Vec2(0.0, a);
+        const h = new b2Vec2(0.0, a);
 
-        const root = this.AddNode(ground, b2.Vec2_zero, 0, 3.0, a);
+        const root = this.AddNode(ground, b2Vec2_zero, 0, 3.0, a);
 
-        const jointDef = new b2.RevoluteJointDef();
+        const jointDef = new b2RevoluteJointDef();
         jointDef.bodyA = ground;
         jointDef.bodyB = root;
         jointDef.localAnchorA.SetZero();
@@ -43,19 +53,30 @@ export class Mobile extends testbed.Test {
         this.m_world.CreateJoint(jointDef);
     }
 
-    public AddNode(parent: b2.Body, localAnchor: b2.Vec2, depth: number, offset: number, a: number): b2.Body {
-        const /*float32*/ density = 20.0;
-        const /*b2Vec2*/ h = new b2.Vec2(0.0, a);
+    public GetDefaultViewZoom() {
+        return 60;
+    }
+
+    public getCenter(): XY {
+        return {
+            x: 0,
+            y: 15,
+        };
+    }
+
+    public AddNode(parent: b2Body, localAnchor: b2Vec2, depth: number, offset: number, a: number): b2Body {
+        const /* float32 */ density = 20.0;
+        const /* b2Vec2 */ h = new b2Vec2(0.0, a);
 
         //  b2Vec2 p = parent->GetPosition() + localAnchor - h;
-        const /*b2Vec2*/ p = parent.GetPosition().Clone().SelfAdd(localAnchor).SelfSub(h);
+        const /* b2Vec2 */ p = parent.GetPosition().Clone().SelfAdd(localAnchor).SelfSub(h);
 
-        const /*b2BodyDef*/ bodyDef = new b2.BodyDef();
-        bodyDef.type = b2.BodyType.b2_dynamicBody;
+        const /* b2BodyDef */ bodyDef = new b2BodyDef();
+        bodyDef.type = b2BodyType.b2_dynamicBody;
         bodyDef.position.Copy(p);
-        const /*b2Body*/ body = this.m_world.CreateBody(bodyDef);
+        const /* b2Body */ body = this.m_world.CreateBody(bodyDef);
 
-        const /*b2PolygonShape*/ shape = new b2.PolygonShape();
+        const /* b2PolygonShape */ shape = new b2PolygonShape();
         shape.SetAsBox(0.25 * a, a);
         body.CreateFixture(shape, density);
 
@@ -63,12 +84,12 @@ export class Mobile extends testbed.Test {
             return body;
         }
 
-        const /*b2Vec2*/ a1 = new b2.Vec2(offset, -a);
-        const /*b2Vec2*/ a2 = new b2.Vec2(-offset, -a);
-        const /*b2Body*/ body1 = this.AddNode(body, a1, depth + 1, 0.5 * offset, a);
-        const /*b2Body*/ body2 = this.AddNode(body, a2, depth + 1, 0.5 * offset, a);
+        const /* b2Vec2 */ a1 = new b2Vec2(offset, -a);
+        const /* b2Vec2 */ a2 = new b2Vec2(-offset, -a);
+        const /* b2Body */ body1 = this.AddNode(body, a1, depth + 1, 0.5 * offset, a);
+        const /* b2Body */ body2 = this.AddNode(body, a2, depth + 1, 0.5 * offset, a);
 
-        const /*b2RevoluteJointDef*/ jointDef = new b2.RevoluteJointDef();
+        const /* b2RevoluteJointDef */ jointDef = new b2RevoluteJointDef();
         jointDef.bodyA = body;
         jointDef.localAnchorB.Copy(h);
 
@@ -81,13 +102,5 @@ export class Mobile extends testbed.Test {
         this.m_world.CreateJoint(jointDef);
 
         return body;
-    }
-
-    public Step(settings: testbed.Settings): void {
-        super.Step(settings);
-    }
-
-    public static Create(): testbed.Test {
-        return new Mobile();
     }
 }

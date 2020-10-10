@@ -16,75 +16,81 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import * as b2 from "@box2d";
-import * as testbed from "../testbed.js";
+import {
+    b2Body,
+    b2Fixture,
+    b2BodyDef,
+    b2EdgeShape,
+    b2Vec2,
+    b2BodyType,
+    b2PolygonShape,
+    b2CircleShape,
+} from "@box2d/core";
 
-export class ShapeEditing extends testbed.Test {
-    public m_body: b2.Body;
-    public m_fixture1: b2.Fixture;
-    public m_fixture2: b2.Fixture | null = null;
+import { Test } from "../../test";
+import { Settings } from "../../settings";
+import { HotKey, hotKeyPress } from "../../utils/hotkeys";
+
+export class ShapeEditing extends Test {
+    public m_body: b2Body;
+
+    public m_fixture1: b2Fixture;
+
+    public m_fixture2: b2Fixture | null = null;
+
     public m_sensor = false;
 
     constructor() {
         super();
 
         {
-            const bd = new b2.BodyDef();
+            const bd = new b2BodyDef();
             const ground = this.m_world.CreateBody(bd);
 
-            const shape = new b2.EdgeShape();
-            shape.SetTwoSided(new b2.Vec2(-40.0, 0.0), new b2.Vec2(40.0, 0.0));
+            const shape = new b2EdgeShape();
+            shape.SetTwoSided(new b2Vec2(-40.0, 0.0), new b2Vec2(40.0, 0.0));
             ground.CreateFixture(shape, 0.0);
         }
 
-        const bd = new b2.BodyDef();
-        bd.type = b2.BodyType.b2_dynamicBody;
+        const bd = new b2BodyDef();
+        bd.type = b2BodyType.b2_dynamicBody;
         bd.position.Set(0.0, 10.0);
         this.m_body = this.m_world.CreateBody(bd);
 
-        const shape = new b2.PolygonShape();
-        shape.SetAsBox(4.0, 4.0, new b2.Vec2(0.0, 0.0), 0.0);
+        const shape = new b2PolygonShape();
+        shape.SetAsBox(4.0, 4.0, new b2Vec2(0.0, 0.0), 0.0);
         this.m_fixture1 = this.m_body.CreateFixture(shape, 10.0);
     }
 
-    public Keyboard(key: string) {
-        switch (key) {
-            case "c":
+    getHotkeys(): HotKey[] {
+        return [
+            hotKeyPress([], "c", "Create a Shape", () => {
                 if (this.m_fixture2 === null) {
-                    const shape = new b2.CircleShape();
+                    const shape = new b2CircleShape();
                     shape.m_radius = 3.0;
                     shape.m_p.Set(0.5, -4.0);
                     this.m_fixture2 = this.m_body.CreateFixture(shape, 10.0);
                     this.m_body.SetAwake(true);
                 }
-                break;
-
-            case "d":
+            }),
+            hotKeyPress([], "d", "Destroy a Shape", () => {
                 if (this.m_fixture2 !== null) {
                     this.m_body.DestroyFixture(this.m_fixture2);
                     this.m_fixture2 = null;
                     this.m_body.SetAwake(true);
                 }
-                break;
-
-            case "s":
+            }),
+            hotKeyPress([], "s", "Toggle Sensor", () => {
                 if (this.m_fixture2 !== null) {
                     this.m_sensor = !this.m_sensor;
                     this.m_fixture2.SetSensor(this.m_sensor);
                 }
-                break;
-        }
+            }),
+        ];
     }
 
-    public Step(settings: testbed.Settings): void {
-        super.Step(settings);
-        testbed.g_debugDraw.DrawString(5, this.m_textLine, "Press: (c) create a shape, (d) destroy a shape.");
-        this.m_textLine += testbed.DRAW_STRING_NEW_LINE;
-        testbed.g_debugDraw.DrawString(5, this.m_textLine, `sensor = ${this.m_sensor ? 1 : 0}`);
-        this.m_textLine += testbed.DRAW_STRING_NEW_LINE;
-    }
-
-    public static Create(): testbed.Test {
-        return new ShapeEditing();
+    public Step(settings: Settings, timeStep: number): void {
+        super.Step(settings, timeStep);
+        this.addDebug("Sensor", this.m_sensor);
     }
 }

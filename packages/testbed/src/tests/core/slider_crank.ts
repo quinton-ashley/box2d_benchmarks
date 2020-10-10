@@ -16,25 +16,40 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import * as b2 from "@box2d";
-import * as testbed from "../testbed.js";
+import {
+    b2RevoluteJoint,
+    b2PrismaticJoint,
+    b2BodyDef,
+    b2EdgeShape,
+    b2Vec2,
+    b2PolygonShape,
+    b2BodyType,
+    b2RevoluteJointDef,
+    b2_pi,
+    b2PrismaticJointDef,
+} from "@box2d/core";
 
-export class SliderCrank extends testbed.Test {
+import { Test } from "../../test";
+import { Settings } from "../../settings";
+import { HotKey, hotKeyPress } from "../../utils/hotkeys";
+
+export class SliderCrank extends Test {
     public static readonly e_count = 30;
 
-    public m_joint1: b2.RevoluteJoint;
-    public m_joint2: b2.PrismaticJoint;
+    public m_joint1: b2RevoluteJoint;
+
+    public m_joint2: b2PrismaticJoint;
 
     constructor() {
         super();
 
         let ground = null;
         {
-            const bd = new b2.BodyDef();
+            const bd = new b2BodyDef();
             ground = this.m_world.CreateBody(bd);
 
-            const shape = new b2.EdgeShape();
-            shape.SetTwoSided(new b2.Vec2(-40.0, 0.0), new b2.Vec2(40.0, 0.0));
+            const shape = new b2EdgeShape();
+            shape.SetTwoSided(new b2Vec2(-40.0, 0.0), new b2Vec2(40.0, 0.0));
             ground.CreateFixture(shape, 0.0);
         }
 
@@ -43,18 +58,18 @@ export class SliderCrank extends testbed.Test {
 
             // Define crank.
             {
-                const shape = new b2.PolygonShape();
+                const shape = new b2PolygonShape();
                 shape.SetAsBox(0.5, 2.0);
 
-                const bd = new b2.BodyDef();
-                bd.type = b2.BodyType.b2_dynamicBody;
+                const bd = new b2BodyDef();
+                bd.type = b2BodyType.b2_dynamicBody;
                 bd.position.Set(0.0, 7.0);
                 const body = this.m_world.CreateBody(bd);
                 body.CreateFixture(shape, 2.0);
 
-                const rjd = new b2.RevoluteJointDef();
-                rjd.Initialize(prevBody, body, new b2.Vec2(0.0, 5.0));
-                rjd.motorSpeed = 1.0 * b2.pi;
+                const rjd = new b2RevoluteJointDef();
+                rjd.Initialize(prevBody, body, new b2Vec2(0.0, 5.0));
+                rjd.motorSpeed = 1.0 * b2_pi;
                 rjd.maxMotorTorque = 10000.0;
                 rjd.enableMotor = true;
                 this.m_joint1 = this.m_world.CreateJoint(rjd);
@@ -64,17 +79,17 @@ export class SliderCrank extends testbed.Test {
 
             // Define follower.
             {
-                const shape = new b2.PolygonShape();
+                const shape = new b2PolygonShape();
                 shape.SetAsBox(0.5, 4.0);
 
-                const bd = new b2.BodyDef();
-                bd.type = b2.BodyType.b2_dynamicBody;
+                const bd = new b2BodyDef();
+                bd.type = b2BodyType.b2_dynamicBody;
                 bd.position.Set(0.0, 13.0);
                 const body = this.m_world.CreateBody(bd);
                 body.CreateFixture(shape, 2.0);
 
-                const rjd = new b2.RevoluteJointDef();
-                rjd.Initialize(prevBody, body, new b2.Vec2(0.0, 9.0));
+                const rjd = new b2RevoluteJointDef();
+                rjd.Initialize(prevBody, body, new b2Vec2(0.0, 9.0));
                 rjd.enableMotor = false;
                 this.m_world.CreateJoint(rjd);
 
@@ -83,22 +98,22 @@ export class SliderCrank extends testbed.Test {
 
             // Define piston
             {
-                const shape = new b2.PolygonShape();
+                const shape = new b2PolygonShape();
                 shape.SetAsBox(1.5, 1.5);
 
-                const bd = new b2.BodyDef();
-                bd.type = b2.BodyType.b2_dynamicBody;
+                const bd = new b2BodyDef();
+                bd.type = b2BodyType.b2_dynamicBody;
                 bd.fixedRotation = true;
                 bd.position.Set(0.0, 17.0);
                 const body = this.m_world.CreateBody(bd);
                 body.CreateFixture(shape, 2.0);
 
-                const rjd = new b2.RevoluteJointDef();
-                rjd.Initialize(prevBody, body, new b2.Vec2(0.0, 17.0));
+                const rjd = new b2RevoluteJointDef();
+                rjd.Initialize(prevBody, body, new b2Vec2(0.0, 17.0));
                 this.m_world.CreateJoint(rjd);
 
-                const pjd = new b2.PrismaticJointDef();
-                pjd.Initialize(ground, body, new b2.Vec2(0.0, 17.0), new b2.Vec2(0.0, 1.0));
+                const pjd = new b2PrismaticJointDef();
+                pjd.Initialize(ground, body, new b2Vec2(0.0, 17.0), new b2Vec2(0.0, 1.0));
 
                 pjd.maxMotorForce = 1000.0;
                 pjd.enableMotor = true;
@@ -108,11 +123,11 @@ export class SliderCrank extends testbed.Test {
 
             // Create a payload
             {
-                const shape = new b2.PolygonShape();
+                const shape = new b2PolygonShape();
                 shape.SetAsBox(1.5, 1.5);
 
-                const bd = new b2.BodyDef();
-                bd.type = b2.BodyType.b2_dynamicBody;
+                const bd = new b2BodyDef();
+                bd.type = b2BodyType.b2_dynamicBody;
                 bd.position.Set(0.0, 23.0);
                 const body = this.m_world.CreateBody(bd);
                 body.CreateFixture(shape, 2.0);
@@ -120,30 +135,22 @@ export class SliderCrank extends testbed.Test {
         }
     }
 
-    public Keyboard(key: string) {
-        switch (key) {
-            case "f":
+    getHotkeys(): HotKey[] {
+        return [
+            hotKeyPress([], "f", "Toggle Friction", () => {
                 this.m_joint2.EnableMotor(!this.m_joint2.IsMotorEnabled());
                 this.m_joint2.GetBodyB().SetAwake(true);
-                break;
-
-            case "m":
+            }),
+            hotKeyPress([], "m", "Toggle Motor", () => {
                 this.m_joint1.EnableMotor(!this.m_joint1.IsMotorEnabled());
                 this.m_joint1.GetBodyB().SetAwake(true);
-                break;
-        }
+            }),
+        ];
     }
 
-    public Step(settings: testbed.Settings): void {
-        super.Step(settings);
-        testbed.g_debugDraw.DrawString(5, this.m_textLine, "Keys: (f) toggle friction, (m) toggle motor");
-        this.m_textLine += testbed.DRAW_STRING_NEW_LINE;
+    public Step(settings: Settings, timeStep: number): void {
+        super.Step(settings, timeStep);
         const torque = this.m_joint1.GetMotorTorque(settings.m_hertz);
-        testbed.g_debugDraw.DrawString(5, this.m_textLine, `Motor Torque = ${torque.toFixed(0)}`);
-        this.m_textLine += testbed.DRAW_STRING_NEW_LINE;
-    }
-
-    public static Create(): testbed.Test {
-        return new SliderCrank();
+        this.addDebug("Motor Torque", torque.toFixed(0));
     }
 }

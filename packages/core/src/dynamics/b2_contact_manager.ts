@@ -16,22 +16,26 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-// DEBUG: import { b2Assert } from "../common/b2_settings.js";
-import { b2BroadPhase } from "../collision/b2_broad_phase.js";
-import { b2TreeNode } from "../collision/b2_dynamic_tree.js";
-import { b2TestOverlapAABB } from "../collision/b2_collision.js";
-import { b2Contact, b2ContactEdge } from "./b2_contact.js";
-import { b2ContactFactory } from "./b2_contact_factory.js";
-import { b2Body, b2BodyType } from "./b2_body.js";
-import { b2Fixture, b2FixtureProxy } from "./b2_fixture.js";
-import { b2ContactFilter, b2ContactListener } from "./b2_world_callbacks.js";
+// DEBUG: import { b2Assert } from "../common/b2_settings";
+import { b2BroadPhase } from "../collision/b2_broad_phase";
+import { b2TreeNode } from "../collision/b2_dynamic_tree";
+import { b2TestOverlapAABB } from "../collision/b2_collision";
+import { b2Contact, b2ContactEdge } from "./b2_contact";
+import { b2ContactFactory } from "./b2_contact_factory";
+import { b2Body, b2BodyType } from "./b2_body";
+import { b2Fixture, b2FixtureProxy } from "./b2_fixture";
+import { b2ContactFilter, b2ContactListener } from "./b2_world_callbacks";
 
 // Delegate of b2World.
 export class b2ContactManager {
     public readonly m_broadPhase: b2BroadPhase<b2FixtureProxy> = new b2BroadPhase<b2FixtureProxy>();
+
     public m_contactList: b2Contact | null = null;
-    public m_contactCount: number = 0;
+
+    public m_contactCount = 0;
+
     public m_contactFilter: b2ContactFilter = b2ContactFilter.b2_defaultFilter;
+
     public m_contactListener: b2ContactListener = b2ContactListener.b2_defaultListener;
 
     public readonly m_contactFactory: b2ContactFactory = new b2ContactFactory();

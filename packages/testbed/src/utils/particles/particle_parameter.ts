@@ -16,9 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-// #if B2_ENABLE_PARTICLE
-
-import * as b2 from "@box2d";
+import { b2ParticleFlag } from "@box2d/particles";
 
 export enum ParticleParameterOptions {
     OptionStrictContacts = 1 << 0,
@@ -40,21 +38,21 @@ export class ParticleParameterValue {
      * ParticleParameterValue of a particle parameter.
      */
     constructor(value: ParticleParameterValue);
+
     constructor(value: number, options: ParticleParameterOptions, name: string);
+
     constructor(...args: any[]) {
         if (args[0] instanceof ParticleParameterValue) {
             this.Copy(args[0]);
         } else {
-            this.value = args[0];
-            this.options = args[1];
-            this.name = args[2];
+            [this.value, this.options, this.name] = args;
         }
     }
 
     /**
      * ParticleParameterValue associated with the parameter.
      */
-    public value: number = 0;
+    public value = 0;
 
     /**
      * Any global (non particle-specific) options associated with
@@ -85,7 +83,8 @@ export class ParticleParameterDefinition {
     }
 
     public values: ParticleParameterValue[];
-    public numValues: number = 0;
+
+    public numValues = 0;
 
     public CalculateValueMask(): number {
         let mask = 0;
@@ -99,50 +98,58 @@ export class ParticleParameterDefinition {
 export class ParticleParameter {
     public static readonly k_DefaultOptions: ParticleParameterOptions =
         ParticleParameterOptions.OptionDrawShapes | ParticleParameterOptions.OptionDrawParticles;
+
     public static readonly k_particleTypes: ParticleParameterValue[] = [
-        new ParticleParameterValue(b2.ParticleFlag.b2_waterParticle, ParticleParameter.k_DefaultOptions, "water"),
+        new ParticleParameterValue(b2ParticleFlag.b2_waterParticle, ParticleParameter.k_DefaultOptions, "water"),
         new ParticleParameterValue(
-            b2.ParticleFlag.b2_waterParticle,
+            b2ParticleFlag.b2_waterParticle,
             ParticleParameter.k_DefaultOptions | ParticleParameterOptions.OptionStrictContacts,
             "water (strict)"
         ),
-        new ParticleParameterValue(b2.ParticleFlag.b2_springParticle, ParticleParameter.k_DefaultOptions, "spring"),
-        new ParticleParameterValue(b2.ParticleFlag.b2_elasticParticle, ParticleParameter.k_DefaultOptions, "elastic"),
-        new ParticleParameterValue(b2.ParticleFlag.b2_viscousParticle, ParticleParameter.k_DefaultOptions, "viscous"),
-        new ParticleParameterValue(b2.ParticleFlag.b2_powderParticle, ParticleParameter.k_DefaultOptions, "powder"),
-        new ParticleParameterValue(b2.ParticleFlag.b2_tensileParticle, ParticleParameter.k_DefaultOptions, "tensile"),
+        new ParticleParameterValue(b2ParticleFlag.b2_springParticle, ParticleParameter.k_DefaultOptions, "spring"),
+        new ParticleParameterValue(b2ParticleFlag.b2_elasticParticle, ParticleParameter.k_DefaultOptions, "elastic"),
+        new ParticleParameterValue(b2ParticleFlag.b2_viscousParticle, ParticleParameter.k_DefaultOptions, "viscous"),
+        new ParticleParameterValue(b2ParticleFlag.b2_powderParticle, ParticleParameter.k_DefaultOptions, "powder"),
+        new ParticleParameterValue(b2ParticleFlag.b2_tensileParticle, ParticleParameter.k_DefaultOptions, "tensile"),
         new ParticleParameterValue(
-            b2.ParticleFlag.b2_colorMixingParticle,
+            b2ParticleFlag.b2_colorMixingParticle,
             ParticleParameter.k_DefaultOptions,
             "color mixing"
         ),
-        new ParticleParameterValue(b2.ParticleFlag.b2_wallParticle, ParticleParameter.k_DefaultOptions, "wall"),
+        new ParticleParameterValue(b2ParticleFlag.b2_wallParticle, ParticleParameter.k_DefaultOptions, "wall"),
         new ParticleParameterValue(
-            b2.ParticleFlag.b2_barrierParticle | b2.ParticleFlag.b2_wallParticle,
+            b2ParticleFlag.b2_barrierParticle | b2ParticleFlag.b2_wallParticle,
             ParticleParameter.k_DefaultOptions,
             "barrier"
         ),
         new ParticleParameterValue(
-            b2.ParticleFlag.b2_staticPressureParticle,
+            b2ParticleFlag.b2_staticPressureParticle,
             ParticleParameter.k_DefaultOptions,
             "static pressure"
         ),
         new ParticleParameterValue(
-            b2.ParticleFlag.b2_waterParticle,
+            b2ParticleFlag.b2_waterParticle,
             ParticleParameter.k_DefaultOptions | ParticleParameterOptions.OptionDrawAABBs,
             "water (bounding boxes)"
         ),
     ];
+
     public static readonly k_defaultDefinition: ParticleParameterDefinition[] = [
         new ParticleParameterDefinition(ParticleParameter.k_particleTypes),
     ];
 
     public m_index = 0;
+
     public m_changed = false;
+
     public m_restartOnChange = false;
+
     public m_value: ParticleParameterValue | null = null;
+
     public m_definition: ParticleParameterDefinition[] = ParticleParameter.k_defaultDefinition;
+
     public m_definitionCount = 0;
+
     public m_valueCount = 0;
 
     constructor() {
@@ -175,7 +182,7 @@ export class ParticleParameter {
         this.m_changed = this.m_index !== index;
         this.m_index = this.m_valueCount ? index % this.m_valueCount : index;
         this.m_value = this.FindParticleParameterValue();
-        // DEBUG: b2.Assert(this.m_value !== null);
+        // DEBUG: b2Assert(this.m_value !== null);
     }
 
     public Increment(): void {
@@ -230,7 +237,7 @@ export class ParticleParameter {
         let index = 0;
         for (let i = 0; i < this.m_definitionCount; ++i) {
             const definition = this.m_definition[i];
-            const numValues = definition.numValues;
+            const { numValues } = definition;
             for (let j = 0; j < numValues; ++j, ++index) {
                 if (definition.values[j].value === value) {
                     return index;
@@ -254,5 +261,3 @@ export class ParticleParameter {
         return null;
     }
 }
-
-// #endif

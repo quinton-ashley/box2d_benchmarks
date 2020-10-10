@@ -16,13 +16,9 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-// #if B2_ENABLE_CONTROLLER
+import { b2Vec2, b2TimeStep, b2_epsilon } from "@box2d/core";
 
-import { b2Controller, b2ControllerEdge } from "./b2_controller.js";
-import { b2Vec2 } from "../common/b2_math.js";
-import { b2TimeStep } from "../dynamics/b2_time_step.js";
-import { b2_epsilon } from "../common/b2_settings.js";
-import { b2Draw, b2Color } from "../common/b2_draw.js";
+import { b2Controller, b2ControllerEdge } from "./b2_controller";
 
 /**
  * Calculates buoyancy forces for fluids in the form of a half
@@ -33,41 +29,49 @@ export class b2BuoyancyController extends b2Controller {
      * The outer surface normal
      */
     public readonly normal = new b2Vec2(0, 1);
+
     /**
      * The height of the fluid surface along the normal
      */
     public offset = 0;
+
     /**
      * The fluid density
      */
     public density = 0;
+
     /**
      * Fluid velocity, for drag calculations
      */
     public readonly velocity = new b2Vec2(0, 0);
+
     /**
      * Linear drag co-efficient
      */
     public linearDrag = 0;
+
     /**
      * Angular drag co-efficient
      */
     public angularDrag = 0;
+
     /**
      * If false, bodies are assumed to be uniformly dense, otherwise
      * use the shapes densities
      */
-    public useDensity = false; //False by default to prevent a gotcha
+    public useDensity = false; // False by default to prevent a gotcha
+
     /**
      * If true, gravity is taken from the world instead of the
      */
     public useWorldGravity = true;
+
     /**
      * Gravity vector, if the world's gravity is not used
      */
     public readonly gravity = new b2Vec2(0, 0);
 
-    public Step(step: b2TimeStep) {
+    public Step(_step: b2TimeStep) {
         if (!this.m_bodyList) {
             return;
         }
@@ -75,10 +79,10 @@ export class b2BuoyancyController extends b2Controller {
             this.gravity.Copy(this.m_bodyList.body.GetWorld().GetGravity());
         }
         for (let i: b2ControllerEdge | null = this.m_bodyList; i; i = i.nextBody) {
-            const body = i.body;
+            const { body } = i;
             if (!body.IsAwake()) {
-                //Buoyancy force is just a function of position,
-                //so unlike most forces, it is safe to ignore sleeping bodes
+                // Buoyancy force is just a function of position,
+                // so unlike most forces, it is safe to ignore sleeping bodes
                 continue;
             }
             const areac = new b2Vec2();
@@ -95,7 +99,7 @@ export class b2BuoyancyController extends b2Controller {
                 areac.y += sarea * sc.y;
                 let shapeDensity = 0;
                 if (this.useDensity) {
-                    //TODO: Expose density publicly
+                    // TODO: Expose density publicly
                     shapeDensity = fixture.GetDensity();
                 } else {
                     shapeDensity = 1;
@@ -112,36 +116,20 @@ export class b2BuoyancyController extends b2Controller {
             if (area < b2_epsilon) {
                 continue;
             }
-            //Buoyancy
+            // Buoyancy
             const buoyancyForce = this.gravity.Clone().SelfNeg();
             buoyancyForce.SelfMul(this.density * area);
             body.ApplyForce(buoyancyForce, massc);
-            //Linear drag
+            // Linear drag
             const dragForce = body.GetLinearVelocityFromWorldPoint(areac, new b2Vec2());
             dragForce.SelfSub(this.velocity);
             dragForce.SelfMul(-this.linearDrag * area);
             body.ApplyForce(dragForce, areac);
-            //Angular drag
-            //TODO: Something that makes more physical sense?
+            // Angular drag
+            // TODO: Something that makes more physical sense?
             body.ApplyTorque(
                 (-body.GetInertia() / body.GetMass()) * area * body.GetAngularVelocity() * this.angularDrag
             );
         }
     }
-
-    public Draw(debugDraw: b2Draw) {
-        const r = 100;
-        const p1 = new b2Vec2();
-        const p2 = new b2Vec2();
-        p1.x = this.normal.x * this.offset + this.normal.y * r;
-        p1.y = this.normal.y * this.offset - this.normal.x * r;
-        p2.x = this.normal.x * this.offset - this.normal.y * r;
-        p2.y = this.normal.y * this.offset + this.normal.x * r;
-
-        const color = new b2Color(0, 0, 0.8);
-
-        debugDraw.DrawSegment(p1, p2, color);
-    }
 }
-
-// #endif

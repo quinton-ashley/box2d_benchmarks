@@ -1,815 +1,378 @@
-import * as b2 from "@box2d";
-import { Settings } from "./settings.js";
-import { Test } from "./test.js";
-import { g_debugDraw, g_camera } from "./draw.js";
-import { g_testEntries } from "./tests/test_entries.js";
+import { b2Vec2, b2Clamp, b2Color } from "@box2d/core";
+import { createContext, useContext } from "react";
+import { Signal } from "typed-signals";
 
-export class Main {
-    public m_time_last: number = 0;
-    public m_fps_time: number = 0;
-    public m_fps_frames: number = 0;
-    public m_fps: number = 0;
-    public m_fps_div: HTMLDivElement;
-    public m_debug_div: HTMLDivElement;
+import { g_camera } from "./utils/camera";
+import { g_debugDraw } from "./utils/draw";
+import { hotKeyPress, HotKey, HotKeyMod } from "./utils/hotkeys";
+import { Settings } from "./settings";
+import { Test, TestConstructor } from "./test";
+import { FpsCalculator } from "./utils/FpsCalculator";
+import { g_testEntriesFlat } from "./tests";
+import type { TextTable, TextTableSetter } from "./ui/Main";
+
+const modifiers: HotKeyMod[] = ["ctrl", "alt", "shift"];
+
+function hotKeyToText(hotKey: HotKey) {
+    const key = hotKey.key === " " ? "Space" : hotKey.key;
+    return [...modifiers.filter((mod) => hotKey[mod]), key].join(" + ");
+}
+
+export class TestManager {
+    public m_fpsCalculator = new FpsCalculator(200, 200, 16);
+
     public readonly m_settings: Settings = new Settings();
-    public m_test?: Test;
-    public m_test_select: HTMLSelectElement;
-    public m_shift: boolean = false;
-    public m_ctrl: boolean = false;
-    public m_lMouseDown: boolean = false;
-    public m_rMouseDown: boolean = false;
-    public readonly m_projection0: b2.Vec2 = new b2.Vec2();
-    public readonly m_viewCenter0: b2.Vec2 = new b2.Vec2();
-    public m_demo_mode: boolean = false;
-    public m_demo_time: number = 0;
+
+    public m_test: Test | null = null;
+
+    public m_lMouseDown = false;
+
+    public m_rMouseDown = false;
+
     public m_max_demo_time: number = 1000 * 10;
-    public m_canvas_div: HTMLDivElement;
-    public m_canvas_2d: HTMLCanvasElement;
+
     public m_ctx: CanvasRenderingContext2D | null = null;
-    public m_demo_button: HTMLInputElement;
 
-    constructor(time: number) {
-        const fps_div: HTMLDivElement = (this.m_fps_div = document.body.appendChild(document.createElement("div")));
-        fps_div.style.position = "absolute";
-        fps_div.style.left = "0px";
-        fps_div.style.bottom = "0px";
-        fps_div.style.backgroundColor = "rgba(0,0,255,0.75)";
-        fps_div.style.color = "white";
-        fps_div.style.font = "10pt Courier New";
-        fps_div.style.zIndex = "256";
-        fps_div.innerHTML = "FPS";
+    private m_mouse = new b2Vec2();
 
-        const debug_div: HTMLDivElement = (this.m_debug_div = document.body.appendChild(document.createElement("div")));
-        debug_div.style.position = "absolute";
-        debug_div.style.left = "0px";
-        debug_div.style.bottom = "0px";
-        debug_div.style.backgroundColor = "rgba(0,0,255,0.75)";
-        debug_div.style.color = "white";
-        debug_div.style.font = "10pt Courier New";
-        debug_div.style.zIndex = "256";
-        debug_div.innerHTML = "";
+    private readonly ownHotKeys: HotKey[];
 
-        document.body.style.backgroundColor = "rgba(51, 51, 51, 1.0)";
+    private testBaseHotKeys: HotKey[] = [];
 
-        const main_div: HTMLDivElement = document.body.appendChild(document.createElement("div"));
-        main_div.style.position = "absolute"; // relative to document.body
-        main_div.style.left = "0px";
-        main_div.style.top = "0px";
+    private testHotKeys: HotKey[] = [];
 
-        function resize_main_div(): void {
-            // console.log(window.innerWidth + "x" + window.innerHeight);
-            main_div.style.width = window.innerWidth + "px";
-            main_div.style.height = window.innerHeight + "px";
-        }
-        window.addEventListener("resize", (e: UIEvent): void => {
-            resize_main_div();
+    private allHotKeys: HotKey[] = [];
+
+    private testConstructor: TestConstructor | null = null;
+
+    private testTitle = "Unset";
+
+    public readonly onPauseChanged = new Signal<(paused: boolean) => void>();
+
+    private m_hoveringCanvas = false;
+
+    private m_keyMap: { [s: string]: boolean } = {};
+
+    private activateTest: (label: string) => void = () => {};
+
+    private setLeftTable: TextTableSetter = () => {};
+
+    private setRightTable: TextTableSetter = () => {};
+
+    public constructor() {
+        this.ownHotKeys = [
+            hotKeyPress([], "0", "Reset Camera", () => this.HomeCamera()),
+            hotKeyPress([], "+", "Zoom In", () => this.ZoomCamera(1.1)),
+            hotKeyPress([], "-", "Zoom Out", () => this.ZoomCamera(0.9)),
+            hotKeyPress([], "r", "Reload Test", () => this.LoadTest()),
+            hotKeyPress([], "o", "Single Step", () => this.SingleStep()),
+            hotKeyPress([], "p", "Pause/Continue", () => this.SetPause(!this.m_settings.m_pause)),
+            hotKeyPress([], "PageUp", "Previous Test", () => this.DecrementTest()),
+            hotKeyPress([], "PageDown", "Next Test", () => this.IncrementTest()),
+            hotKeyPress(["shift"], ",", "Previous Particle Parameter", () => {
+                Test.particleParameter.Decrement();
+            }),
+            hotKeyPress(["shift"], ".", "Next Particle Parameter", () => {
+                Test.particleParameter.Increment();
+            }),
+        ];
+    }
+
+    public init(
+        glCanvas: HTMLCanvasElement,
+        debugCanvas: HTMLCanvasElement,
+        wrapper: HTMLDivElement,
+        activateTest: (label: string) => void,
+        setLeftTables: TextTableSetter,
+        setRightTables: TextTableSetter
+    ) {
+        this.setLeftTable = setLeftTables;
+        this.setRightTable = setRightTables;
+        this.activateTest = activateTest;
+        debugCanvas.addEventListener("mousedown", (e) => this.HandleMouseDown(e));
+        debugCanvas.addEventListener("mouseup", (e) => this.HandleMouseUp(e));
+        debugCanvas.addEventListener("mousemove", (e) => this.HandleMouseMove(e));
+        debugCanvas.addEventListener("wheel", (e) => this.HandleMouseWheel(e));
+        debugCanvas.addEventListener("mouseenter", () => {
+            this.m_hoveringCanvas = true;
         });
-        window.addEventListener("orientationchange", (e: Event): void => {
-            resize_main_div();
+        debugCanvas.addEventListener("mouseleave", () => {
+            this.m_hoveringCanvas = false;
         });
-        resize_main_div();
 
-        const title_div: HTMLDivElement = main_div.appendChild(document.createElement("div"));
-        title_div.style.textAlign = "center";
-        title_div.style.color = "grey";
-        title_div.innerHTML = "Box2D Testbed version " + b2.version.toString();
-
-        const view_div: HTMLDivElement = main_div.appendChild(document.createElement("div"));
-
-        const canvas_div: HTMLDivElement = (this.m_canvas_div = view_div.appendChild(document.createElement("div")));
-        canvas_div.style.position = "absolute"; // relative to view_div
-        canvas_div.style.left = "0px";
-        canvas_div.style.right = "0px";
-        canvas_div.style.top = "0px";
-        canvas_div.style.bottom = "0px";
-
-        const canvas_2d: HTMLCanvasElement = (this.m_canvas_2d = canvas_div.appendChild(
-            document.createElement("canvas")
-        ));
-
-        function resize_canvas(): void {
-            ///console.log(canvas_div.clientWidth + "x" + canvas_div.clientHeight);
-            if (canvas_2d.width !== canvas_div.clientWidth) {
-                g_camera.m_width = canvas_2d.width = canvas_div.clientWidth;
+        const onResize = () => {
+            const { clientWidth, clientHeight } = wrapper;
+            if (debugCanvas.width !== clientWidth || debugCanvas.height !== clientHeight) {
+                debugCanvas.width = glCanvas.width = clientWidth;
+                debugCanvas.height = glCanvas.height = clientHeight;
+                g_camera.resize(clientWidth, clientHeight);
+                this.m_test?.Resize(clientWidth, clientHeight);
             }
-            if (canvas_2d.height !== canvas_div.clientHeight) {
-                g_camera.m_height = canvas_2d.height = canvas_div.clientHeight;
-            }
-        }
-        window.addEventListener("resize", (e: UIEvent): void => {
-            resize_canvas();
-        });
-        window.addEventListener("orientationchange", (e: Event): void => {
-            resize_canvas();
-        });
-        resize_canvas();
+        };
+        window.addEventListener("resize", onResize);
+        window.addEventListener("orientationchange", onResize);
+        onResize();
 
-        g_debugDraw.m_ctx = this.m_ctx = this.m_canvas_2d.getContext("2d");
-
-        const controls_div: HTMLDivElement = view_div.appendChild(document.createElement("div"));
-        controls_div.style.position = "absolute"; // relative to view_div
-        controls_div.style.backgroundColor = "rgba(255,255,255,0.5)";
-        controls_div.style.padding = "8px";
-        controls_div.style.right = "0px";
-        controls_div.style.top = "0px";
-        controls_div.style.bottom = "0px";
-        controls_div.style.overflowY = "scroll";
-
-        // tests select box
-        controls_div.appendChild(document.createTextNode("Tests"));
-        controls_div.appendChild(document.createElement("br"));
-        const test_select: HTMLSelectElement = document.createElement("select");
-        for (let i: number = 0; i < g_testEntries.length; ++i) {
-            const option: HTMLOptionElement = document.createElement("option");
-            option.text = g_testEntries[i].name;
-            option.value = i.toString();
-            test_select.add(option);
-        }
-        test_select.selectedIndex = this.m_settings.m_testIndex;
-        test_select.addEventListener("change", (e: Event): void => {
-            this.m_settings.m_testIndex = test_select.selectedIndex;
-            this.LoadTest();
-        });
-        controls_div.appendChild(test_select);
-        this.m_test_select = test_select;
-        controls_div.appendChild(document.createElement("br"));
-
-        controls_div.appendChild(document.createElement("hr"));
-
-        // simulation number inputs
-        function connect_number_input(
-            parent: Node,
-            label: string,
-            init: number,
-            update: (value: number) => void,
-            min: number,
-            max: number,
-            step: number
-        ): HTMLInputElement {
-            const number_input_tr: HTMLTableRowElement = parent.appendChild(document.createElement("tr"));
-            const number_input_td0: HTMLTableDataCellElement = number_input_tr.appendChild(
-                document.createElement("td")
-            );
-            number_input_td0.align = "right";
-            number_input_td0.appendChild(document.createTextNode(label));
-            const number_input_td1: HTMLTableDataCellElement = number_input_tr.appendChild(
-                document.createElement("td")
-            );
-            const number_input: HTMLInputElement = document.createElement("input");
-            number_input.size = 8;
-            number_input.min = min.toString();
-            number_input.max = max.toString();
-            number_input.step = step.toString();
-            number_input.value = init.toString();
-            number_input.addEventListener("change", (e: Event): void => {
-                update(parseInt(number_input.value, 10));
-            });
-            number_input_td1.appendChild(number_input);
-            return number_input;
-        }
-
-        const number_input_table: HTMLTableElement = controls_div.appendChild(document.createElement("table"));
-        connect_number_input(
-            number_input_table,
-            "Vel Iters",
-            this.m_settings.m_velocityIterations,
-            (value: number): void => {
-                this.m_settings.m_velocityIterations = value;
-            },
-            1,
-            20,
-            1
-        );
-        connect_number_input(
-            number_input_table,
-            "Pos Iters",
-            this.m_settings.m_positionIterations,
-            (value: number): void => {
-                this.m_settings.m_positionIterations = value;
-            },
-            1,
-            20,
-            1
-        );
-        // #if B2_ENABLE_PARTICLE
-        connect_number_input(
-            number_input_table,
-            "Pcl Iters",
-            this.m_settings.m_particleIterations,
-            (value: number): void => {
-                this.m_settings.m_particleIterations = value;
-            },
-            1,
-            100,
-            1
-        );
-        // #endif
-        connect_number_input(
-            number_input_table,
-            "Hertz",
-            this.m_settings.m_hertz,
-            (value: number): void => {
-                this.m_settings.m_hertz = value;
-            },
-            10,
-            120,
-            1
-        );
-
-        // simulation checkbox inputs
-        function connect_checkbox_input(
-            parent: Node,
-            label: string,
-            init: boolean,
-            update: (value: boolean) => void
-        ): HTMLInputElement {
-            const checkbox_input: HTMLInputElement = document.createElement("input");
-            checkbox_input.type = "checkbox";
-            checkbox_input.checked = init;
-            checkbox_input.addEventListener("click", (e: MouseEvent): void => {
-                update(checkbox_input.checked);
-            });
-            parent.appendChild(checkbox_input);
-            parent.appendChild(document.createTextNode(label));
-            parent.appendChild(document.createElement("br"));
-            return checkbox_input;
-        }
-
-        connect_checkbox_input(controls_div, "Sleep", this.m_settings.m_enableSleep, (value: boolean): void => {
-            this.m_settings.m_enableSleep = value;
-        });
-        connect_checkbox_input(
-            controls_div,
-            "Warm Starting",
-            this.m_settings.m_enableWarmStarting,
-            (value: boolean): void => {
-                this.m_settings.m_enableWarmStarting = value;
-            }
-        );
-        connect_checkbox_input(
-            controls_div,
-            "Time of Impact",
-            this.m_settings.m_enableContinuous,
-            (value: boolean): void => {
-                this.m_settings.m_enableContinuous = value;
-            }
-        );
-        connect_checkbox_input(
-            controls_div,
-            "Sub-Stepping",
-            this.m_settings.m_enableSubStepping,
-            (value: boolean): void => {
-                this.m_settings.m_enableSubStepping = value;
-            }
-        );
-        // #if B2_ENABLE_PARTICLE
-        connect_checkbox_input(
-            controls_div,
-            "Strict Particle/Body Contacts",
-            this.m_settings.m_strictContacts,
-            (value: boolean): void => {
-                this.m_settings.m_strictContacts = value;
-            }
-        );
-        // #endif
-
-        // draw checkbox inputs
-        const draw_fieldset: HTMLFieldSetElement = controls_div.appendChild(document.createElement("fieldset"));
-        const draw_legend: HTMLLegendElement = draw_fieldset.appendChild(document.createElement("legend"));
-        draw_legend.appendChild(document.createTextNode("Draw"));
-        connect_checkbox_input(draw_fieldset, "Shapes", this.m_settings.m_drawShapes, (value: boolean): void => {
-            this.m_settings.m_drawShapes = value;
-        });
-        // #if B2_ENABLE_PARTICLE
-        connect_checkbox_input(draw_fieldset, "Particles", this.m_settings.m_drawParticles, (value: boolean): void => {
-            this.m_settings.m_drawParticles = value;
-        });
-        // #endif
-        connect_checkbox_input(draw_fieldset, "Joints", this.m_settings.m_drawJoints, (value: boolean): void => {
-            this.m_settings.m_drawJoints = value;
-        });
-        connect_checkbox_input(draw_fieldset, "AABBs", this.m_settings.m_drawAABBs, (value: boolean): void => {
-            this.m_settings.m_drawAABBs = value;
-        });
-        connect_checkbox_input(
-            draw_fieldset,
-            "Contact Points",
-            this.m_settings.m_drawContactPoints,
-            (value: boolean): void => {
-                this.m_settings.m_drawContactPoints = value;
-            }
-        );
-        connect_checkbox_input(
-            draw_fieldset,
-            "Contact Normals",
-            this.m_settings.m_drawContactNormals,
-            (value: boolean): void => {
-                this.m_settings.m_drawContactNormals = value;
-            }
-        );
-        connect_checkbox_input(
-            draw_fieldset,
-            "Contact Impulses",
-            this.m_settings.m_drawContactImpulse,
-            (value: boolean): void => {
-                this.m_settings.m_drawContactImpulse = value;
-            }
-        );
-        connect_checkbox_input(
-            draw_fieldset,
-            "Friction Impulses",
-            this.m_settings.m_drawFrictionImpulse,
-            (value: boolean): void => {
-                this.m_settings.m_drawFrictionImpulse = value;
-            }
-        );
-        connect_checkbox_input(
-            draw_fieldset,
-            "Center of Masses",
-            this.m_settings.m_drawCOMs,
-            (value: boolean): void => {
-                this.m_settings.m_drawCOMs = value;
-            }
-        );
-        connect_checkbox_input(draw_fieldset, "Statistics", this.m_settings.m_drawStats, (value: boolean): void => {
-            this.m_settings.m_drawStats = value;
-        });
-        connect_checkbox_input(draw_fieldset, "Profile", this.m_settings.m_drawProfile, (value: boolean): void => {
-            this.m_settings.m_drawProfile = value;
-        });
-
-        // simulation buttons
-        function connect_button_input(
-            parent: Node,
-            label: string,
-            callback: (e: MouseEvent) => void
-        ): HTMLInputElement {
-            const button_input: HTMLInputElement = document.createElement("input");
-            button_input.type = "button";
-            button_input.style.width = "120";
-            button_input.value = label;
-            button_input.addEventListener("click", callback);
-            parent.appendChild(button_input);
-            parent.appendChild(document.createElement("br"));
-            return button_input;
-        }
-
-        const button_div: HTMLDivElement = controls_div.appendChild(document.createElement("div"));
-        button_div.align = "center";
-        connect_button_input(button_div, "Pause (P)", (e: MouseEvent): void => {
-            this.Pause();
-        });
-        connect_button_input(button_div, "Single Step (O)", (e: MouseEvent): void => {
-            this.SingleStep();
-        });
-        connect_button_input(button_div, "Restart (R)", (e: MouseEvent): void => {
-            this.LoadTest();
-        });
-        this.m_demo_button = connect_button_input(button_div, "Demo", (e: MouseEvent): void => {
-            this.ToggleDemo();
-        });
+        g_debugDraw.m_ctx = this.m_ctx = debugCanvas.getContext("2d");
 
         // disable context menu to use right-click
         window.addEventListener(
             "contextmenu",
             (e: MouseEvent): void => {
-                e.preventDefault();
+                if (e.target instanceof HTMLElement && e.target.closest("main")) {
+                    e.preventDefault();
+                }
             },
             true
         );
 
-        canvas_div.addEventListener("mousemove", (e: MouseEvent): void => {
-            this.HandleMouseMove(e);
-        });
-        canvas_div.addEventListener("mousedown", (e: MouseEvent): void => {
-            this.HandleMouseDown(e);
-        });
-        canvas_div.addEventListener("mouseup", (e: MouseEvent): void => {
-            this.HandleMouseUp(e);
-        });
-        canvas_div.addEventListener("mousewheel", (e: Event): void => {
-            this.HandleMouseWheel(e as MouseWheelEvent);
-        });
-
-        canvas_div.addEventListener("touchmove", (e: TouchEvent): void => {
-            this.HandleTouchMove(e);
-        });
-        canvas_div.addEventListener("touchstart", (e: TouchEvent): void => {
-            this.HandleTouchStart(e);
-        });
-        canvas_div.addEventListener("touchend", (e: TouchEvent): void => {
-            this.HandleTouchEnd(e);
-        });
-
-        window.addEventListener("keydown", (e: KeyboardEvent): void => {
-            this.HandleKeyDown(e);
-        });
-        window.addEventListener("keyup", (e: KeyboardEvent): void => {
-            this.HandleKeyUp(e);
-        });
+        window.addEventListener("keydown", (e: KeyboardEvent): void => this.HandleKey(e, true));
+        window.addEventListener("keyup", (e: KeyboardEvent): void => this.HandleKey(e, false));
 
         this.LoadTest();
+    }
 
-        this.m_time_last = time;
+    setTest(title: string, constructor: TestConstructor) {
+        this.testTitle = title;
+        this.testConstructor = constructor;
+        this.LoadTest();
     }
 
     public HomeCamera(): void {
-        g_camera.m_zoom = this.m_test ? this.m_test.GetDefaultViewZoom() : 1.0;
-        g_camera.m_center.Set(0, 20 * g_camera.m_zoom);
-        ///g_camera.m_roll.SetAngle(b2.DegToRad(0));
+        const zoom = this.m_test ? this.m_test.GetDefaultViewZoom() : 25;
+        const center = this.m_test ? this.m_test.getCenter() : b2Vec2.ZERO;
+        g_camera.setPositionAndZoom(center.x, center.y, zoom);
     }
-
-    public MoveCamera(move: b2.Vec2): void {
-        const position: b2.Vec2 = g_camera.m_center.Clone();
-        ///move.SelfRotate(g_camera.m_roll.GetAngle());
-        position.SelfAdd(move);
-        g_camera.m_center.Copy(position);
-    }
-
-    ///public RollCamera(roll: number): void {
-    ///  const angle: number = g_camera.m_roll.GetAngle();
-    ///  g_camera.m_roll.SetAngle(angle + roll);
-    ///}
 
     public ZoomCamera(zoom: number): void {
-        g_camera.m_zoom *= zoom;
-        g_camera.m_zoom = b2.Clamp(g_camera.m_zoom, 0.02, 20);
+        g_camera.setZoom(b2Clamp(g_camera.getZoom() * zoom, 0.5, 500));
     }
 
-    private m_mouse = new b2.Vec2();
-
     public HandleMouseMove(e: MouseEvent): void {
-        const element: b2.Vec2 = new b2.Vec2(e.clientX, e.clientY);
-        const world: b2.Vec2 = g_camera.ConvertScreenToWorld(element, new b2.Vec2());
+        const element: b2Vec2 = new b2Vec2(e.offsetX, e.offsetY);
+        const world: b2Vec2 = g_camera.unproject(element, new b2Vec2());
 
         this.m_mouse.Copy(element);
 
-        if (this.m_lMouseDown) {
-            if (this.m_test) {
-                this.m_test.MouseMove(world);
-            }
-        }
+        this.m_test?.MouseMove(world, this.m_lMouseDown);
 
         if (this.m_rMouseDown) {
-            // m_center = viewCenter0 - (projection - projection0);
-            const projection: b2.Vec2 = g_camera.ConvertElementToProjection(element, new b2.Vec2());
-            const diff: b2.Vec2 = b2.Vec2.SubVV(projection, this.m_projection0, new b2.Vec2());
-            const center: b2.Vec2 = b2.Vec2.SubVV(this.m_viewCenter0, diff, new b2.Vec2());
-            g_camera.m_center.Copy(center);
+            const { x, y } = g_camera.getCenter();
+            const f = 1 / g_camera.getZoom();
+            g_camera.setPosition(x - e.movementX * f, y + e.movementY * f);
         }
     }
 
     public HandleMouseDown(e: MouseEvent): void {
-        const element: b2.Vec2 = new b2.Vec2(e.clientX, e.clientY);
-        const world: b2.Vec2 = g_camera.ConvertScreenToWorld(element, new b2.Vec2());
+        const element: b2Vec2 = new b2Vec2(e.offsetX, e.offsetY);
+        const world: b2Vec2 = g_camera.unproject(element, new b2Vec2());
 
-        switch (e.which) {
-            case 1: // left mouse button
+        switch (e.button) {
+            case 0: // left mouse button
                 this.m_lMouseDown = true;
-                if (this.m_shift) {
-                    if (this.m_test) {
-                        this.m_test.ShiftMouseDown(world);
-                    }
+                if (e.shiftKey) {
+                    this.m_test?.ShiftMouseDown(world);
                 } else {
-                    if (this.m_test) {
-                        this.m_test.MouseDown(world);
-                    }
+                    this.m_test?.MouseDown(world);
                 }
                 break;
-            case 3: // right mouse button
+            case 2: // right mouse button
                 this.m_rMouseDown = true;
-                const projection: b2.Vec2 = g_camera.ConvertElementToProjection(element, new b2.Vec2());
-                this.m_projection0.Copy(projection);
-                this.m_viewCenter0.Copy(g_camera.m_center);
                 break;
         }
     }
 
     public HandleMouseUp(e: MouseEvent): void {
-        const element: b2.Vec2 = new b2.Vec2(e.clientX, e.clientY);
-        const world: b2.Vec2 = g_camera.ConvertScreenToWorld(element, new b2.Vec2());
+        const element: b2Vec2 = new b2Vec2(e.offsetX, e.offsetY);
+        const world: b2Vec2 = g_camera.unproject(element, new b2Vec2());
 
-        switch (e.which) {
-            case 1: // left mouse button
+        switch (e.button) {
+            case 0: // left mouse button
                 this.m_lMouseDown = false;
-                if (this.m_test) {
-                    this.m_test.MouseUp(world);
-                }
+                this.m_test?.MouseUp(world);
                 break;
-            case 3: // right mouse button
+            case 2: // right mouse button
                 this.m_rMouseDown = false;
                 break;
         }
     }
 
-    public HandleTouchMove(e: TouchEvent): void {
-        const element: b2.Vec2 = new b2.Vec2(e.touches[0].clientX, e.touches[0].clientY);
-        const world: b2.Vec2 = g_camera.ConvertScreenToWorld(element, new b2.Vec2());
-        if (this.m_test) {
-            this.m_test.MouseMove(world);
-        }
-        e.preventDefault();
-    }
-
-    public HandleTouchStart(e: TouchEvent): void {
-        const element: b2.Vec2 = new b2.Vec2(e.touches[0].clientX, e.touches[0].clientY);
-        const world: b2.Vec2 = g_camera.ConvertScreenToWorld(element, new b2.Vec2());
-        if (this.m_test) {
-            this.m_test.MouseDown(world);
-        }
-        e.preventDefault();
-    }
-
-    public HandleTouchEnd(e: TouchEvent): void {
-        if (this.m_test) {
-            this.m_test.MouseUp(this.m_test.m_mouseWorld);
-        }
-        e.preventDefault();
-    }
-
-    public HandleMouseWheel(e: MouseWheelEvent): void {
-        if (e.deltaY > 0) {
-            this.ZoomCamera(1 / 1.1);
-        } else if (e.deltaY < 0) {
-            this.ZoomCamera(1.1);
-        }
-        e.preventDefault();
-    }
-
-    public HandleKeyDown(e: KeyboardEvent): void {
-        switch (e.key) {
-            case "Control":
-                this.m_ctrl = true;
-                break;
-            case "Shift":
-                this.m_shift = true;
-                break;
-            case "ArrowLeft":
-                if (this.m_ctrl) {
-                    if (this.m_test) {
-                        this.m_test.ShiftOrigin(new b2.Vec2(2, 0));
-                    }
-                } else {
-                    this.MoveCamera(new b2.Vec2(-0.5, 0));
-                }
-                break;
-            case "ArrowRight":
-                if (this.m_ctrl) {
-                    if (this.m_test) {
-                        this.m_test.ShiftOrigin(new b2.Vec2(-2, 0));
-                    }
-                } else {
-                    this.MoveCamera(new b2.Vec2(0.5, 0));
-                }
-                break;
-            case "ArrowDown":
-                if (this.m_ctrl) {
-                    if (this.m_test) {
-                        this.m_test.ShiftOrigin(new b2.Vec2(0, 2));
-                    }
-                } else {
-                    this.MoveCamera(new b2.Vec2(0, -0.5));
-                }
-                break;
-            case "ArrowUp":
-                if (this.m_ctrl) {
-                    if (this.m_test) {
-                        this.m_test.ShiftOrigin(new b2.Vec2(0, -2));
-                    }
-                } else {
-                    this.MoveCamera(new b2.Vec2(0, 0.5));
-                }
-                break;
-            case "Home":
-                this.HomeCamera();
-                break;
-            ///case "PageUp":
-            ///  this.RollCamera(b2.DegToRad(-1));
-            ///  break;
-            ///case "PageDown":
-            ///  this.RollCamera(b2.DegToRad(1));
-            ///  break;
-            case "z":
+    public HandleMouseWheel(e: WheelEvent): void {
+        if (this.m_hoveringCanvas) {
+            if (e.deltaY < 0) {
                 this.ZoomCamera(1.1);
-                break;
-            case "x":
-                this.ZoomCamera(0.9);
-                break;
-            case "r":
-                this.LoadTest();
-                break;
-            case " ":
-                if (this.m_test) {
-                    this.m_test.LaunchBomb();
-                }
-                break;
-            case "o":
-                this.SingleStep();
-                break;
-            case "p":
-                this.Pause();
-                break;
-            case "[":
-                this.DecrementTest();
-                break;
-            case "]":
-                this.IncrementTest();
-                break;
-            // #if B2_ENABLE_PARTICLE
-            case ",":
-                if (this.m_shift) {
-                    // Press < to select the previous particle parameter setting.
-                    Test.particleParameter.Decrement();
-                }
-                break;
-            case ".":
-                if (this.m_shift) {
-                    // Press > to select the next particle parameter setting.
-                    Test.particleParameter.Increment();
-                }
-                break;
-            // #endif
-            default:
-                // console.log(e.keyCode);
-                break;
-        }
-
-        if (this.m_test) {
-            this.m_test.Keyboard(e.key);
-        }
-    }
-
-    public HandleKeyUp(e: KeyboardEvent): void {
-        switch (e.key) {
-            case "Control":
-                this.m_ctrl = false;
-                break;
-            case "Shift":
-                this.m_shift = false;
-                break;
-            default:
-                // console.log(e.keyCode);
-                break;
-        }
-
-        if (this.m_test) {
-            this.m_test.KeyboardUp(e.key);
-        }
-    }
-
-    public UpdateTest(time_elapsed: number): void {
-        if (this.m_demo_mode) {
-            this.m_demo_time += time_elapsed;
-
-            if (this.m_demo_time > this.m_max_demo_time) {
-                this.IncrementTest();
+            } else if (e.deltaY > 0) {
+                this.ZoomCamera(1 / 1.1);
             }
+            e.preventDefault();
+        }
+    }
 
-            const str: string = ((500 + this.m_max_demo_time - this.m_demo_time) / 1000).toFixed(0).toString();
-            this.m_demo_button.value = str;
-        } else {
-            this.m_demo_button.value = "Demo";
+    private HandleKey(e: KeyboardEvent, down: boolean): void {
+        if (this.m_hoveringCanvas || !down) {
+            // fixme: remember state and only call if changed
+            const { key, ctrlKey, shiftKey, altKey } = e;
+            const match = (hk: HotKey) =>
+                hk.key === key && hk.ctrl === ctrlKey && hk.alt === altKey && hk.shift === shiftKey;
+            const hotKey =
+                this.ownHotKeys.find(match) ?? this.testBaseHotKeys.find(match) ?? this.testHotKeys.find(match);
+            if (hotKey) {
+                const wasDown = !!this.m_keyMap[key];
+                if (wasDown !== down) {
+                    hotKey.callback(down);
+                    this.m_keyMap[key] = down;
+                }
+                if (this.m_hoveringCanvas) e.preventDefault();
+            }
         }
     }
 
     public DecrementTest(): void {
-        if (this.m_settings.m_testIndex <= 0) {
-            this.m_settings.m_testIndex = g_testEntries.length;
+        const index = g_testEntriesFlat.findIndex((e) => e[0] === this.testTitle) - 1;
+        if (index < 0) {
+            this.activateTest(g_testEntriesFlat[g_testEntriesFlat.length - 1][0]);
+        } else if (index >= 0) {
+            this.activateTest(g_testEntriesFlat[index][0]);
         }
-        this.m_settings.m_testIndex--;
-        this.m_test_select.selectedIndex = this.m_settings.m_testIndex;
-        this.LoadTest();
     }
 
     public IncrementTest(): void {
-        this.m_settings.m_testIndex++;
-        if (this.m_settings.m_testIndex >= g_testEntries.length) {
-            this.m_settings.m_testIndex = 0;
+        const index = g_testEntriesFlat.findIndex((e) => e[0] === this.testTitle) + 1;
+        if (index >= g_testEntriesFlat.length) {
+            this.activateTest(g_testEntriesFlat[0][0]);
+        } else if (index > 0) {
+            this.activateTest(g_testEntriesFlat[index][0]);
         }
-        this.m_test_select.selectedIndex = this.m_settings.m_testIndex;
-        this.LoadTest();
     }
 
-    public LoadTest(restartTest: boolean = false): void {
-        // #if B2_ENABLE_PARTICLE
-        Test.fullscreenUI.Reset();
+    public LoadTest(restartTest = false): void {
+        Test.particleParameterSelectionEnabled = false;
+        const TestClass = this.testConstructor;
+        if (!TestClass || !this.m_ctx) return;
+
         if (!restartTest) {
             Test.particleParameter.Reset();
         }
-        // #endif
-        this.m_demo_time = 0;
-        // #if B2_ENABLE_PARTICLE
-        if (this.m_test) {
-            this.m_test.RestoreParticleParameters();
-        }
-        // #endif
-        this.m_test = g_testEntries[this.m_settings.m_testIndex].createFcn();
+
+        this.m_test?.Destroy();
+
+        this.m_test = new TestClass();
+        this.testBaseHotKeys = this.m_test.getBaseHotkeys();
+        this.testHotKeys = this.m_test.getHotkeys();
+        this.allHotKeys = [...this.ownHotKeys, ...this.testBaseHotKeys, ...this.testHotKeys];
         if (!restartTest) {
             this.HomeCamera();
         }
     }
 
-    public Pause(): void {
-        this.m_settings.m_pause = !this.m_settings.m_pause;
+    public SetPause(pause: boolean): void {
+        this.m_settings.m_pause = pause;
+        this.onPauseChanged.emit(pause);
     }
 
     public SingleStep(): void {
-        this.m_settings.m_pause = true;
+        if (!this.m_settings.m_pause) {
+            this.m_settings.m_pause = true;
+            this.onPauseChanged.emit(true);
+        }
         this.m_settings.m_singleStep = true;
     }
 
-    public ToggleDemo(): void {
-        this.m_demo_mode = !this.m_demo_mode;
+    public SimulationLoop(): void {
+        if (this.m_fpsCalculator.addFrame() <= 0 || !this.m_ctx) return;
+        const ctx = this.m_ctx;
+
+        const restartTest = [false];
+
+        // Draw World
+        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+        ctx.save();
+
+        // 0,0 at center of canvas, x right, y up
+        ctx.translate(0.5 * g_camera.getWidth(), 0.5 * g_camera.getHeight());
+        ctx.scale(1, -1);
+        // apply camera
+        const zoom = g_camera.getZoom();
+        ctx.scale(zoom, zoom);
+        ctx.lineWidth /= zoom;
+        const center = g_camera.getCenter();
+        ctx.translate(-center.x, -center.y);
+
+        this.m_test?.RunStep(this.m_settings);
+
+        // Update the state of the particle parameter.
+        Test.particleParameter.Changed(restartTest);
+
+        ctx.restore();
+
+        if (this.m_settings.m_drawFpsMeter) this.DrawFpsMeter(ctx);
+
+        this.UpdateText();
+
+        if (restartTest[0]) {
+            this.LoadTest(true);
+        }
     }
 
-    public SimulationLoop(time: number): void {
-        this.m_time_last = this.m_time_last || time;
-
-        let time_elapsed: number = time - this.m_time_last;
-        this.m_time_last = time;
-
-        if (time_elapsed > 1000) {
-            time_elapsed = 1000;
-        } // clamp
-
-        this.m_fps_time += time_elapsed;
-        this.m_fps_frames++;
-
-        if (this.m_fps_time >= 500) {
-            this.m_fps = (this.m_fps_frames * 1000) / this.m_fps_time;
-            this.m_fps_frames = 0;
-            this.m_fps_time = 0;
-
-            this.m_fps_div.innerHTML = this.m_fps.toFixed(1).toString();
+    private DrawFpsMeter(ctx: CanvasRenderingContext2D) {
+        ctx.save();
+        ctx.translate(0, g_camera.getHeight());
+        ctx.scale(1, -1);
+        ctx.fillStyle = b2Color.GREEN.MakeStyleString();
+        let x = 5;
+        for (const frameTime of this.m_fpsCalculator.getFrames()) {
+            ctx.fillRect(x, 5, 1, frameTime);
+            x++;
         }
+        ctx.restore();
+    }
 
-        if (time_elapsed > 0) {
-            const ctx: CanvasRenderingContext2D | null = this.m_ctx;
+    private UpdateText() {
+        const leftTable: TextTable = [];
+        const fps = this.m_fpsCalculator.getFps();
+        const rightTable: TextTable = [
+            ["Performance:", "-"],
+            ["Avg. FPS", fps.avgFps.toFixed(1)],
+            ["Max. Time in ms", fps.maxTime.toFixed(1)],
+            ["Min. Time in ms", fps.minTime.toFixed(1)],
+            ["", ""],
+        ];
+        if (this.m_test) {
+            if (Test.particleParameterSelectionEnabled)
+                this.m_test.addDebug("Particle Type", Test.particleParameter.GetName());
 
-            // #if B2_ENABLE_PARTICLE
-            const restartTest = [false];
-            // #endif
-
-            if (ctx) {
-                ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-
-                // ctx.strokeStyle = "blue";
-                // ctx.strokeRect(this.m_mouse.x - 24, this.m_mouse.y - 24, 48, 48);
-
-                // const mouse_world: b2.Vec2 = g_camera.ConvertScreenToWorld(this.m_mouse, new b2.Vec2());
-
-                ctx.save();
-
-                // 0,0 at center of canvas, x right, y up
-                ctx.translate(0.5 * ctx.canvas.width, 0.5 * ctx.canvas.height);
-                ctx.scale(1, -1);
-                ///ctx.scale(g_camera.m_extent, g_camera.m_extent);
-                ///ctx.lineWidth /= g_camera.m_extent;
-                const s: number = (0.5 * g_camera.m_height) / g_camera.m_extent;
-                ctx.scale(s, s);
-                ctx.lineWidth /= s;
-
-                // apply camera
-                ctx.scale(1 / g_camera.m_zoom, 1 / g_camera.m_zoom);
-                ctx.lineWidth *= g_camera.m_zoom;
-                ///ctx.rotate(-g_camera.m_roll.GetAngle());
-                ctx.translate(-g_camera.m_center.x, -g_camera.m_center.y);
-
-                if (this.m_test) {
-                    this.m_test.Step(this.m_settings);
-                }
-
-                // #if B2_ENABLE_PARTICLE
-                // Update the state of the particle parameter.
-                Test.particleParameter.Changed(restartTest);
-                // #endif
-
-                // #if B2_ENABLE_PARTICLE
-                let msg = g_testEntries[this.m_settings.m_testIndex].name;
-                if (Test.fullscreenUI.GetParticleParameterSelectionEnabled()) {
-                    msg += " : ";
-                    msg += Test.particleParameter.GetName();
-                }
-                if (this.m_test) {
-                    this.m_test.DrawTitle(msg);
-                }
-                // #else
-                // if (this.m_test) { this.m_test.DrawTitle(g_testEntries[this.m_settings.m_testIndex].name); }
-                // #endif
-
-                // ctx.strokeStyle = "yellow";
-                // ctx.strokeRect(mouse_world.x - 0.5, mouse_world.y - 0.5, 1.0, 1.0);
-
-                ctx.restore();
+            if (this.m_test.m_textLines.length) {
+                leftTable.push(
+                    ["Description:", "-"],
+                    ...this.m_test.m_textLines.map((t) => [t, ""] as [string, string]),
+                    ["", ""]
+                );
             }
-
-            // #if B2_ENABLE_PARTICLE
-            if (restartTest[0]) {
-                this.LoadTest(true);
+            if (this.m_settings.m_drawInputHelp) {
+                leftTable.push(
+                    ["Mouse:", "-"],
+                    ["Right Drag", "Move Camera"],
+                    ["Left Drag", "Grab Objects"],
+                    ["Wheel", "Zoom"],
+                    ["", ""]
+                );
+                leftTable.push(
+                    ["Keyboard:", "-"],
+                    ...this.allHotKeys.map((hk) => [hotKeyToText(hk), hk.description] as [string, string]),
+                    ["", ""]
+                );
             }
-            // #endif
-
-            this.UpdateTest(time_elapsed);
+            if (this.m_test.m_debugLines.length) {
+                rightTable.push(["Debug Info:", "-"], ...this.m_test.m_debugLines, ["", ""]);
+            }
+            if (this.m_test.m_statisticLines.length) {
+                rightTable.push(["Statistics:", "-"], ...this.m_test.m_statisticLines, ["", ""]);
+            }
         }
+        this.setLeftTable(leftTable);
+        this.setRightTable(rightTable);
     }
 }
+
+export const ManagerContext = createContext(new TestManager());
+export const useManager = () => useContext(ManagerContext);

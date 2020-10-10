@@ -16,10 +16,21 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import * as b2 from "@box2d";
-import * as testbed from "../testbed.js";
+import {
+    b2BodyDef,
+    b2EdgeShape,
+    b2Vec2,
+    b2PolygonShape,
+    b2FixtureDef,
+    b2WeldJointDef,
+    b2BodyType,
+    b2AngularStiffness,
+    b2CircleShape,
+} from "@box2d/core";
 
-export class Cantilever extends testbed.Test {
+import { Test } from "../../test";
+
+export class Cantilever extends Test {
     public static readonly e_count = 8;
 
     constructor() {
@@ -28,33 +39,33 @@ export class Cantilever extends testbed.Test {
         let ground = null;
 
         {
-            const bd = new b2.BodyDef();
+            const bd = new b2BodyDef();
             ground = this.m_world.CreateBody(bd);
 
-            const shape = new b2.EdgeShape();
-            shape.SetTwoSided(new b2.Vec2(-40.0, 0.0), new b2.Vec2(40.0, 0.0));
+            const shape = new b2EdgeShape();
+            shape.SetTwoSided(new b2Vec2(-40.0, 0.0), new b2Vec2(40.0, 0.0));
             ground.CreateFixture(shape, 0.0);
         }
 
         {
-            const shape = new b2.PolygonShape();
+            const shape = new b2PolygonShape();
             shape.SetAsBox(0.5, 0.125);
 
-            const fd = new b2.FixtureDef();
+            const fd = new b2FixtureDef();
             fd.shape = shape;
             fd.density = 20.0;
 
-            const jd = new b2.WeldJointDef();
+            const jd = new b2WeldJointDef();
 
             let prevBody = ground;
             for (let i = 0; i < Cantilever.e_count; ++i) {
-                const bd = new b2.BodyDef();
-                bd.type = b2.BodyType.b2_dynamicBody;
+                const bd = new b2BodyDef();
+                bd.type = b2BodyType.b2_dynamicBody;
                 bd.position.Set(-14.5 + 1.0 * i, 5.0);
                 const body = this.m_world.CreateBody(bd);
                 body.CreateFixture(fd);
 
-                const anchor = new b2.Vec2(-15.0 + 1.0 * i, 5.0);
+                const anchor = new b2Vec2(-15.0 + 1.0 * i, 5.0);
                 jd.Initialize(prevBody, body, anchor);
                 this.m_world.CreateJoint(jd);
 
@@ -63,28 +74,28 @@ export class Cantilever extends testbed.Test {
         }
 
         {
-            const shape = new b2.PolygonShape();
+            const shape = new b2PolygonShape();
             shape.SetAsBox(1.0, 0.125);
 
-            const fd = new b2.FixtureDef();
+            const fd = new b2FixtureDef();
             fd.shape = shape;
             fd.density = 20.0;
 
-            const jd = new b2.WeldJointDef();
-            const frequencyHz: number = 5.0;
-            const dampingRatio: number = 0.7;
+            const jd = new b2WeldJointDef();
+            const frequencyHz = 5.0;
+            const dampingRatio = 0.7;
 
             let prevBody = ground;
             for (let i = 0; i < 3; ++i) {
-                const bd = new b2.BodyDef();
-                bd.type = b2.BodyType.b2_dynamicBody;
+                const bd = new b2BodyDef();
+                bd.type = b2BodyType.b2_dynamicBody;
                 bd.position.Set(-14.0 + 2.0 * i, 15.0);
                 const body = this.m_world.CreateBody(bd);
                 body.CreateFixture(fd);
 
-                const anchor = new b2.Vec2(-15.0 + 2.0 * i, 15.0);
+                const anchor = new b2Vec2(-15.0 + 2.0 * i, 15.0);
                 jd.Initialize(prevBody, body, anchor);
-                b2.AngularStiffness(jd, frequencyHz, dampingRatio, jd.bodyA, jd.bodyB);
+                b2AngularStiffness(jd, frequencyHz, dampingRatio, jd.bodyA, jd.bodyB);
                 this.m_world.CreateJoint(jd);
 
                 prevBody = body;
@@ -92,25 +103,25 @@ export class Cantilever extends testbed.Test {
         }
 
         {
-            const shape = new b2.PolygonShape();
+            const shape = new b2PolygonShape();
             shape.SetAsBox(0.5, 0.125);
 
-            const fd = new b2.FixtureDef();
+            const fd = new b2FixtureDef();
             fd.shape = shape;
             fd.density = 20.0;
 
-            const jd = new b2.WeldJointDef();
+            const jd = new b2WeldJointDef();
 
             let prevBody = ground;
             for (let i = 0; i < Cantilever.e_count; ++i) {
-                const bd = new b2.BodyDef();
-                bd.type = b2.BodyType.b2_dynamicBody;
+                const bd = new b2BodyDef();
+                bd.type = b2BodyType.b2_dynamicBody;
                 bd.position.Set(-4.5 + 1.0 * i, 15.0);
                 const body = this.m_world.CreateBody(bd);
                 body.CreateFixture(fd);
 
                 if (i > 0) {
-                    const anchor = new b2.Vec2(-5.0 + 1.0 * i, 15.0);
+                    const anchor = new b2Vec2(-5.0 + 1.0 * i, 15.0);
                     jd.Initialize(prevBody, body, anchor);
                     this.m_world.CreateJoint(jd);
                 }
@@ -120,29 +131,29 @@ export class Cantilever extends testbed.Test {
         }
 
         {
-            const shape = new b2.PolygonShape();
+            const shape = new b2PolygonShape();
             shape.SetAsBox(0.5, 0.125);
 
-            const fd = new b2.FixtureDef();
+            const fd = new b2FixtureDef();
             fd.shape = shape;
             fd.density = 20.0;
 
-            const jd = new b2.WeldJointDef();
-            const frequencyHz: number = 8.0;
-            const dampingRatio: number = 0.7;
+            const jd = new b2WeldJointDef();
+            const frequencyHz = 8.0;
+            const dampingRatio = 0.7;
 
             let prevBody = ground;
             for (let i = 0; i < Cantilever.e_count; ++i) {
-                const bd = new b2.BodyDef();
-                bd.type = b2.BodyType.b2_dynamicBody;
+                const bd = new b2BodyDef();
+                bd.type = b2BodyType.b2_dynamicBody;
                 bd.position.Set(5.5 + 1.0 * i, 10.0);
                 const body = this.m_world.CreateBody(bd);
                 body.CreateFixture(fd);
 
                 if (i > 0) {
-                    const anchor = new b2.Vec2(5.0 + 1.0 * i, 10.0);
+                    const anchor = new b2Vec2(5.0 + 1.0 * i, 10.0);
                     jd.Initialize(prevBody, body, anchor);
-                    b2.AngularStiffness(jd, frequencyHz, dampingRatio, jd.bodyA, jd.bodyB);
+                    b2AngularStiffness(jd, frequencyHz, dampingRatio, jd.bodyA, jd.bodyB);
                     this.m_world.CreateJoint(jd);
                 }
 
@@ -151,46 +162,38 @@ export class Cantilever extends testbed.Test {
         }
 
         for (let i = 0; i < 2; ++i) {
-            const vertices = new Array();
-            vertices[0] = new b2.Vec2(-0.5, 0.0);
-            vertices[1] = new b2.Vec2(0.5, 0.0);
-            vertices[2] = new b2.Vec2(0.0, 1.5);
+            const vertices = [];
+            vertices[0] = new b2Vec2(-0.5, 0.0);
+            vertices[1] = new b2Vec2(0.5, 0.0);
+            vertices[2] = new b2Vec2(0.0, 1.5);
 
-            const shape = new b2.PolygonShape();
+            const shape = new b2PolygonShape();
             shape.Set(vertices);
 
-            const fd = new b2.FixtureDef();
+            const fd = new b2FixtureDef();
             fd.shape = shape;
             fd.density = 1.0;
 
-            const bd = new b2.BodyDef();
-            bd.type = b2.BodyType.b2_dynamicBody;
+            const bd = new b2BodyDef();
+            bd.type = b2BodyType.b2_dynamicBody;
             bd.position.Set(-8.0 + 8.0 * i, 12.0);
             const body = this.m_world.CreateBody(bd);
             body.CreateFixture(fd);
         }
 
         for (let i = 0; i < 2; ++i) {
-            const shape = new b2.CircleShape();
+            const shape = new b2CircleShape();
             shape.m_radius = 0.5;
 
-            const fd = new b2.FixtureDef();
+            const fd = new b2FixtureDef();
             fd.shape = shape;
             fd.density = 1.0;
 
-            const bd = new b2.BodyDef();
-            bd.type = b2.BodyType.b2_dynamicBody;
+            const bd = new b2BodyDef();
+            bd.type = b2BodyType.b2_dynamicBody;
             bd.position.Set(-6.0 + 6.0 * i, 10.0);
             const body = this.m_world.CreateBody(bd);
             body.CreateFixture(fd);
         }
-    }
-
-    public Step(settings: testbed.Settings): void {
-        super.Step(settings);
-    }
-
-    public static Create(): testbed.Test {
-        return new Cantilever();
     }
 }

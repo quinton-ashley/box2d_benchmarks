@@ -16,27 +16,28 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import * as b2 from "@box2d";
-import * as testbed from "../testbed.js";
+import { b2BodyDef, b2EdgeShape, b2Vec2, b2PolygonShape, b2FixtureDef, b2BodyType, XY } from "@box2d/core";
 
-export class VaryingFriction extends testbed.Test {
+import { Test } from "../../test";
+
+export class VaryingFriction extends Test {
     constructor() {
         super();
 
         {
-            const bd = new b2.BodyDef();
+            const bd = new b2BodyDef();
             const ground = this.m_world.CreateBody(bd);
 
-            const shape = new b2.EdgeShape();
-            shape.SetTwoSided(new b2.Vec2(-40.0, 0.0), new b2.Vec2(40.0, 0.0));
+            const shape = new b2EdgeShape();
+            shape.SetTwoSided(new b2Vec2(-40.0, 0.0), new b2Vec2(40.0, 0.0));
             ground.CreateFixture(shape, 0.0);
         }
 
         {
-            const shape = new b2.PolygonShape();
+            const shape = new b2PolygonShape();
             shape.SetAsBox(13.0, 0.25);
 
-            const bd = new b2.BodyDef();
+            const bd = new b2BodyDef();
             bd.position.Set(-4.0, 22.0);
             bd.angle = -0.25;
 
@@ -45,10 +46,10 @@ export class VaryingFriction extends testbed.Test {
         }
 
         {
-            const shape = new b2.PolygonShape();
+            const shape = new b2PolygonShape();
             shape.SetAsBox(0.25, 1.0);
 
-            const bd = new b2.BodyDef();
+            const bd = new b2BodyDef();
             bd.position.Set(10.5, 19.0);
 
             const ground = this.m_world.CreateBody(bd);
@@ -56,10 +57,10 @@ export class VaryingFriction extends testbed.Test {
         }
 
         {
-            const shape = new b2.PolygonShape();
+            const shape = new b2PolygonShape();
             shape.SetAsBox(13.0, 0.25);
 
-            const bd = new b2.BodyDef();
+            const bd = new b2BodyDef();
             bd.position.Set(4.0, 14.0);
             bd.angle = 0.25;
 
@@ -68,10 +69,10 @@ export class VaryingFriction extends testbed.Test {
         }
 
         {
-            const shape = new b2.PolygonShape();
+            const shape = new b2PolygonShape();
             shape.SetAsBox(0.25, 1.0);
 
-            const bd = new b2.BodyDef();
+            const bd = new b2BodyDef();
             bd.position.Set(-10.5, 11.0);
 
             const ground = this.m_world.CreateBody(bd);
@@ -79,10 +80,10 @@ export class VaryingFriction extends testbed.Test {
         }
 
         {
-            const shape = new b2.PolygonShape();
+            const shape = new b2PolygonShape();
             shape.SetAsBox(13.0, 0.25);
 
-            const bd = new b2.BodyDef();
+            const bd = new b2BodyDef();
             bd.position.Set(-4.0, 6.0);
             bd.angle = -0.25;
 
@@ -91,18 +92,18 @@ export class VaryingFriction extends testbed.Test {
         }
 
         {
-            const shape = new b2.PolygonShape();
+            const shape = new b2PolygonShape();
             shape.SetAsBox(0.5, 0.5);
 
-            const fd = new b2.FixtureDef();
+            const fd = new b2FixtureDef();
             fd.shape = shape;
             fd.density = 25.0;
 
             const friction = [0.75, 0.5, 0.35, 0.1, 0.0];
 
             for (let i = 0; i < 5; ++i) {
-                const bd = new b2.BodyDef();
-                bd.type = b2.BodyType.b2_dynamicBody;
+                const bd = new b2BodyDef();
+                bd.type = b2BodyType.b2_dynamicBody;
                 bd.position.Set(-15.0 + 4.0 * i, 28.0);
                 const body = this.m_world.CreateBody(bd);
 
@@ -112,11 +113,10 @@ export class VaryingFriction extends testbed.Test {
         }
     }
 
-    public Step(settings: testbed.Settings): void {
-        super.Step(settings);
-    }
-
-    public static Create(): testbed.Test {
-        return new VaryingFriction();
+    public getCenter(): XY {
+        return {
+            x: 0,
+            y: 10,
+        };
     }
 }

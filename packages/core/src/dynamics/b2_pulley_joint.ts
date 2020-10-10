@@ -16,14 +16,14 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-// DEBUG: import { b2Assert, b2_epsilon } from "../common/b2_settings.js";
-import { b2_linearSlop, b2Maybe } from "../common/b2_settings.js";
-import { b2Abs, b2Vec2, b2Rot, XY } from "../common/b2_math.js";
-import { b2Body } from "./b2_body.js";
-import { b2Joint, b2JointDef, b2JointType, b2IJointDef } from "./b2_joint.js";
-import { b2SolverData } from "./b2_time_step.js";
+// DEBUG: import { b2Assert, b2_epsilon } from "../common/b2_settings";
+import { b2_linearSlop, b2Maybe } from "../common/b2_settings";
+import { b2Abs, b2Vec2, b2Rot, XY } from "../common/b2_math";
+import { b2Body } from "./b2_body";
+import { b2Joint, b2JointDef, b2JointType, b2IJointDef } from "./b2_joint";
+import { b2SolverData } from "./b2_time_step";
 
-export const b2_minPulleyLength: number = 2;
+export const b2_minPulleyLength = 2;
 
 export interface b2IPulleyJointDef extends b2IJointDef {
     groundAnchorA?: XY;
@@ -52,11 +52,11 @@ export class b2PulleyJointDef extends b2JointDef implements b2IPulleyJointDef {
 
     public readonly localAnchorB: b2Vec2 = new b2Vec2(1, 0);
 
-    public lengthA: number = 0;
+    public lengthA = 0;
 
-    public lengthB: number = 0;
+    public lengthB = 0;
 
-    public ratio: number = 1;
+    public ratio = 1;
 
     constructor() {
         super(b2JointType.e_pulleyJoint);
@@ -87,38 +87,57 @@ export class b2PulleyJointDef extends b2JointDef implements b2IPulleyJointDef {
 
 export class b2PulleyJoint extends b2Joint {
     public readonly m_groundAnchorA: b2Vec2 = new b2Vec2();
+
     public readonly m_groundAnchorB: b2Vec2 = new b2Vec2();
 
-    public m_lengthA: number = 0;
-    public m_lengthB: number = 0;
+    public m_lengthA = 0;
+
+    public m_lengthB = 0;
 
     // Solver shared
     public readonly m_localAnchorA: b2Vec2 = new b2Vec2();
+
     public readonly m_localAnchorB: b2Vec2 = new b2Vec2();
 
-    public m_constant: number = 0;
-    public m_ratio: number = 0;
-    public m_impulse: number = 0;
+    public m_constant = 0;
+
+    public m_ratio = 0;
+
+    public m_impulse = 0;
 
     // Solver temp
-    public m_indexA: number = 0;
-    public m_indexB: number = 0;
+    public m_indexA = 0;
+
+    public m_indexB = 0;
+
     public readonly m_uA: b2Vec2 = new b2Vec2();
+
     public readonly m_uB: b2Vec2 = new b2Vec2();
+
     public readonly m_rA: b2Vec2 = new b2Vec2();
+
     public readonly m_rB: b2Vec2 = new b2Vec2();
+
     public readonly m_localCenterA: b2Vec2 = new b2Vec2();
+
     public readonly m_localCenterB: b2Vec2 = new b2Vec2();
 
-    public m_invMassA: number = 0;
-    public m_invMassB: number = 0;
-    public m_invIA: number = 0;
-    public m_invIB: number = 0;
-    public m_mass: number = 0;
+    public m_invMassA = 0;
+
+    public m_invMassB = 0;
+
+    public m_invIA = 0;
+
+    public m_invIB = 0;
+
+    public m_mass = 0;
 
     public readonly m_qA: b2Rot = new b2Rot();
+
     public readonly m_qB: b2Rot = new b2Rot();
+
     public readonly m_lalcA: b2Vec2 = new b2Vec2();
+
     public readonly m_lalcB: b2Vec2 = new b2Vec2();
 
     constructor(def: b2IPulleyJointDef) {
@@ -141,7 +160,9 @@ export class b2PulleyJoint extends b2Joint {
     }
 
     private static InitVelocityConstraints_s_PA = new b2Vec2();
+
     private static InitVelocityConstraints_s_PB = new b2Vec2();
+
     public InitVelocityConstraints(data: b2SolverData): void {
         this.m_indexA = this.m_bodyA.m_islandIndex;
         this.m_indexB = this.m_bodyB.m_islandIndex;
@@ -163,8 +184,8 @@ export class b2PulleyJoint extends b2Joint {
         let wB: number = data.velocities[this.m_indexB].w;
 
         // b2Rot qA(aA), qB(aB);
-        const qA: b2Rot = this.m_qA.SetAngle(aA),
-            qB: b2Rot = this.m_qB.SetAngle(aB);
+        const qA: b2Rot = this.m_qA.SetAngle(aA);
+        const qB: b2Rot = this.m_qB.SetAngle(aB);
 
         // m_rA = b2Mul(qA, m_localAnchorA - m_localCenterA);
         b2Vec2.SubVV(this.m_localAnchorA, this.m_localCenterA, this.m_lalcA);
@@ -238,9 +259,13 @@ export class b2PulleyJoint extends b2Joint {
     }
 
     private static SolveVelocityConstraints_s_vpA = new b2Vec2();
+
     private static SolveVelocityConstraints_s_vpB = new b2Vec2();
+
     private static SolveVelocityConstraints_s_PA = new b2Vec2();
+
     private static SolveVelocityConstraints_s_PB = new b2Vec2();
+
     public SolveVelocityConstraints(data: b2SolverData): void {
         const vA: b2Vec2 = data.velocities[this.m_indexA].v;
         let wA: number = data.velocities[this.m_indexA].w;
@@ -278,7 +303,9 @@ export class b2PulleyJoint extends b2Joint {
     }
 
     private static SolvePositionConstraints_s_PA = new b2Vec2();
+
     private static SolvePositionConstraints_s_PB = new b2Vec2();
+
     public SolvePositionConstraints(data: b2SolverData): boolean {
         const cA: b2Vec2 = data.positions[this.m_indexA].c;
         let aA: number = data.positions[this.m_indexA].a;
@@ -286,8 +313,8 @@ export class b2PulleyJoint extends b2Joint {
         let aB: number = data.positions[this.m_indexB].a;
 
         // b2Rot qA(aA), qB(aB);
-        const qA: b2Rot = this.m_qA.SetAngle(aA),
-            qB: b2Rot = this.m_qB.SetAngle(aB);
+        const qA: b2Rot = this.m_qA.SetAngle(aA);
+        const qB: b2Rot = this.m_qB.SetAngle(aB);
 
         // b2Vec2 rA = b2Mul(qA, m_localAnchorA - m_localCenterA);
         b2Vec2.SubVV(this.m_localAnchorA, this.m_localCenterA, this.m_lalcA);
@@ -371,7 +398,7 @@ export class b2PulleyJoint extends b2Joint {
         return out;
     }
 
-    public GetReactionTorque(inv_dt: number): number {
+    public GetReactionTorque(_inv_dt: number): number {
         return 0;
     }
 
@@ -396,6 +423,7 @@ export class b2PulleyJoint extends b2Joint {
     }
 
     private static GetCurrentLengthA_s_p = new b2Vec2();
+
     public GetCurrentLengthA() {
         // b2Vec2 p = m_bodyA->GetWorldPoint(m_localAnchorA);
         // b2Vec2 s = m_groundAnchorA;
@@ -407,6 +435,7 @@ export class b2PulleyJoint extends b2Joint {
     }
 
     private static GetCurrentLengthB_s_p = new b2Vec2();
+
     public GetCurrentLengthB() {
         // b2Vec2 p = m_bodyB->GetWorldPoint(m_localAnchorB);
         // b2Vec2 s = m_groundAnchorB;

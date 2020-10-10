@@ -16,12 +16,9 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-// #if B2_ENABLE_CONTROLLER
+import { b2Vec2, b2TimeStep } from "@box2d/core";
 
-import { b2Controller } from "./b2_controller.js";
-import { b2Vec2 } from "../common/b2_math.js";
-import { b2TimeStep } from "../dynamics/b2_time_step.js";
-import { b2Draw } from "../common/b2_draw.js";
+import { b2Controller } from "./b2_controller";
 
 /**
  * Applies a force every frame
@@ -32,17 +29,13 @@ export class b2ConstantForceController extends b2Controller {
      */
     public readonly F = new b2Vec2(0, 0);
 
-    public Step(step: b2TimeStep) {
+    public Step(_step: b2TimeStep) {
         for (let i = this.m_bodyList; i; i = i.nextBody) {
-            const body = i.body;
+            const { body } = i;
             if (!body.IsAwake()) {
                 continue;
             }
             body.ApplyForce(this.F, body.GetWorldCenter());
         }
     }
-
-    public Draw(draw: b2Draw) {}
 }
-
-// #endif

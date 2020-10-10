@@ -16,15 +16,27 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-// #if B2_ENABLE_PARTICLE
+import {
+    b2Body,
+    b2Joint,
+    b2CircleShape,
+    b2BodyDef,
+    b2BodyType,
+    b2Transform,
+    b2PrismaticJointDef,
+    b2Vec2,
+    b2_pi,
+} from "@box2d/core";
 
-import * as b2 from "@box2d";
-import * as testbed from "../testbed.js";
-import { Soup } from "./soup.js";
+import { Soup } from "./soup";
+import { Settings } from "../../settings";
+import { HotKey, hotKeyPress } from "../../utils/hotkeys";
 
 export class SoupStirrer extends Soup {
-    public m_stirrer: b2.Body;
-    public m_joint: b2.Joint | null = null;
+    public m_stirrer: b2Body;
+
+    public m_joint: b2Joint | null = null;
+
     public m_oscillationOffset = 0.0;
 
     constructor() {
@@ -33,18 +45,18 @@ export class SoupStirrer extends Soup {
         this.m_particleSystem.SetDamping(1.0);
 
         // Shape of the stirrer.
-        const shape = new b2.CircleShape();
+        const shape = new b2CircleShape();
         shape.m_p.Set(0, 0.7);
         shape.m_radius = 0.4;
 
         // Create the stirrer.
-        const bd = new b2.BodyDef();
-        bd.type = b2.BodyType.b2_dynamicBody;
+        const bd = new b2BodyDef();
+        bd.type = b2BodyType.b2_dynamicBody;
         this.m_stirrer = this.m_world.CreateBody(bd);
         this.m_stirrer.CreateFixture(shape, 1.0);
 
         // Destroy all particles under the stirrer.
-        const xf = new b2.Transform();
+        const xf = new b2Transform();
         xf.SetIdentity();
         this.m_particleSystem.DestroyParticlesInShape(shape, xf);
 
@@ -53,11 +65,11 @@ export class SoupStirrer extends Soup {
     }
 
     public CreateJoint() {
-        // DEBUG: b2.Assert(!this.m_joint);
+        // DEBUG: b2Assert(!this.m_joint);
         // Create a prismatic joint and connect to the ground, and have it
         // slide along the x axis.
         // Disconnect the body from this joint to have more fun.
-        const prismaticJointDef = new b2.PrismaticJointDef();
+        const prismaticJointDef = new b2PrismaticJointDef();
         prismaticJointDef.bodyA = this.m_groundBody;
         prismaticJointDef.bodyB = this.m_stirrer;
         prismaticJointDef.collideConnected = true;
@@ -79,26 +91,15 @@ export class SoupStirrer extends Soup {
         }
     }
 
-    /**
-     * Press "t" to enable / disable the joint restricting the
-     * stirrer's movement.
-     */
-    public Keyboard(key: string) {
-        switch (key) {
-            case "t":
-                this.ToggleJoint();
-                break;
-            default:
-                super.Keyboard(key);
-                break;
-        }
+    getHotkeys(): HotKey[] {
+        return [hotKeyPress([], "t", "Toggle Joint", () => this.ToggleJoint())];
     }
 
     /**
      * Click the soup to toggle between enabling / disabling the
      * joint.
      */
-    public MouseUp(p: b2.Vec2) {
+    public MouseUp(p: b2Vec2) {
         super.MouseUp(p);
         if (this.InSoup(p)) {
             this.ToggleJoint();
@@ -108,7 +109,7 @@ export class SoupStirrer extends Soup {
     /**
      * Determine whether a point is in the soup.
      */
-    public InSoup(pos: b2.Vec2) {
+    public InSoup(pos: b2Vec2) {
         // The soup dimensions are from the container initialization in the
         // Soup test.
         return pos.y > -1.0 && pos.y < 2.0 && pos.x > -3.0 && pos.x < 3.0;
@@ -117,7 +118,7 @@ export class SoupStirrer extends Soup {
     /**
      * Apply a force to the stirrer.
      */
-    public Step(settings: testbed.Settings) {
+    public Step(settings: Settings, timeStep: number) {
         // Magnitude of the force applied to the body.
         const k_forceMagnitude = 10.0;
         // How often the force vector rotates.
@@ -132,19 +133,13 @@ export class SoupStirrer extends Soup {
         }
 
         // Calculate the force vector.
-        const forceAngle = this.m_oscillationOffset * k_forceOscillationPerSecond * 2.0 * b2.pi;
-        const forceVector = new b2.Vec2(Math.sin(forceAngle), Math.cos(forceAngle)).SelfMul(k_forceMagnitude);
+        const forceAngle = this.m_oscillationOffset * k_forceOscillationPerSecond * 2.0 * b2_pi;
+        const forceVector = new b2Vec2(Math.sin(forceAngle), Math.cos(forceAngle)).SelfMul(k_forceMagnitude);
 
         // Only apply force to the body when it's within the soup.
         if (this.InSoup(this.m_stirrer.GetPosition()) && this.m_stirrer.GetLinearVelocity().Length() < k_maxSpeed) {
             this.m_stirrer.ApplyForceToCenter(forceVector, true);
         }
-        super.Step(settings);
-    }
-
-    public static Create() {
-        return new SoupStirrer();
+        super.Step(settings, timeStep);
     }
 }
-
-// #endif

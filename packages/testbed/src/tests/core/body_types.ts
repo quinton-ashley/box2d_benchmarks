@@ -16,74 +16,90 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import * as b2 from "@box2d";
-import * as testbed from "../testbed.js";
+import {
+    b2Body,
+    b2BodyDef,
+    b2EdgeShape,
+    b2Vec2,
+    b2FixtureDef,
+    b2BodyType,
+    b2PolygonShape,
+    b2_pi,
+    b2RevoluteJointDef,
+    b2PrismaticJointDef,
+} from "@box2d/core";
 
-export class BodyTypes extends testbed.Test {
-    public m_attachment: b2.Body;
-    public m_platform: b2.Body;
+import { Test } from "../../test";
+import { Settings } from "../../settings";
+import { hotKeyPress, HotKey } from "../../utils/hotkeys";
+
+export class BodyTypes extends Test {
+    public m_attachment: b2Body;
+
+    public m_platform: b2Body;
+
     public m_speed = 0;
 
     constructor() {
         super();
 
-        /*b2.BodyDef*/
-        const bd = new b2.BodyDef();
-        const ground = this.m_world.CreateBody(bd);
+        /* b2BodyDef */
+        const gbd = new b2BodyDef();
+        const ground = this.m_world.CreateBody(gbd);
 
-        /*b2.EdgeShape*/
-        const shape = new b2.EdgeShape();
-        shape.SetTwoSided(new b2.Vec2(-20.0, 0.0), new b2.Vec2(20.0, 0.0));
+        /* b2EdgeShape */
+        const gshape = new b2EdgeShape();
+        gshape.SetTwoSided(new b2Vec2(-20.0, 0.0), new b2Vec2(20.0, 0.0));
 
-        /*b2.FixtureDef*/
-        const fd = new b2.FixtureDef();
-        fd.shape = shape;
+        /* b2FixtureDef */
+        const gfd = new b2FixtureDef();
+        gfd.shape = gshape;
 
-        ground.CreateFixture(fd);
+        ground.CreateFixture(gfd);
 
         // Define attachment
         {
-            /*b2.BodyDef*/
-            const bd = new b2.BodyDef();
-            bd.type = b2.BodyType.b2_dynamicBody;
+            /* b2BodyDef */
+            const bd = new b2BodyDef();
+            bd.type = b2BodyType.b2_dynamicBody;
             bd.position.Set(0.0, 3.0);
             this.m_attachment = this.m_world.CreateBody(bd);
 
-            /*b2.PolygonShape*/
-            const shape = new b2.PolygonShape();
+            /* b2PolygonShape */
+            const shape = new b2PolygonShape();
             shape.SetAsBox(0.5, 2.0);
             this.m_attachment.CreateFixture(shape, 2.0);
         }
 
         // Define platform
         {
-            /*b2.BodyDef*/
-            const bd = new b2.BodyDef();
-            bd.type = b2.BodyType.b2_dynamicBody;
+            /* b2BodyDef */
+            const bd = new b2BodyDef();
+            bd.type = b2BodyType.b2_dynamicBody;
             bd.position.Set(-4.0, 5.0);
             this.m_platform = this.m_world.CreateBody(bd);
 
-            /*b2.PolygonShape*/
-            const shape = new b2.PolygonShape();
-            shape.SetAsBox(0.5, 4.0, new b2.Vec2(4.0, 0.0), 0.5 * b2.pi);
+            /* b2PolygonShape */
+            const shape = new b2PolygonShape();
+            shape.SetAsBox(0.5, 4.0, new b2Vec2(4.0, 0.0), 0.5 * b2_pi);
 
-            /*b2.FixtureDef*/
-            const fd = new b2.FixtureDef();
+            /* b2FixtureDef */
+            const fd = new b2FixtureDef();
             fd.shape = shape;
             fd.friction = 0.6;
             fd.density = 2.0;
             this.m_platform.CreateFixture(fd);
 
-            /*b2.RevoluteJointDef*/
-            const rjd = new b2.RevoluteJointDef();
-            rjd.Initialize(this.m_attachment, this.m_platform, new b2.Vec2(0.0, 5.0));
+            /* b2RevoluteJointDef */
+            const rjd = new b2RevoluteJointDef();
+            rjd.Initialize(this.m_attachment, this.m_platform, new b2Vec2(0.0, 5.0));
             rjd.maxMotorTorque = 50.0;
             rjd.enableMotor = true;
             this.m_world.CreateJoint(rjd);
 
-            /*b2.PrismaticJointDef*/
-            const pjd = new b2.PrismaticJointDef();
-            pjd.Initialize(ground, this.m_platform, new b2.Vec2(0.0, 5.0), new b2.Vec2(1.0, 0.0));
+            /* b2PrismaticJointDef */
+            const pjd = new b2PrismaticJointDef();
+            pjd.Initialize(ground, this.m_platform, new b2Vec2(0.0, 5.0), new b2Vec2(1.0, 0.0));
 
             pjd.maxMotorForce = 1000.0;
             pjd.enableMotor = true;
@@ -98,19 +114,19 @@ export class BodyTypes extends testbed.Test {
 
         // Create a payload
         {
-            /*b2.BodyDef*/
-            const bd = new b2.BodyDef();
-            bd.type = b2.BodyType.b2_dynamicBody;
+            /* b2BodyDef */
+            const bd = new b2BodyDef();
+            bd.type = b2BodyType.b2_dynamicBody;
             bd.position.Set(0.0, 8.0);
-            /*b2.Body*/
+            /* b2Body */
             const body = this.m_world.CreateBody(bd);
 
-            /*b2.PolygonShape*/
-            const shape = new b2.PolygonShape();
+            /* b2PolygonShape */
+            const shape = new b2PolygonShape();
             shape.SetAsBox(0.75, 0.75);
 
-            /*b2.FixtureDef*/
-            const fd = new b2.FixtureDef();
+            /* b2FixtureDef */
+            const fd = new b2FixtureDef();
             fd.shape = shape;
             fd.friction = 0.6;
             fd.density = 2.0;
@@ -119,43 +135,31 @@ export class BodyTypes extends testbed.Test {
         }
     }
 
-    public Keyboard(key: string) {
-        switch (key) {
-            case "d":
-                this.m_platform.SetType(b2.BodyType.b2_dynamicBody);
-                break;
-
-            case "s":
-                this.m_platform.SetType(b2.BodyType.b2_staticBody);
-                break;
-
-            case "k":
-                this.m_platform.SetType(b2.BodyType.b2_kinematicBody);
-                this.m_platform.SetLinearVelocity(new b2.Vec2(-this.m_speed, 0.0));
+    getHotkeys(): HotKey[] {
+        return [
+            hotKeyPress([], "d", "Set Dynamic Body", () => this.m_platform.SetType(b2BodyType.b2_dynamicBody)),
+            hotKeyPress([], "s", "Set Static Body", () => this.m_platform.SetType(b2BodyType.b2_staticBody)),
+            hotKeyPress([], "k", "Set Kinematic Body", () => {
+                this.m_platform.SetType(b2BodyType.b2_kinematicBody);
+                this.m_platform.SetLinearVelocity(new b2Vec2(-this.m_speed, 0.0));
                 this.m_platform.SetAngularVelocity(0.0);
-                break;
-        }
+            }),
+        ];
     }
 
-    public Step(settings: testbed.Settings): void {
+    public Step(settings: Settings, timeStep: number): void {
         // Drive the kinematic body.
-        if (this.m_platform.GetType() === b2.BodyType.b2_kinematicBody) {
-            /*b2.Vec2*/
-            const p = this.m_platform.GetTransform().p;
-            /*b2.Vec2*/
+        if (this.m_platform.GetType() === b2BodyType.b2_kinematicBody) {
+            /* b2Vec2 */
+            const { p } = this.m_platform.GetTransform();
+            /* b2Vec2 */
             const v = this.m_platform.GetLinearVelocity();
 
             if ((p.x < -10.0 && v.x < 0.0) || (p.x > 10.0 && v.x > 0.0)) {
-                this.m_platform.SetLinearVelocity(new b2.Vec2(-v.x, v.y));
+                this.m_platform.SetLinearVelocity(new b2Vec2(-v.x, v.y));
             }
         }
 
-        super.Step(settings);
-        testbed.g_debugDraw.DrawString(5, this.m_textLine, "Keys: (d) dynamic, (s) static, (k) kinematic");
-        this.m_textLine += testbed.DRAW_STRING_NEW_LINE;
-    }
-
-    public static Create(): testbed.Test {
-        return new BodyTypes();
+        super.Step(settings, timeStep);
     }
 }

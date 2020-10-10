@@ -16,13 +16,13 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-// DEBUG: import { b2Assert } from "../common/b2_settings.js";
-import { b2Maybe } from "../common/b2_settings.js";
-import { b2Vec2, b2Transform, XY } from "../common/b2_math.js";
-import { b2AABB, b2RayCastInput, b2RayCastOutput } from "../collision/b2_collision.js";
-import { b2TreeNode } from "../collision/b2_dynamic_tree.js";
-import { b2Shape, b2ShapeType, b2MassData } from "../collision/b2_shape.js";
-import { b2Body } from "./b2_body.js";
+// DEBUG: import { b2Assert } from "../common/b2_settings";
+import { b2Maybe } from "../common/b2_settings";
+import { b2Vec2, b2Transform, XY } from "../common/b2_math";
+import { b2AABB, b2RayCastInput, b2RayCastOutput } from "../collision/b2_collision";
+import { b2TreeNode } from "../collision/b2_dynamic_tree";
+import { b2Shape, b2ShapeType, b2MassData } from "../collision/b2_shape";
+import type { b2Body } from "./b2_body";
 
 /// This holds contact filtering data.
 export interface b2IFilter {
@@ -44,16 +44,16 @@ export class b2Filter implements b2IFilter {
     public static readonly DEFAULT: Readonly<b2Filter> = new b2Filter();
 
     /// The collision category bits. Normally you would just set one bit.
-    public categoryBits: number = 0x0001;
+    public categoryBits = 0x0001;
 
     /// The collision mask bits. This states the categories that this
     /// shape would accept for collision.
-    public maskBits: number = 0xffff;
+    public maskBits = 0xffff;
 
     /// Collision groups allow a certain group of objects to never collide (negative)
     /// or always collide (positive). Zero means no collision group. Non-zero group
     /// filtering always wins against the mask bits.
-    public groupIndex: number = 0;
+    public groupIndex = 0;
 
     public Clone(): b2Filter {
         return new b2Filter().Copy(this);
@@ -63,7 +63,7 @@ export class b2Filter implements b2IFilter {
         // DEBUG: b2Assert(this !== other);
         this.categoryBits = other.categoryBits;
         this.maskBits = other.maskBits;
-        this.groupIndex = other.groupIndex || 0;
+        this.groupIndex = other.groupIndex ?? 0;
         return this;
     }
 }
@@ -106,17 +106,17 @@ export class b2FixtureDef implements b2IFixtureDef {
     public userData: any = null;
 
     /// The friction coefficient, usually in the range [0,1].
-    public friction: number = 0.2;
+    public friction = 0.2;
 
     /// The restitution (elasticity) usually in the range [0,1].
-    public restitution: number = 0;
+    public restitution = 0;
 
     /// The density, usually in kg/m^2.
-    public density: number = 0;
+    public density = 0;
 
     /// A sensor shape collects contact information but never generates a collision
     /// response.
-    public isSensor: boolean = false;
+    public isSensor = false;
 
     /// Contact filtering data.
     public readonly filter: b2Filter = new b2Filter();
@@ -125,24 +125,34 @@ export class b2FixtureDef implements b2IFixtureDef {
 /// This proxy is used internally to connect fixtures to the broad-phase.
 export class b2FixtureProxy {
     public readonly aabb: b2AABB = new b2AABB();
+
     public readonly fixture: b2Fixture;
+
     public readonly childIndex: number = 0;
+
     public treeNode: b2TreeNode<b2FixtureProxy>;
+
     constructor(fixture: b2Fixture, childIndex: number) {
         this.fixture = fixture;
         this.childIndex = childIndex;
         this.fixture.m_shape.ComputeAABB(this.aabb, this.fixture.m_body.GetTransform(), childIndex);
         this.treeNode = this.fixture.m_body.m_world.m_contactManager.m_broadPhase.CreateProxy(this.aabb, this);
     }
+
     public Reset(): void {
         this.fixture.m_body.m_world.m_contactManager.m_broadPhase.DestroyProxy(this.treeNode);
     }
+
     public Touch(): void {
         this.fixture.m_body.m_world.m_contactManager.m_broadPhase.TouchProxy(this.treeNode);
     }
+
     private static Synchronize_s_aabb1 = new b2AABB();
+
     private static Synchronize_s_aabb2 = new b2AABB();
+
     private static Synchronize_s_displacement = new b2Vec2();
+
     public Synchronize(transform1: b2Transform, transform2: b2Transform): void {
         if (transform1 === transform2) {
             this.fixture.m_shape.ComputeAABB(this.aabb, transform1, this.childIndex);
@@ -167,24 +177,27 @@ export class b2FixtureProxy {
 /// Fixtures are created via b2Body::CreateFixture.
 /// @warning you cannot reuse fixtures.
 export class b2Fixture {
-    public m_density: number = 0;
+    public m_density = 0;
 
     public m_next: b2Fixture | null = null;
+
     public readonly m_body: b2Body;
 
     public readonly m_shape: b2Shape;
 
-    public m_friction: number = 0;
-    public m_restitution: number = 0;
+    public m_friction = 0;
+
+    public m_restitution = 0;
 
     public readonly m_proxies: b2FixtureProxy[] = [];
+
     public get m_proxyCount(): number {
         return this.m_proxies.length;
     }
 
     public readonly m_filter: b2Filter = new b2Filter();
 
-    public m_isSensor: boolean = false;
+    public m_isSensor = false;
 
     public m_userData: any = null;
 
@@ -251,7 +264,7 @@ export class b2Fixture {
         let edge = this.m_body.GetContactList();
 
         while (edge) {
-            const contact = edge.contact;
+            const { contact } = edge;
             const fixtureA = contact.GetFixtureA();
             const fixtureB = contact.GetFixtureB();
             if (fixtureA === this || fixtureB === this) {
@@ -293,12 +306,6 @@ export class b2Fixture {
     public TestPoint(p: XY): boolean {
         return this.m_shape.TestPoint(this.m_body.GetTransform(), p);
     }
-
-    // #if B2_ENABLE_PARTICLE
-    public ComputeDistance(p: b2Vec2, normal: b2Vec2, childIndex: number): number {
-        return this.m_shape.ComputeDistance(this.m_body.GetTransform(), p, normal, childIndex);
-    }
-    // #endif
 
     /// Cast a ray against this shape.
     /// @param output the ray-cast results.
@@ -382,7 +389,7 @@ export class b2Fixture {
             throw new Error();
         }
         // Create proxies in the broad-phase.
-        for (let i: number = 0; i < this.m_shape.GetChildCount(); ++i) {
+        for (let i = 0; i < this.m_shape.GetChildCount(); ++i) {
             this.m_proxies[i] = new b2FixtureProxy(this, i);
         }
     }

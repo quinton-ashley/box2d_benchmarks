@@ -16,19 +16,18 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-// DEBUG: import { b2Assert } from "../common/b2_settings.js";
-import { b2_pi, b2_epsilon } from "../common/b2_settings.js";
-import { b2Sq, b2Sqrt, b2Asin, b2Pow, b2Vec2, b2Transform, XY } from "../common/b2_math.js";
-import { b2AABB, b2RayCastInput, b2RayCastOutput } from "./b2_collision.js";
-import { b2DistanceProxy } from "./b2_distance.js";
-import { b2MassData } from "./b2_shape.js";
-import { b2Shape, b2ShapeType } from "./b2_shape.js";
+// DEBUG: import { b2Assert } from "../common/b2_settings";
+import { b2_pi, b2_epsilon } from "../common/b2_settings";
+import { b2Sq, b2Sqrt, b2Asin, b2Pow, b2Vec2, b2Transform, XY } from "../common/b2_math";
+import { b2AABB, b2RayCastInput, b2RayCastOutput } from "./b2_collision";
+import { b2DistanceProxy } from "./b2_distance";
+import { b2MassData, b2Shape, b2ShapeType } from "./b2_shape";
 
 /// A solid circle shape
 export class b2CircleShape extends b2Shape {
     public readonly m_p: b2Vec2 = new b2Vec2();
 
-    constructor(radius: number = 0) {
+    constructor(radius = 0) {
         super(b2ShapeType.e_circleShape, radius);
     }
 
@@ -59,22 +58,14 @@ export class b2CircleShape extends b2Shape {
 
     /// Implement b2Shape.
     private static TestPoint_s_center = new b2Vec2();
+
     private static TestPoint_s_d = new b2Vec2();
+
     public TestPoint(transform: b2Transform, p: XY): boolean {
         const center: b2Vec2 = b2Transform.MulXV(transform, this.m_p, b2CircleShape.TestPoint_s_center);
         const d: b2Vec2 = b2Vec2.SubVV(p, center, b2CircleShape.TestPoint_s_d);
         return b2Vec2.DotVV(d, d) <= b2Sq(this.m_radius);
     }
-
-    // #if B2_ENABLE_PARTICLE
-    /// @see b2Shape::ComputeDistance
-    private static ComputeDistance_s_center = new b2Vec2();
-    public ComputeDistance(xf: b2Transform, p: b2Vec2, normal: b2Vec2, childIndex: number): number {
-        const center = b2Transform.MulXV(xf, this.m_p, b2CircleShape.ComputeDistance_s_center);
-        b2Vec2.SubVV(p, center, normal);
-        return normal.Normalize() - this.m_radius;
-    }
-    // #endif
 
     /// Implement b2Shape.
     /// @note because the circle is solid, rays that start inside do not hit because the normal is
@@ -84,13 +75,16 @@ export class b2CircleShape extends b2Shape {
     // x = s + a * r
     // norm(x) = radius
     private static RayCast_s_position = new b2Vec2();
+
     private static RayCast_s_s = new b2Vec2();
+
     private static RayCast_s_r = new b2Vec2();
+
     public RayCast(
         output: b2RayCastOutput,
         input: b2RayCastInput,
         transform: b2Transform,
-        childIndex: number
+        _childIndex: number
     ): boolean {
         const position: b2Vec2 = b2Transform.MulXV(transform, this.m_p, b2CircleShape.RayCast_s_position);
         const s: b2Vec2 = b2Vec2.SubVV(input.p1, position, b2CircleShape.RayCast_s_s);
@@ -111,7 +105,7 @@ export class b2CircleShape extends b2Shape {
         let a: number = -(c + b2Sqrt(sigma));
 
         // Is the intersection point on the segment?
-        if (0 <= a && a <= input.maxFraction * rr) {
+        if (a >= 0 && a <= input.maxFraction * rr) {
             a /= rr;
             output.fraction = a;
             b2Vec2.AddVMulSV(s, a, r, output.normal).SelfNormalize();
@@ -123,7 +117,8 @@ export class b2CircleShape extends b2Shape {
 
     /// @see b2Shape::ComputeAABB
     private static ComputeAABB_s_p = new b2Vec2();
-    public ComputeAABB(aabb: b2AABB, transform: b2Transform, childIndex: number): void {
+
+    public ComputeAABB(aabb: b2AABB, transform: b2Transform, _childIndex: number): void {
         const p: b2Vec2 = b2Transform.MulXV(transform, this.m_p, b2CircleShape.ComputeAABB_s_p);
         aabb.lowerBound.Set(p.x - this.m_radius, p.y - this.m_radius);
         aabb.upperBound.Set(p.x + this.m_radius, p.y + this.m_radius);
@@ -139,7 +134,7 @@ export class b2CircleShape extends b2Shape {
         massData.I = massData.mass * (0.5 * radius_sq + b2Vec2.DotVV(this.m_p, this.m_p));
     }
 
-    public SetupDistanceProxy(proxy: b2DistanceProxy, index: number): void {
+    public SetupDistanceProxy(proxy: b2DistanceProxy, _index: number): void {
         proxy.m_vertices = proxy.m_buffer;
         proxy.m_vertices[0].Copy(this.m_p);
         proxy.m_count = 1;

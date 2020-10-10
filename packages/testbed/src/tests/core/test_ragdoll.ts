@@ -16,30 +16,42 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import * as b2 from "@box2d";
-import * as testbed from "../testbed.js";
+import {
+    b2BodyDef,
+    b2Vec2,
+    b2ChainShape,
+    b2FixtureDef,
+    b2RevoluteJointDef,
+    b2BodyType,
+    b2CircleShape,
+    b2PolygonShape,
+    b2DegToRad,
+    XY,
+} from "@box2d/core";
 
-export class TestRagdoll extends testbed.Test {
+import { Test } from "../../test";
+
+export class TestRagdoll extends Test {
     constructor() {
         super();
 
         {
-            const bd = new b2.BodyDef();
+            const bd = new b2BodyDef();
             const ground = this.m_world.CreateBody(bd);
 
-            const vertices = [];
-            vertices[0] = new b2.Vec2(-30.0, 0.0);
-            vertices[1] = new b2.Vec2(30.0, 0.0);
-            vertices[2] = new b2.Vec2(30.0, 40.0);
-            vertices[3] = new b2.Vec2(-30.0, 40.0);
-            const shape = new b2.ChainShape();
-            shape.CreateLoop(vertices);
+            const shape = new b2ChainShape();
+            shape.CreateLoop([
+                new b2Vec2(-30.0, 0.0),
+                new b2Vec2(-30.0, 40.0),
+                new b2Vec2(30.0, 40.0),
+                new b2Vec2(30.0, 0.0),
+            ]);
             ground.CreateFixture(shape, 0.0);
         }
 
-        const bd = new b2.BodyDef();
-        const fd = new b2.FixtureDef();
-        const jd = new b2.RevoluteJointDef();
+        const bd = new b2BodyDef();
+        const fd = new b2FixtureDef();
+        const jd = new b2RevoluteJointDef();
 
         // Add 2 ragdolls along the top
         for (let i = 0; i < 2; ++i) {
@@ -48,26 +60,26 @@ export class TestRagdoll extends testbed.Test {
 
             // BODIES
             // Set these to dynamic bodies
-            bd.type = b2.BodyType.b2_dynamicBody;
+            bd.type = b2BodyType.b2_dynamicBody;
 
             // Head
-            fd.shape = new b2.CircleShape(1.25);
+            fd.shape = new b2CircleShape(1.25);
             fd.density = 1.0;
             fd.friction = 0.4;
             fd.restitution = 0.3;
             bd.position.Set(startX, startY);
             const head = this.m_world.CreateBody(bd);
             head.CreateFixture(fd);
-            //if (i === 0)
-            //{
+            // if (i === 0)
+            // {
             head.ApplyLinearImpulse(
-                new b2.Vec2(Math.random() * 1000.0 - 500.0, Math.random() * 1000.0 - 500.0),
+                new b2Vec2(Math.random() * 1000.0 - 500.0, Math.random() * 1000.0 - 500.0),
                 head.GetWorldCenter()
             );
-            //}
+            // }
 
             // Torso1
-            const shape = new b2.PolygonShape();
+            const shape = new b2PolygonShape();
             fd.shape = shape;
             shape.SetAsBox(1.5, 1.0);
             fd.density = 1.0;
@@ -151,72 +163,72 @@ export class TestRagdoll extends testbed.Test {
             jd.enableLimit = true;
 
             // Head to shoulders
-            jd.lowerAngle = b2.DegToRad(-40.0);
-            jd.upperAngle = b2.DegToRad(40.0);
-            jd.Initialize(torso1, head, new b2.Vec2(startX, startY - 1.5));
+            jd.lowerAngle = b2DegToRad(-40.0);
+            jd.upperAngle = b2DegToRad(40.0);
+            jd.Initialize(torso1, head, new b2Vec2(startX, startY - 1.5));
             this.m_world.CreateJoint(jd);
 
             // Upper arm to shoulders
             // L
-            jd.lowerAngle = b2.DegToRad(-85.0);
-            jd.upperAngle = b2.DegToRad(130.0);
-            jd.Initialize(torso1, upperArmL, new b2.Vec2(startX - 1.8, startY - 2.0));
+            jd.lowerAngle = b2DegToRad(-85.0);
+            jd.upperAngle = b2DegToRad(130.0);
+            jd.Initialize(torso1, upperArmL, new b2Vec2(startX - 1.8, startY - 2.0));
             this.m_world.CreateJoint(jd);
             // R
-            jd.lowerAngle = b2.DegToRad(-130.0);
-            jd.upperAngle = b2.DegToRad(85.0);
-            jd.Initialize(torso1, upperArmR, new b2.Vec2(startX + 1.8, startY - 2.0));
+            jd.lowerAngle = b2DegToRad(-130.0);
+            jd.upperAngle = b2DegToRad(85.0);
+            jd.Initialize(torso1, upperArmR, new b2Vec2(startX + 1.8, startY - 2.0));
             this.m_world.CreateJoint(jd);
 
             // Lower arm to upper arm
             // L
-            jd.lowerAngle = b2.DegToRad(-130.0);
-            jd.upperAngle = b2.DegToRad(10.0);
-            jd.Initialize(upperArmL, lowerArmL, new b2.Vec2(startX - 4.5, startY - 2.0));
+            jd.lowerAngle = b2DegToRad(-130.0);
+            jd.upperAngle = b2DegToRad(10.0);
+            jd.Initialize(upperArmL, lowerArmL, new b2Vec2(startX - 4.5, startY - 2.0));
             this.m_world.CreateJoint(jd);
             // R
-            jd.lowerAngle = b2.DegToRad(-10.0);
-            jd.upperAngle = b2.DegToRad(130.0);
-            jd.Initialize(upperArmR, lowerArmR, new b2.Vec2(startX + 4.5, startY - 2.0));
+            jd.lowerAngle = b2DegToRad(-10.0);
+            jd.upperAngle = b2DegToRad(130.0);
+            jd.Initialize(upperArmR, lowerArmR, new b2Vec2(startX + 4.5, startY - 2.0));
             this.m_world.CreateJoint(jd);
 
             // Shoulders/stomach
-            jd.lowerAngle = b2.DegToRad(-15.0);
-            jd.upperAngle = b2.DegToRad(15.0);
-            jd.Initialize(torso1, torso2, new b2.Vec2(startX, startY - 3.5));
+            jd.lowerAngle = b2DegToRad(-15.0);
+            jd.upperAngle = b2DegToRad(15.0);
+            jd.Initialize(torso1, torso2, new b2Vec2(startX, startY - 3.5));
             this.m_world.CreateJoint(jd);
             // Stomach/hips
-            jd.Initialize(torso2, torso3, new b2.Vec2(startX, startY - 5.0));
+            jd.Initialize(torso2, torso3, new b2Vec2(startX, startY - 5.0));
             this.m_world.CreateJoint(jd);
 
             // Torso to upper leg
             // L
-            jd.lowerAngle = b2.DegToRad(-25.0);
-            jd.upperAngle = b2.DegToRad(45.0);
-            jd.Initialize(torso3, upperLegL, new b2.Vec2(startX - 0.8, startY - 7.2));
+            jd.lowerAngle = b2DegToRad(-25.0);
+            jd.upperAngle = b2DegToRad(45.0);
+            jd.Initialize(torso3, upperLegL, new b2Vec2(startX - 0.8, startY - 7.2));
             this.m_world.CreateJoint(jd);
             // R
-            jd.lowerAngle = b2.DegToRad(-45.0);
-            jd.upperAngle = b2.DegToRad(25.0);
-            jd.Initialize(torso3, upperLegR, new b2.Vec2(startX + 0.8, startY - 7.2));
+            jd.lowerAngle = b2DegToRad(-45.0);
+            jd.upperAngle = b2DegToRad(25.0);
+            jd.Initialize(torso3, upperLegR, new b2Vec2(startX + 0.8, startY - 7.2));
             this.m_world.CreateJoint(jd);
 
             // Upper leg to lower leg
             // L
-            jd.lowerAngle = b2.DegToRad(-25.0);
-            jd.upperAngle = b2.DegToRad(115.0);
-            jd.Initialize(upperLegL, lowerLegL, new b2.Vec2(startX - 0.8, startY - 10.5));
+            jd.lowerAngle = b2DegToRad(-25.0);
+            jd.upperAngle = b2DegToRad(115.0);
+            jd.Initialize(upperLegL, lowerLegL, new b2Vec2(startX - 0.8, startY - 10.5));
             this.m_world.CreateJoint(jd);
             // R
-            jd.lowerAngle = b2.DegToRad(-115.0);
-            jd.upperAngle = b2.DegToRad(25.0);
-            jd.Initialize(upperLegR, lowerLegR, new b2.Vec2(startX + 0.8, startY - 10.5));
+            jd.lowerAngle = b2DegToRad(-115.0);
+            jd.upperAngle = b2DegToRad(25.0);
+            jd.Initialize(upperLegR, lowerLegR, new b2Vec2(startX + 0.8, startY - 10.5));
             this.m_world.CreateJoint(jd);
         }
 
         // these are static bodies so set the type accordingly
-        bd.type = b2.BodyType.b2_staticBody;
-        const shape = new b2.PolygonShape();
+        bd.type = b2BodyType.b2_staticBody;
+        const shape = new b2PolygonShape();
         fd.shape = shape;
         fd.density = 0.0;
         fd.friction = 0.4;
@@ -241,11 +253,14 @@ export class TestRagdoll extends testbed.Test {
         this.m_world.CreateBody(bd).CreateFixture(fd);
     }
 
-    public Step(settings: testbed.Settings): void {
-        super.Step(settings);
+    public GetDefaultViewZoom() {
+        return 15;
     }
 
-    public static Create(): testbed.Test {
-        return new TestRagdoll();
+    public getCenter(): XY {
+        return {
+            x: 0,
+            y: 15,
+        };
     }
 }

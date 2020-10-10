@@ -16,23 +16,35 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-// #if B2_ENABLE_PARTICLE
+import { b2Body, b2BodyDef, b2PolygonShape, b2Vec2, b2Color, b2Max, b2Min, XY } from "@box2d/core";
+import { b2ParticleSystem, b2ParticleFlag } from "@box2d/particles";
 
-import * as b2 from "@box2d";
-import * as testbed from "../testbed.js";
+import { Test } from "../../test";
+import { Settings } from "../../settings";
+import { EmittedParticleCallback, RadialEmitter } from "../../utils/particles/particle_emitter";
+import {
+    ParticleParameterValue,
+    ParticleParameter,
+    ParticleParameterOptions,
+    ParticleParameterDefinition,
+} from "../../utils/particles/particle_parameter";
+import { HotKey, hotKeyPress } from "../../utils/hotkeys";
 
-export class ParticleLifetimeRandomizer extends testbed.EmittedParticleCallback {
+export class ParticleLifetimeRandomizer extends EmittedParticleCallback {
     public m_minLifetime = 0.0;
+
     public m_maxLifetime = 0.0;
+
     constructor(minLifetime: number, maxLifetime: number) {
         super();
         this.m_minLifetime = minLifetime;
         this.m_maxLifetime = maxLifetime;
     }
+
     /**
      * Called for each created particle.
      */
-    public ParticleCreated(system: b2.ParticleSystem, particleIndex: number): void {
+    public ParticleCreated(system: b2ParticleSystem, particleIndex: number): void {
         system.SetParticleLifetime(
             particleIndex,
             Math.random() * (this.m_maxLifetime - this.m_minLifetime) + this.m_minLifetime
@@ -45,15 +57,17 @@ export class ParticleLifetimeRandomizer extends testbed.EmittedParticleCallback 
  * spawning particles with finite lifetimes that pour into the
  * box.
  */
-export class Faucet extends testbed.Test {
+export class Faucet extends Test {
     /**
      * Used to cycle through particle colors.
      */
     public m_particleColorOffset = 0.0;
+
     /**
      * Particle emitter.
      */
-    public m_emitter: testbed.RadialEmitter;
+    public m_emitter: RadialEmitter;
+
     /**
      * Callback which sets the lifetime of emitted particles.
      */
@@ -63,58 +77,71 @@ export class Faucet extends testbed.Test {
      * Minimum lifetime of particles in seconds.
      */
     public static readonly k_particleLifetimeMin = 30.0;
+
     /**
      * Maximum lifetime of particles in seconds.
      */
     public static readonly k_particleLifetimeMax = 50.0;
+
     /**
      * Height of the container.
      */
     public static readonly k_containerHeight = 0.2;
+
     /**
      * Width of the container.
      */
     public static readonly k_containerWidth = 1.0;
+
     /**
      * Thickness of the container's walls and bottom.
      */
     public static readonly k_containerThickness = 0.05;
+
     /**
      * Width of the faucet relative to the container width.
      */
     public static readonly k_faucetWidth = 0.1;
+
     /**
      * Height of the faucet relative to the base as a fraction of
      * the container height.
      */
     public static readonly k_faucetHeight = 15.0;
+
     /**
      * Length of the faucet as a fraction of the particle diameter.
      */
     public static readonly k_faucetLength = 2.0;
+
     /**
      * Spout height as a fraction of the faucet length.  This should
      * be greater than 1.0f).
      */
     public static readonly k_spoutLength = 2.0;
+
     /**
      * Spout width as a fraction of the *faucet* width.  This should
      * be greater than 1.0).
      */
     public static readonly k_spoutWidth = 1.1;
+
     /**
      * Maximum number of particles in the system.
      */
     public static readonly k_maxParticleCount = 1000;
+
     /**
      * Factor that is used to increase / decrease the emit rate.
      * This should be greater than 1.0.
      */
     public static readonly k_emitRateChangeFactor = 1.05;
+
     /**
      * Minimum emit rate of the faucet in particles per second.
      */
     public static readonly k_emitRateMin = 1.0;
+
     /**
      * Maximum emit rate of the faucet in particles per second.
      */
@@ -123,52 +150,38 @@ export class Faucet extends testbed.Test {
     /**
      * Selection of particle types for this test.
      */
-    public static readonly k_paramValues: testbed.ParticleParameterValue[] = [
-        new testbed.ParticleParameterValue(
-            b2.ParticleFlag.b2_waterParticle,
-            testbed.ParticleParameter.k_DefaultOptions,
-            "water"
-        ),
-        new testbed.ParticleParameterValue(
-            b2.ParticleFlag.b2_waterParticle,
-            testbed.ParticleParameter.k_DefaultOptions | testbed.ParticleParameterOptions.OptionStrictContacts,
+    public static readonly k_paramValues: ParticleParameterValue[] = [
+        new ParticleParameterValue(b2ParticleFlag.b2_waterParticle, ParticleParameter.k_DefaultOptions, "water"),
+        new ParticleParameterValue(
+            b2ParticleFlag.b2_waterParticle,
+            ParticleParameter.k_DefaultOptions | ParticleParameterOptions.OptionStrictContacts,
             "water (strict)"
         ),
-        new testbed.ParticleParameterValue(
-            b2.ParticleFlag.b2_viscousParticle,
-            testbed.ParticleParameter.k_DefaultOptions,
-            "viscous"
-        ),
-        new testbed.ParticleParameterValue(
-            b2.ParticleFlag.b2_powderParticle,
-            testbed.ParticleParameter.k_DefaultOptions,
-            "powder"
-        ),
-        new testbed.ParticleParameterValue(
-            b2.ParticleFlag.b2_tensileParticle,
-            testbed.ParticleParameter.k_DefaultOptions,
-            "tensile"
-        ),
-        new testbed.ParticleParameterValue(
-            b2.ParticleFlag.b2_colorMixingParticle,
-            testbed.ParticleParameter.k_DefaultOptions,
+        new ParticleParameterValue(b2ParticleFlag.b2_viscousParticle, ParticleParameter.k_DefaultOptions, "viscous"),
+        new ParticleParameterValue(b2ParticleFlag.b2_powderParticle, ParticleParameter.k_DefaultOptions, "powder"),
+        new ParticleParameterValue(b2ParticleFlag.b2_tensileParticle, ParticleParameter.k_DefaultOptions, "tensile"),
+        new ParticleParameterValue(
+            b2ParticleFlag.b2_colorMixingParticle,
+            ParticleParameter.k_DefaultOptions,
             "color mixing"
         ),
-        new testbed.ParticleParameterValue(
-            b2.ParticleFlag.b2_staticPressureParticle,
-            testbed.ParticleParameter.k_DefaultOptions,
+        new ParticleParameterValue(
+            b2ParticleFlag.b2_staticPressureParticle,
+            ParticleParameter.k_DefaultOptions,
             "static pressure"
         ),
     ];
-    public static readonly k_paramDef: testbed.ParticleParameterDefinition[] = [
-        new testbed.ParticleParameterDefinition(Faucet.k_paramValues),
+
+    public static readonly k_paramDef: ParticleParameterDefinition[] = [
+        new ParticleParameterDefinition(Faucet.k_paramValues),
     ];
+
     public static readonly k_paramDefCount = Faucet.k_paramDef.length;
 
     constructor() {
         super(); // base class constructor
 
-        this.m_emitter = new testbed.RadialEmitter();
+        this.m_emitter = new RadialEmitter();
         this.m_lifetimeRandomizer = new ParticleLifetimeRandomizer(
             Faucet.k_particleLifetimeMin,
             Faucet.k_particleLifetimeMax
@@ -179,34 +192,34 @@ export class Faucet extends testbed.Test {
         this.m_particleSystem.SetMaxParticleCount(Faucet.k_maxParticleCount);
         this.m_particleSystem.SetDestructionByAge(true);
 
-        let ground: b2.Body;
+        let ground: b2Body;
         {
-            const bd = new b2.BodyDef();
+            const bd = new b2BodyDef();
             ground = this.m_world.CreateBody(bd);
         }
 
         // Create the container / trough style sink.
         {
-            const shape = new b2.PolygonShape();
+            const shape = new b2PolygonShape();
             const height = Faucet.k_containerHeight + Faucet.k_containerThickness;
             shape.SetAsBox(
                 Faucet.k_containerWidth - Faucet.k_containerThickness,
                 Faucet.k_containerThickness,
-                new b2.Vec2(0.0, 0.0),
+                new b2Vec2(0.0, 0.0),
                 0.0
             );
             ground.CreateFixture(shape, 0.0);
             shape.SetAsBox(
                 Faucet.k_containerThickness,
                 height,
-                new b2.Vec2(-Faucet.k_containerWidth, Faucet.k_containerHeight),
+                new b2Vec2(-Faucet.k_containerWidth, Faucet.k_containerHeight),
                 0.0
             );
             ground.CreateFixture(shape, 0.0);
             shape.SetAsBox(
                 Faucet.k_containerThickness,
                 height,
-                new b2.Vec2(Faucet.k_containerWidth, Faucet.k_containerHeight),
+                new b2Vec2(Faucet.k_containerWidth, Faucet.k_containerHeight),
                 0.0
             );
             ground.CreateFixture(shape, 0.0);
@@ -214,11 +227,11 @@ export class Faucet extends testbed.Test {
 
         // Create ground under the container to catch overflow.
         {
-            const shape = new b2.PolygonShape();
+            const shape = new b2PolygonShape();
             shape.SetAsBox(
                 Faucet.k_containerWidth * 5.0,
                 Faucet.k_containerThickness,
-                new b2.Vec2(0.0, Faucet.k_containerThickness * -2.0),
+                new b2Vec2(0.0, Faucet.k_containerThickness * -2.0),
                 0.0
             );
             ground.CreateFixture(shape, 0.0);
@@ -226,7 +239,7 @@ export class Faucet extends testbed.Test {
 
         // Create the faucet spout.
         {
-            const shape = new b2.PolygonShape();
+            const shape = new b2PolygonShape();
             const particleDiameter = this.m_particleSystem.GetRadius() * 2.0;
             const faucetLength = Faucet.k_faucetLength * particleDiameter;
             // Dimensions of the faucet in world units.
@@ -235,14 +248,14 @@ export class Faucet extends testbed.Test {
             // Height from the bottom of the container.
             const height = Faucet.k_containerHeight * Faucet.k_faucetHeight + length * 0.5;
 
-            shape.SetAsBox(particleDiameter, length, new b2.Vec2(-width, height), 0.0);
+            shape.SetAsBox(particleDiameter, length, new b2Vec2(-width, height), 0.0);
             ground.CreateFixture(shape, 0.0);
-            shape.SetAsBox(particleDiameter, length, new b2.Vec2(width, height), 0.0);
+            shape.SetAsBox(particleDiameter, length, new b2Vec2(width, height), 0.0);
             ground.CreateFixture(shape, 0.0);
             shape.SetAsBox(
                 width - particleDiameter,
                 particleDiameter,
-                new b2.Vec2(0.0, height + length - particleDiameter),
+                new b2Vec2(0.0, height + length - particleDiameter),
                 0.0
             );
             ground.CreateFixture(shape, 0.0);
@@ -254,125 +267,98 @@ export class Faucet extends testbed.Test {
             this.m_emitter.SetParticleSystem(this.m_particleSystem);
             this.m_emitter.SetCallback(this.m_lifetimeRandomizer);
             this.m_emitter.SetPosition(
-                new b2.Vec2(
+                new b2Vec2(
                     Faucet.k_containerWidth * Faucet.k_faucetWidth,
                     Faucet.k_containerHeight * Faucet.k_faucetHeight + faucetLength * 0.5
                 )
             );
-            this.m_emitter.SetVelocity(new b2.Vec2(0.0, 0.0));
-            this.m_emitter.SetSize(new b2.Vec2(0.0, faucetLength));
-            this.m_emitter.SetColor(new b2.Color(1, 1, 1, 1));
+            this.m_emitter.SetVelocity(new b2Vec2(0.0, 0.0));
+            this.m_emitter.SetSize(new b2Vec2(0.0, faucetLength));
+            this.m_emitter.SetColor(new b2Color(1, 1, 1, 1));
             this.m_emitter.SetEmitRate(120.0);
-            this.m_emitter.SetParticleFlags(testbed.Test.GetParticleParameterValue());
+            this.m_emitter.SetParticleFlags(Test.GetParticleParameterValue());
         }
 
         // Don't restart the test when changing particle types.
-        testbed.Test.SetRestartOnParticleParameterChange(false);
+        Test.SetRestartOnParticleParameterChange(false);
         // Limit the set of particle types.
-        testbed.Test.SetParticleParameters(Faucet.k_paramDef, Faucet.k_paramDefCount);
+        Test.SetParticleParameters(Faucet.k_paramDef, Faucet.k_paramDefCount);
     }
 
-    public Step(settings: testbed.Settings): void {
+    public Step(settings: Settings, timeStep: number): void {
         let dt = settings.m_hertz > 0.0 ? 1.0 / settings.m_hertz : 0.0;
 
         if (settings.m_pause && !settings.m_singleStep) {
             dt = 0.0;
         }
 
-        super.Step(settings);
+        super.Step(settings, timeStep);
         this.m_particleColorOffset += dt;
         // Keep m_particleColorOffset in the range 0.0f..k_ParticleColorsCount.
-        if (this.m_particleColorOffset >= testbed.Test.k_ParticleColorsCount) {
-            this.m_particleColorOffset -= testbed.Test.k_ParticleColorsCount;
+        if (this.m_particleColorOffset >= Test.k_ParticleColorsCount) {
+            this.m_particleColorOffset -= Test.k_ParticleColorsCount;
         }
 
         // Propagate the currently selected particle flags.
-        this.m_emitter.SetParticleFlags(testbed.Test.GetParticleParameterValue());
+        this.m_emitter.SetParticleFlags(Test.GetParticleParameterValue());
 
         // If this is a color mixing particle, add some color.
         ///  b2Color color(1, 1, 1, 1);
-        if (this.m_emitter.GetParticleFlags() & b2.ParticleFlag.b2_colorMixingParticle) {
+        if (this.m_emitter.GetParticleFlags() & b2ParticleFlag.b2_colorMixingParticle) {
             // Each second, select a different color.
             this.m_emitter.SetColor(
-                testbed.Test.k_ParticleColors[
-                    Math.floor(this.m_particleColorOffset) % testbed.Test.k_ParticleColorsCount
-                ]
+                Test.k_ParticleColors[Math.floor(this.m_particleColorOffset) % Test.k_ParticleColorsCount]
             );
         } else {
-            this.m_emitter.SetColor(new b2.Color(1, 1, 1, 1));
+            this.m_emitter.SetColor(new b2Color(1, 1, 1, 1));
         }
 
         // Create the particles.
         this.m_emitter.Step(dt);
-
-        const k_keys = [
-            "Keys: (w) water, (q) powder",
-            "      (t) tensile, (v) viscous",
-            "      (c) color mixing, (s) static pressure",
-            "      (+) increase flow, (-) decrease flow",
-        ];
-        for (let i = 0; i < k_keys.length; ++i) {
-            testbed.g_debugDraw.DrawString(5, this.m_textLine, k_keys[i]);
-            this.m_textLine += testbed.DRAW_STRING_NEW_LINE;
-        }
     }
 
-    public Keyboard(key: string): void {
-        let parameter = 0;
-        switch (key) {
-            case "w":
-                parameter = b2.ParticleFlag.b2_waterParticle;
-                break;
-            case "q":
-                parameter = b2.ParticleFlag.b2_powderParticle;
-                break;
-            case "t":
-                parameter = b2.ParticleFlag.b2_tensileParticle;
-                break;
-            case "v":
-                parameter = b2.ParticleFlag.b2_viscousParticle;
-                break;
-            case "c":
-                parameter = b2.ParticleFlag.b2_colorMixingParticle;
-                break;
-            case "s":
-                parameter = b2.ParticleFlag.b2_staticPressureParticle;
-                break;
-            case "=":
-                ///if (this.m_shift)
-                {
-                    let emitRate = this.m_emitter.GetEmitRate();
-                    emitRate *= Faucet.k_emitRateChangeFactor;
-                    emitRate = b2.Max(emitRate, Faucet.k_emitRateMin);
-                    this.m_emitter.SetEmitRate(emitRate);
-                }
-                break;
-            case "-":
-                ///if (!this.shift)
-                {
-                    let emitRate = this.m_emitter.GetEmitRate();
-                    emitRate *= 1.0 / Faucet.k_emitRateChangeFactor;
-                    emitRate = b2.Min(emitRate, Faucet.k_emitRateMax);
-                    this.m_emitter.SetEmitRate(emitRate);
-                }
-                break;
-            default:
-                // Nothing.
-                return;
-        }
-        testbed.Test.SetParticleParameterValue(parameter);
+    getHotkeys(): HotKey[] {
+        return [
+            hotKeyPress([], "w", "Set Water", () => Test.SetParticleParameterValue(b2ParticleFlag.b2_waterParticle)),
+            hotKeyPress([], "q", "Set Powder", () => Test.SetParticleParameterValue(b2ParticleFlag.b2_powderParticle)),
+            hotKeyPress([], "t", "Set Tensile", () =>
+                Test.SetParticleParameterValue(b2ParticleFlag.b2_tensileParticle)
+            ),
+            hotKeyPress([], "v", "Set Viscous", () =>
+                Test.SetParticleParameterValue(b2ParticleFlag.b2_viscousParticle)
+            ),
+            hotKeyPress([], "c", "Set Color Mixing", () =>
+                Test.SetParticleParameterValue(b2ParticleFlag.b2_colorMixingParticle)
+            ),
+            hotKeyPress([], "s", "Set Static Pressure", () =>
+                Test.SetParticleParameterValue(b2ParticleFlag.b2_staticPressureParticle)
+            ),
+            hotKeyPress(["ctrl"], "+", "Increase Flow", () =>
+                this.SetEmitRate(
+                    b2Max(Faucet.k_emitRateMin, this.m_emitter.GetEmitRate() * Faucet.k_emitRateChangeFactor)
+                )
+            ),
+            hotKeyPress(["ctrl"], "-", "Decrease Flow", () =>
+                this.SetEmitRate(
+                    b2Min(Faucet.k_emitRateMax, this.m_emitter.GetEmitRate() / Faucet.k_emitRateChangeFactor)
+                )
+            ),
+        ];
+    }
+
+    private SetEmitRate(emitRate: number) {
+        this.m_emitter.SetEmitRate(emitRate);
+        Test.SetParticleParameterValue(0);
     }
 
     public GetDefaultViewZoom(): number {
-        return 0.1;
+        return 250;
     }
 
-    /**
-     * Create the faucet test.
-     */
-    public static Create(): Faucet {
-        return new Faucet();
+    public getCenter(): XY {
+        return {
+            x: 0,
+            y: 2,
+        };
     }
 }
-
-// #endif

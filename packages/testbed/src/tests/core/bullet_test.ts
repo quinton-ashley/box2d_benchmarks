@@ -16,44 +16,62 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import * as b2 from "@box2d";
-import * as testbed from "../testbed.js";
+import {
+    b2Body,
+    b2BodyDef,
+    b2EdgeShape,
+    b2Vec2,
+    b2PolygonShape,
+    b2BodyType,
+    b2Vec2_zero,
+    b2RandomRange,
+    b2Gjk,
+    b2Toi,
+} from "@box2d/core";
 
-export class BulletTest extends testbed.Test {
-    public m_body: b2.Body;
-    public m_bullet: b2.Body;
-    public m_x: number = 0;
+import { Test } from "../../test";
+import { Settings } from "../../settings";
+
+const formatValueAveMax = (step: number, ave: number, max: number) =>
+    `${step.toFixed(0)} [${ave.toFixed(1)}] (${max.toFixed(0)})`;
+
+export class BulletTest extends Test {
+    public m_body: b2Body;
+
+    public m_bullet: b2Body;
+
+    public m_x = 0;
 
     constructor() {
         super();
 
         {
-            /*b2.BodyDef*/
-            const bd = new b2.BodyDef();
+            /* b2BodyDef */
+            const bd = new b2BodyDef();
             bd.position.Set(0.0, 0.0);
-            /*b2.Body*/
+            /* b2Body */
             const body = this.m_world.CreateBody(bd);
 
-            /*b2.EdgeShape*/
-            const edge = new b2.EdgeShape();
+            /* b2EdgeShape */
+            const edge = new b2EdgeShape();
 
-            edge.SetTwoSided(new b2.Vec2(-10.0, 0.0), new b2.Vec2(10.0, 0.0));
+            edge.SetTwoSided(new b2Vec2(-10.0, 0.0), new b2Vec2(10.0, 0.0));
             body.CreateFixture(edge, 0.0);
 
-            /*b2.PolygonShape*/
-            const shape = new b2.PolygonShape();
-            shape.SetAsBox(0.2, 1.0, new b2.Vec2(0.5, 1.0), 0.0);
+            /* b2PolygonShape */
+            const shape = new b2PolygonShape();
+            shape.SetAsBox(0.2, 1.0, new b2Vec2(0.5, 1.0), 0.0);
             body.CreateFixture(shape, 0.0);
         }
 
         {
-            /*b2.BodyDef*/
-            const bd = new b2.BodyDef();
-            bd.type = b2.BodyType.b2_dynamicBody;
+            /* b2BodyDef */
+            const bd = new b2BodyDef();
+            bd.type = b2BodyType.b2_dynamicBody;
             bd.position.Set(0.0, 4.0);
 
-            /*b2.PolygonShape*/
-            const box = new b2.PolygonShape();
+            /* b2PolygonShape */
+            const box = new b2PolygonShape();
             box.SetAsBox(2.0, 0.1);
 
             this.m_body = this.m_world.CreateBody(bd);
@@ -61,7 +79,7 @@ export class BulletTest extends testbed.Test {
 
             box.SetAsBox(0.25, 0.25);
 
-            //this.m_x = b2.RandomRange(-1.0, 1.0);
+            // this.m_x = b2RandomRange(-1.0, 1.0);
             this.m_x = 0.20352793;
             bd.position.Set(this.m_x, 10.0);
             bd.bullet = true;
@@ -69,80 +87,65 @@ export class BulletTest extends testbed.Test {
             this.m_bullet = this.m_world.CreateBody(bd);
             this.m_bullet.CreateFixture(box, 100.0);
 
-            this.m_bullet.SetLinearVelocity(new b2.Vec2(0.0, -50.0));
+            this.m_bullet.SetLinearVelocity(new b2Vec2(0.0, -50.0));
         }
     }
 
     public Launch() {
-        this.m_body.SetTransformVec(new b2.Vec2(0.0, 4.0), 0.0);
-        this.m_body.SetLinearVelocity(b2.Vec2_zero);
+        this.m_body.SetTransformVec(new b2Vec2(0.0, 4.0), 0.0);
+        this.m_body.SetLinearVelocity(b2Vec2_zero);
         this.m_body.SetAngularVelocity(0.0);
 
-        this.m_x = b2.RandomRange(-1.0, 1.0);
-        this.m_bullet.SetTransformVec(new b2.Vec2(this.m_x, 10.0), 0.0);
-        this.m_bullet.SetLinearVelocity(new b2.Vec2(0.0, -50.0));
+        this.m_x = b2RandomRange(-1.0, 1.0);
+        this.m_bullet.SetTransformVec(new b2Vec2(this.m_x, 10.0), 0.0);
+        this.m_bullet.SetLinearVelocity(new b2Vec2(0.0, -50.0));
         this.m_bullet.SetAngularVelocity(0.0);
 
-        //  extern int32 b2.gjkCalls, b2.gjkIters, b2.gjkMaxIters;
-        //  extern int32 b2.toiCalls, b2.toiIters, b2.toiMaxIters;
-        //  extern int32 b2.toiRootIters, b2.toiMaxRootIters;
+        //  extern int32 b2Gjk.calls, b2Gjk.iters, b2Gjk.maxIters;
+        //  extern int32 b2Toi.calls, b2Toi.iters, b2Toi.maxIters;
+        //  extern int32 b2Toi.rootIters, b2Toi.maxRootIters;
 
-        // b2.gjkCalls = 0;
-        // b2.gjkIters = 0;
-        // b2.gjkMaxIters = 0;
-        b2.gjk_reset();
+        // b2Gjk.calls = 0;
+        // b2Gjk.iters = 0;
+        // b2Gjk.maxIters = 0;
+        b2Gjk.reset();
 
-        // b2.toiCalls = 0;
-        // b2.toiIters = 0;
-        // b2.toiMaxIters = 0;
-        // b2.toiRootIters = 0;
-        // b2.toiMaxRootIters = 0;
-        b2.toi_reset();
+        // b2Toi.calls = 0;
+        // b2Toi.iters = 0;
+        // b2Toi.maxIters = 0;
+        // b2Toi.rootIters = 0;
+        // b2Toi.maxRootIters = 0;
+        b2Toi.reset();
     }
 
-    public Step(settings: testbed.Settings): void {
-        super.Step(settings);
+    public GetDefaultViewZoom() {
+        return 50;
+    }
 
-        if (b2.gjkCalls > 0) {
-            // testbed.g_debugDraw.DrawString(5, this.m_textLine, "gjk calls = %d, ave gjk iters = %3.1f, max gjk iters = %d",
-            testbed.g_debugDraw.DrawString(
-                5,
-                this.m_textLine,
-                `gjk calls = ${b2.gjkCalls.toFixed(0)}, ave gjk iters = ${(b2.gjkIters / b2.gjkCalls).toFixed(
-                    1
-                )}, max gjk iters = ${b2.gjkMaxIters.toFixed(0)}`
+    public Step(settings: Settings, timeStep: number): void {
+        super.Step(settings, timeStep);
+
+        if (b2Gjk.calls > 0) {
+            this.addDebug(
+                "GJK Calls [ave Iters] (max Iters)",
+                formatValueAveMax(b2Gjk.calls, b2Gjk.iters / b2Gjk.calls, b2Gjk.maxIters)
             );
-            this.m_textLine += testbed.DRAW_STRING_NEW_LINE;
         }
 
-        if (b2.toiCalls > 0) {
-            // testbed.g_debugDraw.DrawString(5, this.m_textLine, "toi calls = %d, ave toi iters = %3.1f, max toi iters = %d",
-            testbed.g_debugDraw.DrawString(
-                5,
-                this.m_textLine,
-                `toi calls = ${b2.toiCalls}, ave toi iters = ${(b2.toiIters / b2.toiCalls).toFixed(
-                    1
-                )}, max toi iters = ${b2.toiMaxRootIters}`
+        if (b2Toi.calls > 0) {
+            this.addDebug(
+                "Toi Calls [ave Iters] (max Iters)",
+                formatValueAveMax(b2Toi.calls, b2Toi.iters / b2Toi.calls, b2Toi.maxIters)
             );
-            this.m_textLine += testbed.DRAW_STRING_NEW_LINE;
 
-            // testbed.g_debugDraw.DrawString(5, this.m_textLine, "ave toi root iters = %3.1f, max toi root iters = %d",
-            testbed.g_debugDraw.DrawString(
-                5,
-                this.m_textLine,
-                `ave toi root iters = ${(b2.toiRootIters / b2.toiCalls).toFixed(1)}, max toi root iters = ${
-                    b2.toiMaxRootIters
-                }`
+            this.addDebug(
+                "Root Toi [ave Iters] (max Iters)",
+                `[${(b2Toi.rootIters / b2Toi.calls).toFixed(1)}] (${b2Toi.maxRootIters})`
             );
-            this.m_textLine += testbed.DRAW_STRING_NEW_LINE;
         }
 
         if (this.m_stepCount % 60 === 0) {
             this.Launch();
         }
-    }
-
-    public static Create(): testbed.Test {
-        return new BulletTest();
     }
 }

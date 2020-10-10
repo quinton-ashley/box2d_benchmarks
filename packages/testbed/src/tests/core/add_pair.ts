@@ -16,18 +16,27 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import * as b2 from "@box2d";
-import * as testbed from "../testbed.js";
+import {
+    b2Vec2,
+    b2CircleShape,
+    b2BodyDef,
+    b2BodyType,
+    b2RandomRange,
+    b2PolygonShape,
+    b2Vec2_zero,
+    XY,
+} from "@box2d/core";
 
-export class AddPair extends testbed.Test {
+import { Test } from "../../test";
+
+export class AddPair extends Test {
     constructor() {
-        super();
+        super(b2Vec2_zero);
 
-        this.m_world.SetGravity(new b2.Vec2(0.0, 0.0));
         {
             // const a = 0.1;
 
-            const shape = new b2.CircleShape();
+            const shape = new b2CircleShape();
             shape.m_p.SetZero();
             shape.m_radius = 0.1;
 
@@ -37,32 +46,35 @@ export class AddPair extends testbed.Test {
             const maxY = 6.0;
 
             for (let i = 0; i < 400; ++i) {
-                const bd = new b2.BodyDef();
-                bd.type = b2.BodyType.b2_dynamicBody;
-                bd.position.Set(b2.RandomRange(minX, maxX), b2.RandomRange(minY, maxY));
+                const bd = new b2BodyDef();
+                bd.type = b2BodyType.b2_dynamicBody;
+                bd.position.Set(b2RandomRange(minX, maxX), b2RandomRange(minY, maxY));
                 const body = this.m_world.CreateBody(bd);
                 body.CreateFixture(shape, 0.01);
             }
         }
 
         {
-            const shape = new b2.PolygonShape();
+            const shape = new b2PolygonShape();
             shape.SetAsBox(1.5, 1.5);
-            const bd = new b2.BodyDef();
-            bd.type = b2.BodyType.b2_dynamicBody;
+            const bd = new b2BodyDef();
+            bd.type = b2BodyType.b2_dynamicBody;
             bd.position.Set(-40.0, 5.0);
             bd.bullet = true;
             const body = this.m_world.CreateBody(bd);
             body.CreateFixture(shape, 1.0);
-            body.SetLinearVelocity(new b2.Vec2(10.0, 0.0));
+            body.SetLinearVelocity(new b2Vec2(10.0, 0.0));
         }
     }
 
-    public Step(settings: testbed.Settings): void {
-        super.Step(settings);
+    public GetDefaultViewZoom() {
+        return 65;
     }
 
-    public static Create(): testbed.Test {
-        return new AddPair();
+    public getCenter(): XY {
+        return {
+            x: 0,
+            y: 5,
+        };
     }
 }

@@ -1,8 +1,8 @@
-import { b2_maxFloat, b2_epsilon } from "../common/b2_settings.js";
-import { b2Vec2, b2Transform } from "../common/b2_math.js";
-import { b2Manifold, b2ManifoldType } from "./b2_collision.js";
-import { b2CircleShape } from "./b2_circle_shape.js";
-import { b2PolygonShape } from "./b2_polygon_shape.js";
+import { b2_maxFloat, b2_epsilon } from "../common/b2_settings";
+import { b2Vec2, b2Transform } from "../common/b2_math";
+import { b2Manifold, b2ManifoldType } from "./b2_collision";
+import { b2CircleShape } from "./b2_circle_shape";
+import { b2PolygonShape } from "./b2_polygon_shape";
 
 const b2CollideCircles_s_pA: b2Vec2 = new b2Vec2();
 const b2CollideCircles_s_pB: b2Vec2 = new b2Vec2();
@@ -50,14 +50,14 @@ export function b2CollidePolygonAndCircle(
     const cLocal: b2Vec2 = b2Transform.MulTXV(xfA, c, b2CollidePolygonAndCircle_s_cLocal);
 
     // Find the min separating edge.
-    let normalIndex: number = 0;
+    let normalIndex = 0;
     let separation: number = -b2_maxFloat;
     const radius: number = polygonA.m_radius + circleB.m_radius;
     const vertexCount: number = polygonA.m_count;
     const vertices: b2Vec2[] = polygonA.m_vertices;
     const normals: b2Vec2[] = polygonA.m_normals;
 
-    for (let i: number = 0; i < vertexCount; ++i) {
+    for (let i = 0; i < vertexCount; ++i) {
         const s: number = b2Vec2.DotVV(normals[i], b2Vec2.SubVV(cLocal, vertices[i], b2Vec2.s_t0));
 
         if (s > radius) {
@@ -115,8 +115,8 @@ export function b2CollidePolygonAndCircle(
         manifold.points[0].id.key = 0;
     } else {
         const faceCenter: b2Vec2 = b2Vec2.MidVV(v1, v2, b2CollidePolygonAndCircle_s_faceCenter);
-        const separation = b2Vec2.DotVV(b2Vec2.SubVV(cLocal, faceCenter, b2Vec2.s_t1), normals[vertIndex1]);
-        if (separation > radius) {
+        const separation2 = b2Vec2.DotVV(b2Vec2.SubVV(cLocal, faceCenter, b2Vec2.s_t1), normals[vertIndex1]);
+        if (separation2 > radius) {
             return;
         }
 

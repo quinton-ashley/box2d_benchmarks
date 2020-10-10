@@ -16,37 +16,61 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import * as b2 from "@box2d";
-import * as testbed from "../testbed.js";
+import {
+    b2Fixture,
+    b2BodyDef,
+    b2EdgeShape,
+    b2Vec2,
+    b2PolygonShape,
+    b2BodyType,
+    b2CircleShape,
+    b2Contact,
+    b2Manifold,
+    b2_linearSlop,
+    XY,
+} from "@box2d/core";
 
-export class OneSidedPlatform extends testbed.Test {
+import { Test } from "../../test";
+
+export enum OneSidedPlatform_State {
+    e_unknown = 0,
+    e_above = 1,
+    e_below = 2,
+}
+
+export class OneSidedPlatform extends Test {
     public m_radius = 0.0;
+
     public m_top = 0.0;
+
     public m_bottom = 0.0;
+
     public m_state = OneSidedPlatform_State.e_unknown;
-    public m_platform: b2.Fixture;
-    public m_character: b2.Fixture;
+
+    public m_platform: b2Fixture;
+
+    public m_character: b2Fixture;
 
     constructor() {
         super();
 
         // Ground
         {
-            const bd = new b2.BodyDef();
+            const bd = new b2BodyDef();
             const ground = this.m_world.CreateBody(bd);
 
-            const shape = new b2.EdgeShape();
-            shape.SetTwoSided(new b2.Vec2(-40.0, 0.0), new b2.Vec2(40.0, 0.0));
+            const shape = new b2EdgeShape();
+            shape.SetTwoSided(new b2Vec2(-40.0, 0.0), new b2Vec2(40.0, 0.0));
             ground.CreateFixture(shape, 0.0);
         }
 
         // Platform
         {
-            const bd = new b2.BodyDef();
+            const bd = new b2BodyDef();
             bd.position.Set(0.0, 10.0);
             const body = this.m_world.CreateBody(bd);
 
-            const shape = new b2.PolygonShape();
+            const shape = new b2PolygonShape();
             shape.SetAsBox(3.0, 0.5);
             this.m_platform = body.CreateFixture(shape, 0.0);
 
@@ -56,23 +80,34 @@ export class OneSidedPlatform extends testbed.Test {
 
         // Actor
         {
-            const bd = new b2.BodyDef();
-            bd.type = b2.BodyType.b2_dynamicBody;
+            const bd = new b2BodyDef();
+            bd.type = b2BodyType.b2_dynamicBody;
             bd.position.Set(0.0, 12.0);
             const body = this.m_world.CreateBody(bd);
 
             this.m_radius = 0.5;
-            const shape = new b2.CircleShape();
+            const shape = new b2CircleShape();
             shape.m_radius = this.m_radius;
             this.m_character = body.CreateFixture(shape, 20.0);
 
-            body.SetLinearVelocity(new b2.Vec2(0.0, -50.0));
+            body.SetLinearVelocity(new b2Vec2(0.0, -50.0));
 
             this.m_state = OneSidedPlatform_State.e_unknown;
         }
     }
 
-    public PreSolve(contact: b2.Contact, oldManifold: b2.Manifold) {
+    public GetDefaultViewZoom() {
+        return 40;
+    }
+
+    public getCenter(): XY {
+        return {
+            x: 0,
+            y: 5,
+        };
+    }
+
+    public PreSolve(contact: b2Contact, oldManifold: b2Manifold) {
         super.PreSolve(contact, oldManifold);
 
         const fixtureA = contact.GetFixtureA();
@@ -88,22 +123,8 @@ export class OneSidedPlatform extends testbed.Test {
 
         const position = this.m_character.GetBody().GetPosition();
 
-        if (position.y < this.m_top + this.m_radius - 3.0 * b2.linearSlop) {
+        if (position.y < this.m_top + this.m_radius - 3.0 * b2_linearSlop) {
             contact.SetEnabled(false);
         }
     }
-
-    public Step(settings: testbed.Settings): void {
-        super.Step(settings);
-    }
-
-    public static Create(): testbed.Test {
-        return new OneSidedPlatform();
-    }
-}
-
-export enum OneSidedPlatform_State {
-    e_unknown = 0,
-    e_above = 1,
-    e_below = 2,
 }

@@ -16,62 +16,62 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-// #if B2_ENABLE_PARTICLE
+import { b2BodyDef, b2PolygonShape, b2Vec2, b2CircleShape, b2BodyType, XY } from "@box2d/core";
+import { b2ParticleGroupDef, b2ParticleFlag } from "@box2d/particles";
 
-import * as b2 from "@box2d";
-import * as testbed from "../testbed.js";
+import { Test } from "../../test";
 
-export class Particles extends testbed.Test {
+export class Particles extends Test {
     constructor() {
         super();
         {
-            const bd = new b2.BodyDef();
+            const bd = new b2BodyDef();
             const ground = this.m_world.CreateBody(bd);
 
             {
-                const shape = new b2.PolygonShape();
-                const vertices = [new b2.Vec2(-4, -1), new b2.Vec2(4, -1), new b2.Vec2(4, 0), new b2.Vec2(-4, 0)];
+                const shape = new b2PolygonShape();
+                const vertices = [new b2Vec2(-4, -1), new b2Vec2(4, -1), new b2Vec2(4, 0), new b2Vec2(-4, 0)];
                 shape.Set(vertices, 4);
                 ground.CreateFixture(shape, 0.0);
             }
 
             {
-                const shape = new b2.PolygonShape();
-                const vertices = [new b2.Vec2(-4, -0.1), new b2.Vec2(-2, -0.1), new b2.Vec2(-2, 2), new b2.Vec2(-4, 3)];
+                const shape = new b2PolygonShape();
+                const vertices = [new b2Vec2(-4, -0.1), new b2Vec2(-2, -0.1), new b2Vec2(-2, 2), new b2Vec2(-4, 3)];
                 shape.Set(vertices, 4);
                 ground.CreateFixture(shape, 0.0);
             }
 
             {
-                const shape = new b2.PolygonShape();
-                const vertices = [new b2.Vec2(2, -0.1), new b2.Vec2(4, -0.1), new b2.Vec2(4, 3), new b2.Vec2(2, 2)];
+                const shape = new b2PolygonShape();
+                const vertices = [new b2Vec2(2, -0.1), new b2Vec2(4, -0.1), new b2Vec2(4, 3), new b2Vec2(2, 2)];
                 shape.Set(vertices, 4);
                 ground.CreateFixture(shape, 0.0);
             }
         }
 
         this.m_particleSystem.SetRadius(0.035 * 2); // HACK: increase particle radius
-        const particleType = testbed.Test.GetParticleParameterValue();
+        const particleType = Test.GetParticleParameterValue();
         this.m_particleSystem.SetDamping(0.2);
 
         {
-            const shape = new b2.CircleShape();
+            const shape = new b2CircleShape();
             shape.m_p.Set(0, 3);
             shape.m_radius = 2;
-            const pd = new b2.ParticleGroupDef();
+            const pd = new b2ParticleGroupDef();
             pd.flags = particleType;
             pd.shape = shape;
             const group = this.m_particleSystem.CreateParticleGroup(pd);
-            if (pd.flags & b2.ParticleFlag.b2_colorMixingParticle) {
+            if (pd.flags & b2ParticleFlag.b2_colorMixingParticle) {
                 this.ColorParticleGroup(group, 0);
             }
         }
 
         {
-            const bd = new b2.BodyDef();
-            bd.type = b2.BodyType.b2_dynamicBody;
+            const bd = new b2BodyDef();
+            bd.type = b2BodyType.b2_dynamicBody;
             const body = this.m_world.CreateBody(bd);
-            const shape = new b2.CircleShape();
+            const shape = new b2CircleShape();
             shape.m_p.Set(0, 8);
             shape.m_radius = 0.5;
             body.CreateFixture(shape, 0.5);
@@ -79,12 +79,13 @@ export class Particles extends testbed.Test {
     }
 
     public GetDefaultViewZoom() {
-        return 0.1;
+        return 250;
     }
 
-    public static Create() {
-        return new Particles();
+    public getCenter(): XY {
+        return {
+            x: 0,
+            y: 2,
+        };
     }
 }
-
-// #endif

@@ -1,0 +1,18 @@
+.menubar {
+    display: flex;
+    flex-direction: row;
+    background: white;
+    border-bottom: 1px solid black;
+
+    > .menu {
+        flex-grow: 0;
+        flex-shrink: 0;
+    }
+    .menubar--spacer {
+        flex-grow: 1;
+    }
+    .menubar--title {
+        display: flex;
+        align-items: center;
+    }
+}

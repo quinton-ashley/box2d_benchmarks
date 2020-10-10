@@ -16,26 +16,28 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-// #if B2_ENABLE_PARTICLE
+import { b2MakeArray, b2Vec2, b2_maxFloat } from "@box2d/core";
 
-// DEBUG: import { b2Assert } from "../common/b2_settings.js";
-import { b2_maxFloat, b2MakeArray } from "../common/b2_settings.js";
-import { b2Vec2 } from "../common/b2_math.js";
-import { b2StackQueue } from "./b2_stack_queue.js";
+import { b2StackQueue } from "./b2_stack_queue";
 
 /**
  * A field representing the nearest generator from each point.
  */
 export class b2VoronoiDiagram {
     public m_generatorBuffer: b2VoronoiDiagram_Generator[];
+
     public m_generatorCapacity = 0;
+
     public m_generatorCount = 0;
+
     public m_countX = 0;
+
     public m_countY = 0;
+
     public m_diagram: b2VoronoiDiagram_Generator[] = [];
 
     constructor(generatorCapacity: number) {
-        this.m_generatorBuffer = b2MakeArray(generatorCapacity, (index) => new b2VoronoiDiagram_Generator());
+        this.m_generatorBuffer = b2MakeArray(generatorCapacity, () => new b2VoronoiDiagram_Generator());
         this.m_generatorCapacity = generatorCapacity;
     }
 
@@ -75,7 +77,7 @@ export class b2VoronoiDiagram {
             }
         }
         if (necessary_count === 0) {
-            ///debugger;
+            /// debugger;
             this.m_countX = 0;
             this.m_countY = 0;
             return;
@@ -215,15 +217,21 @@ export type b2VoronoiDiagram_NodeCallback = (a: number, b: number, c: number) =>
 
 export class b2VoronoiDiagram_Generator {
     public center: b2Vec2 = new b2Vec2();
-    public tag: number = 0;
-    public necessary: boolean = false;
+
+    public tag = 0;
+
+    public necessary = false;
 }
 
 export class b2VoronoiDiagram_Task {
     public m_x: number;
+
     public m_y: number;
+
     public m_i: number;
+
     public m_generator: b2VoronoiDiagram_Generator;
+
     constructor(x: number, y: number, i: number, g: b2VoronoiDiagram_Generator) {
         this.m_x = x;
         this.m_y = y;
@@ -231,5 +239,3 @@ export class b2VoronoiDiagram_Task {
         this.m_generator = g;
     }
 }
-
-// #endif

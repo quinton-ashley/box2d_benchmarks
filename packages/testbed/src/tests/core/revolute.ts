@@ -16,12 +16,29 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import * as b2 from "@box2d";
-import * as testbed from "../testbed.js";
+import {
+    b2Body,
+    b2RevoluteJoint,
+    b2BodyDef,
+    b2EdgeShape,
+    b2Vec2,
+    b2FixtureDef,
+    b2CircleShape,
+    b2BodyType,
+    b2RevoluteJointDef,
+    b2_pi,
+    b2PolygonShape,
+    XY,
+} from "@box2d/core";
 
-export class Revolute extends testbed.Test {
-    public m_ball: b2.Body;
-    public m_joint: b2.RevoluteJoint;
+import { Test } from "../../test";
+import { Settings } from "../../settings";
+import { HotKey, hotKeyPress } from "../../utils/hotkeys";
+
+export class Revolute extends Test {
+    public m_ball: b2Body;
+
+    public m_joint: b2RevoluteJoint;
 
     constructor() {
         super();
@@ -29,28 +46,28 @@ export class Revolute extends testbed.Test {
         let ground = null;
 
         {
-            const bd = new b2.BodyDef();
+            const bd = new b2BodyDef();
             ground = this.m_world.CreateBody(bd);
 
-            const shape = new b2.EdgeShape();
-            shape.SetTwoSided(new b2.Vec2(-40.0, 0.0), new b2.Vec2(40.0, 0.0));
+            const shape = new b2EdgeShape();
+            shape.SetTwoSided(new b2Vec2(-40.0, 0.0), new b2Vec2(40.0, 0.0));
 
-            /*b2.FixtureDef*/
-            const fd = new b2.FixtureDef();
+            /* b2FixtureDef */
+            const fd = new b2FixtureDef();
             fd.shape = shape;
-            //fd.filter.categoryBits = 2;
+            // fd.filter.categoryBits = 2;
 
             ground.CreateFixture(fd);
         }
 
         {
-            const shape = new b2.CircleShape();
+            const shape = new b2CircleShape();
             shape.m_radius = 0.5;
 
-            const bd = new b2.BodyDef();
-            bd.type = b2.BodyType.b2_dynamicBody;
+            const bd = new b2BodyDef();
+            bd.type = b2BodyType.b2_dynamicBody;
 
-            const rjd = new b2.RevoluteJointDef();
+            const rjd = new b2RevoluteJointDef();
 
             bd.position.Set(-10.0, 20.0);
             const body = this.m_world.CreateBody(bd);
@@ -58,14 +75,14 @@ export class Revolute extends testbed.Test {
 
             const w = 100.0;
             body.SetAngularVelocity(w);
-            body.SetLinearVelocity(new b2.Vec2(-8.0 * w, 0.0));
+            body.SetLinearVelocity(new b2Vec2(-8.0 * w, 0.0));
 
-            rjd.Initialize(ground, body, new b2.Vec2(-10.0, 12.0));
-            rjd.motorSpeed = 1.0 * b2.pi;
+            rjd.Initialize(ground, body, new b2Vec2(-10.0, 12.0));
+            rjd.motorSpeed = 1.0 * b2_pi;
             rjd.maxMotorTorque = 10000.0;
             rjd.enableMotor = false;
-            rjd.lowerAngle = -0.25 * b2.pi;
-            rjd.upperAngle = 0.5 * b2.pi;
+            rjd.lowerAngle = -0.25 * b2_pi;
+            rjd.upperAngle = 0.5 * b2_pi;
             rjd.enableLimit = true;
             rjd.collideConnected = true;
 
@@ -73,16 +90,16 @@ export class Revolute extends testbed.Test {
         }
 
         {
-            /*b2.CircleShape*/
-            const circle_shape = new b2.CircleShape();
+            /* b2CircleShape */
+            const circle_shape = new b2CircleShape();
             circle_shape.m_radius = 3.0;
 
-            const circle_bd = new b2.BodyDef();
-            circle_bd.type = b2.BodyType.b2_dynamicBody;
+            const circle_bd = new b2BodyDef();
+            circle_bd.type = b2BodyType.b2_dynamicBody;
             circle_bd.position.Set(5.0, 30.0);
 
-            /*b2.FixtureDef*/
-            const fd = new b2.FixtureDef();
+            /* b2FixtureDef */
+            const fd = new b2FixtureDef();
             fd.density = 5.0;
             fd.filter.maskBits = 1;
             fd.shape = circle_shape;
@@ -90,78 +107,74 @@ export class Revolute extends testbed.Test {
             this.m_ball = this.m_world.CreateBody(circle_bd);
             this.m_ball.CreateFixture(fd);
 
-            /*b2.PolygonShape*/
-            const polygon_shape = new b2.PolygonShape();
-            polygon_shape.SetAsBox(10.0, 0.2, new b2.Vec2(-10.0, 0.0), 0.0);
+            /* b2PolygonShape */
+            const polygon_shape = new b2PolygonShape();
+            polygon_shape.SetAsBox(10.0, 0.2, new b2Vec2(-10.0, 0.0), 0.0);
 
-            const polygon_bd = new b2.BodyDef();
+            const polygon_bd = new b2BodyDef();
             polygon_bd.position.Set(20.0, 10.0);
-            polygon_bd.type = b2.BodyType.b2_dynamicBody;
+            polygon_bd.type = b2BodyType.b2_dynamicBody;
             polygon_bd.bullet = true;
-            /*b2.Body*/
+            /* b2Body */
             const polygon_body = this.m_world.CreateBody(polygon_bd);
             polygon_body.CreateFixture(polygon_shape, 2.0);
 
-            const rjd = new b2.RevoluteJointDef();
-            rjd.Initialize(ground, polygon_body, new b2.Vec2(20.0, 10.0));
-            rjd.lowerAngle = -0.25 * b2.pi;
-            rjd.upperAngle = 0.0 * b2.pi;
+            const rjd = new b2RevoluteJointDef();
+            rjd.Initialize(ground, polygon_body, new b2Vec2(20.0, 10.0));
+            rjd.lowerAngle = -0.25 * b2_pi;
+            rjd.upperAngle = 0.0 * b2_pi;
             rjd.enableLimit = true;
             this.m_world.CreateJoint(rjd);
         }
 
         // Tests mass computation of a small object far from the origin
         {
-            const bodyDef = new b2.BodyDef();
-            bodyDef.type = b2.BodyType.b2_dynamicBody;
-            /*b2.Body*/
+            const bodyDef = new b2BodyDef();
+            bodyDef.type = b2BodyType.b2_dynamicBody;
+            /* b2Body */
             const body = this.m_world.CreateBody(bodyDef);
 
-            /*b2.PolygonShape*/
-            const polyShape = new b2.PolygonShape();
-            /*b2.Vec2*/
-            const verts = b2.Vec2.MakeArray(3);
+            /* b2PolygonShape */
+            const polyShape = new b2PolygonShape();
+            /* b2Vec2 */
+            const verts = b2Vec2.MakeArray(3);
             verts[0].Set(17.63, 36.31);
             verts[1].Set(17.52, 36.69);
             verts[2].Set(17.19, 36.36);
             polyShape.Set(verts, 3);
 
-            /*b2.FixtureDef*/
-            const polyFixtureDef = new b2.FixtureDef();
+            /* b2FixtureDef */
+            const polyFixtureDef = new b2FixtureDef();
             polyFixtureDef.shape = polyShape;
             polyFixtureDef.density = 1;
 
-            body.CreateFixture(polyFixtureDef); //assertion hits inside here
+            body.CreateFixture(polyFixtureDef); // assertion hits inside here
         }
     }
 
-    public Keyboard(key: string) {
-        switch (key) {
-            case "l":
-                this.m_joint.EnableLimit(!this.m_joint.IsLimitEnabled());
-                break;
-
-            case "m":
-                this.m_joint.EnableMotor(!this.m_joint.IsMotorEnabled());
-                break;
-        }
+    public getCenter(): XY {
+        return {
+            x: 0,
+            y: 5,
+        };
     }
 
-    public Step(settings: testbed.Settings): void {
-        super.Step(settings);
-        testbed.g_debugDraw.DrawString(5, this.m_textLine, "Keys: (l) limits, (m) motor");
-        this.m_textLine += testbed.DRAW_STRING_NEW_LINE;
+    getHotkeys(): HotKey[] {
+        return [
+            hotKeyPress([], "l", "Toggle Limit", () => this.m_joint.EnableLimit(!this.m_joint.IsLimitEnabled())),
+            hotKeyPress([], "m", "Start/Stop", () => this.m_joint.EnableMotor(!this.m_joint.IsMotorEnabled())),
+        ];
+    }
+
+    public Step(settings: Settings, timeStep: number): void {
+        super.Step(settings, timeStep);
 
         // if (this.m_stepCount === 360) {
-        //   this.m_ball.SetTransformVec(new b2.Vec2(0.0, 0.5), 0.0);
+        //   this.m_ball.SetTransformVec(new b2Vec2(0.0, 0.5), 0.0);
         // }
 
         // const torque1 = this.m_joint.GetMotorTorque(settings.hz);
-        // testbed.g_debugDraw.DrawString(5, this.m_textLine, `Motor Torque = ${torque1.toFixed(0)}, ${torque2.toFixed(0)} : Motor Force = ${force3.toFixed(0)}`);
-        // this.m_textLine += testbed.DRAW_STRING_NEW_LINE;
-    }
-
-    public static Create(): testbed.Test {
-        return new Revolute();
+        // this.addDebug("Motor Torque", `${torque1.toFixed(0)}, ${torque2.toFixed(0)}`);
+        // this.addDebug("Motor Force", `${force3.toFixed(0)}`);
     }
 }

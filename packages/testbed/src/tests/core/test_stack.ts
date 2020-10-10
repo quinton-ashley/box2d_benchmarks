@@ -16,33 +16,43 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import * as b2 from "@box2d";
-import * as testbed from "../testbed.js";
+import {
+    b2BodyDef,
+    b2Vec2,
+    b2ChainShape,
+    b2FixtureDef,
+    b2BodyType,
+    b2PolygonShape,
+    b2CircleShape,
+    XY,
+} from "@box2d/core";
 
-export class TestStack extends testbed.Test {
+import { Test } from "../../test";
+
+export class TestStack extends Test {
     constructor() {
         super();
 
         {
-            const bd = new b2.BodyDef();
+            const bd = new b2BodyDef();
             const ground = this.m_world.CreateBody(bd);
 
-            const vertices = [];
-            vertices[0] = new b2.Vec2(-30.0, 0.0);
-            vertices[1] = new b2.Vec2(30.0, 0.0);
-            vertices[2] = new b2.Vec2(30.0, 40.0);
-            vertices[3] = new b2.Vec2(-30.0, 40.0);
-            const shape = new b2.ChainShape();
-            shape.CreateLoop(vertices);
+            const shape = new b2ChainShape();
+            shape.CreateLoop([
+                new b2Vec2(-30.0, 0.0),
+                new b2Vec2(-30.0, 40.0),
+                new b2Vec2(30.0, 40.0),
+                new b2Vec2(30.0, 0.0),
+            ]);
             ground.CreateFixture(shape, 0.0);
         }
 
         // Add bodies
-        const bd = new b2.BodyDef();
-        const fd = new b2.FixtureDef();
-        bd.type = b2.BodyType.b2_dynamicBody;
-        //bd.isBullet = true;
-        const polygon = new b2.PolygonShape();
+        const bd = new b2BodyDef();
+        const fd = new b2FixtureDef();
+        bd.type = b2BodyType.b2_dynamicBody;
+        // bd.isBullet = true;
+        const polygon = new b2PolygonShape();
         fd.shape = polygon;
         fd.density = 1.0;
         fd.friction = 0.5;
@@ -62,28 +72,31 @@ export class TestStack extends testbed.Test {
             this.m_world.CreateBody(bd).CreateFixture(fd);
         }
         // Create ramp
-        bd.type = b2.BodyType.b2_staticBody;
+        bd.type = b2BodyType.b2_staticBody;
         bd.position.Set(0.0, 0.0);
-        const vxs = [new b2.Vec2(-30.0, 0.0), new b2.Vec2(-10.0, 0.0), new b2.Vec2(-30.0, 10.0)];
+        const vxs = [new b2Vec2(-30.0, 0.0), new b2Vec2(-10.0, 0.0), new b2Vec2(-30.0, 10.0)];
         polygon.Set(vxs, vxs.length);
         fd.density = 0;
         this.m_world.CreateBody(bd).CreateFixture(fd);
 
         // Create ball
-        bd.type = b2.BodyType.b2_dynamicBody;
+        bd.type = b2BodyType.b2_dynamicBody;
         bd.position.Set(-25.0, 20.0);
-        fd.shape = new b2.CircleShape(4.0);
+        fd.shape = new b2CircleShape(4.0);
         fd.density = 2;
         fd.restitution = 0.2;
         fd.friction = 0.5;
         this.m_world.CreateBody(bd).CreateFixture(fd);
     }
 
-    public Step(settings: testbed.Settings): void {
-        super.Step(settings);
+    public GetDefaultViewZoom() {
+        return 15;
     }
 
-    public static Create(): testbed.Test {
-        return new TestStack();
+    public getCenter(): XY {
+        return {
+            x: 0,
+            y: 15,
+        };
     }
 }

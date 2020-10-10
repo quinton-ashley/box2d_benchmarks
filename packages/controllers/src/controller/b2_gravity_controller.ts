@@ -16,13 +16,11 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-// #if B2_ENABLE_CONTROLLER
+import { b2TimeStep, b2_epsilon, b2Sqrt, b2Vec2 } from "@box2d/core";
 
-import { b2Controller } from "./b2_controller.js";
-import { b2TimeStep } from "../dynamics/b2_time_step.js";
-import { b2_epsilon } from "../common/b2_settings.js";
-import { b2Sqrt, b2Vec2 } from "../common/b2_math.js";
-import { b2Draw } from "../common/b2_draw.js";
+import { b2Controller } from "./b2_controller";
+
+const tempF = new b2Vec2();
 
 /**
  * Applies simplified gravity between every pair of bodies
@@ -32,6 +30,7 @@ export class b2GravityController extends b2Controller {
      * Specifies the strength of the gravitiation force
      */
     public G = 1;
+
     /**
      * If true, gravity is proportional to r^-2, otherwise r^-1
      */
@@ -40,7 +39,7 @@ export class b2GravityController extends b2Controller {
     /**
      * @see b2Controller::Step
      */
-    public Step(step: b2TimeStep) {
+    public Step(_step: b2TimeStep) {
         if (this.invSqr) {
             for (let i = this.m_bodyList; i; i = i.nextBody) {
                 const body1 = i.body;
@@ -56,13 +55,12 @@ export class b2GravityController extends b2Controller {
                     if (r2 < b2_epsilon) {
                         continue;
                     }
-                    const f = b2GravityController.Step_s_f.Set(dx, dy);
-                    f.SelfMul((this.G / r2 / b2Sqrt(r2)) * mass1 * mass2);
+                    tempF.Set(dx, dy).SelfMul((this.G / r2 / b2Sqrt(r2)) * mass1 * mass2);
                     if (body1.IsAwake()) {
-                        body1.ApplyForce(f, p1);
+                        body1.ApplyForce(tempF, p1);
                     }
                     if (body2.IsAwake()) {
-                        body2.ApplyForce(f.SelfMul(-1), p2);
+                        body2.ApplyForce(tempF.SelfMul(-1), p2);
                     }
                 }
             }
@@ -81,21 +79,15 @@ export class b2GravityController extends b2Controller {
                     if (r2 < b2_epsilon) {
                         continue;
                     }
-                    const f = b2GravityController.Step_s_f.Set(dx, dy);
-                    f.SelfMul((this.G / r2) * mass1 * mass2);
+                    tempF.Set(dx, dy).SelfMul((this.G / r2) * mass1 * mass2);
                     if (body1.IsAwake()) {
-                        body1.ApplyForce(f, p1);
+                        body1.ApplyForce(tempF, p1);
                     }
                     if (body2.IsAwake()) {
-                        body2.ApplyForce(f.SelfMul(-1), p2);
+                        body2.ApplyForce(tempF.SelfMul(-1), p2);
                     }
                 }
             }
         }
     }
-    private static Step_s_f = new b2Vec2();
-
-    public Draw(draw: b2Draw) {}
 }
-
-// #endif

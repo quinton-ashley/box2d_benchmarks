@@ -16,15 +16,15 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-// DEBUG: import { b2Assert } from "../common/b2_settings.js";
-// DEBUG: import { b2IsValid } from "../common/b2_math.js";
-import { b2_linearSlop, b2Maybe } from "../common/b2_settings.js";
-import { b2Vec2, b2Rot, b2Transform, XY } from "../common/b2_math.js";
-import { b2Joint, b2JointDef, b2JointType, b2IJointDef } from "./b2_joint.js";
-import { b2PrismaticJoint } from "./b2_prismatic_joint.js";
-import { b2RevoluteJoint } from "./b2_revolute_joint.js";
-import { b2SolverData } from "./b2_time_step.js";
-import { b2Body } from "./b2_body.js";
+// DEBUG: import { b2Assert } from "../common/b2_settings";
+// DEBUG: import { b2IsValid } from "../common/b2_math";
+import { b2_linearSlop, b2Maybe } from "../common/b2_settings";
+import { b2Vec2, b2Rot, b2Transform, XY } from "../common/b2_math";
+import { b2Joint, b2JointDef, b2JointType, b2IJointDef } from "./b2_joint";
+import { b2PrismaticJoint } from "./b2_prismatic_joint";
+import { b2RevoluteJoint } from "./b2_revolute_joint";
+import { b2SolverData } from "./b2_time_step";
+import { b2Body } from "./b2_body";
 
 export interface b2IGearJointDef extends b2IJointDef {
     joint1: b2RevoluteJoint | b2PrismaticJoint;
@@ -41,7 +41,7 @@ export class b2GearJointDef extends b2JointDef implements b2IGearJointDef {
 
     public joint2!: b2RevoluteJoint | b2PrismaticJoint;
 
-    public ratio: number = 1;
+    public ratio = 1;
 
     constructor() {
         super(b2JointType.e_gearJoint);
@@ -50,65 +50,103 @@ export class b2GearJointDef extends b2JointDef implements b2IGearJointDef {
 
 export class b2GearJoint extends b2Joint {
     public m_joint1: b2RevoluteJoint | b2PrismaticJoint;
+
     public m_joint2: b2RevoluteJoint | b2PrismaticJoint;
 
     public m_typeA: b2JointType = b2JointType.e_unknownJoint;
+
     public m_typeB: b2JointType = b2JointType.e_unknownJoint;
 
     // Body A is connected to body C
     // Body B is connected to body D
     public m_bodyC: b2Body;
+
     public m_bodyD: b2Body;
 
     // Solver shared
     public readonly m_localAnchorA: b2Vec2 = new b2Vec2();
+
     public readonly m_localAnchorB: b2Vec2 = new b2Vec2();
+
     public readonly m_localAnchorC: b2Vec2 = new b2Vec2();
+
     public readonly m_localAnchorD: b2Vec2 = new b2Vec2();
 
     public readonly m_localAxisC: b2Vec2 = new b2Vec2();
+
     public readonly m_localAxisD: b2Vec2 = new b2Vec2();
 
-    public m_referenceAngleA: number = 0;
-    public m_referenceAngleB: number = 0;
+    public m_referenceAngleA = 0;
 
-    public m_constant: number = 0;
-    public m_ratio: number = 0;
+    public m_referenceAngleB = 0;
 
-    public m_impulse: number = 0;
+    public m_constant = 0;
+
+    public m_ratio = 0;
+
+    public m_impulse = 0;
 
     // Solver temp
-    public m_indexA: number = 0;
-    public m_indexB: number = 0;
-    public m_indexC: number = 0;
-    public m_indexD: number = 0;
+    public m_indexA = 0;
+
+    public m_indexB = 0;
+
+    public m_indexC = 0;
+
+    public m_indexD = 0;
+
     public readonly m_lcA: b2Vec2 = new b2Vec2();
+
     public readonly m_lcB: b2Vec2 = new b2Vec2();
+
     public readonly m_lcC: b2Vec2 = new b2Vec2();
+
     public readonly m_lcD: b2Vec2 = new b2Vec2();
-    public m_mA: number = 0;
-    public m_mB: number = 0;
-    public m_mC: number = 0;
-    public m_mD: number = 0;
-    public m_iA: number = 0;
-    public m_iB: number = 0;
-    public m_iC: number = 0;
-    public m_iD: number = 0;
+
+    public m_mA = 0;
+
+    public m_mB = 0;
+
+    public m_mC = 0;
+
+    public m_mD = 0;
+
+    public m_iA = 0;
+
+    public m_iB = 0;
+
+    public m_iC = 0;
+
+    public m_iD = 0;
+
     public readonly m_JvAC: b2Vec2 = new b2Vec2();
+
     public readonly m_JvBD: b2Vec2 = new b2Vec2();
-    public m_JwA: number = 0;
-    public m_JwB: number = 0;
-    public m_JwC: number = 0;
-    public m_JwD: number = 0;
-    public m_mass: number = 0;
+
+    public m_JwA = 0;
+
+    public m_JwB = 0;
+
+    public m_JwC = 0;
+
+    public m_JwD = 0;
+
+    public m_mass = 0;
 
     public readonly m_qA: b2Rot = new b2Rot();
+
     public readonly m_qB: b2Rot = new b2Rot();
+
     public readonly m_qC: b2Rot = new b2Rot();
+
     public readonly m_qD: b2Rot = new b2Rot();
+
     public readonly m_lalcA: b2Vec2 = new b2Vec2();
+
     public readonly m_lalcB: b2Vec2 = new b2Vec2();
+
     public readonly m_lalcC: b2Vec2 = new b2Vec2();
+
     public readonly m_lalcD: b2Vec2 = new b2Vec2();
 
     constructor(def: b2IGearJointDef) {
@@ -123,7 +161,8 @@ export class b2GearJoint extends b2Joint {
         // DEBUG: b2Assert(this.m_typeA === b2JointType.e_revoluteJoint || this.m_typeA === b2JointType.e_prismaticJoint);
         // DEBUG: b2Assert(this.m_typeB === b2JointType.e_revoluteJoint || this.m_typeB === b2JointType.e_prismaticJoint);
 
-        let coordinateA: number, coordinateB: number;
+        let coordinateA: number;
+        let coordinateB: number;
 
         // TODO_ERIN there might be some problem with the joint edges in b2Joint.
 
@@ -215,10 +254,15 @@ export class b2GearJoint extends b2Joint {
     }
 
     private static InitVelocityConstraints_s_u = new b2Vec2();
+
     private static InitVelocityConstraints_s_rA = new b2Vec2();
+
     private static InitVelocityConstraints_s_rB = new b2Vec2();
+
     private static InitVelocityConstraints_s_rC = new b2Vec2();
+
     private static InitVelocityConstraints_s_rD = new b2Vec2();
+
     public InitVelocityConstraints(data: b2SolverData): void {
         this.m_indexA = this.m_bodyA.m_islandIndex;
         this.m_indexB = this.m_bodyB.m_islandIndex;
@@ -254,10 +298,10 @@ export class b2GearJoint extends b2Joint {
         let wD: number = data.velocities[this.m_indexD].w;
 
         // b2Rot qA(aA), qB(aB), qC(aC), qD(aD);
-        const qA: b2Rot = this.m_qA.SetAngle(aA),
-            qB: b2Rot = this.m_qB.SetAngle(aB),
-            qC: b2Rot = this.m_qC.SetAngle(aC),
-            qD: b2Rot = this.m_qD.SetAngle(aD);
+        const qA: b2Rot = this.m_qA.SetAngle(aA);
+        const qB: b2Rot = this.m_qB.SetAngle(aB);
+        const qC: b2Rot = this.m_qC.SetAngle(aC);
+        const qD: b2Rot = this.m_qD.SetAngle(aD);
 
         this.m_mass = 0;
 
@@ -384,10 +428,15 @@ export class b2GearJoint extends b2Joint {
     }
 
     private static SolvePositionConstraints_s_u = new b2Vec2();
+
     private static SolvePositionConstraints_s_rA = new b2Vec2();
+
     private static SolvePositionConstraints_s_rB = new b2Vec2();
+
     private static SolvePositionConstraints_s_rC = new b2Vec2();
+
     private static SolvePositionConstraints_s_rD = new b2Vec2();
+
     public SolvePositionConstraints(data: b2SolverData): boolean {
         const cA: b2Vec2 = data.positions[this.m_indexA].c;
         let aA: number = data.positions[this.m_indexA].a;
@@ -399,19 +448,23 @@ export class b2GearJoint extends b2Joint {
         let aD: number = data.positions[this.m_indexD].a;
 
         // b2Rot qA(aA), qB(aB), qC(aC), qD(aD);
-        const qA: b2Rot = this.m_qA.SetAngle(aA),
-            qB: b2Rot = this.m_qB.SetAngle(aB),
-            qC: b2Rot = this.m_qC.SetAngle(aC),
-            qD: b2Rot = this.m_qD.SetAngle(aD);
+        const qA: b2Rot = this.m_qA.SetAngle(aA);
+        const qB: b2Rot = this.m_qB.SetAngle(aB);
+        const qC: b2Rot = this.m_qC.SetAngle(aC);
+        const qD: b2Rot = this.m_qD.SetAngle(aD);
 
-        const linearError: number = 0;
+        const linearError = 0;
 
-        let coordinateA: number, coordinateB: number;
+        let coordinateA: number;
+        let coordinateB: number;
 
-        const JvAC: b2Vec2 = this.m_JvAC,
-            JvBD: b2Vec2 = this.m_JvBD;
-        let JwA: number, JwB: number, JwC: number, JwD: number;
-        let mass: number = 0;
+        const JvAC: b2Vec2 = this.m_JvAC;
+        const JvBD: b2Vec2 = this.m_JvBD;
+        let JwA: number;
+        let JwB: number;
+        let JwC: number;
+        let JwD: number;
+        let mass = 0;
 
         if (this.m_typeA === b2JointType.e_revoluteJoint) {
             JvAC.SetZero();
@@ -484,7 +537,7 @@ export class b2GearJoint extends b2Joint {
 
         const C: number = coordinateA + this.m_ratio * coordinateB - this.m_constant;
 
-        let impulse: number = 0;
+        let impulse = 0;
         if (mass > 0) {
             impulse = -C / mass;
         }

@@ -16,14 +16,20 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import * as b2 from "@box2d";
-import * as testbed from "../testbed.js";
+import { b2Vec2, b2RandomRange, b2Clamp, b2PolygonShape, b2Color } from "@box2d/core";
 
-export class ConvexHull extends testbed.Test {
+import { Test } from "../../test";
+import { Settings } from "../../settings";
+import { g_debugDraw } from "../../utils/draw";
+import { hotKeyPress, HotKey } from "../../utils/hotkeys";
+
+export class ConvexHull extends Test {
     public static readonly e_count = 10;
 
-    public m_test_points: b2.Vec2[] = [];
+    public m_test_points: b2Vec2[] = [];
+
     public m_count = 0;
+
     public m_auto = false;
 
     constructor() {
@@ -32,59 +38,51 @@ export class ConvexHull extends testbed.Test {
         this.Generate();
     }
 
+    public GetDefaultViewZoom() {
+        return 50;
+    }
+
     public Generate(): void {
         for (let i = 0; i < ConvexHull.e_count; ++i) {
-            let x = b2.RandomRange(-10.0, 10.0);
-            let y = b2.RandomRange(-10.0, 10.0);
+            let x = b2RandomRange(-10.0, 10.0);
+            let y = b2RandomRange(-10.0, 10.0);
 
             // Clamp onto a square to help create collinearities.
             // This will stress the convex hull algorithm.
-            x = b2.Clamp(x, -8.0, 8.0);
-            y = b2.Clamp(y, -8.0, 8.0);
-            this.m_test_points[i] = new b2.Vec2(x, y);
+            x = b2Clamp(x, -8.0, 8.0);
+            y = b2Clamp(y, -8.0, 8.0);
+            this.m_test_points[i] = new b2Vec2(x, y);
         }
 
         this.m_count = ConvexHull.e_count;
     }
 
-    public Keyboard(key: string) {
-        switch (key) {
-            case "a":
+    getHotkeys(): HotKey[] {
+        return [
+            hotKeyPress([], "a", "Toggle Autogeneration", () => {
                 this.m_auto = !this.m_auto;
-                break;
-
-            case "g":
-                this.Generate();
-                break;
-        }
+            }),
+            hotKeyPress([], "g", "Generate a new random convex hull", () => this.Generate()),
+        ];
     }
 
-    public Step(settings: testbed.Settings): void {
-        super.Step(settings);
+    public Step(settings: Settings, timeStep: number): void {
+        super.Step(settings, timeStep);
 
-        const shape = new b2.PolygonShape();
+        const shape = new b2PolygonShape();
         shape.Set(this.m_test_points, this.m_count);
 
-        testbed.g_debugDraw.DrawString(5, this.m_textLine, "Press g to generate a new random convex hull");
-        this.m_textLine += testbed.DRAW_STRING_NEW_LINE;
-
-        testbed.g_debugDraw.DrawPolygon(shape.m_vertices, shape.m_count, new b2.Color(0.9, 0.9, 0.9));
+        g_debugDraw.DrawPolygon(shape.m_vertices, shape.m_count, new b2Color(0.9, 0.9, 0.9));
 
         for (let i = 0; i < this.m_count; ++i) {
-            testbed.g_debugDraw.DrawPoint(this.m_test_points[i], 3.0, new b2.Color(0.3, 0.9, 0.3));
-            testbed.g_debugDraw.DrawStringWorld(this.m_test_points[i].x + 0.05, this.m_test_points[i].y + 0.05, `${i}`);
+            g_debugDraw.DrawPoint(this.m_test_points[i], 3.0, new b2Color(0.3, 0.9, 0.3));
+            g_debugDraw.DrawStringWorld(this.m_test_points[i].x + 0.05, this.m_test_points[i].y + 0.05, `${i}`);
         }
 
-        if (!shape.Validate()) {
-            this.m_textLine += 0;
-        }
+        shape.Validate();
 
         if (this.m_auto) {
             this.Generate();
         }
-    }
-
-    public static Create(): testbed.Test {
-        return new ConvexHull();
     }
 }

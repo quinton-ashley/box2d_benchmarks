@@ -16,26 +16,74 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import * as b2 from "@box2d";
-import * as testbed from "../testbed.js";
+import {
+    b2Body,
+    b2RevoluteJoint,
+    b2BodyDef,
+    b2FixtureDef,
+    b2BodyType,
+    b2PolygonShape,
+    b2CircleShape,
+    b2RevoluteJointDef,
+    b2EdgeShape,
+    b2Clamp,
+    b2DegToRad,
+    XY,
+} from "@box2d/core";
 
-export class Segway extends testbed.Test {
-    public static PENDULUM_LENGTH: number = 10;
+import { Test } from "../../test";
+import { Settings } from "../../settings";
 
-    public targetPosition: number = 10;
-    public targetPositionInterval: number = 0;
-    public posAvg: number = 0;
+/*
+  Simple PID controller for single float variable
+  http://en.wikipedia.org/wiki/PID_controller#Pseudocode
+*/
+class PIDController {
+    public gainP = 1;
+
+    public gainI = 1;
+
+    public gainD = 1;
+
+    public currentError = 0;
+
+    public previousError = 0;
+
+    public integral = 0;
+
+    public output = 0;
+
+    public step(dt: number): void {
+        this.integral = dt * (this.integral + this.currentError);
+        const derivative: number = (1 / dt) * (this.currentError - this.previousError);
+        this.output = this.gainP * this.currentError + this.gainI * this.integral + this.gainD * derivative;
+        this.previousError = this.currentError;
+    }
+}
+
+export class Segway extends Test {
+    public static PENDULUM_LENGTH = 10;
+
+    public targetPosition = 10;
+
+    public targetPositionInterval = 0;
+
+    public posAvg = 0;
+
     public readonly angleController: PIDController = new PIDController();
+
     public readonly positionController: PIDController = new PIDController();
-    public pendulumBody: b2.Body;
-    public wheelBody: b2.Body;
-    public groundBody: b2.Body;
-    public wheelJoint: b2.RevoluteJoint;
+
+    public pendulumBody: b2Body;
+
+    public wheelBody: b2Body;
+
+    public groundBody: b2Body;
+
+    public wheelJoint: b2RevoluteJoint;
 
     constructor() {
-        super();
-
-        this.m_world.SetGravity({ x: 0, y: -30 });
+        super({ x: 0, y: -30 });
 
         this.angleController.gainP = 1000;
         this.angleController.gainI = 0;
@@ -45,8 +93,8 @@ export class Segway extends testbed.Test {
         this.positionController.gainI = 0;
         this.positionController.gainD = 1.5;
 
-        const bd: b2.BodyDef = new b2.BodyDef();
-        const fd: b2.FixtureDef = new b2.FixtureDef();
+        const bd: b2BodyDef = new b2BodyDef();
+        const fd: b2FixtureDef = new b2FixtureDef();
 
         // pendulumBody = new p2.Body({
         //     mass: 1,
@@ -54,11 +102,11 @@ export class Segway extends testbed.Test {
         // });
         // pendulumBody.addShape(new p2.Box({ width: 1, height: PENDULUM_LENGTH }));
         // world.addBody(pendulumBody);
-        bd.type = b2.BodyType.b2_dynamicBody;
+        bd.type = b2BodyType.b2_dynamicBody;
         bd.position.x = 0;
         bd.position.y = 2 + 0.5 * Segway.PENDULUM_LENGTH;
         this.pendulumBody = this.m_world.CreateBody(bd);
-        const pendulumShape: b2.PolygonShape = new b2.PolygonShape();
+        const pendulumShape: b2PolygonShape = new b2PolygonShape();
         pendulumShape.SetAsBox(0.5, 0.5 * Segway.PENDULUM_LENGTH);
         fd.shape = pendulumShape;
         fd.density = 1 / (1 * Segway.PENDULUM_LENGTH); // TODO: specify mass
@@ -71,11 +119,11 @@ export class Segway extends testbed.Test {
         // });
         // wheelBody.addShape(new p2.Circle({ radius: 0.6 }));
         // world.addBody(wheelBody);
-        bd.type = b2.BodyType.b2_dynamicBody;
+        bd.type = b2BodyType.b2_dynamicBody;
         bd.position.x = 0;
         bd.position.y = 1;
         this.wheelBody = this.m_world.CreateBody(bd);
-        const wheelShape: b2.CircleShape = new b2.CircleShape();
+        const wheelShape: b2CircleShape = new b2CircleShape();
         wheelShape.m_radius = 0.6;
         fd.shape = wheelShape;
         fd.density = 1 / (Math.PI * 0.6 * 0.6); // TODO: specify mass
@@ -93,7 +141,7 @@ export class Segway extends testbed.Test {
         // var m = 40;
         // wheelJoint.motorEquation.maxForce = m;
         // wheelJoint.motorEquation.minForce = -m;
-        const jd: b2.RevoluteJointDef = new b2.RevoluteJointDef();
+        const jd: b2RevoluteJointDef = new b2RevoluteJointDef();
         jd.Initialize(this.wheelBody, this.pendulumBody, { x: 0, y: 0 });
         jd.localAnchorA.Set(0, 0);
         jd.localAnchorB.Set(0, -0.5 * Segway.PENDULUM_LENGTH);
@@ -109,25 +157,32 @@ export class Segway extends testbed.Test {
         // });
         // groundBody.addShape(groundShape);
         // world.addBody(groundBody);
-        bd.type = b2.BodyType.b2_staticBody;
+        bd.type = b2BodyType.b2_staticBody;
         bd.position.x = 0;
         bd.position.y = 0;
         this.groundBody = this.m_world.CreateBody(bd);
-        const groundShape: b2.EdgeShape = new b2.EdgeShape();
+        const groundShape: b2EdgeShape = new b2EdgeShape();
         groundShape.SetTwoSided({ x: -100, y: 0 }, { x: 100, y: 0 });
         fd.shape = groundShape;
         fd.friction = 10;
         this.groundBody.CreateFixture(fd);
     }
 
-    public Step(settings: testbed.Settings): void {
+    public getCenter(): XY {
+        return {
+            x: 0,
+            y: 5,
+        };
+    }
+
+    public Step(settings: Settings, timeStep: number): void {
         let dt: number = settings.m_hertz > 0.0 ? 1.0 / settings.m_hertz : 0.0;
 
         if (settings.m_pause && !settings.m_singleStep) {
             dt = 0.0;
         }
 
-        super.Step(settings);
+        super.Step(settings, timeStep);
 
         this.targetPositionInterval += dt;
         if (this.targetPositionInterval >= 8) {
@@ -135,9 +190,10 @@ export class Segway extends testbed.Test {
             this.targetPosition = this.targetPosition === 10 ? -10 : 10;
         }
 
-        let targetAngle: number = 0;
+        let targetAngle = 0;
+        // eslint-disable-next-line no-constant-condition
         if (true) {
-            const alpha: number = 0.4;
+            const alpha = 0.4;
             // posAvg = (1 - alpha) * posAvg + alpha * pendulumBody.position[0];
             this.posAvg = (1 - alpha) * this.posAvg + alpha * this.pendulumBody.GetPosition().x;
             this.positionController.currentError = this.targetPosition - this.posAvg;
@@ -145,11 +201,11 @@ export class Segway extends testbed.Test {
             this.positionController.step(dt);
             let targetLinAccel: number = this.positionController.output;
             // targetLinAccel = clamp(targetLinAccel, -10.0, 10.0);
-            targetLinAccel = b2.Clamp(targetLinAccel, -10, 10);
+            targetLinAccel = b2Clamp(targetLinAccel, -10, 10);
             // targetAngle = targetLinAccel / world.gravity[1];
             targetAngle = targetLinAccel / this.m_world.GetGravity().y;
             // targetAngle = clamp(targetAngle, -15 * DEGTORAD, 15 * DEGTORAD);
-            targetAngle = b2.Clamp(targetAngle, b2.DegToRad(-15), b2.DegToRad(15));
+            targetAngle = b2Clamp(targetAngle, b2DegToRad(-15), b2DegToRad(15));
         }
         // var currentAngle = pendulumBody.angle;
         let currentAngle: number = this.pendulumBody.GetAngle();
@@ -167,31 +223,6 @@ export class Segway extends testbed.Test {
         const targetAngularVelocity: number = targetSpeed / (2 * Math.PI * 0.6); // wheel circumference = 2*pi*r
         // wheelJoint.motorSpeed = targetAngularVelocity;
         this.wheelJoint.SetMotorSpeed(targetAngularVelocity);
-    }
-
-    public static Create(): testbed.Test {
-        return new Segway();
-    }
-}
-
-/*
-  Simple PID controller for single float variable
-  http://en.wikipedia.org/wiki/PID_controller#Pseudocode
-*/
-class PIDController {
-    public gainP: number = 1;
-    public gainI: number = 1;
-    public gainD: number = 1;
-    public currentError: number = 0;
-    public previousError: number = 0;
-    public integral: number = 0;
-    public output: number = 0;
-
-    public step(dt: number): void {
-        this.integral = dt * (this.integral + this.currentError);
-        const derivative: number = (1 / dt) * (this.currentError - this.previousError);
-        this.output = this.gainP * this.currentError + this.gainI * this.integral + this.gainD * derivative;
-        this.previousError = this.currentError;
     }
 }
 
@@ -298,11 +329,11 @@ class PIDController {
 //     return Math.min(Math.max(num, min), max);
 // };
 function normalizeAngle(angle: number): number {
-    while (angle > b2.DegToRad(180)) {
-        angle -= b2.DegToRad(360);
+    while (angle > b2DegToRad(180)) {
+        angle -= b2DegToRad(360);
     }
-    while (angle < b2.DegToRad(-180)) {
-        angle += b2.DegToRad(360);
+    while (angle < b2DegToRad(-180)) {
+        angle += b2DegToRad(360);
     }
     return angle;
 }

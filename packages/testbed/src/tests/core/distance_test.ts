@@ -16,110 +16,118 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import * as b2 from "@box2d";
-import * as testbed from "../testbed.js";
+import {
+    b2Vec2,
+    b2Transform,
+    b2PolygonShape,
+    b2_pi,
+    b2DistanceInput,
+    b2SimplexCache,
+    b2DistanceOutput,
+    b2Distance,
+    b2Color,
+    XY,
+} from "@box2d/core";
 
-export class DistanceTest extends testbed.Test {
-    public m_positionB = new b2.Vec2();
+import { Test } from "../../test";
+import { Settings } from "../../settings";
+import { g_debugDraw } from "../../utils/draw";
+import { hotKeyPress, HotKey } from "../../utils/hotkeys";
+
+export class DistanceTest extends Test {
+    public m_positionB = new b2Vec2();
+
     public m_angleB = 0;
-    public m_transformA = new b2.Transform();
-    public m_transformB = new b2.Transform();
-    public m_polygonA = new b2.PolygonShape();
-    public m_polygonB = new b2.PolygonShape();
+
+    public m_transformA = new b2Transform();
+
+    public m_transformB = new b2Transform();
+
+    public m_polygonA = new b2PolygonShape();
+
+    public m_polygonB = new b2PolygonShape();
 
     constructor() {
         super();
 
-        {
-            this.m_transformA.SetIdentity();
-            this.m_transformA.p.Set(0.0, -0.2);
-            this.m_polygonA.SetAsBox(10.0, 0.2);
-        }
+        this.m_transformA.SetIdentity();
+        this.m_transformA.p.Set(0.0, -0.2);
+        this.m_polygonA.SetAsBox(10.0, 0.2);
 
-        {
-            this.m_positionB.Set(12.017401, 0.13678508);
-            this.m_angleB = -0.0109265;
-            this.m_transformB.SetPositionAngle(this.m_positionB, this.m_angleB);
+        this.m_positionB.Set(12.017401, 0.13678508);
+        this.m_angleB = -0.0109265;
+        this.m_transformB.SetPositionAngle(this.m_positionB, this.m_angleB);
 
-            this.m_polygonB.SetAsBox(2.0, 0.1);
-        }
+        this.m_polygonB.SetAsBox(2.0, 0.1);
     }
 
-    public Keyboard(key: string) {
-        switch (key) {
-            case "a":
-                this.m_positionB.x -= 0.1;
-                break;
+    public GetDefaultViewZoom() {
+        return 200;
+    }
 
-            case "d":
-                this.m_positionB.x += 0.1;
-                break;
+    public getCenter(): XY {
+        return {
+            x: 10,
+            y: -0.5,
+        };
+    }
 
-            case "s":
-                this.m_positionB.y -= 0.1;
-                break;
+    getHotkeys(): HotKey[] {
+        return [
+            hotKeyPress([], "a", "Move Left", () => this.Adjust(-0.1, 0, 0)),
+            hotKeyPress([], "d", "Move Right", () => this.Adjust(0.1, 0, 0)),
+            hotKeyPress([], "s", "Move Down", () => this.Adjust(0, -0.1, 0)),
+            hotKeyPress([], "w", "Move Up", () => this.Adjust(0, 0.1, 0)),
+            hotKeyPress([], "q", "Turn Left", () => this.Adjust(0, 0, 0.1 * b2_pi)),
+            hotKeyPress([], "e", "Turn Right", () => this.Adjust(0, 0, -0.1 * b2_pi)),
+        ];
+    }
 
-            case "w":
-                this.m_positionB.y += 0.1;
-                break;
-
-            case "q":
-                this.m_angleB += 0.1 * b2.pi;
-                break;
-
-            case "e":
-                this.m_angleB -= 0.1 * b2.pi;
-                break;
-        }
-
+    private Adjust(x: number, y: number, angle: number) {
+        this.m_positionB.x += x;
+        this.m_positionB.y += y;
+        this.m_angleB += angle;
         this.m_transformB.SetPositionAngle(this.m_positionB, this.m_angleB);
     }
 
-    public Step(settings: testbed.Settings): void {
-        super.Step(settings);
+    public Step(settings: Settings, timeStep: number): void {
+        super.Step(settings, timeStep);
 
-        const input = new b2.DistanceInput();
+        const input = new b2DistanceInput();
         input.proxyA.SetShape(this.m_polygonA, 0);
         input.proxyB.SetShape(this.m_polygonB, 0);
         input.transformA.Copy(this.m_transformA);
         input.transformB.Copy(this.m_transformB);
         input.useRadii = true;
-        const cache = new b2.SimplexCache();
+        const cache = new b2SimplexCache();
         cache.count = 0;
-        const output = new b2.DistanceOutput();
-        b2.Distance(output, cache, input);
+        const output = new b2DistanceOutput();
+        b2Distance(output, cache, input);
 
-        testbed.g_debugDraw.DrawString(5, this.m_textLine, `distance = ${output.distance.toFixed(2)}`);
-        this.m_textLine += testbed.DRAW_STRING_NEW_LINE;
-
-        testbed.g_debugDraw.DrawString(5, this.m_textLine, `iterations = ${output.iterations}`);
-        this.m_textLine += testbed.DRAW_STRING_NEW_LINE;
+        this.addDebug("Distance", output.distance.toFixed(2));
+        this.addDebug("Iterations", output.iterations);
 
         {
-            const color = new b2.Color(0.9, 0.9, 0.9);
+            const color = new b2Color(0.9, 0.9, 0.9);
             const v = [];
             for (let i = 0; i < this.m_polygonA.m_count; ++i) {
-                v[i] = b2.Transform.MulXV(this.m_transformA, this.m_polygonA.m_vertices[i], new b2.Vec2());
+                v[i] = b2Transform.MulXV(this.m_transformA, this.m_polygonA.m_vertices[i], new b2Vec2());
             }
-            testbed.g_debugDraw.DrawPolygon(v, this.m_polygonA.m_count, color);
+            g_debugDraw.DrawPolygon(v, this.m_polygonA.m_count, color);
 
             for (let i = 0; i < this.m_polygonB.m_count; ++i) {
-                v[i] = b2.Transform.MulXV(this.m_transformB, this.m_polygonB.m_vertices[i], new b2.Vec2());
+                v[i] = b2Transform.MulXV(this.m_transformB, this.m_polygonB.m_vertices[i], new b2Vec2());
             }
-            testbed.g_debugDraw.DrawPolygon(v, this.m_polygonB.m_count, color);
+            g_debugDraw.DrawPolygon(v, this.m_polygonB.m_count, color);
         }
 
         const x1 = output.pointA;
         const x2 = output.pointB;
 
-        const c1 = new b2.Color(1.0, 0.0, 0.0);
-        testbed.g_debugDraw.DrawPoint(x1, 4.0, c1);
+        const c1 = new b2Color(1.0, 0.0, 0.0);
+        g_debugDraw.DrawPoint(x1, 4.0, c1);
 
-        const c2 = new b2.Color(1.0, 1.0, 0.0);
-        testbed.g_debugDraw.DrawPoint(x2, 4.0, c2);
-    }
-
-    public static Create(): testbed.Test {
-        return new DistanceTest();
+        const c2 = new b2Color(1.0, 1.0, 0.0);
+        g_debugDraw.DrawPoint(x2, 4.0, c2);
     }
 }

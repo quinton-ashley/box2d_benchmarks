@@ -16,13 +16,11 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-// DEBUG: import { b2Assert } from "../common/b2_settings.js";
-import { b2Maybe, b2_pi } from "../common/b2_settings.js";
-import { b2Vec2, XY, b2Transform } from "../common/b2_math.js";
-import { b2Body } from "./b2_body.js";
-import { b2SolverData } from "./b2_time_step.js";
-import { b2Draw, b2Color } from "../common/b2_draw.js";
-import { b2PulleyJoint } from "./b2_pulley_joint.js";
+// DEBUG: import { b2Assert } from "../common/b2_settings";
+import { b2Maybe, b2_pi } from "../common/b2_settings";
+import { b2Vec2, XY } from "../common/b2_math";
+import type { b2Body } from "./b2_body";
+import { b2SolverData } from "./b2_time_step";
 
 export enum b2JointType {
     e_unknownJoint = 0,
@@ -42,8 +40,10 @@ export enum b2JointType {
 
 export class b2Jacobian {
     public readonly linear: b2Vec2 = new b2Vec2();
-    public angularA: number = 0;
-    public angularB: number = 0;
+
+    public angularA = 0;
+
+    public angularB = 0;
 
     public SetZero(): b2Jacobian {
         this.linear.SetZero();
@@ -66,27 +66,34 @@ export class b2Jacobian {
 /// maintained in each attached body. Each joint has two joint
 /// nodes, one for each attached body.
 export class b2JointEdge {
-    private _other: b2Body | null = null; ///< provides quick access to the other body attached.
+    private m_other: b2Body | null = null; /// < provides quick access to the other body attached.
+
     public get other(): b2Body {
-        if (this._other === null) {
+        if (this.m_other === null) {
             throw new Error();
         }
-        return this._other;
+        return this.m_other;
     }
+
     public set other(value: b2Body) {
-        if (this._other !== null) {
+        if (this.m_other !== null) {
             throw new Error();
         }
-        this._other = value;
+        this.m_other = value;
     }
-    public readonly joint: b2Joint; ///< the joint
-    public prev: b2JointEdge | null = null; ///< the previous joint edge in the body's joint list
-    public next: b2JointEdge | null = null; ///< the next joint edge in the body's joint list
+
+    public readonly joint: b2Joint; /// < the joint
+
+    public prev: b2JointEdge | null = null; /// < the previous joint edge in the body's joint list
+
+    public next: b2JointEdge | null = null; /// < the next joint edge in the body's joint list
+
     constructor(joint: b2Joint) {
         this.joint = joint;
     }
+
     public Reset(): void {
-        this._other = null;
+        this.m_other = null;
         this.prev = null;
         this.next = null;
     }
@@ -125,7 +132,7 @@ export abstract class b2JointDef implements b2IJointDef {
     public bodyB!: b2Body;
 
     /// Set this flag to true if the attached bodies should collide.
-    public collideConnected: boolean = false;
+    public collideConnected = false;
 
     constructor(type: b2JointType) {
         this.type = type;
@@ -190,17 +197,24 @@ export function b2AngularStiffness(
 /// various fashions. Some joints also feature limits and motors.
 export abstract class b2Joint {
     public readonly m_type: b2JointType = b2JointType.e_unknownJoint;
+
     public m_prev: b2Joint | null = null;
+
     public m_next: b2Joint | null = null;
+
     public readonly m_edgeA: b2JointEdge = new b2JointEdge(this);
+
     public readonly m_edgeB: b2JointEdge = new b2JointEdge(this);
+
     public m_bodyA: b2Body;
+
     public m_bodyB: b2Body;
 
-    public m_index: number = 0;
+    public m_index = 0;
 
-    public m_islandFlag: boolean = false;
-    public m_collideConnected: boolean = false;
+    public m_islandFlag = false;
+
+    public m_collideConnected = false;
 
     public m_userData: any = null;
 
@@ -278,57 +292,7 @@ export abstract class b2Joint {
     }
 
     /// Shift the origin for any points stored in world coordinates.
-    public ShiftOrigin(newOrigin: XY): void {}
-
-    /// Debug draw this joint
-    private static Draw_s_p1: b2Vec2 = new b2Vec2();
-    private static Draw_s_p2: b2Vec2 = new b2Vec2();
-    private static Draw_s_color: b2Color = new b2Color(0.5, 0.8, 0.8);
-    private static Draw_s_c: b2Color = new b2Color();
-    public Draw(draw: b2Draw): void {
-        const xf1: b2Transform = this.m_bodyA.GetTransform();
-        const xf2: b2Transform = this.m_bodyB.GetTransform();
-        const x1: b2Vec2 = xf1.p;
-        const x2: b2Vec2 = xf2.p;
-        const p1: b2Vec2 = this.GetAnchorA(b2Joint.Draw_s_p1);
-        const p2: b2Vec2 = this.GetAnchorB(b2Joint.Draw_s_p2);
-
-        const color: b2Color = b2Joint.Draw_s_color.SetRGB(0.5, 0.8, 0.8);
-
-        switch (this.m_type) {
-            case b2JointType.e_distanceJoint:
-                draw.DrawSegment(p1, p2, color);
-                break;
-
-            case b2JointType.e_pulleyJoint:
-                {
-                    const pulley: b2PulleyJoint = (this as unknown) as b2PulleyJoint;
-                    const s1: b2Vec2 = pulley.GetGroundAnchorA();
-                    const s2: b2Vec2 = pulley.GetGroundAnchorB();
-                    draw.DrawSegment(s1, p1, color);
-                    draw.DrawSegment(s2, p2, color);
-                    draw.DrawSegment(s1, s2, color);
-                }
-                break;
-
-            case b2JointType.e_mouseJoint:
-                {
-                    const c = b2Joint.Draw_s_c;
-                    c.Set(0.0, 1.0, 0.0);
-                    draw.DrawPoint(p1, 4.0, c);
-                    draw.DrawPoint(p2, 4.0, c);
-
-                    c.Set(0.8, 0.8, 0.8);
-                    draw.DrawSegment(p1, p2, c);
-                }
-                break;
-
-            default:
-                draw.DrawSegment(x1, p1, color);
-                draw.DrawSegment(p1, p2, color);
-                draw.DrawSegment(x2, p2, color);
-        }
-    }
+    public ShiftOrigin(_newOrigin: XY): void {}
 
     public abstract InitVelocityConstraints(data: b2SolverData): void;
 

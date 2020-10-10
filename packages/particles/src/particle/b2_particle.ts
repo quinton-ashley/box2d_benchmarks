@@ -16,12 +16,10 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-// #if B2_ENABLE_PARTICLE
+import { XY, RGBA, b2Vec2, b2Clamp, b2Color } from "@box2d/core";
 
-import { b2_invalidParticleIndex } from "../common/b2_settings.js";
-import { b2Clamp, b2Vec2, XY } from "../common/b2_math.js";
-import { b2Color, RGBA } from "../common/b2_draw.js";
-import { b2ParticleGroup } from "./b2_particle_group.js";
+import { b2_invalidParticleIndex } from "./b2_settings";
+import type { b2ParticleGroup } from "./b2_particle_group";
 
 /**
  * The particle type. Can be combined with the | operator.
@@ -86,11 +84,17 @@ export interface b2IParticleDef {
 
 export class b2ParticleDef implements b2IParticleDef {
     public flags: b2ParticleFlag = 0;
+
     public readonly position: b2Vec2 = new b2Vec2();
+
     public readonly velocity: b2Vec2 = new b2Vec2();
+
     public readonly color: b2Color = new b2Color(0, 0, 0, 0);
-    public lifetime: number = 0.0;
+
+    public lifetime = 0.0;
+
     public userData: any = null;
+
     public group: b2ParticleGroup | null = null;
 }
 
@@ -105,12 +109,12 @@ export function b2CalculateParticleIterations(gravity: number, radius: number, t
 
 export class b2ParticleHandle {
     public m_index: number = b2_invalidParticleIndex;
+
     public GetIndex(): number {
         return this.m_index;
     }
+
     public SetIndex(index: number): void {
         this.m_index = index;
     }
 }
-
-// #endif

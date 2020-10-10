@@ -34,9 +34,11 @@ export class b2Timer {
 }
 
 export class b2Counter {
-    public m_count: number = 0;
-    public m_min_count: number = 0;
-    public m_max_count: number = 0;
+    public m_count = 0;
+
+    public m_min_count = 0;
+
+    public m_max_count = 0;
 
     public GetCount(): number {
         return this.m_count;

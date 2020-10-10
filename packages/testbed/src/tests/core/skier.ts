@@ -2,12 +2,18 @@
 Test case for collision/jerking issue.
 */
 
-import * as b2 from "@box2d";
-import * as testbed from "../testbed.js";
+import { b2Body, b2_pi, b2Vec2, b2ChainShape, b2FixtureDef, b2BodyDef, b2BodyType, b2PolygonShape } from "@box2d/core";
 
-export class Skier extends testbed.Test {
+import { Test } from "../../test";
+import { Settings } from "../../settings";
+import { g_camera } from "../../utils/camera";
+import { HotKey, hotKeyPress } from "../../utils/hotkeys";
+
+export class Skier extends Test {
     public m_platform_width: number;
-    public m_skier: b2.Body;
+
+    public m_skier: b2Body;
+
     public m_fixed_camera: boolean;
 
     constructor() {
@@ -35,27 +41,27 @@ export class Skier extends testbed.Test {
         const SurfaceFriction = 0.2;
 
         // Convert to radians
-        const Slope1Incline = (-Angle1Degrees * b2.pi) / 180.0;
-        const Slope2Incline = Slope1Incline - (Angle2Degrees * b2.pi) / 180.0;
+        const Slope1Incline = (-Angle1Degrees * b2_pi) / 180.0;
+        const Slope2Incline = Slope1Incline - (Angle2Degrees * b2_pi) / 180.0;
         //
 
         this.m_platform_width = PlatformWidth;
 
         // Horizontal platform
-        const v1: b2.Vec2 = new b2.Vec2(-PlatformWidth, 0.0);
-        const v2: b2.Vec2 = new b2.Vec2(0.0, 0.0);
-        const v3: b2.Vec2 = new b2.Vec2(SlopeLength * Math.cos(Slope1Incline), -SlopeLength * Math.sin(Slope1Incline));
-        const v4: b2.Vec2 = new b2.Vec2(
+        const v1: b2Vec2 = new b2Vec2(-PlatformWidth, 0.0);
+        const v2: b2Vec2 = new b2Vec2(0.0, 0.0);
+        const v3: b2Vec2 = new b2Vec2(SlopeLength * Math.cos(Slope1Incline), -SlopeLength * Math.sin(Slope1Incline));
+        const v4: b2Vec2 = new b2Vec2(
             v3.x + SlopeLength * Math.cos(Slope2Incline),
             v3.y - SlopeLength * Math.sin(Slope2Incline)
         );
-        const v5: b2.Vec2 = new b2.Vec2(v4.x, v4.y - 1.0);
+        const v5: b2Vec2 = new b2Vec2(v4.x, v4.y - 1.0);
 
-        const vertices: b2.Vec2[] = [v5, v4, v3, v2, v1];
+        const vertices: b2Vec2[] = [v5, v4, v3, v2, v1];
 
-        const shape = new b2.ChainShape();
+        const shape = new b2ChainShape();
         shape.CreateLoop(vertices);
-        const fd = new b2.FixtureDef();
+        const fd = new b2FixtureDef();
         fd.shape = shape;
         fd.density = 0.0;
         fd.friction = SurfaceFriction;
@@ -75,64 +81,60 @@ export class Skier extends testbed.Test {
             const SkiFriction = 0.0;
             const SkiRestitution = 0.15;
 
-            const bd = new b2.BodyDef();
-            bd.type = b2.BodyType.b2_dynamicBody;
+            const bd = new b2BodyDef();
+            bd.type = b2BodyType.b2_dynamicBody;
 
             const initial_y = BodyHeight / 2 + SkiThickness;
             bd.position.Set(-this.m_platform_width / 2, initial_y);
 
             const skier = this.m_world.CreateBody(bd);
 
-            const ski = new b2.PolygonShape();
-            const verts: b2.Vec2[] = [];
-            verts.push(new b2.Vec2(-SkiLength / 2 - SkiThickness, -BodyHeight / 2));
-            verts.push(new b2.Vec2(-SkiLength / 2, -BodyHeight / 2 - SkiThickness));
-            verts.push(new b2.Vec2(SkiLength / 2, -BodyHeight / 2 - SkiThickness));
-            verts.push(new b2.Vec2(SkiLength / 2 + SkiThickness, -BodyHeight / 2));
+            const ski = new b2PolygonShape();
+            const verts: b2Vec2[] = [];
+            verts.push(new b2Vec2(-SkiLength / 2 - SkiThickness, -BodyHeight / 2));
+            verts.push(new b2Vec2(-SkiLength / 2, -BodyHeight / 2 - SkiThickness));
+            verts.push(new b2Vec2(SkiLength / 2, -BodyHeight / 2 - SkiThickness));
+            verts.push(new b2Vec2(SkiLength / 2 + SkiThickness, -BodyHeight / 2));
             ski.Set(verts);
 
-            const fd = new b2.FixtureDef();
-            fd.density = 1.0;
+            const fd2 = new b2FixtureDef();
+            fd2.density = 1.0;
 
-            fd.friction = SkiFriction;
-            fd.restitution = SkiRestitution;
+            fd2.friction = SkiFriction;
+            fd2.restitution = SkiRestitution;
 
-            fd.shape = ski;
-            skier.CreateFixture(fd);
+            fd2.shape = ski;
+            skier.CreateFixture(fd2);
 
-            skier.SetLinearVelocity(new b2.Vec2(0.5, 0.0));
+            skier.SetLinearVelocity(new b2Vec2(0.5, 0.0));
 
             this.m_skier = skier;
         }
 
-        testbed.g_camera.m_center.Set(this.m_platform_width / 2.0, 0.0);
-        testbed.g_camera.m_center.Set(this.m_platform_width / 2.0, 0.0);
-        testbed.g_camera.m_zoom = 0.4;
+        g_camera.setPositionAndZoom(this.m_platform_width / 2.0, 0.0, 0.4);
         this.m_fixed_camera = true;
     }
 
-    public Keyboard(key: string): void {
-        switch (key) {
-            case "c":
+    public GetDefaultViewZoom() {
+        return 50;
+    }
+
+    getHotkeys(): HotKey[] {
+        return [
+            hotKeyPress([], "c", "Switch Camera Fixed/Tracking", () => {
                 this.m_fixed_camera = !this.m_fixed_camera;
                 if (this.m_fixed_camera) {
-                    testbed.g_camera.m_center.Set(this.m_platform_width / 2.0, 0.0);
+                    g_camera.setPosition(this.m_platform_width / 2.0, 0.0);
                 }
-                break;
-        }
+            }),
+        ];
     }
 
-    public Step(settings: testbed.Settings): void {
-        testbed.g_debugDraw.DrawString(5, this.m_textLine, "Keys: c = Camera fixed/tracking");
-        this.m_textLine += testbed.DRAW_STRING_NEW_LINE;
-
+    public Step(settings: Settings, timeStep: number): void {
         if (!this.m_fixed_camera) {
-            testbed.g_camera.m_center.Copy(this.m_skier.GetPosition());
+            const pos = this.m_skier.GetPosition();
+            g_camera.setPosition(pos.x, pos.y);
         }
-        super.Step(settings);
-    }
-
-    public static Create(): testbed.Test {
-        return new Skier();
+        super.Step(settings, timeStep);
     }
 }

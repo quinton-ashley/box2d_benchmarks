@@ -1,0 +1,25 @@
+.tests-menu--content {
+    top: 32px;
+    bottom: 0;
+    overflow: auto;
+    padding: 0;
+    min-width: 300px;
+    > fieldset {
+        border: none;
+        > legend {
+            font-weight: bold;
+        }
+        > a {
+            display: block;
+            color: black;
+            text-decoration: none;
+            padding: 5px 10px;
+            &.active-link {
+                background: white;
+            }
+            &:hover {
+                background: lightblue;
+            }
+        }
+    }
+}

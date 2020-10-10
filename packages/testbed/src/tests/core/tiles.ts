@@ -16,8 +16,10 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import * as b2 from "@box2d";
-import * as testbed from "../testbed.js";
+import { b2Timer, b2BodyDef, b2Vec2, b2PolygonShape, b2BodyType } from "@box2d/core";
+
+import { Test } from "../../test";
+import { Settings } from "../../settings";
 
 /**
  * This stress tests the dynamic tree broad-phase. This also
@@ -25,41 +27,42 @@ import * as testbed from "../testbed.js";
  * not knowing about adjacency.
  */
 
-export class Tiles extends testbed.Test {
+export class Tiles extends Test {
     public static readonly e_count = 20;
 
     public m_fixtureCount = 0;
+
     public m_createTime = 0.0;
 
     constructor() {
         super();
 
         this.m_fixtureCount = 0;
-        /*b2.Timer*/
-        const timer = new b2.Timer();
+        /* b2Timer */
+        const timer = new b2Timer();
 
         {
-            /*float32*/
+            /* float32 */
             const a = 0.5;
-            /*b2.BodyDef*/
-            const bd = new b2.BodyDef();
+            /* b2BodyDef */
+            const bd = new b2BodyDef();
             bd.position.y = -a;
-            /*b2.Body*/
+            /* b2Body */
             const ground = this.m_world.CreateBody(bd);
 
             {
-                /*int32*/
+                /* int32 */
                 const N = 200;
-                /*int32*/
+                /* int32 */
                 const M = 10;
-                /*b2.Vec2*/
-                const position = new b2.Vec2();
+                /* b2Vec2 */
+                const position = new b2Vec2();
                 position.y = 0.0;
-                for (/*int32*/ let j = 0; j < M; ++j) {
+                for (/* int32 */ let j = 0; j < M; ++j) {
                     position.x = -N * a;
-                    for (/*int32*/ let i = 0; i < N; ++i) {
-                        /*b2.PolygonShape*/
-                        const shape = new b2.PolygonShape();
+                    for (/* int32 */ let i = 0; i < N; ++i) {
+                        /* b2PolygonShape */
+                        const shape = new b2PolygonShape();
                         shape.SetAsBox(a, a, position, 0.0);
                         ground.CreateFixture(shape, 0.0);
                         ++this.m_fixtureCount;
@@ -72,14 +75,14 @@ export class Tiles extends testbed.Test {
             //    {
             //      /*int32*/ const N = 200;
             //      /*int32*/ const M = 10;
-            //      /*b2.Vec2*/ const position = new b2.Vec2();
+            //      /*b2Vec2*/ const position = new b2Vec2();
             //      position.x = -N * a;
             //      for (/*int32*/ let i = 0; i < N; ++i)
             //      {
             //        position.y = 0.0;
             //        for (/*int32*/ let j = 0; j < M; ++j)
             //        {
-            //          /*b2.PolygonShape*/ const shape = new b2.PolygonShape();
+            //          /*b2PolygonShape*/ const shape = new b2PolygonShape();
             //          shape.SetAsBox(a, a, position, 0.0);
             //          ground.CreateFixture(shape, 0.0);
             //          position.y -= 2.0 * a;
@@ -90,40 +93,40 @@ export class Tiles extends testbed.Test {
         }
 
         {
-            /*float32*/
+            /* float32 */
             const a = 0.5;
-            /*b2.PolygonShape*/
-            const shape = new b2.PolygonShape();
+            /* b2PolygonShape */
+            const shape = new b2PolygonShape();
             shape.SetAsBox(a, a);
 
-            /*b2.Vec2*/
-            const x = new b2.Vec2(-7.0, 0.75);
-            /*b2.Vec2*/
-            const y = new b2.Vec2();
-            /*b2.Vec2*/
-            const deltaX = new b2.Vec2(0.5625, 1.25);
-            /*b2.Vec2*/
-            const deltaY = new b2.Vec2(1.125, 0.0);
+            /* b2Vec2 */
+            const x = new b2Vec2(-7.0, 0.75);
+            /* b2Vec2 */
+            const y = new b2Vec2();
+            /* b2Vec2 */
+            const deltaX = new b2Vec2(0.5625, 1.25);
+            /* b2Vec2 */
+            const deltaY = new b2Vec2(1.125, 0.0);
 
-            for (/*int32*/ let i = 0; i < Tiles.e_count; ++i) {
+            for (/* int32 */ let i = 0; i < Tiles.e_count; ++i) {
                 y.Copy(x);
 
-                for (/*int32*/ let j = i; j < Tiles.e_count; ++j) {
-                    /*b2.BodyDef*/
-                    const bd = new b2.BodyDef();
-                    bd.type = b2.BodyType.b2_dynamicBody;
+                for (/* int32 */ let j = i; j < Tiles.e_count; ++j) {
+                    /* b2BodyDef */
+                    const bd = new b2BodyDef();
+                    bd.type = b2BodyType.b2_dynamicBody;
                     bd.position.Copy(y);
 
-                    //if (i === 0 && j === 0)
-                    //{
+                    // if (i === 0 && j === 0)
+                    // {
                     //  bd.allowSleep = false;
-                    //}
-                    //else
-                    //{
+                    // }
+                    // else
+                    // {
                     //  bd.allowSleep = true;
-                    //}
+                    // }
 
-                    /*b2.Body*/
+                    /* b2Body */
                     const body = this.m_world.CreateBody(bd);
                     body.CreateFixture(shape, 5.0);
                     ++this.m_fixtureCount;
@@ -137,38 +140,30 @@ export class Tiles extends testbed.Test {
         this.m_createTime = timer.GetMilliseconds();
     }
 
-    public Step(settings: testbed.Settings): void {
-        /*const b2.ContactManager*/
+    public Step(settings: Settings, timeStep: number): void {
+        /* const b2ContactManager */
         const cm = this.m_world.GetContactManager();
-        /*int32*/
+        /* int32 */
         const height = cm.m_broadPhase.GetTreeHeight();
-        /*int32*/
+        /* int32 */
         const leafCount = cm.m_broadPhase.GetProxyCount();
-        /*int32*/
+        /* int32 */
         const minimumNodeCount = 2 * leafCount - 1;
-        /*float32*/
+        /* float32 */
         const minimumHeight = Math.ceil(Math.log(minimumNodeCount) / Math.log(2.0));
-        testbed.g_debugDraw.DrawString(5, this.m_textLine, `dynamic tree height = ${height}, min = ${minimumHeight}`);
-        this.m_textLine += testbed.DRAW_STRING_NEW_LINE;
+        this.addDebug("Dynamic Tree Height", height);
+        this.addDebug("Min Height", minimumHeight);
 
-        super.Step(settings);
+        super.Step(settings, timeStep);
 
-        testbed.g_debugDraw.DrawString(
-            5,
-            this.m_textLine,
-            `create time = ${this.m_createTime.toFixed(2)} ms, fixture count = ${this.m_fixtureCount}`
-        );
-        this.m_textLine += testbed.DRAW_STRING_NEW_LINE;
+        this.addDebug("Create Time", `${this.m_createTime.toFixed(2)} ms`);
+        this.addDebug("Fixture Count", this.m_fixtureCount);
 
-        //b2.DynamicTree* tree = this.m_world.this.m_contactManager.m_broadPhase.m_tree;
+        // b2DynamicTree* tree = this.m_world.this.m_contactManager.m_broadPhase.m_tree;
 
-        //if (this.m_stepCount === 400)
-        //{
+        // if (this.m_stepCount === 400)
+        // {
         //  tree.RebuildBottomUp();
-        //}
-    }
-
-    public static Create(): testbed.Test {
-        return new Tiles();
+        // }
     }
 }

@@ -16,21 +16,21 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-// DEBUG: import { b2Assert } from "../common/b2_settings.js";
-import { b2Vec2, b2Transform, XY } from "../common/b2_math.js";
-import { b2AABB, b2RayCastInput, b2RayCastOutput } from "./b2_collision.js";
-import { b2DistanceProxy } from "./b2_distance.js";
+// DEBUG: import { b2Assert } from "../common/b2_settings";
+import { b2Vec2, b2Transform, XY } from "../common/b2_math";
+import { b2AABB, b2RayCastInput, b2RayCastOutput } from "./b2_collision";
+import { b2DistanceProxy } from "./b2_distance";
 
 /// This holds the mass data computed for a shape.
 export class b2MassData {
     /// The mass of the shape, usually in kilograms.
-    public mass: number = 0;
+    public mass = 0;
 
     /// The position of the shape's centroid relative to the shape's origin.
     public readonly center: b2Vec2 = new b2Vec2(0, 0);
 
     /// The rotational inertia of the shape about the local origin.
-    public I: number = 0;
+    public I = 0;
 }
 
 export enum b2ShapeType {
@@ -50,7 +50,7 @@ export abstract class b2Shape {
 
     /// Radius of a shape. For polygonal shapes this must be b2_polygonRadius. There is no support for
     /// making rounded polygons.
-    public m_radius: number = 0;
+    public m_radius = 0;
 
     constructor(type: b2ShapeType, radius: number) {
         this.m_type = type;
@@ -79,15 +79,6 @@ export abstract class b2Shape {
     /// @param xf the shape world transform.
     /// @param p a point in world coordinates.
     public abstract TestPoint(xf: b2Transform, p: XY): boolean;
-
-    // #if B2_ENABLE_PARTICLE
-    /// Compute the distance from the current shape to the specified point. This only works for convex shapes.
-    /// @param xf the shape world transform.
-    /// @param p a point in world coordinates.
-    /// @param distance returns the distance from the current shape.
-    /// @param normal returns the direction in which the distance increases.
-    public abstract ComputeDistance(xf: b2Transform, p: b2Vec2, normal: b2Vec2, childIndex: number): number;
-    // #endif
 
     /// Cast a ray against a child shape.
     /// @param output the ray-cast results.

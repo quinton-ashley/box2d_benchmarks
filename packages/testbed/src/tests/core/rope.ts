@@ -20,29 +20,51 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import * as b2 from "@box2d";
-import * as testbed from "../testbed.js";
+import {
+    b2Rope,
+    b2RopeTuning,
+    b2Vec2,
+    b2MakeNumberArray,
+    b2BendingModel,
+    b2StretchingModel,
+    b2RopeDef,
+    DrawRope,
+    XY,
+} from "@box2d/core";
+
+import { Test } from "../../test";
+import { Settings } from "../../settings";
+import { g_debugDraw } from "../../utils/draw";
+import { hotKey, HotKey } from "../../utils/hotkeys";
 
 ///
-export class Rope extends testbed.Test {
-    public readonly m_rope1: b2.Rope = new b2.Rope();
-    public readonly m_rope2: b2.Rope = new b2.Rope();
-    public readonly m_tuning1: b2.RopeTuning = new b2.RopeTuning();
-    public readonly m_tuning2: b2.RopeTuning = new b2.RopeTuning();
-    public m_iterations1: number = 0;
-    public m_iterations2: number = 0;
-    public readonly m_position1: b2.Vec2 = new b2.Vec2();
-    public readonly m_position2: b2.Vec2 = new b2.Vec2();
-    public m_speed: number = 0.0;
+export class Rope extends Test {
+    public readonly m_rope1: b2Rope = new b2Rope();
+
+    public readonly m_rope2: b2Rope = new b2Rope();
+
+    public readonly m_tuning1: b2RopeTuning = new b2RopeTuning();
+
+    public readonly m_tuning2: b2RopeTuning = new b2RopeTuning();
+
+    public m_iterations1 = 0;
+
+    public m_iterations2 = 0;
+
+    public readonly m_position1: b2Vec2 = new b2Vec2();
+
+    public readonly m_position2: b2Vec2 = new b2Vec2();
+
+    public m_speed = 0.0;
 
     constructor() {
         super();
-        const N: number = 20;
-        const L: number = 0.5;
+        const N = 20;
+        const L = 0.5;
         // b2Vec2 vertices[N];
-        const vertices: b2.Vec2[] = b2.Vec2.MakeArray(N);
+        const vertices: b2Vec2[] = b2Vec2.MakeArray(N);
         // float masses[N];
-        const masses: number[] = b2.MakeNumberArray(N);
+        const masses: number[] = b2MakeNumberArray(N);
 
         for (let i = 0; i < N; ++i) {
             vertices[i].Set(0.0, L * (N - i));
@@ -54,31 +76,31 @@ export class Rope extends testbed.Test {
         this.m_tuning1.bendHertz = 30.0;
         this.m_tuning1.bendDamping = 4.0;
         this.m_tuning1.bendStiffness = 1.0;
-        this.m_tuning1.bendingModel = b2.BendingModel.b2_xpbdAngleBendingModel;
+        this.m_tuning1.bendingModel = b2BendingModel.b2_xpbdAngleBendingModel;
         this.m_tuning1.isometric = true;
 
         this.m_tuning1.stretchHertz = 30.0;
         this.m_tuning1.stretchDamping = 4.0;
         this.m_tuning1.stretchStiffness = 1.0;
-        this.m_tuning1.stretchingModel = b2.StretchingModel.b2_xpbdStretchingModel;
+        this.m_tuning1.stretchingModel = b2StretchingModel.b2_xpbdStretchingModel;
 
         this.m_tuning2.bendHertz = 30.0;
         this.m_tuning2.bendDamping = 0.7;
         this.m_tuning2.bendStiffness = 1.0;
-        this.m_tuning2.bendingModel = b2.BendingModel.b2_pbdHeightBendingModel;
+        this.m_tuning2.bendingModel = b2BendingModel.b2_pbdHeightBendingModel;
         this.m_tuning2.isometric = true;
 
         this.m_tuning2.stretchHertz = 30.0;
         this.m_tuning2.stretchDamping = 1.0;
         this.m_tuning2.stretchStiffness = 1.0;
-        this.m_tuning2.stretchingModel = b2.StretchingModel.b2_pbdStretchingModel;
+        this.m_tuning2.stretchingModel = b2StretchingModel.b2_pbdStretchingModel;
 
         this.m_position1.Set(-5.0, 15.0);
         this.m_position2.Set(5.0, 15.0);
 
-        const def: b2.RopeDef = new b2.RopeDef();
+        const def: b2RopeDef = new b2RopeDef();
         // def.vertices = vertices;
-        vertices.forEach((value: b2.Vec2) => def.vertices.push(value));
+        vertices.forEach((value: b2Vec2) => def.vertices.push(value));
         def.count = N;
         def.gravity.Set(0.0, -10.0);
         // def.masses = masses;
@@ -96,6 +118,17 @@ export class Rope extends testbed.Test {
         this.m_iterations2 = 8;
 
         this.m_speed = 10.0;
+    }
+
+    public GetDefaultViewZoom() {
+        return 45;
+    }
+
+    public getCenter(): XY {
+        return {
+            x: 0,
+            y: 20,
+        };
     }
 
     // void UpdateUI() override
@@ -241,30 +274,20 @@ export class Rope extends testbed.Test {
     // 	ImGui::End();
     // }
 
-    public m_move_x: number = 0.0;
+    public m_move_x = 0.0;
 
-    public Keyboard(key: string) {
-        switch (key) {
-            case ",":
-                this.m_move_x = -1.0;
-                break;
-
-            case ".":
-                this.m_move_x = 1.0;
-                break;
-        }
+    getHotkeys(): HotKey[] {
+        return [
+            hotKey([], ",", "Move Left", (down) => {
+                this.m_move_x = down ? -1 : 0;
+            }),
+            hotKey([], ".", "Move Right", (down) => {
+                this.m_move_x = down ? 1 : 0;
+            }),
+        ];
     }
 
-    public KeyboardUp(key: string): void {
-        switch (key) {
-            case ",":
-            case ".":
-                this.m_move_x = 0.0;
-                break;
-        }
-    }
-
-    public Step(settings: testbed.Settings): void {
+    public Step(settings: Settings, timeStep: number): void {
         let dt: number = settings.m_hertz > 0.0 ? 1.0 / settings.m_hertz : 0.0;
 
         if (settings.m_pause === true && settings.m_singleStep === false) {
@@ -293,17 +316,10 @@ export class Rope extends testbed.Test {
         this.m_rope1.Step(dt, this.m_iterations1, this.m_position1);
         this.m_rope2.Step(dt, this.m_iterations2, this.m_position2);
 
-        super.Step(settings);
+        super.Step(settings, timeStep);
 
-        this.m_rope1.Draw(testbed.g_debugDraw);
-        this.m_rope2.Draw(testbed.g_debugDraw);
-
-        testbed.g_debugDraw.DrawString(5, this.m_textLine, "Press comma and period to move left and right");
-        // this.m_textLine += this.m_textIncrement;
-    }
-
-    public static Create(): testbed.Test {
-        return new Rope();
+        DrawRope(g_debugDraw, this.m_rope1);
+        DrawRope(g_debugDraw, this.m_rope2);
     }
 }
 // class Rope : public Test
@@ -542,9 +558,6 @@ export class Rope extends testbed.Test {
 
 // 		this.m_rope1.Draw(&g_debugDraw);
 // 		this.m_rope2.Draw(&g_debugDraw);
-
-// 		g_debugDraw.DrawString(5, this.m_textLine, "Press comma and period to move left and right");
-// 		this.m_textLine += this.m_textIncrement;
 // 	}
 
 // 	static Test* Create()
@@ -565,8 +578,8 @@ export class Rope extends testbed.Test {
 
 // static int testIndex = RegisterTest("Rope", "Bending", Rope::Create);
 
-// export class OldRope extends testbed.Test {
-//   // public this.m_rope = new b2.Rope();
+// export class OldRope extends Test {
+//   // public this.m_rope = new b2Rope();
 //   public m_angle = 0.0;
 
 //   constructor() {
@@ -574,10 +587,10 @@ export class Rope extends testbed.Test {
 
 //     /*const int32*/
 //     const N = 40;
-//     /*b2.Vec2[]*/
-//     const vertices = b2.Vec2.MakeArray(N);
+//     /*b2Vec2[]*/
+//     const vertices = b2Vec2.MakeArray(N);
 //     /*float32[]*/
-//     const masses = b2.MakeNumberArray(N);
+//     const masses = b2MakeNumberArray(N);
 
 //     for (let i = 0; i < N; ++i) {
 //       vertices[i].Set(0.0, 20.0 - 0.25 * i);
@@ -586,8 +599,8 @@ export class Rope extends testbed.Test {
 //     masses[0] = 0.0;
 //     masses[1] = 0.0;
 
-//     /*b2.RopeDef*/
-//     // const def = new b2.RopeDef();
+//     /*b2RopeDef*/
+//     // const def = new b2RopeDef();
 //     // def.vertices = vertices;
 //     // def.count = N;
 //     // def.gravity.Set(0.0, -10.0);
@@ -605,18 +618,18 @@ export class Rope extends testbed.Test {
 //   public Keyboard(key: string) {
 //     switch (key) {
 //       case "q":
-//         this.m_angle = b2.Max(-b2.pi, this.m_angle - 0.05 * b2.pi);
+//         this.m_angle = b2Max(-b2_pi, this.m_angle - 0.05 * b2_pi);
 //         // this.m_rope.SetAngle(this.m_angle);
 //         break;
 
 //       case "e":
-//         this.m_angle = b2.Min(b2.pi, this.m_angle + 0.05 * b2.pi);
+//         this.m_angle = b2Min(b2_pi, this.m_angle + 0.05 * b2_pi);
 //         // this.m_rope.SetAngle(this.m_angle);
 //         break;
 //     }
 //   }
 
-//   public Step(settings: testbed.Settings): void {
+//   public Step(settings: Settings, timeStep: number): void {
 //     // let dt = settings.m_hertz > 0.0 ? 1.0 / settings.m_hertz : 0.0;
 //     // if (settings.m_pause && !settings.m_singleStep) {
 //     //   dt = 0.0;
@@ -624,17 +637,10 @@ export class Rope extends testbed.Test {
 
 //     // this.m_rope.Step(dt, 1);
 
-//     super.Step(settings);
+//     super.Step(settings, timeStep);
 
-//     // this.m_rope.Draw(testbed.g_debugDraw);
+//     // this.m_rope.Draw(g_debugDraw);
 
-//     testbed.g_debugDraw.DrawString(5, this.m_textLine, "Press (q,e) to adjust target angle");
-//     this.m_textLine += testbed.DRAW_STRING_NEW_LINE;
-//     testbed.g_debugDraw.DrawString(5, this.m_textLine, `Target angle = ${(this.m_angle * 180.0 / b2.pi).toFixed(2)} degrees`);
-//     this.m_textLine += testbed.DRAW_STRING_NEW_LINE;
-//   }
-
-//   public static Create(): testbed.Test {
-//     return new OldRope();
+//     this.addDebug("Target Angle", `${(this.m_angle * 180.0 / b2_pi).toFixed(2)} degrees`);
 //   }
 // }

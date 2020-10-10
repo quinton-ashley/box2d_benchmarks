@@ -16,8 +16,8 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-// DEBUG: import { b2Assert } from "./b2_settings.js";
-import { b2_pi, b2_epsilon, b2MakeArray } from "./b2_settings.js";
+// DEBUG: import { b2Assert } from "./b2_settings";
+import { b2_pi, b2_epsilon, b2MakeArray } from "./b2_settings";
 
 export const b2_pi_over_180: number = b2_pi / 180;
 export const b2_180_over_pi: number = 180 / b2_pi;
@@ -33,19 +33,21 @@ export function b2Max(a: number, b: number): number {
 }
 
 export function b2Clamp(a: number, lo: number, hi: number): number {
+    // eslint-disable-next-line no-nested-ternary
     return a < lo ? lo : a > hi ? hi : a;
 }
 
 export function b2Swap<T>(a: T[], b: T[]): void {
     // DEBUG: b2Assert(false);
     const tmp: T = a[0];
+    // eslint-disable-next-line prefer-destructuring
     a[0] = b[0];
     b[0] = tmp;
 }
 
 /// This function is used to ensure that a floating point number is
 /// not a NaN or infinity.
-export const b2IsValid = isFinite;
+export const b2IsValid = Number.isFinite;
 
 export function b2Sq(n: number): number {
     return n * n;
@@ -58,6 +60,7 @@ export function b2InvSqrt(n: number): number {
 
 export const b2Sqrt = Math.sqrt;
 
+// eslint-disable-next-line no-restricted-properties
 export const b2Pow = Math.pow;
 
 export function b2DegToRad(degrees: number): number {
@@ -103,42 +106,26 @@ export interface XY {
 /// A 2D column vector.
 export class b2Vec2 implements XY {
     public static readonly ZERO: Readonly<b2Vec2> = new b2Vec2(0, 0);
+
     public static readonly UNITX: Readonly<b2Vec2> = new b2Vec2(1, 0);
+
     public static readonly UNITY: Readonly<b2Vec2> = new b2Vec2(0, 1);
 
     public static readonly s_t0: b2Vec2 = new b2Vec2();
+
     public static readonly s_t1: b2Vec2 = new b2Vec2();
+
     public static readonly s_t2: b2Vec2 = new b2Vec2();
+
     public static readonly s_t3: b2Vec2 = new b2Vec2();
 
-    public readonly data: Float32Array;
-    public get x(): number {
-        return this.data[0];
-    }
-    public set x(value: number) {
-        this.data[0] = value;
-    }
-    public get y(): number {
-        return this.data[1];
-    }
-    public set y(value: number) {
-        this.data[1] = value;
-    }
+    public x: number;
 
-    constructor();
-    constructor(data: Float32Array);
-    constructor(x: number, y: number);
-    constructor(...args: any[]) {
-        if (args[0] instanceof Float32Array) {
-            if (args[0].length !== 2) {
-                throw new Error();
-            }
-            this.data = args[0];
-        } else {
-            const x: number = typeof args[0] === "number" ? args[0] : 0;
-            const y: number = typeof args[1] === "number" ? args[1] : 0;
-            this.data = new Float32Array([x, y]);
-        }
+    public y: number;
+
+    constructor(x = 0, y = 0) {
+        this.x = x;
+        this.y = y;
     }
 
     public Clone(): b2Vec2 {
@@ -214,14 +201,14 @@ export class b2Vec2 implements XY {
     }
 
     public Length(): number {
-        const x: number = this.x,
-            y: number = this.y;
+        const { x } = this;
+        const { y } = this;
         return Math.sqrt(x * x + y * y);
     }
 
     public LengthSquared(): number {
-        const x: number = this.x,
-            y: number = this.y;
+        const { x } = this;
+        const { y } = this;
         return x * x + y * y;
     }
 
@@ -248,32 +235,32 @@ export class b2Vec2 implements XY {
     public SelfRotate(radians: number): this {
         const c: number = Math.cos(radians);
         const s: number = Math.sin(radians);
-        const x: number = this.x;
+        const { x } = this;
         this.x = c * x - s * this.y;
         this.y = s * x + c * this.y;
         return this;
     }
 
     public SelfRotateCosSin(c: number, s: number): this {
-        const x: number = this.x;
+        const { x } = this;
         this.x = c * x - s * this.y;
         this.y = s * x + c * this.y;
         return this;
     }
 
     public IsValid(): boolean {
-        return isFinite(this.x) && isFinite(this.y);
+        return Number.isFinite(this.x) && Number.isFinite(this.y);
     }
 
     public SelfCrossVS(s: number): this {
-        const x: number = this.x;
+        const { x } = this;
         this.x = s * this.y;
         this.y = -s * x;
         return this;
     }
 
     public SelfCrossSV(s: number): this {
-        const x: number = this.x;
+        const { x } = this;
         this.x = -s * this.y;
         this.y = s * x;
         return this;
@@ -304,14 +291,14 @@ export class b2Vec2 implements XY {
     }
 
     public SelfSkew(): this {
-        const x: number = this.x;
+        const { x } = this;
         this.x = -this.y;
         this.y = x;
         return this;
     }
 
     public static MakeArray(length: number): b2Vec2[] {
-        return b2MakeArray(length, (i: number): b2Vec2 => new b2Vec2());
+        return b2MakeArray(length, (): b2Vec2 => new b2Vec2());
     }
 
     public static AbsV<T extends XY>(v: XY, out: T): T {
@@ -339,8 +326,8 @@ export class b2Vec2 implements XY {
     }
 
     public static RotateV<T extends XY>(v: XY, radians: number, out: T): T {
-        const v_x: number = v.x,
-            v_y: number = v.y;
+        const v_x: number = v.x;
+        const v_y: number = v.y;
         const c: number = Math.cos(radians);
         const s: number = Math.sin(radians);
         out.x = c * v_x - s * v_y;
@@ -401,6 +388,7 @@ export class b2Vec2 implements XY {
         out.y = v.y * s;
         return out;
     }
+
     public static MulVS<T extends XY>(v: XY, s: number, out: T): T {
         out.x = v.x * s;
         out.y = v.y * s;
@@ -412,6 +400,7 @@ export class b2Vec2 implements XY {
         out.y = a.y + s * b.y;
         return out;
     }
+
     public static SubVMulSV<T extends XY>(a: XY, s: number, b: XY, out: T): T {
         out.x = a.x - s * b.x;
         out.y = a.y - s * b.y;
@@ -472,41 +461,16 @@ export class b2Vec3 implements XYZ {
 
     public static readonly s_t0: b2Vec3 = new b2Vec3();
 
-    public readonly data: Float32Array;
-    public get x(): number {
-        return this.data[0];
-    }
-    public set x(value: number) {
-        this.data[0] = value;
-    }
-    public get y(): number {
-        return this.data[1];
-    }
-    public set y(value: number) {
-        this.data[1] = value;
-    }
-    public get z(): number {
-        return this.data[2];
-    }
-    public set z(value: number) {
-        this.data[2] = value;
-    }
+    public x: number;
 
-    constructor();
-    constructor(data: Float32Array);
-    constructor(x: number, y: number, z: number);
-    constructor(...args: any[]) {
-        if (args[0] instanceof Float32Array) {
-            if (args[0].length !== 3) {
-                throw new Error();
-            }
-            this.data = args[0];
-        } else {
-            const x: number = typeof args[0] === "number" ? args[0] : 0;
-            const y: number = typeof args[1] === "number" ? args[1] : 0;
-            const z: number = typeof args[2] === "number" ? args[2] : 0;
-            this.data = new Float32Array([x, y, z]);
-        }
+    public y: number;
+
+    public z: number;
+
+    constructor(x = 0, y = 0, z = 0) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
     }
 
     public Clone(): b2Vec3 {
@@ -581,12 +545,12 @@ export class b2Vec3 implements XYZ {
     }
 
     public static CrossV3V3<T extends XYZ>(a: XYZ, b: XYZ, out: T): T {
-        const a_x: number = a.x,
-            a_y = a.y,
-            a_z = a.z;
-        const b_x: number = b.x,
-            b_y = b.y,
-            b_z = b.z;
+        const a_x: number = a.x;
+        const a_y = a.y;
+        const a_z = a.z;
+        const b_x: number = b.x;
+        const b_y = b.y;
+        const b_z = b.z;
         out.x = a_y * b_z - a_z * b_y;
         out.y = a_z * b_x - a_x * b_z;
         out.z = a_x * b_y - a_y * b_x;
@@ -598,9 +562,9 @@ export class b2Vec3 implements XYZ {
 export class b2Mat22 {
     public static readonly IDENTITY: Readonly<b2Mat22> = new b2Mat22();
 
-    public readonly data: Float32Array = new Float32Array([1, 0, 0, 1]);
-    public readonly ex: b2Vec2 = new b2Vec2(this.data.subarray(0, 2));
-    public readonly ey: b2Vec2 = new b2Vec2(this.data.subarray(2, 4));
+    public readonly ex: b2Vec2 = new b2Vec2(1, 0);
+
+    public readonly ey: b2Vec2 = new b2Vec2(0, 1);
 
     public Clone(): b2Mat22 {
         return new b2Mat22().Copy(this);
@@ -677,10 +641,10 @@ export class b2Mat22 {
     }
 
     public Solve<T extends XY>(b_x: number, b_y: number, out: T): T {
-        const a11: number = this.ex.x,
-            a12 = this.ey.x;
-        const a21: number = this.ex.y,
-            a22 = this.ey.y;
+        const a11: number = this.ex.x;
+        const a12 = this.ey.x;
+        const a21: number = this.ex.y;
+        const a22 = this.ey.y;
         let det: number = a11 * a22 - a12 * a21;
         if (det !== 0) {
             det = 1 / det;
@@ -714,8 +678,8 @@ export class b2Mat22 {
     }
 
     public static AbsM(M: b2Mat22, out: b2Mat22): b2Mat22 {
-        const M_ex: b2Vec2 = M.ex,
-            M_ey: b2Vec2 = M.ey;
+        const M_ex: b2Vec2 = M.ex;
+        const M_ey: b2Vec2 = M.ey;
         out.ex.x = b2Abs(M_ex.x);
         out.ex.y = b2Abs(M_ex.y);
         out.ey.x = b2Abs(M_ey.x);
@@ -724,30 +688,30 @@ export class b2Mat22 {
     }
 
     public static MulMV<T extends XY>(M: b2Mat22, v: XY, out: T): T {
-        const M_ex: b2Vec2 = M.ex,
-            M_ey: b2Vec2 = M.ey;
-        const v_x: number = v.x,
-            v_y: number = v.y;
+        const M_ex: b2Vec2 = M.ex;
+        const M_ey: b2Vec2 = M.ey;
+        const v_x: number = v.x;
+        const v_y: number = v.y;
         out.x = M_ex.x * v_x + M_ey.x * v_y;
         out.y = M_ex.y * v_x + M_ey.y * v_y;
         return out;
     }
 
     public static MulTMV<T extends XY>(M: b2Mat22, v: XY, out: T): T {
-        const M_ex: b2Vec2 = M.ex,
-            M_ey: b2Vec2 = M.ey;
-        const v_x: number = v.x,
-            v_y: number = v.y;
+        const M_ex: b2Vec2 = M.ex;
+        const M_ey: b2Vec2 = M.ey;
+        const v_x: number = v.x;
+        const v_y: number = v.y;
         out.x = M_ex.x * v_x + M_ex.y * v_y;
         out.y = M_ey.x * v_x + M_ey.y * v_y;
         return out;
     }
 
     public static AddMM(A: b2Mat22, B: b2Mat22, out: b2Mat22): b2Mat22 {
-        const A_ex: b2Vec2 = A.ex,
-            A_ey: b2Vec2 = A.ey;
-        const B_ex: b2Vec2 = B.ex,
-            B_ey: b2Vec2 = B.ey;
+        const A_ex: b2Vec2 = A.ex;
+        const A_ey: b2Vec2 = A.ey;
+        const B_ex: b2Vec2 = B.ex;
+        const B_ey: b2Vec2 = B.ey;
         out.ex.x = A_ex.x + B_ex.x;
         out.ex.y = A_ex.y + B_ex.y;
         out.ey.x = A_ey.x + B_ey.x;
@@ -756,14 +720,14 @@ export class b2Mat22 {
     }
 
     public static MulMM(A: b2Mat22, B: b2Mat22, out: b2Mat22): b2Mat22 {
-        const A_ex_x: number = A.ex.x,
-            A_ex_y: number = A.ex.y;
-        const A_ey_x: number = A.ey.x,
-            A_ey_y: number = A.ey.y;
-        const B_ex_x: number = B.ex.x,
-            B_ex_y: number = B.ex.y;
-        const B_ey_x: number = B.ey.x,
-            B_ey_y: number = B.ey.y;
+        const A_ex_x: number = A.ex.x;
+        const A_ex_y: number = A.ex.y;
+        const A_ey_x: number = A.ey.x;
+        const A_ey_y: number = A.ey.y;
+        const B_ex_x: number = B.ex.x;
+        const B_ex_y: number = B.ex.y;
+        const B_ey_x: number = B.ey.x;
+        const B_ey_y: number = B.ey.y;
         out.ex.x = A_ex_x * B_ex_x + A_ey_x * B_ex_y;
         out.ex.y = A_ex_y * B_ex_x + A_ey_y * B_ex_y;
         out.ey.x = A_ex_x * B_ey_x + A_ey_x * B_ey_y;
@@ -772,14 +736,14 @@ export class b2Mat22 {
     }
 
     public static MulTMM(A: b2Mat22, B: b2Mat22, out: b2Mat22): b2Mat22 {
-        const A_ex_x: number = A.ex.x,
-            A_ex_y: number = A.ex.y;
-        const A_ey_x: number = A.ey.x,
-            A_ey_y: number = A.ey.y;
-        const B_ex_x: number = B.ex.x,
-            B_ex_y: number = B.ex.y;
-        const B_ey_x: number = B.ey.x,
-            B_ey_y: number = B.ey.y;
+        const A_ex_x: number = A.ex.x;
+        const A_ex_y: number = A.ex.y;
+        const A_ey_x: number = A.ey.x;
+        const A_ey_y: number = A.ey.y;
+        const B_ex_x: number = B.ex.x;
+        const B_ex_y: number = B.ex.y;
+        const B_ey_x: number = B.ey.x;
+        const B_ey_y: number = B.ey.y;
         out.ex.x = A_ex_x * B_ex_x + A_ex_y * B_ex_y;
         out.ex.y = A_ey_x * B_ex_x + A_ey_y * B_ex_y;
         out.ey.x = A_ex_x * B_ey_x + A_ex_y * B_ey_y;
@@ -792,10 +756,11 @@ export class b2Mat22 {
 export class b2Mat33 {
     public static readonly IDENTITY: Readonly<b2Mat33> = new b2Mat33();
 
-    public readonly data: Float32Array = new Float32Array([1, 0, 0, 0, 1, 0, 0, 0, 1]);
-    public readonly ex: b2Vec3 = new b2Vec3(this.data.subarray(0, 3));
-    public readonly ey: b2Vec3 = new b2Vec3(this.data.subarray(3, 6));
-    public readonly ez: b2Vec3 = new b2Vec3(this.data.subarray(6, 9));
+    public readonly ex: b2Vec3 = new b2Vec3(1, 0, 0);
+
+    public readonly ey: b2Vec3 = new b2Vec3(0, 1, 0);
+
+    public readonly ez: b2Vec3 = new b2Vec3(0, 0, 1);
 
     public Clone(): b2Mat33 {
         return new b2Mat33().Copy(this);
@@ -837,15 +802,15 @@ export class b2Mat33 {
     }
 
     public Solve33<T extends XYZ>(b_x: number, b_y: number, b_z: number, out: T): T {
-        const a11: number = this.ex.x,
-            a21: number = this.ex.y,
-            a31: number = this.ex.z;
-        const a12: number = this.ey.x,
-            a22: number = this.ey.y,
-            a32: number = this.ey.z;
-        const a13: number = this.ez.x,
-            a23: number = this.ez.y,
-            a33: number = this.ez.z;
+        const a11: number = this.ex.x;
+        const a21: number = this.ex.y;
+        const a31: number = this.ex.z;
+        const a12: number = this.ey.x;
+        const a22: number = this.ey.y;
+        const a32: number = this.ey.z;
+        const a13: number = this.ez.x;
+        const a23: number = this.ez.y;
+        const a33: number = this.ez.z;
         let det: number = a11 * (a22 * a33 - a32 * a23) + a21 * (a32 * a13 - a12 * a33) + a31 * (a12 * a23 - a22 * a13);
         if (det !== 0) {
             det = 1 / det;
@@ -857,10 +822,10 @@ export class b2Mat33 {
     }
 
     public Solve22<T extends XY>(b_x: number, b_y: number, out: T): T {
-        const a11: number = this.ex.x,
-            a12: number = this.ey.x;
-        const a21: number = this.ex.y,
-            a22: number = this.ey.y;
+        const a11: number = this.ex.x;
+        const a12: number = this.ey.x;
+        const a21: number = this.ex.y;
+        const a22: number = this.ey.y;
         let det: number = a11 * a22 - a12 * a21;
         if (det !== 0) {
             det = 1 / det;
@@ -871,10 +836,10 @@ export class b2Mat33 {
     }
 
     public GetInverse22(M: b2Mat33): void {
-        const a: number = this.ex.x,
-            b: number = this.ey.x,
-            c: number = this.ex.y,
-            d: number = this.ey.y;
+        const a: number = this.ex.x;
+        const b: number = this.ey.x;
+        const c: number = this.ex.y;
+        const d: number = this.ey.y;
         let det: number = a * d - b * c;
         if (det !== 0) {
             det = 1 / det;
@@ -897,11 +862,11 @@ export class b2Mat33 {
             det = 1 / det;
         }
 
-        const a11: number = this.ex.x,
-            a12: number = this.ey.x,
-            a13: number = this.ez.x;
-        const a22: number = this.ey.y,
-            a23: number = this.ez.y;
+        const a11: number = this.ex.x;
+        const a12: number = this.ey.x;
+        const a13: number = this.ez.x;
+        const a22: number = this.ey.y;
+        const a23: number = this.ez.y;
         const a33: number = this.ez.z;
 
         M.ex.x = det * (a22 * a33 - a23 * a23);
@@ -918,27 +883,30 @@ export class b2Mat33 {
     }
 
     public static MulM33V3<T extends XYZ>(A: b2Mat33, v: XYZ, out: T): T {
-        const v_x: number = v.x,
-            v_y: number = v.y,
-            v_z: number = v.z;
+        const v_x: number = v.x;
+        const v_y: number = v.y;
+        const v_z: number = v.z;
         out.x = A.ex.x * v_x + A.ey.x * v_y + A.ez.x * v_z;
         out.y = A.ex.y * v_x + A.ey.y * v_y + A.ez.y * v_z;
         out.z = A.ex.z * v_x + A.ey.z * v_y + A.ez.z * v_z;
         return out;
     }
+
     public static MulM33XYZ<T extends XYZ>(A: b2Mat33, x: number, y: number, z: number, out: T): T {
         out.x = A.ex.x * x + A.ey.x * y + A.ez.x * z;
         out.y = A.ex.y * x + A.ey.y * y + A.ez.y * z;
         out.z = A.ex.z * x + A.ey.z * y + A.ez.z * z;
         return out;
     }
+
     public static MulM33V2<T extends XY>(A: b2Mat33, v: XY, out: T): T {
-        const v_x: number = v.x,
-            v_y: number = v.y;
+        const v_x: number = v.x;
+        const v_y: number = v.y;
         out.x = A.ex.x * v_x + A.ey.x * v_y;
         out.y = A.ex.y * v_x + A.ey.y * v_y;
         return out;
     }
+
     public static MulM33XY<T extends XY>(A: b2Mat33, x: number, y: number, out: T): T {
         out.x = A.ex.x * x + A.ey.x * y;
         out.y = A.ex.y * x + A.ey.y * y;
@@ -950,10 +918,11 @@ export class b2Mat33 {
 export class b2Rot {
     public static readonly IDENTITY: Readonly<b2Rot> = new b2Rot();
 
-    public s: number = 0;
-    public c: number = 1;
+    public s = 0;
 
-    constructor(angle: number = 0) {
+    public c = 1;
+
+    constructor(angle = 0) {
         if (angle) {
             this.s = Math.sin(angle);
             this.c = Math.cos(angle);
@@ -1003,10 +972,10 @@ export class b2Rot {
         // [qs  qc]   [rs  rc]   [qs*rc+qc*rs -qs*rs+qc*rc]
         // s = qs * rc + qc * rs
         // c = qc * rc - qs * rs
-        const q_c: number = q.c,
-            q_s: number = q.s;
-        const r_c: number = r.c,
-            r_s: number = r.s;
+        const q_c: number = q.c;
+        const q_s: number = q.s;
+        const r_c: number = r.c;
+        const r_s: number = r.s;
         out.s = q_s * r_c + q_c * r_s;
         out.c = q_c * r_c - q_s * r_s;
         return out;
@@ -1017,30 +986,30 @@ export class b2Rot {
         // [-qs qc]   [rs  rc]   [-qs*rc+qc*rs qs*rs+qc*rc]
         // s = qc * rs - qs * rc
         // c = qc * rc + qs * rs
-        const q_c: number = q.c,
-            q_s: number = q.s;
-        const r_c: number = r.c,
-            r_s: number = r.s;
+        const q_c: number = q.c;
+        const q_s: number = q.s;
+        const r_c: number = r.c;
+        const r_s: number = r.s;
         out.s = q_c * r_s - q_s * r_c;
         out.c = q_c * r_c + q_s * r_s;
         return out;
     }
 
     public static MulRV<T extends XY>(q: b2Rot, v: XY, out: T): T {
-        const q_c: number = q.c,
-            q_s: number = q.s;
-        const v_x: number = v.x,
-            v_y: number = v.y;
+        const q_c: number = q.c;
+        const q_s: number = q.s;
+        const v_x: number = v.x;
+        const v_y: number = v.y;
         out.x = q_c * v_x - q_s * v_y;
         out.y = q_s * v_x + q_c * v_y;
         return out;
     }
 
     public static MulTRV<T extends XY>(q: b2Rot, v: XY, out: T): T {
-        const q_c: number = q.c,
-            q_s: number = q.s;
-        const v_x: number = v.x,
-            v_y: number = v.y;
+        const q_c: number = q.c;
+        const q_s: number = q.s;
+        const v_x: number = v.x;
+        const v_y: number = v.y;
         out.x = q_c * v_x + q_s * v_y;
         out.y = -q_s * v_x + q_c * v_y;
         return out;
@@ -1053,6 +1022,7 @@ export class b2Transform {
     public static readonly IDENTITY: Readonly<b2Transform> = new b2Transform();
 
     public readonly p: b2Vec2 = new b2Vec2();
+
     public readonly q: b2Rot = new b2Rot();
 
     public Clone(): b2Transform {
@@ -1123,10 +1093,10 @@ export class b2Transform {
         // float32 x = (T.q.c * v.x - T.q.s * v.y) + T.p.x;
         // float32 y = (T.q.s * v.x + T.q.c * v.y) + T.p.y;
         // return b2Vec2(x, y);
-        const T_q_c: number = T.q.c,
-            T_q_s: number = T.q.s;
-        const v_x: number = v.x,
-            v_y: number = v.y;
+        const T_q_c: number = T.q.c;
+        const T_q_s: number = T.q.s;
+        const v_x: number = v.x;
+        const v_y: number = v.y;
         out.x = T_q_c * v_x - T_q_s * v_y + T.p.x;
         out.y = T_q_s * v_x + T_q_c * v_y + T.p.y;
         return out;
@@ -1138,8 +1108,8 @@ export class b2Transform {
         // float32 x = (T.q.c * px + T.q.s * py);
         // float32 y = (-T.q.s * px + T.q.c * py);
         // return b2Vec2(x, y);
-        const T_q_c: number = T.q.c,
-            T_q_s: number = T.q.s;
+        const T_q_c: number = T.q.c;
+        const T_q_s: number = T.q.s;
         const p_x: number = v.x - T.p.x;
         const p_y: number = v.y - T.p.y;
         out.x = T_q_c * p_x + T_q_s * p_y;
@@ -1166,11 +1136,16 @@ export class b2Transform {
 /// we must interpolate the center of mass position.
 export class b2Sweep {
     public readonly localCenter: b2Vec2 = new b2Vec2();
+
     public readonly c0: b2Vec2 = new b2Vec2();
+
     public readonly c: b2Vec2 = new b2Vec2();
-    public a0: number = 0;
-    public a: number = 0;
-    public alpha0: number = 0;
+
+    public a0 = 0;
+
+    public a = 0;
+
+    public alpha0 = 0;
 
     public Clone(): b2Sweep {
         return new b2Sweep().Copy(this);

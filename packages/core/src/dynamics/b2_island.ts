@@ -16,20 +16,25 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-// DEBUG: import { b2Assert } from "../common/b2_settings.js";
-import { b2_maxFloat, b2_timeToSleep } from "../common/b2_settings.js";
-import { b2_maxTranslation, b2_maxTranslationSquared } from "../common/b2_settings.js";
-import { b2_maxRotation, b2_maxRotationSquared } from "../common/b2_settings.js";
-import { b2_linearSleepTolerance, b2_angularSleepTolerance } from "../common/b2_settings.js";
-import { b2Abs, b2Min, b2Max, b2Vec2 } from "../common/b2_math.js";
-import { b2Timer } from "../common/b2_timer.js";
-import { b2Contact } from "./b2_contact.js";
-import { b2ContactSolver, b2ContactSolverDef } from "./b2_contact_solver.js";
-import { b2ContactVelocityConstraint } from "./b2_contact_solver.js";
-import { b2Joint } from "./b2_joint.js";
-import { b2Body, b2BodyType } from "./b2_body.js";
-import { b2TimeStep, b2Profile, b2SolverData, b2Position, b2Velocity } from "./b2_time_step.js";
-import { b2ContactImpulse, b2ContactListener } from "./b2_world_callbacks.js";
+// DEBUG: import { b2Assert } from "../common/b2_settings";
+import {
+    b2_maxFloat,
+    b2_timeToSleep,
+    b2_maxTranslation,
+    b2_maxTranslationSquared,
+    b2_maxRotation,
+    b2_maxRotationSquared,
+    b2_linearSleepTolerance,
+    b2_angularSleepTolerance,
+} from "../common/b2_settings";
+import { b2Abs, b2Min, b2Max, b2Vec2 } from "../common/b2_math";
+import { b2Timer } from "../common/b2_timer";
+import { b2Contact } from "./b2_contact";
+import { b2ContactSolver, b2ContactSolverDef, b2ContactVelocityConstraint } from "./b2_contact_solver";
+import { b2Joint } from "./b2_joint";
+import { b2Body, b2BodyType } from "./b2_body";
+import { b2TimeStep, b2Profile, b2SolverData, b2Position, b2Velocity } from "./b2_time_step";
+import { b2ContactImpulse, b2ContactListener } from "./b2_world_callbacks";
 
 /*
 Position Correction Notes
@@ -153,25 +158,32 @@ export class b2Island {
     public m_listener!: b2ContactListener;
 
     public readonly m_bodies: b2Body[] = [
-        /*1024*/
+        /* 1024 */
     ]; // TODO: b2Settings
+
     public readonly m_contacts: b2Contact[] = [
-        /*1024*/
+        /* 1024 */
     ]; // TODO: b2Settings
+
     public readonly m_joints: b2Joint[] = [
-        /*1024*/
+        /* 1024 */
     ]; // TODO: b2Settings
 
     public readonly m_positions: b2Position[] = b2Position.MakeArray(1024); // TODO: b2Settings
+
     public readonly m_velocities: b2Velocity[] = b2Velocity.MakeArray(1024); // TODO: b2Settings
 
-    public m_bodyCount: number = 0;
-    public m_jointCount: number = 0;
-    public m_contactCount: number = 0;
+    public m_bodyCount = 0;
 
-    public m_bodyCapacity: number = 0;
-    public m_contactCapacity: number = 0;
-    public m_jointCapacity: number = 0;
+    public m_jointCount = 0;
+
+    public m_contactCount = 0;
+
+    public m_bodyCapacity = 0;
+
+    public m_contactCapacity = 0;
+
+    public m_jointCapacity = 0;
 
     public Initialize(
         bodyCapacity: number,
@@ -240,22 +252,27 @@ export class b2Island {
     }
 
     private static s_timer = new b2Timer();
+
     private static s_solverData = new b2SolverData();
+
     private static s_contactSolverDef = new b2ContactSolverDef();
+
     private static s_contactSolver = new b2ContactSolver();
+
     private static s_translation = new b2Vec2();
+
     public Solve(profile: b2Profile, step: b2TimeStep, gravity: b2Vec2, allowSleep: boolean): void {
         const timer: b2Timer = b2Island.s_timer.Reset();
 
         const h: number = step.dt;
 
         // Integrate velocities and apply damping. Initialize the body state.
-        for (let i: number = 0; i < this.m_bodyCount; ++i) {
+        for (let i = 0; i < this.m_bodyCount; ++i) {
             const b: b2Body = this.m_bodies[i];
 
             // const c: b2Vec2 =
             this.m_positions[i].c.Copy(b.m_sweep.c);
-            const a: number = b.m_sweep.a;
+            const { a } = b.m_sweep;
             const v: b2Vec2 = this.m_velocities[i].v.Copy(b.m_linearVelocity);
             let w: number = b.m_angularVelocity;
 
@@ -310,7 +327,7 @@ export class b2Island {
             contactSolver.WarmStart();
         }
 
-        for (let i: number = 0; i < this.m_jointCount; ++i) {
+        for (let i = 0; i < this.m_jointCount; ++i) {
             this.m_joints[i].InitVelocityConstraints(solverData);
         }
 
@@ -318,8 +335,8 @@ export class b2Island {
 
         // Solve velocity constraints.
         timer.Reset();
-        for (let i: number = 0; i < step.velocityIterations; ++i) {
-            for (let j: number = 0; j < this.m_jointCount; ++j) {
+        for (let i = 0; i < step.config.velocityIterations; ++i) {
+            for (let j = 0; j < this.m_jointCount; ++j) {
                 this.m_joints[j].SolveVelocityConstraints(solverData);
             }
 
@@ -331,11 +348,11 @@ export class b2Island {
         profile.solveVelocity = timer.GetMilliseconds();
 
         // Integrate positions.
-        for (let i: number = 0; i < this.m_bodyCount; ++i) {
-            const c: b2Vec2 = this.m_positions[i].c;
-            let a: number = this.m_positions[i].a;
-            const v: b2Vec2 = this.m_velocities[i].v;
-            let w: number = this.m_velocities[i].w;
+        for (let i = 0; i < this.m_bodyCount; ++i) {
+            const { c } = this.m_positions[i];
+            let { a } = this.m_positions[i];
+            const { v } = this.m_velocities[i];
+            let { w } = this.m_velocities[i];
 
             // Check for large velocities
             const translation: b2Vec2 = b2Vec2.MulSV(h, v, b2Island.s_translation);
@@ -363,12 +380,12 @@ export class b2Island {
 
         // Solve position constraints
         timer.Reset();
-        let positionSolved: boolean = false;
-        for (let i: number = 0; i < step.positionIterations; ++i) {
+        let positionSolved = false;
+        for (let i = 0; i < step.config.positionIterations; ++i) {
             const contactsOkay: boolean = contactSolver.SolvePositionConstraints();
 
-            let jointsOkay: boolean = true;
-            for (let j: number = 0; j < this.m_jointCount; ++j) {
+            let jointsOkay = true;
+            for (let j = 0; j < this.m_jointCount; ++j) {
                 const jointOkay: boolean = this.m_joints[j].SolvePositionConstraints(solverData);
                 jointsOkay = jointsOkay && jointOkay;
             }
@@ -381,7 +398,7 @@ export class b2Island {
         }
 
         // Copy state buffers back to the bodies
-        for (let i: number = 0; i < this.m_bodyCount; ++i) {
+        for (let i = 0; i < this.m_bodyCount; ++i) {
             const body: b2Body = this.m_bodies[i];
             body.m_sweep.c.Copy(this.m_positions[i].c);
             body.m_sweep.a = this.m_positions[i].a;
@@ -400,7 +417,7 @@ export class b2Island {
             const linTolSqr: number = b2_linearSleepTolerance * b2_linearSleepTolerance;
             const angTolSqr: number = b2_angularSleepTolerance * b2_angularSleepTolerance;
 
-            for (let i: number = 0; i < this.m_bodyCount; ++i) {
+            for (let i = 0; i < this.m_bodyCount; ++i) {
                 const b: b2Body = this.m_bodies[i];
                 if (b.GetType() === b2BodyType.b2_staticBody) {
                     continue;
@@ -420,7 +437,7 @@ export class b2Island {
             }
 
             if (minSleepTime >= b2_timeToSleep && positionSolved) {
-                for (let i: number = 0; i < this.m_bodyCount; ++i) {
+                for (let i = 0; i < this.m_bodyCount; ++i) {
                     const b: b2Body = this.m_bodies[i];
                     b.SetAwake(false);
                 }
@@ -433,7 +450,7 @@ export class b2Island {
         // DEBUG: b2Assert(toiIndexB < this.m_bodyCount);
 
         // Initialize the body state.
-        for (let i: number = 0; i < this.m_bodyCount; ++i) {
+        for (let i = 0; i < this.m_bodyCount; ++i) {
             const b: b2Body = this.m_bodies[i];
             this.m_positions[i].c.Copy(b.m_sweep.c);
             this.m_positions[i].a = b.m_sweep.a;
@@ -450,7 +467,7 @@ export class b2Island {
         const contactSolver: b2ContactSolver = b2Island.s_contactSolver.Initialize(contactSolverDef);
 
         // Solve position constraints.
-        for (let i: number = 0; i < subStep.positionIterations; ++i) {
+        for (let i = 0; i < subStep.config.positionIterations; ++i) {
             const contactsOkay: boolean = contactSolver.SolveTOIPositionConstraints(toiIndexA, toiIndexB);
             if (contactsOkay) {
                 break;
@@ -501,7 +518,7 @@ export class b2Island {
         contactSolver.InitializeVelocityConstraints();
 
         // Solve velocity constraints.
-        for (let i: number = 0; i < subStep.velocityIterations; ++i) {
+        for (let i = 0; i < subStep.config.velocityIterations; ++i) {
             contactSolver.SolveVelocityConstraints();
         }
 
@@ -511,11 +528,11 @@ export class b2Island {
         const h: number = subStep.dt;
 
         // Integrate positions
-        for (let i: number = 0; i < this.m_bodyCount; ++i) {
-            const c: b2Vec2 = this.m_positions[i].c;
-            let a: number = this.m_positions[i].a;
-            const v: b2Vec2 = this.m_velocities[i].v;
-            let w: number = this.m_velocities[i].w;
+        for (let i = 0; i < this.m_bodyCount; ++i) {
+            const { c } = this.m_positions[i];
+            let { a } = this.m_positions[i];
+            const { v } = this.m_velocities[i];
+            let { w } = this.m_velocities[i];
 
             // Check for large velocities
             const translation: b2Vec2 = b2Vec2.MulSV(h, v, b2Island.s_translation);
@@ -552,12 +569,13 @@ export class b2Island {
     }
 
     private static s_impulse = new b2ContactImpulse();
+
     public Report(constraints: b2ContactVelocityConstraint[]): void {
         if (this.m_listener === null) {
             return;
         }
 
-        for (let i: number = 0; i < this.m_contactCount; ++i) {
+        for (let i = 0; i < this.m_contactCount; ++i) {
             const c: b2Contact = this.m_contacts[i];
 
             if (!c) {
@@ -568,7 +586,7 @@ export class b2Island {
 
             const impulse: b2ContactImpulse = b2Island.s_impulse;
             impulse.count = vc.pointCount;
-            for (let j: number = 0; j < vc.pointCount; ++j) {
+            for (let j = 0; j < vc.pointCount; ++j) {
                 impulse.normalImpulses[j] = vc.points[j].normalImpulse;
                 impulse.tangentImpulses[j] = vc.points[j].tangentImpulse;
             }

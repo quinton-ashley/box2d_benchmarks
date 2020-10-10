@@ -16,14 +16,30 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import * as b2 from "@box2d";
-import * as testbed from "../testbed.js";
+import {
+    b2Fixture,
+    b2Body,
+    b2BodyDef,
+    b2EdgeShape,
+    b2Vec2,
+    b2CircleShape,
+    b2FixtureDef,
+    b2BodyType,
+    b2Contact,
+    b2_epsilon_sq,
+    XY,
+} from "@box2d/core";
 
-export class SensorTest extends testbed.Test {
+import { Test } from "../../test";
+import { Settings } from "../../settings";
+
+export class SensorTest extends Test {
     public static readonly e_count = 7;
 
-    public m_sensor: b2.Fixture;
-    public m_bodies: b2.Body[];
+    public m_sensor: b2Fixture;
+
+    public m_bodies: b2Body[];
+
     public m_touching: boolean[][];
 
     constructor() {
@@ -35,41 +51,41 @@ export class SensorTest extends testbed.Test {
             this.m_touching[i] = new Array(1);
         }
 
-        const bd = new b2.BodyDef();
+        const bd = new b2BodyDef();
         const ground = this.m_world.CreateBody(bd);
 
         {
-            const shape = new b2.EdgeShape();
-            shape.SetTwoSided(new b2.Vec2(-40.0, 0.0), new b2.Vec2(40.0, 0.0));
+            const shape = new b2EdgeShape();
+            shape.SetTwoSided(new b2Vec2(-40.0, 0.0), new b2Vec2(40.0, 0.0));
             ground.CreateFixture(shape, 0.0);
         }
 
         /*
     {
-      const sd = new b2.FixtureDef();
-      sd.SetAsBox(10.0, 2.0, new b2.Vec2(0.0, 20.0), 0.0);
+      const sd = new b2FixtureDef();
+      sd.SetAsBox(10.0, 2.0, new b2Vec2(0.0, 20.0), 0.0);
       sd.isSensor = true;
       this.m_sensor = ground.CreateFixture(sd);
     }
     */
         {
-            const shape = new b2.CircleShape();
+            const shape = new b2CircleShape();
             shape.m_radius = 5.0;
             shape.m_p.Set(0.0, 10.0);
 
-            const fd = new b2.FixtureDef();
+            const fd = new b2FixtureDef();
             fd.shape = shape;
             fd.isSensor = true;
             this.m_sensor = ground.CreateFixture(fd);
         }
 
         {
-            const shape = new b2.CircleShape();
+            const shape = new b2CircleShape();
             shape.m_radius = 1.0;
 
             for (let i = 0; i < SensorTest.e_count; ++i) {
-                //const bd = new b2.BodyDef();
-                bd.type = b2.BodyType.b2_dynamicBody;
+                // const bd = new b2BodyDef();
+                bd.type = b2BodyType.b2_dynamicBody;
                 bd.position.Set(-10.0 + 3.0 * i, 20.0);
                 bd.userData = this.m_touching[i];
 
@@ -81,7 +97,14 @@ export class SensorTest extends testbed.Test {
         }
     }
 
-    public BeginContact(contact: b2.Contact) {
+    public getCenter(): XY {
+        return {
+            x: 0,
+            y: 5,
+        };
+    }
+
+    public BeginContact(contact: b2Contact) {
         const fixtureA = contact.GetFixtureA();
         const fixtureB = contact.GetFixtureB();
 
@@ -102,7 +125,7 @@ export class SensorTest extends testbed.Test {
         }
     }
 
-    public EndContact(contact: b2.Contact) {
+    public EndContact(contact: b2Contact) {
         const fixtureA = contact.GetFixtureA();
         const fixtureB = contact.GetFixtureB();
 
@@ -123,8 +146,8 @@ export class SensorTest extends testbed.Test {
         }
     }
 
-    public Step(settings: testbed.Settings): void {
-        super.Step(settings);
+    public Step(settings: Settings, timeStep: number): void {
+        super.Step(settings, timeStep);
 
         // Traverse the contact results. Apply a force on shapes
         // that overlap the sensor.
@@ -136,23 +159,19 @@ export class SensorTest extends testbed.Test {
             const body = this.m_bodies[i];
             const ground = this.m_sensor.GetBody();
 
-            const circle = this.m_sensor.GetShape() as b2.CircleShape;
-            const center = ground.GetWorldPoint(circle.m_p, new b2.Vec2());
+            const circle = this.m_sensor.GetShape() as b2CircleShape;
+            const center = ground.GetWorldPoint(circle.m_p, new b2Vec2());
 
             const position = body.GetPosition();
 
-            const d = b2.Vec2.SubVV(center, position, new b2.Vec2());
-            if (d.LengthSquared() < b2.epsilon_sq) {
+            const d = b2Vec2.SubVV(center, position, new b2Vec2());
+            if (d.LengthSquared() < b2_epsilon_sq) {
                 continue;
             }
 
             d.Normalize();
-            const F = b2.Vec2.MulSV(100.0, d, new b2.Vec2());
+            const F = b2Vec2.MulSV(100.0, d, new b2Vec2());
             body.ApplyForce(F, position);
         }
-    }
-
-    public static Create(): testbed.Test {
-        return new SensorTest();
     }
 }

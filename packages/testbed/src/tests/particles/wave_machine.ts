@@ -16,13 +16,24 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-// #if B2_ENABLE_PARTICLE
+import {
+    b2RevoluteJoint,
+    b2BodyDef,
+    b2BodyType,
+    b2PolygonShape,
+    b2Vec2,
+    b2RevoluteJointDef,
+    b2_pi,
+    XY,
+} from "@box2d/core";
+import { b2ParticleGroupDef, b2ParticleFlag } from "@box2d/particles";
 
-import * as b2 from "@box2d";
-import * as testbed from "../testbed.js";
+import { Test } from "../../test";
+import { Settings } from "../../settings";
 
-export class WaveMachine extends testbed.Test {
-    public m_joint: b2.RevoluteJoint;
+export class WaveMachine extends Test {
+    public m_joint: b2RevoluteJoint;
+
     public m_time = 0;
 
     constructor() {
@@ -30,53 +41,53 @@ export class WaveMachine extends testbed.Test {
 
         let ground = null;
         {
-            const bd = new b2.BodyDef();
+            const bd = new b2BodyDef();
             ground = this.m_world.CreateBody(bd);
         }
 
         {
-            const bd = new b2.BodyDef();
-            bd.type = b2.BodyType.b2_dynamicBody;
+            const bd = new b2BodyDef();
+            bd.type = b2BodyType.b2_dynamicBody;
             bd.allowSleep = false;
             bd.position.Set(0.0, 1.0);
             const body = this.m_world.CreateBody(bd);
 
-            const shape = new b2.PolygonShape();
-            shape.SetAsBox(0.05, 1.0, new b2.Vec2(2.0, 0.0), 0.0);
+            const shape = new b2PolygonShape();
+            shape.SetAsBox(0.05, 1.0, new b2Vec2(2.0, 0.0), 0.0);
             body.CreateFixture(shape, 5.0);
-            shape.SetAsBox(0.05, 1.0, new b2.Vec2(-2.0, 0.0), 0.0);
+            shape.SetAsBox(0.05, 1.0, new b2Vec2(-2.0, 0.0), 0.0);
             body.CreateFixture(shape, 5.0);
-            shape.SetAsBox(2.0, 0.05, new b2.Vec2(0.0, 1.0), 0.0);
+            shape.SetAsBox(2.0, 0.05, new b2Vec2(0.0, 1.0), 0.0);
             body.CreateFixture(shape, 5.0);
-            shape.SetAsBox(2.0, 0.05, new b2.Vec2(0.0, -1.0), 0.0);
+            shape.SetAsBox(2.0, 0.05, new b2Vec2(0.0, -1.0), 0.0);
             body.CreateFixture(shape, 5.0);
 
-            const jd = new b2.RevoluteJointDef();
+            const jd = new b2RevoluteJointDef();
             jd.bodyA = ground;
             jd.bodyB = body;
             jd.localAnchorA.Set(0.0, 1.0);
             jd.localAnchorB.Set(0.0, 0.0);
             jd.referenceAngle = 0.0;
-            jd.motorSpeed = 0.05 * b2.pi;
+            jd.motorSpeed = 0.05 * b2_pi;
             jd.maxMotorTorque = 1e7;
             jd.enableMotor = true;
             this.m_joint = this.m_world.CreateJoint(jd);
         }
 
         this.m_particleSystem.SetRadius(0.025 * 2); // HACK: increase particle radius
-        const particleType = testbed.Test.GetParticleParameterValue();
+        const particleType = Test.GetParticleParameterValue();
         this.m_particleSystem.SetDamping(0.2);
 
         {
-            const pd = new b2.ParticleGroupDef();
+            const pd = new b2ParticleGroupDef();
             pd.flags = particleType;
 
-            const shape = new b2.PolygonShape();
-            shape.SetAsBox(0.9, 0.9, new b2.Vec2(0.0, 1.0), 0.0);
+            const shape = new b2PolygonShape();
+            shape.SetAsBox(0.9, 0.9, new b2Vec2(0.0, 1.0), 0.0);
 
             pd.shape = shape;
             const group = this.m_particleSystem.CreateParticleGroup(pd);
-            if (pd.flags & b2.ParticleFlag.b2_colorMixingParticle) {
+            if (pd.flags & b2ParticleFlag.b2_colorMixingParticle) {
                 this.ColorParticleGroup(group, 0);
             }
         }
@@ -84,21 +95,22 @@ export class WaveMachine extends testbed.Test {
         this.m_time = 0;
     }
 
-    public Step(settings: testbed.Settings) {
-        super.Step(settings);
+    public Step(settings: Settings, timeStep: number) {
+        super.Step(settings, timeStep);
         if (settings.m_hertz > 0) {
             this.m_time += 1 / settings.m_hertz;
         }
-        this.m_joint.SetMotorSpeed(0.05 * Math.cos(this.m_time) * b2.pi);
+        this.m_joint.SetMotorSpeed(0.05 * Math.cos(this.m_time) * b2_pi);
     }
 
     public GetDefaultViewZoom() {
-        return 0.1;
+        return 250;
     }
 
-    public static Create() {
-        return new WaveMachine();
+    public getCenter(): XY {
+        return {
+            x: 0,
+            y: 1,
+        };
     }
 }
-
-// #endif

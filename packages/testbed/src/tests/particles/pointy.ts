@@ -16,25 +16,27 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-// #if B2_ENABLE_PARTICLE
+import { b2PolygonShape, b2Transform, b2BodyDef, b2Vec2, XY } from "@box2d/core";
+import { b2ParticleFlag, b2ParticleDef } from "@box2d/particles";
 
-import * as b2 from "@box2d";
-import * as testbed from "../testbed.js";
+import { Test } from "../../test";
+import { Settings } from "../../settings";
 
 /**
  * Test behavior when particles fall on a convex ambigious Body
  * contact fixture junction.
  */
 
-export class Pointy extends testbed.Test {
-    public m_killfieldShape = new b2.PolygonShape();
-    public m_killfieldTransform = new b2.Transform();
+export class Pointy extends Test {
+    public m_killfieldShape = new b2PolygonShape();
+
+    public m_killfieldTransform = new b2Transform();
 
     constructor() {
         super();
 
         {
-            const bd = new b2.BodyDef();
+            const bd = new b2BodyDef();
             const ground = this.m_world.CreateBody(bd);
 
             // Construct a triangle out of many polygons to ensure there's no
@@ -42,43 +44,43 @@ export class Pointy extends testbed.Test {
 
             const xstep = 1.0;
             for (let x = -10.0; x < 10.0; x += xstep) {
-                const shape = new b2.PolygonShape();
-                const vertices = [new b2.Vec2(x, -10.0), new b2.Vec2(x + xstep, -10.0), new b2.Vec2(0.0, 25.0)];
+                const shape = new b2PolygonShape();
+                const vertices = [new b2Vec2(x, -10.0), new b2Vec2(x + xstep, -10.0), new b2Vec2(0.0, 25.0)];
                 shape.Set(vertices, 3);
                 ground.CreateFixture(shape, 0.0);
             }
         }
 
         this.m_particleSystem.SetRadius(0.25 * 2); // HACK: increase particle radius
-        const particleType = testbed.Test.GetParticleParameterValue();
-        if (particleType === b2.ParticleFlag.b2_waterParticle) {
+        const particleType = Test.GetParticleParameterValue();
+        if (particleType === b2ParticleFlag.b2_waterParticle) {
             this.m_particleSystem.SetDamping(0.2);
         }
 
         // Create killfield shape and transform
-        this.m_killfieldShape = new b2.PolygonShape();
+        this.m_killfieldShape = new b2PolygonShape();
         this.m_killfieldShape.SetAsBox(50.0, 1.0);
 
         // Put this at the bottom of the world
-        this.m_killfieldTransform = new b2.Transform();
-        const loc = new b2.Vec2(-25, 1);
+        this.m_killfieldTransform = new b2Transform();
+        const loc = new b2Vec2(-25, 1);
         this.m_killfieldTransform.SetPositionAngle(loc, 0);
     }
 
-    public Step(settings: testbed.Settings) {
-        super.Step(settings);
+    public Step(settings: Settings, timeStep: number) {
+        super.Step(settings, timeStep);
 
-        const flags = testbed.Test.GetParticleParameterValue();
-        const pd = new b2.ParticleDef();
+        const flags = Test.GetParticleParameterValue();
+        const pd = new b2ParticleDef();
 
         pd.position.Set(0.0, 33.0);
         pd.velocity.Set(0.0, -1.0);
         pd.flags = flags;
 
-        if (flags & (b2.ParticleFlag.b2_springParticle | b2.ParticleFlag.b2_elasticParticle)) {
+        if (flags & (b2ParticleFlag.b2_springParticle | b2ParticleFlag.b2_elasticParticle)) {
             const count = this.m_particleSystem.GetParticleCount();
             pd.velocity.Set(count & 1 ? -1.0 : 1.0, -5.0);
-            pd.flags |= b2.ParticleFlag.b2_reactiveParticle;
+            pd.flags |= b2ParticleFlag.b2_reactiveParticle;
         }
 
         this.m_particleSystem.CreateParticle(pd);
@@ -87,9 +89,10 @@ export class Pointy extends testbed.Test {
         this.m_particleSystem.DestroyParticlesInShape(this.m_killfieldShape, this.m_killfieldTransform);
     }
 
-    public static Create() {
-        return new Pointy();
+    public getCenter(): XY {
+        return {
+            x: 0,
+            y: 20,
+        };
     }
 }
-
-// #endif

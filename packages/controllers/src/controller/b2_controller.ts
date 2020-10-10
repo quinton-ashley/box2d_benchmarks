@@ -16,23 +16,25 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-// #if B2_ENABLE_CONTROLLER
-
-import { b2Body } from "../dynamics/b2_body.js";
-import { b2TimeStep } from "../dynamics/b2_time_step.js";
-import { b2Draw } from "../common/b2_draw.js";
+import { b2TimeStep, b2Body } from "@box2d/core";
 
 /**
  * A controller edge is used to connect bodies and controllers
  * together in a bipartite graph.
  */
 export class b2ControllerEdge {
-    public readonly controller: b2Controller; ///< provides quick access to other end of this edge.
-    public readonly body: b2Body; ///< the body
-    public prevBody: b2ControllerEdge | null = null; ///< the previous controller edge in the controllers's joint list
-    public nextBody: b2ControllerEdge | null = null; ///< the next controller edge in the controllers's joint list
-    public prevController: b2ControllerEdge | null = null; ///< the previous controller edge in the body's joint list
-    public nextController: b2ControllerEdge | null = null; ///< the next controller edge in the body's joint list
+    public readonly controller: b2Controller; /// < provides quick access to other end of this edge.
+
+    public readonly body: b2Body; /// < the body
+
+    public prevBody: b2ControllerEdge | null = null; /// < the previous controller edge in the controllers's joint list
+
+    public nextBody: b2ControllerEdge | null = null; /// < the next controller edge in the controllers's joint list
+
+    public prevController: b2ControllerEdge | null = null; /// < the previous controller edge in the body's joint list
+
+    public nextController: b2ControllerEdge | null = null; /// < the next controller edge in the body's joint list
+
     constructor(controller: b2Controller, body: b2Body) {
         this.controller = controller;
         this.body = body;
@@ -46,19 +48,17 @@ export class b2ControllerEdge {
 export abstract class b2Controller {
     // m_world: b2World;
     public m_bodyList: b2ControllerEdge | null = null;
-    public m_bodyCount: number = 0;
+
+    public m_bodyCount = 0;
+
     public m_prev: b2Controller | null = null;
+
     public m_next: b2Controller | null = null;
 
     /**
      * Controllers override this to implement per-step functionality.
      */
     public abstract Step(step: b2TimeStep): void;
-
-    /**
-     * Controllers override this to provide debug drawing.
-     */
-    public abstract Draw(debugDraw: b2Draw): void;
 
     /**
      * Get the next controller in the world's body list.
@@ -94,7 +94,7 @@ export abstract class b2Controller {
     public AddBody(body: b2Body): void {
         const edge = new b2ControllerEdge(this, body);
 
-        //Add edge to controller list
+        // Add edge to controller list
         edge.nextBody = this.m_bodyList;
         edge.prevBody = null;
         if (this.m_bodyList) {
@@ -103,7 +103,7 @@ export abstract class b2Controller {
         this.m_bodyList = edge;
         ++this.m_bodyCount;
 
-        //Add edge to body list
+        // Add edge to body list
         edge.nextController = body.m_controllerList;
         edge.prevController = null;
         if (body.m_controllerList) {
@@ -117,24 +117,24 @@ export abstract class b2Controller {
      * Removes a body from the controller list.
      */
     public RemoveBody(body: b2Body): void {
-        //Assert that the controller is not empty
+        // Assert that the controller is not empty
         if (this.m_bodyCount <= 0) {
             throw new Error();
         }
 
-        //Find the corresponding edge
-        /*b2ControllerEdge*/
+        // Find the corresponding edge
+        /* b2ControllerEdge */
         let edge = this.m_bodyList;
         while (edge && edge.body !== body) {
             edge = edge.nextBody;
         }
 
-        //Assert that we are removing a body that is currently attached to the controller
+        // Assert that we are removing a body that is currently attached to the controller
         if (edge === null) {
             throw new Error();
         }
 
-        //Remove edge from controller list
+        // Remove edge from controller list
         if (edge.prevBody) {
             edge.prevBody.nextBody = edge.nextBody;
         }
@@ -146,7 +146,7 @@ export abstract class b2Controller {
         }
         --this.m_bodyCount;
 
-        //Remove edge from body list
+        // Remove edge from body list
         if (edge.nextController) {
             edge.nextController.prevController = edge.prevController;
         }
@@ -170,5 +170,3 @@ export abstract class b2Controller {
         this.m_bodyCount = 0;
     }
 }
-
-// #endif

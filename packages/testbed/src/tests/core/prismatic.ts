@@ -16,11 +16,23 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import * as b2 from "@box2d";
-import * as testbed from "../testbed.js";
+import {
+    b2PrismaticJoint,
+    b2BodyDef,
+    b2EdgeShape,
+    b2Vec2,
+    b2PolygonShape,
+    b2BodyType,
+    b2_pi,
+    b2PrismaticJointDef,
+} from "@box2d/core";
 
-export class Prismatic extends testbed.Test {
-    public m_joint: b2.PrismaticJoint;
+import { Test } from "../../test";
+import { Settings } from "../../settings";
+import { HotKey, hotKeyPress } from "../../utils/hotkeys";
+
+export class Prismatic extends Test {
+    public m_joint: b2PrismaticJoint;
 
     constructor() {
         super();
@@ -28,35 +40,35 @@ export class Prismatic extends testbed.Test {
         let ground = null;
 
         {
-            const bd = new b2.BodyDef();
+            const bd = new b2BodyDef();
             ground = this.m_world.CreateBody(bd);
 
-            const shape = new b2.EdgeShape();
-            shape.SetTwoSided(new b2.Vec2(-40.0, 0.0), new b2.Vec2(40.0, 0.0));
+            const shape = new b2EdgeShape();
+            shape.SetTwoSided(new b2Vec2(-40.0, 0.0), new b2Vec2(40.0, 0.0));
             ground.CreateFixture(shape, 0.0);
         }
 
         {
-            const shape = new b2.PolygonShape();
+            const shape = new b2PolygonShape();
             shape.SetAsBox(2.0, 0.5);
 
-            const bd = new b2.BodyDef();
-            bd.type = b2.BodyType.b2_dynamicBody;
+            const bd = new b2BodyDef();
+            bd.type = b2BodyType.b2_dynamicBody;
             bd.position.Set(-10.0, 10.0);
-            bd.angle = 0.5 * b2.pi;
+            bd.angle = 0.5 * b2_pi;
             bd.allowSleep = false;
             const body = this.m_world.CreateBody(bd);
             body.CreateFixture(shape, 5.0);
 
-            const pjd = new b2.PrismaticJointDef();
+            const pjd = new b2PrismaticJointDef();
 
             // Bouncy limit
-            const axis = new b2.Vec2(2.0, 1.0);
+            const axis = new b2Vec2(2.0, 1.0);
             axis.Normalize();
-            pjd.Initialize(ground, body, new b2.Vec2(0.0, 0.0), axis);
+            pjd.Initialize(ground, body, new b2Vec2(0.0, 0.0), axis);
 
             // Non-bouncy limit
-            //pjd.Initialize(ground, body, new b2.Vec2(-10.0, 10.0), new b2.Vec2(1.0, 0.0));
+            // pjd.Initialize(ground, body, new b2Vec2(-10.0, 10.0), new b2Vec2(1.0, 0.0));
 
             pjd.motorSpeed = 10.0;
             pjd.maxMotorForce = 10000.0;
@@ -69,32 +81,17 @@ export class Prismatic extends testbed.Test {
         }
     }
 
-    public Keyboard(key: string) {
-        switch (key) {
-            case "l":
-                this.m_joint.EnableLimit(!this.m_joint.IsLimitEnabled());
-                break;
-
-            case "m":
-                this.m_joint.EnableMotor(!this.m_joint.IsMotorEnabled());
-                break;
-
-            case "s":
-                this.m_joint.SetMotorSpeed(-this.m_joint.GetMotorSpeed());
-                break;
-        }
+    getHotkeys(): HotKey[] {
+        return [
+            hotKeyPress([], "l", "Toggle Limit", () => this.m_joint.EnableLimit(!this.m_joint.IsLimitEnabled())),
+            hotKeyPress([], "m", "Start/Stop", () => this.m_joint.EnableMotor(!this.m_joint.IsMotorEnabled())),
+            hotKeyPress([], "s", "Reverse Direction", () => this.m_joint.SetMotorSpeed(-this.m_joint.GetMotorSpeed())),
+        ];
     }
 
-    public Step(settings: testbed.Settings): void {
-        super.Step(settings);
-        testbed.g_debugDraw.DrawString(5, this.m_textLine, "Keys: (l) limits, (m) motors, (s) speed");
-        this.m_textLine += testbed.DRAW_STRING_NEW_LINE;
+    public Step(settings: Settings, timeStep: number): void {
+        super.Step(settings, timeStep);
         const force = this.m_joint.GetMotorForce(settings.m_hertz);
-        testbed.g_debugDraw.DrawString(5, this.m_textLine, `Motor Force = ${force.toFixed(4)}`);
-        this.m_textLine += testbed.DRAW_STRING_NEW_LINE;
-    }
-
-    public static Create(): testbed.Test {
-        return new Prismatic();
+        this.addDebug("Motor Force", force.toFixed(4));
     }
 }

@@ -1,16 +1,10 @@
-// DEBUG: import { b2Assert } from "../common/b2_settings.js";
-import {
-    b2_epsilon,
-    b2_linearSlop,
-    b2_maxLinearCorrection,
-    b2MakeNumberArray,
-    b2Maybe,
-} from "../common/b2_settings.js";
-import { b2Sq, b2Sqrt, b2Vec2, XY } from "../common/b2_math.js";
-import { b2Joint, b2JointDef, b2JointType, b2IJointDef } from "./b2_joint.js";
-import { b2DistanceJoint, b2DistanceJointDef } from "./b2_distance_joint.js";
-import { b2SolverData } from "./b2_time_step.js";
-import { b2Body } from "./b2_body.js";
+// DEBUG: import { b2Assert } from "../common/b2_settings";
+import { b2_epsilon, b2_linearSlop, b2_maxLinearCorrection, b2MakeNumberArray, b2Maybe } from "../common/b2_settings";
+import { b2Sq, b2Sqrt, b2Vec2, XY } from "../common/b2_math";
+import { b2Joint, b2JointDef, b2JointType, b2IJointDef } from "./b2_joint";
+import { b2DistanceJoint, b2DistanceJointDef } from "./b2_distance_joint";
+import { b2SolverData } from "./b2_time_step";
+import type { b2Body } from "./b2_body";
 
 export interface b2IAreaJointDef extends b2IJointDef {
     // world: b2World;
@@ -25,9 +19,9 @@ export interface b2IAreaJointDef extends b2IJointDef {
 export class b2AreaJointDef extends b2JointDef implements b2IAreaJointDef {
     public bodies: b2Body[] = [];
 
-    public stiffness: number = 0;
+    public stiffness = 0;
 
-    public damping: number = 0;
+    public damping = 0;
 
     constructor() {
         super(b2JointType.e_areaJoint);
@@ -46,18 +40,25 @@ export class b2AreaJointDef extends b2JointDef implements b2IAreaJointDef {
 
 export class b2AreaJoint extends b2Joint {
     public m_bodies: b2Body[];
-    public m_stiffness: number = 0;
-    public m_damping: number = 0;
+
+    public m_stiffness = 0;
+
+    public m_damping = 0;
 
     // Solver shared
-    public m_impulse: number = 0;
+    public m_impulse = 0;
 
     // Solver temp
     public readonly m_targetLengths: number[];
-    public m_targetArea: number = 0;
+
+    public m_targetArea = 0;
+
     public readonly m_normals: b2Vec2[];
+
     public readonly m_joints: b2DistanceJoint[];
+
     public readonly m_deltas: b2Vec2[];
+
     public readonly m_delta: b2Vec2 = new b2Vec2();
 
     constructor(def: b2IAreaJointDef) {
@@ -80,7 +81,7 @@ export class b2AreaJoint extends b2Joint {
 
         this.m_targetArea = 0;
 
-        for (let i: number = 0; i < this.m_bodies.length; ++i) {
+        for (let i = 0; i < this.m_bodies.length; ++i) {
             const body: b2Body = this.m_bodies[i];
             const next: b2Body = this.m_bodies[(i + 1) % this.m_bodies.length];
 
@@ -110,15 +111,15 @@ export class b2AreaJoint extends b2Joint {
         return out;
     }
 
-    public GetReactionTorque(inv_dt: number): number {
+    public GetReactionTorque(_inv_dt: number): number {
         return 0;
     }
 
     public SetStiffness(stiffness: number): void {
         this.m_stiffness = stiffness;
 
-        for (let i: number = 0; i < this.m_joints.length; ++i) {
-            this.m_joints[i].SetStiffness(stiffness);
+        for (const joint of this.m_joints) {
+            joint.SetStiffness(stiffness);
         }
     }
 
@@ -129,8 +130,8 @@ export class b2AreaJoint extends b2Joint {
     public SetDamping(damping: number): void {
         this.m_damping = damping;
 
-        for (let i: number = 0; i < this.m_joints.length; ++i) {
-            this.m_joints[i].SetDamping(damping);
+        for (const joint of this.m_joints) {
+            joint.SetDamping(damping);
         }
     }
 
@@ -143,7 +144,7 @@ export class b2AreaJoint extends b2Joint {
     }
 
     public InitVelocityConstraints(data: b2SolverData): void {
-        for (let i: number = 0; i < this.m_bodies.length; ++i) {
+        for (let i = 0; i < this.m_bodies.length; ++i) {
             const prev: b2Body = this.m_bodies[(i + this.m_bodies.length - 1) % this.m_bodies.length];
             const next: b2Body = this.m_bodies[(i + 1) % this.m_bodies.length];
             const prev_c: b2Vec2 = data.positions[prev.m_islandIndex].c;
@@ -156,7 +157,7 @@ export class b2AreaJoint extends b2Joint {
         if (data.step.warmStarting) {
             this.m_impulse *= data.step.dtRatio;
 
-            for (let i: number = 0; i < this.m_bodies.length; ++i) {
+            for (let i = 0; i < this.m_bodies.length; ++i) {
                 const body: b2Body = this.m_bodies[i];
                 const body_v: b2Vec2 = data.velocities[body.m_islandIndex].v;
                 const delta: b2Vec2 = this.m_deltas[i];
@@ -170,10 +171,10 @@ export class b2AreaJoint extends b2Joint {
     }
 
     public SolveVelocityConstraints(data: b2SolverData): void {
-        let dotMassSum: number = 0;
-        let crossMassSum: number = 0;
+        let dotMassSum = 0;
+        let crossMassSum = 0;
 
-        for (let i: number = 0; i < this.m_bodies.length; ++i) {
+        for (let i = 0; i < this.m_bodies.length; ++i) {
             const body: b2Body = this.m_bodies[i];
             const body_v: b2Vec2 = data.velocities[body.m_islandIndex].v;
             const delta: b2Vec2 = this.m_deltas[i];
@@ -187,7 +188,7 @@ export class b2AreaJoint extends b2Joint {
 
         this.m_impulse += lambda;
 
-        for (let i: number = 0; i < this.m_bodies.length; ++i) {
+        for (let i = 0; i < this.m_bodies.length; ++i) {
             const body: b2Body = this.m_bodies[i];
             const body_v: b2Vec2 = data.velocities[body.m_islandIndex].v;
             const delta: b2Vec2 = this.m_deltas[i];
@@ -198,10 +199,10 @@ export class b2AreaJoint extends b2Joint {
     }
 
     public SolvePositionConstraints(data: b2SolverData): boolean {
-        let perimeter: number = 0;
-        let area: number = 0;
+        let perimeter = 0;
+        let area = 0;
 
-        for (let i: number = 0; i < this.m_bodies.length; ++i) {
+        for (let i = 0; i < this.m_bodies.length; ++i) {
             const body: b2Body = this.m_bodies[i];
             const next: b2Body = this.m_bodies[(i + 1) % this.m_bodies.length];
             const body_c: b2Vec2 = data.positions[body.m_islandIndex].c;
@@ -226,9 +227,9 @@ export class b2AreaJoint extends b2Joint {
 
         const deltaArea: number = this.m_targetArea - area;
         const toExtrude: number = (0.5 * deltaArea) / perimeter;
-        let done: boolean = true;
+        let done = true;
 
-        for (let i: number = 0; i < this.m_bodies.length; ++i) {
+        for (let i = 0; i < this.m_bodies.length; ++i) {
             const body: b2Body = this.m_bodies[i];
             const body_c: b2Vec2 = data.positions[body.m_islandIndex].c;
             const next_i: number = (i + 1) % this.m_bodies.length;

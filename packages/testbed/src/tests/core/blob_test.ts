@@ -16,27 +16,38 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import * as b2 from "@box2d";
-import * as testbed from "../testbed.js";
+import {
+    b2BodyDef,
+    b2EdgeShape,
+    b2Vec2,
+    b2AreaJointDef,
+    b2BodyType,
+    b2FixtureDef,
+    b2CircleShape,
+    b2LinearStiffness,
+    XY,
+} from "@box2d/core";
 
-export class BlobTest extends testbed.Test {
+import { Test } from "../../test";
+
+export class BlobTest extends Test {
     constructor() {
         super();
 
-        const ground = this.m_world.CreateBody(new b2.BodyDef());
+        const ground = this.m_world.CreateBody(new b2BodyDef());
 
         {
-            const shape = new b2.EdgeShape();
-            shape.SetTwoSided(new b2.Vec2(-40.0, 0.0), new b2.Vec2(40.0, 0.0));
+            const shape = new b2EdgeShape();
+            shape.SetTwoSided(new b2Vec2(-40.0, 0.0), new b2Vec2(40.0, 0.0));
             ground.CreateFixture(shape, 0.0);
-            shape.SetTwoSided(new b2.Vec2(-40.0, 0.0), new b2.Vec2(-40.0, 25.0));
+            shape.SetTwoSided(new b2Vec2(-40.0, 0.0), new b2Vec2(-40.0, 25.0));
             ground.CreateFixture(shape, 0.0);
-            shape.SetTwoSided(new b2.Vec2(40.0, 0.0), new b2.Vec2(40.0, 25.0));
+            shape.SetTwoSided(new b2Vec2(40.0, 0.0), new b2Vec2(40.0, 25.0));
             ground.CreateFixture(shape, 0.0);
         }
 
         {
-            const ajd = new b2.AreaJointDef();
+            const ajd = new b2AreaJointDef();
 
             const cx = 0.0;
             const cy = 10.0;
@@ -46,36 +57,39 @@ export class BlobTest extends testbed.Test {
             const bodyRadius = 0.5;
             for (let i = 0; i < nBodies; ++i) {
                 const angle = (i * 2.0 * Math.PI) / nBodies;
-                const bd = new b2.BodyDef();
-                //bd.isBullet = true;
+                const bd = new b2BodyDef();
+                // bd.isBullet = true;
                 bd.fixedRotation = true;
 
                 const x = cx + rx * Math.cos(angle);
                 const y = cy + ry * Math.sin(angle);
                 bd.position.Set(x, y);
-                bd.type = b2.BodyType.b2_dynamicBody;
+                bd.type = b2BodyType.b2_dynamicBody;
                 const body = this.m_world.CreateBody(bd);
 
-                const fd = new b2.FixtureDef();
-                fd.shape = new b2.CircleShape(bodyRadius);
+                const fd = new b2FixtureDef();
+                fd.shape = new b2CircleShape(bodyRadius);
                 fd.density = 1.0;
                 body.CreateFixture(fd);
 
                 ajd.AddBody(body);
             }
 
-            const frequencyHz: number = 10.0;
-            const dampingRatio: number = 1.0;
-            b2.LinearStiffness(ajd, frequencyHz, dampingRatio, ajd.bodyA, ajd.bodyB);
+            const frequencyHz = 10.0;
+            const dampingRatio = 1.0;
+            b2LinearStiffness(ajd, frequencyHz, dampingRatio, ajd.bodyA, ajd.bodyB);
             this.m_world.CreateJoint(ajd);
         }
     }
 
-    public Step(settings: testbed.Settings): void {
-        super.Step(settings);
+    public GetDefaultViewZoom() {
+        return 15;
     }
 
-    public static Create(): testbed.Test {
-        return new BlobTest();
+    public getCenter(): XY {
+        return {
+            x: 0,
+            y: 5,
+        };
     }
 }

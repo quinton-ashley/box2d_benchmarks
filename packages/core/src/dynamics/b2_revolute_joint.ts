@@ -16,12 +16,11 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import { b2_linearSlop, b2_angularSlop, b2_maxAngularCorrection, b2Maybe } from "../common/b2_settings.js";
-import { b2Abs, b2Clamp, b2Vec2, b2Mat22, b2Rot, XY, b2Max, b2Transform } from "../common/b2_math.js";
-import { b2Body } from "./b2_body.js";
-import { b2Joint, b2JointDef, b2JointType, b2IJointDef } from "./b2_joint.js";
-import { b2SolverData } from "./b2_time_step.js";
-import { b2Draw, b2Color } from "../common/b2_draw.js";
+import { b2_linearSlop, b2_angularSlop, b2_maxAngularCorrection, b2Maybe } from "../common/b2_settings";
+import { b2Abs, b2Clamp, b2Vec2, b2Mat22, b2Rot, XY, b2Max } from "../common/b2_math";
+import { b2Body } from "./b2_body";
+import { b2Joint, b2JointDef, b2JointType, b2IJointDef } from "./b2_joint";
+import { b2SolverData } from "./b2_time_step";
 
 export interface b2IRevoluteJointDef extends b2IJointDef {
     localAnchorA?: XY;
@@ -58,19 +57,19 @@ export class b2RevoluteJointDef extends b2JointDef implements b2IRevoluteJointDe
 
     public readonly localAnchorB: b2Vec2 = new b2Vec2(0, 0);
 
-    public referenceAngle: number = 0;
+    public referenceAngle = 0;
 
     public enableLimit = false;
 
-    public lowerAngle: number = 0;
+    public lowerAngle = 0;
 
-    public upperAngle: number = 0;
+    public upperAngle = 0;
 
     public enableMotor = false;
 
-    public motorSpeed: number = 0;
+    public motorSpeed = 0;
 
-    public maxMotorTorque: number = 0;
+    public maxMotorTorque = 0;
 
     constructor() {
         super(b2JointType.e_revoluteJoint);
@@ -88,37 +87,64 @@ export class b2RevoluteJointDef extends b2JointDef implements b2IRevoluteJointDe
 export class b2RevoluteJoint extends b2Joint {
     // Solver shared
     public readonly m_localAnchorA: b2Vec2 = new b2Vec2();
+
     public readonly m_localAnchorB: b2Vec2 = new b2Vec2();
+
     public readonly m_impulse: b2Vec2 = new b2Vec2();
-    public m_motorImpulse: number = 0;
-    public m_lowerImpulse: number = 0;
-    public m_upperImpulse: number = 0;
-    public m_enableMotor: boolean = false;
-    public m_maxMotorTorque: number = 0;
-    public m_motorSpeed: number = 0;
-    public m_enableLimit: boolean = false;
-    public m_referenceAngle: number = 0;
-    public m_lowerAngle: number = 0;
-    public m_upperAngle: number = 0;
+
+    public m_motorImpulse = 0;
+
+    public m_lowerImpulse = 0;
+
+    public m_upperImpulse = 0;
+
+    public m_enableMotor = false;
+
+    public m_maxMotorTorque = 0;
+
+    public m_motorSpeed = 0;
+
+    public m_enableLimit = false;
+
+    public m_referenceAngle = 0;
+
+    public m_lowerAngle = 0;
+
+    public m_upperAngle = 0;
 
     // Solver temp
-    public m_indexA: number = 0;
-    public m_indexB: number = 0;
+    public m_indexA = 0;
+
+    public m_indexB = 0;
+
     public readonly m_rA: b2Vec2 = new b2Vec2();
+
     public readonly m_rB: b2Vec2 = new b2Vec2();
+
     public readonly m_localCenterA: b2Vec2 = new b2Vec2();
+
     public readonly m_localCenterB: b2Vec2 = new b2Vec2();
-    public m_invMassA: number = 0;
-    public m_invMassB: number = 0;
-    public m_invIA: number = 0;
-    public m_invIB: number = 0;
+
+    public m_invMassA = 0;
+
+    public m_invMassB = 0;
+
+    public m_invIA = 0;
+
+    public m_invIB = 0;
+
     public readonly m_K: b2Mat22 = new b2Mat22();
-    public m_angle: number = 0;
-    public m_axialMass: number = 0;
+
+    public m_angle = 0;
+
+    public m_axialMass = 0;
 
     public readonly m_qA: b2Rot = new b2Rot();
+
     public readonly m_qB: b2Rot = new b2Rot();
+
     public readonly m_lalcA: b2Vec2 = new b2Vec2();
+
     public readonly m_lalcB: b2Vec2 = new b2Vec2();
 
     constructor(def: b2IRevoluteJointDef) {
@@ -140,6 +166,7 @@ export class b2RevoluteJoint extends b2Joint {
     }
 
     private static InitVelocityConstraints_s_P = new b2Vec2();
+
     public InitVelocityConstraints(data: b2SolverData): void {
         this.m_indexA = this.m_bodyA.m_islandIndex;
         this.m_indexB = this.m_bodyB.m_islandIndex;
@@ -159,8 +186,8 @@ export class b2RevoluteJoint extends b2Joint {
         let wB: number = data.velocities[this.m_indexB].w;
 
         // b2Rot qA(aA), qB(aB);
-        const qA: b2Rot = this.m_qA.SetAngle(aA),
-            qB: b2Rot = this.m_qB.SetAngle(aB);
+        const qA: b2Rot = this.m_qA.SetAngle(aA);
+        const qB: b2Rot = this.m_qB.SetAngle(aB);
 
         // m_rA = b2Mul(qA, m_localAnchorA - m_localCenterA);
         b2Vec2.SubVV(this.m_localAnchorA, this.m_localCenterA, this.m_lalcA);
@@ -176,10 +203,10 @@ export class b2RevoluteJoint extends b2Joint {
         // K = [ mA+r1y^2*iA+mB+r2y^2*iB,  -r1y*iA*r1x-r2y*iB*r2x]
         //     [  -r1y*iA*r1x-r2y*iB*r2x, mA+r1x^2*iA+mB+r2x^2*iB]
 
-        const mA: number = this.m_invMassA,
-            mB: number = this.m_invMassB;
-        const iA: number = this.m_invIA,
-            iB: number = this.m_invIB;
+        const mA: number = this.m_invMassA;
+        const mB: number = this.m_invMassB;
+        const iA: number = this.m_invIA;
+        const iB: number = this.m_invIB;
 
         this.m_K.ex.x = mA + mB + this.m_rA.y * this.m_rA.y * iA + this.m_rB.y * this.m_rB.y * iB;
         this.m_K.ey.x = -this.m_rA.y * this.m_rA.x * iA - this.m_rB.y * this.m_rB.x * iB;
@@ -238,20 +265,22 @@ export class b2RevoluteJoint extends b2Joint {
 
     // private static SolveVelocityConstraints_s_P: b2Vec2 = new b2Vec2();
     private static SolveVelocityConstraints_s_Cdot_v2: b2Vec2 = new b2Vec2();
+
     // private static SolveVelocityConstraints_s_Cdot1: b2Vec2 = new b2Vec2();
     // private static SolveVelocityConstraints_s_impulse_v3: b2Vec3 = new b2Vec3();
     // private static SolveVelocityConstraints_s_reduced_v2: b2Vec2 = new b2Vec2();
     private static SolveVelocityConstraints_s_impulse_v2: b2Vec2 = new b2Vec2();
+
     public SolveVelocityConstraints(data: b2SolverData): void {
         const vA: b2Vec2 = data.velocities[this.m_indexA].v;
         let wA: number = data.velocities[this.m_indexA].w;
         const vB: b2Vec2 = data.velocities[this.m_indexB].v;
         let wB: number = data.velocities[this.m_indexB].w;
 
-        const mA: number = this.m_invMassA,
-            mB: number = this.m_invMassB;
-        const iA: number = this.m_invIA,
-            iB: number = this.m_invIB;
+        const mA: number = this.m_invMassA;
+        const mB: number = this.m_invMassB;
+        const iA: number = this.m_invIA;
+        const iB: number = this.m_invIB;
 
         const fixedRotation: boolean = iA + iB === 0;
 
@@ -333,7 +362,9 @@ export class b2RevoluteJoint extends b2Joint {
     }
 
     private static SolvePositionConstraints_s_C_v2 = new b2Vec2();
+
     private static SolvePositionConstraints_s_impulse = new b2Vec2();
+
     public SolvePositionConstraints(data: b2SolverData): boolean {
         const cA: b2Vec2 = data.positions[this.m_indexA].c;
         let aA: number = data.positions[this.m_indexA].a;
@@ -341,11 +372,11 @@ export class b2RevoluteJoint extends b2Joint {
         let aB: number = data.positions[this.m_indexB].a;
 
         // b2Rot qA(aA), qB(aB);
-        const qA: b2Rot = this.m_qA.SetAngle(aA),
-            qB: b2Rot = this.m_qB.SetAngle(aB);
+        const qA: b2Rot = this.m_qA.SetAngle(aA);
+        const qB: b2Rot = this.m_qB.SetAngle(aB);
 
-        let angularError: number = 0;
-        let positionError: number = 0;
+        let angularError = 0;
+        let positionError = 0;
 
         const fixedRotation: boolean = this.m_invIA + this.m_invIB === 0;
 
@@ -353,7 +384,7 @@ export class b2RevoluteJoint extends b2Joint {
         // let active: boolean = false;
         if (this.m_enableLimit && !fixedRotation) {
             const angle: number = aB - aA - this.m_referenceAngle;
-            let C: number = 0.0;
+            let C = 0.0;
 
             if (b2Abs(this.m_upperAngle - this.m_lowerAngle) < 2.0 * b2_angularSlop) {
                 // Prevent large angular corrections
@@ -392,10 +423,10 @@ export class b2RevoluteJoint extends b2Joint {
             // positionError = C.Length();
             positionError = C_v2.Length();
 
-            const mA: number = this.m_invMassA,
-                mB: number = this.m_invMassB;
-            const iA: number = this.m_invIA,
-                iB: number = this.m_invIB;
+            const mA: number = this.m_invMassA;
+            const mB: number = this.m_invMassB;
+            const iA: number = this.m_invIA;
+            const iB: number = this.m_invIB;
 
             const K: b2Mat22 = this.m_K;
             K.ex.x = mA + mB + iA * rA.y * rA.y + iB * rB.y * rB.y;
@@ -564,51 +595,5 @@ export class b2RevoluteJoint extends b2Joint {
         log("  jd.motorSpeed = %.15f;\n", this.m_motorSpeed);
         log("  jd.maxMotorTorque = %.15f;\n", this.m_maxMotorTorque);
         log("  joints[%d] = this.m_world.CreateJoint(jd);\n", this.m_index);
-    }
-
-    private static Draw_s_pA = new b2Vec2();
-    private static Draw_s_pB = new b2Vec2();
-    private static Draw_s_c1 = new b2Color(0.7, 0.7, 0.7);
-    // private static Draw_s_c2 = new b2Color(0.3, 0.9, 0.3);
-    // private static Draw_s_c3 = new b2Color(0.9, 0.3, 0.3);
-    private static Draw_s_c4 = new b2Color(0.3, 0.3, 0.9);
-    private static Draw_s_c5 = new b2Color(0.4, 0.4, 0.4);
-    // private static Draw_s_color = new b2Color(0.5, 0.8, 0.8);
-    public Draw(draw: b2Draw): void {
-        const xfA: Readonly<b2Transform> = this.m_bodyA.GetTransform();
-        const xfB: Readonly<b2Transform> = this.m_bodyB.GetTransform();
-        const pA = b2Transform.MulXV(xfA, this.m_localAnchorA, b2RevoluteJoint.Draw_s_pA);
-        const pB = b2Transform.MulXV(xfB, this.m_localAnchorB, b2RevoluteJoint.Draw_s_pB);
-
-        const c1 = b2RevoluteJoint.Draw_s_c1; // b2Color c1(0.7f, 0.7f, 0.7f);
-        // const c2 = b2RevoluteJoint.Draw_s_c2; // b2Color c2(0.3f, 0.9f, 0.3f);
-        // const c3 = b2RevoluteJoint.Draw_s_c3; // b2Color c3(0.9f, 0.3f, 0.3f);
-        const c4 = b2RevoluteJoint.Draw_s_c4; // b2Color c4(0.3f, 0.3f, 0.9f);
-        const c5 = b2RevoluteJoint.Draw_s_c5; // b2Color c5(0.4f, 0.4f, 0.4f);
-
-        draw.DrawPoint(pA, 5.0, c4);
-        draw.DrawPoint(pB, 5.0, c5);
-
-        // const aA: number = this.m_bodyA.GetAngle();
-        // const aB: number = this.m_bodyB.GetAngle();
-        // const angle: number = aB - aA - this.m_referenceAngle;
-
-        const L: number = 0.5;
-
-        // b2Vec2 r = L * b2Vec2(Math.cos(angle), Math.sin(angle));
-        // draw.DrawSegment(pB, pB + r, c1);
-        draw.DrawCircle(pB, L, c1);
-
-        if (this.m_enableLimit) {
-            // b2Vec2 rlo = L * b2Vec2(Math.cos(m_lowerAngle), Math.sin(m_lowerAngle));
-            // b2Vec2 rhi = L * b2Vec2(Math.cos(m_upperAngle), Math.sin(m_upperAngle));
-            // draw.DrawSegment(pB, pB + rlo, c2);
-            // draw.DrawSegment(pB, pB + rhi, c3);
-        }
-
-        // const color = b2RevoluteJoint.Draw_s_color; // b2Color color(0.5f, 0.8f, 0.8f);
-        // draw.DrawSegment(xfA.p, pA, color);
-        // draw.DrawSegment(pA, pB, color);
-        // draw.DrawSegment(xfB.p, pB, color);
     }
 }

@@ -16,20 +16,14 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import { b2Transform } from "../common/b2_math.js";
-import { b2CollideEdgeAndCircle } from "../collision/b2_collide_edge.js";
-import { b2Manifold } from "../collision/b2_collision.js";
-import { b2CircleShape } from "../collision/b2_circle_shape.js";
-import { b2EdgeShape } from "../collision/b2_edge_shape.js";
-import { b2Contact } from "./b2_contact.js";
+import { b2Transform } from "../common/b2_math";
+import { b2CollideEdgeAndCircle } from "../collision/b2_collide_edge";
+import { b2Manifold } from "../collision/b2_collision";
+import { b2CircleShape } from "../collision/b2_circle_shape";
+import { b2EdgeShape } from "../collision/b2_edge_shape";
+import { b2Contact } from "./b2_contact";
 
 export class b2EdgeAndCircleContact extends b2Contact<b2EdgeShape, b2CircleShape> {
-    public static Create(): b2Contact {
-        return new b2EdgeAndCircleContact();
-    }
-
-    public static Destroy(contact: b2Contact): void {}
-
     public Evaluate(manifold: b2Manifold, xfA: b2Transform, xfB: b2Transform): void {
         b2CollideEdgeAndCircle(manifold, this.GetShapeA(), xfA, this.GetShapeB(), xfB);
     }

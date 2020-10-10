@@ -16,43 +16,52 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import * as b2 from "@box2d";
-import * as testbed from "../testbed.js";
+import {
+    b2BodyDef,
+    b2PolygonShape,
+    b2BodyType,
+    b2RevoluteJointDef,
+    b2Vec2,
+    b2PrismaticJointDef,
+    XY,
+} from "@box2d/core";
 
-export class BasicSliderCrank extends testbed.Test {
+import { Test } from "../../test";
+
+export class BasicSliderCrank extends Test {
     constructor() {
         super();
 
-        /*b2.Body*/
+        /* b2Body */
         let ground = null;
         {
-            /*b2.BodyDef*/
-            const bd = new b2.BodyDef();
+            /* b2BodyDef */
+            const bd = new b2BodyDef();
             bd.position.Set(0.0, 17.0);
             ground = this.m_world.CreateBody(bd);
         }
 
         {
-            /*b2.Body*/
+            /* b2Body */
             let prevBody = ground;
 
             // Define crank.
             {
-                /*b2.PolygonShape*/
-                const shape = new b2.PolygonShape();
+                /* b2PolygonShape */
+                const shape = new b2PolygonShape();
                 shape.SetAsBox(4.0, 1.0);
 
-                /*b2.BodyDef*/
-                const bd = new b2.BodyDef();
-                bd.type = b2.BodyType.b2_dynamicBody;
+                /* b2BodyDef */
+                const bd = new b2BodyDef();
+                bd.type = b2BodyType.b2_dynamicBody;
                 bd.position.Set(-8.0, 20.0);
-                /*b2.Body*/
+                /* b2Body */
                 const body = this.m_world.CreateBody(bd);
                 body.CreateFixture(shape, 2.0);
 
-                /*b2.RevoluteJointDef*/
-                const rjd = new b2.RevoluteJointDef();
-                rjd.Initialize(prevBody, body, new b2.Vec2(-12.0, 20.0));
+                /* b2RevoluteJointDef */
+                const rjd = new b2RevoluteJointDef();
+                rjd.Initialize(prevBody, body, new b2Vec2(-12.0, 20.0));
                 this.m_world.CreateJoint(rjd);
 
                 prevBody = body;
@@ -60,21 +69,21 @@ export class BasicSliderCrank extends testbed.Test {
 
             // Define connecting rod
             {
-                /*b2.PolygonShape*/
-                const shape = new b2.PolygonShape();
+                /* b2PolygonShape */
+                const shape = new b2PolygonShape();
                 shape.SetAsBox(8.0, 1.0);
 
-                /*b2.BodyDef*/
-                const bd = new b2.BodyDef();
-                bd.type = b2.BodyType.b2_dynamicBody;
+                /* b2BodyDef */
+                const bd = new b2BodyDef();
+                bd.type = b2BodyType.b2_dynamicBody;
                 bd.position.Set(4.0, 20.0);
-                /*b2.Body*/
+                /* b2Body */
                 const body = this.m_world.CreateBody(bd);
                 body.CreateFixture(shape, 2.0);
 
-                /*b2.RevoluteJointDef*/
-                const rjd = new b2.RevoluteJointDef();
-                rjd.Initialize(prevBody, body, new b2.Vec2(-4.0, 20.0));
+                /* b2RevoluteJointDef */
+                const rjd = new b2RevoluteJointDef();
+                rjd.Initialize(prevBody, body, new b2Vec2(-4.0, 20.0));
                 this.m_world.CreateJoint(rjd);
 
                 prevBody = body;
@@ -82,33 +91,36 @@ export class BasicSliderCrank extends testbed.Test {
 
             // Define piston
             {
-                /*b2.PolygonShape*/
-                const shape = new b2.PolygonShape();
+                /* b2PolygonShape */
+                const shape = new b2PolygonShape();
                 shape.SetAsBox(3.0, 3.0);
 
-                /*b2.BodyDef*/
-                const bd = new b2.BodyDef();
-                bd.type = b2.BodyType.b2_dynamicBody;
+                /* b2BodyDef */
+                const bd = new b2BodyDef();
+                bd.type = b2BodyType.b2_dynamicBody;
                 bd.fixedRotation = true;
                 bd.position.Set(12.0, 20.0);
-                /*b2.Body*/
+                /* b2Body */
                 const body = this.m_world.CreateBody(bd);
                 body.CreateFixture(shape, 2.0);
 
-                /*b2.RevoluteJointDef*/
-                const rjd = new b2.RevoluteJointDef();
-                rjd.Initialize(prevBody, body, new b2.Vec2(12.0, 20.0));
+                /* b2RevoluteJointDef */
+                const rjd = new b2RevoluteJointDef();
+                rjd.Initialize(prevBody, body, new b2Vec2(12.0, 20.0));
                 this.m_world.CreateJoint(rjd);
 
-                /*b2.PrismaticJointDef*/
-                const pjd = new b2.PrismaticJointDef();
-                pjd.Initialize(ground, body, new b2.Vec2(12.0, 17.0), new b2.Vec2(1.0, 0.0));
+                /* b2PrismaticJointDef */
+                const pjd = new b2PrismaticJointDef();
+                pjd.Initialize(ground, body, new b2Vec2(12.0, 17.0), new b2Vec2(1.0, 0.0));
                 this.m_world.CreateJoint(pjd);
             }
         }
     }
 
-    public static Create() {
-        return new BasicSliderCrank();
+    public getCenter(): XY {
+        return {
+            x: 0,
+            y: 15,
+        };
     }
 }

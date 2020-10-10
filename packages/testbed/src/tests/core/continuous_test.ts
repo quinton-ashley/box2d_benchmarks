@@ -16,56 +16,69 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import * as b2 from "@box2d";
-import * as testbed from "../testbed.js";
+import {
+    b2Body,
+    b2BodyDef,
+    b2EdgeShape,
+    b2Vec2,
+    b2PolygonShape,
+    b2BodyType,
+    b2RandomRange,
+    b2Gjk,
+    b2Toi,
+} from "@box2d/core";
 
-export class ContinuousTest extends testbed.Test {
-    public m_body: b2.Body;
+import { Test } from "../../test";
+import { Settings } from "../../settings";
+
+export class ContinuousTest extends Test {
+    public m_body: b2Body;
+
     public m_angularVelocity = 0.0;
 
     constructor() {
         super();
 
         {
-            const bd = new b2.BodyDef();
+            const bd = new b2BodyDef();
             bd.position.Set(0.0, 0.0);
             const body = this.m_world.CreateBody(bd);
 
-            const edge = new b2.EdgeShape();
+            const edge = new b2EdgeShape();
 
-            edge.SetTwoSided(new b2.Vec2(-10.0, 0.0), new b2.Vec2(10.0, 0.0));
+            edge.SetTwoSided(new b2Vec2(-10.0, 0.0), new b2Vec2(10.0, 0.0));
             body.CreateFixture(edge, 0.0);
 
-            const shape = new b2.PolygonShape();
-            shape.SetAsBox(0.2, 1.0, new b2.Vec2(0.5, 1.0), 0.0);
+            const shape = new b2PolygonShape();
+            shape.SetAsBox(0.2, 1.0, new b2Vec2(0.5, 1.0), 0.0);
             body.CreateFixture(shape, 0.0);
         }
 
         {
-            const bd = new b2.BodyDef();
-            bd.type = b2.BodyType.b2_dynamicBody;
+            const bd = new b2BodyDef();
+            bd.type = b2BodyType.b2_dynamicBody;
             bd.position.Set(0.0, 20.0);
-            //bd.angle = 0.1;
+            // bd.angle = 0.1;
 
-            const shape = new b2.PolygonShape();
+            const shape = new b2PolygonShape();
             shape.SetAsBox(2.0, 0.1);
 
             this.m_body = this.m_world.CreateBody(bd);
             this.m_body.CreateFixture(shape, 1.0);
 
-            this.m_angularVelocity = b2.RandomRange(-50.0, 50.0);
-            //this.m_angularVelocity = 46.661274;
-            this.m_body.SetLinearVelocity(new b2.Vec2(0.0, -100.0));
+            this.m_angularVelocity = b2RandomRange(-50.0, 50.0);
+            // this.m_angularVelocity = 46.661274;
+            this.m_body.SetLinearVelocity(new b2Vec2(0.0, -100.0));
             this.m_body.SetAngularVelocity(this.m_angularVelocity);
         }
         /*
     else
     {
-      const bd = new b2.BodyDef();
-      bd.type = b2.BodyType.b2_dynamicBody;
+      const bd = new b2BodyDef();
+      bd.type = b2BodyType.b2_dynamicBody;
       bd.position.Set(0.0, 2.0);
       const body = this.m_world.CreateBody(bd);
-      const shape = new b2.CircleShape();
+      const shape = new b2CircleShape();
       shape.m_p.SetZero();
       shape.m_radius = 0.5;
       body.CreateFixture(shape, 1.0);
@@ -73,87 +86,67 @@ export class ContinuousTest extends testbed.Test {
       bd.position.Set(0.0, 10.0);
       body = this.m_world.CreateBody(bd);
       body.CreateFixture(shape, 1.0);
-      body.SetLinearVelocity(new b2.Vec2(0.0, -100.0));
+      body.SetLinearVelocity(new b2Vec2(0.0, -100.0));
     }
     */
 
-        // b2.gjkCalls = 0;
-        // b2.gjkIters = 0;
-        // b2.gjkMaxIters = 0;
-        b2.gjk_reset();
-        // b2.toiCalls = 0;
-        // b2.toiIters = 0;
-        // b2.toiRootIters = 0;
-        // b2.toiMaxRootIters = 0;
-        // b2.toiTime = 0.0;
-        // b2.toiMaxTime = 0.0;
-        b2.toi_reset();
+        // b2Gjk.calls = 0;
+        // b2Gjk.iters = 0;
+        // b2Gjk.maxIters = 0;
+        b2Gjk.reset();
+        // b2Toi.calls = 0;
+        // b2Toi.iters = 0;
+        // b2Toi.rootIters = 0;
+        // b2Toi.maxRootIters = 0;
+        // b2Toi.time = 0.0;
+        // b2Toi.maxTime = 0.0;
+        b2Toi.reset();
     }
 
     public Launch() {
-        // b2.gjkCalls = 0;
-        // b2.gjkIters = 0;
-        // b2.gjkMaxIters = 0;
-        b2.gjk_reset();
-        // b2.toiCalls = 0;
-        // b2.toiIters = 0;
-        // b2.toiRootIters = 0;
-        // b2.toiMaxRootIters = 0;
-        // b2.toiTime = 0.0;
-        // b2.toiMaxTime = 0.0;
-        b2.toi_reset();
+        // b2Gjk.calls = 0;
+        // b2Gjk.iters = 0;
+        // b2Gjk.maxIters = 0;
+        b2Gjk.reset();
+        // b2Toi.calls = 0;
+        // b2Toi.iters = 0;
+        // b2Toi.rootIters = 0;
+        // b2Toi.maxRootIters = 0;
+        // b2Toi.time = 0.0;
+        // b2Toi.maxTime = 0.0;
+        b2Toi.reset();
 
-        this.m_body.SetTransformVec(new b2.Vec2(0.0, 20.0), 0.0);
-        this.m_angularVelocity = b2.RandomRange(-50.0, 50.0);
-        this.m_body.SetLinearVelocity(new b2.Vec2(0.0, -100.0));
+        this.m_body.SetTransformVec(new b2Vec2(0.0, 20.0), 0.0);
+        this.m_angularVelocity = b2RandomRange(-50.0, 50.0);
+        this.m_body.SetLinearVelocity(new b2Vec2(0.0, -100.0));
         this.m_body.SetAngularVelocity(this.m_angularVelocity);
     }
 
-    public Step(settings: testbed.Settings): void {
-        super.Step(settings);
+    public Step(settings: Settings, timeStep: number): void {
+        super.Step(settings, timeStep);
 
-        if (b2.gjkCalls > 0) {
-            // testbed.g_debugDraw.DrawString(5, this.m_textLine, "gjk calls = %d, ave gjk iters = %3.1f, max gjk iters = %d",
-            testbed.g_debugDraw.DrawString(
-                5,
-                this.m_textLine,
-                `gjk calls = ${b2.gjkCalls.toFixed(0)}, ave gjk iters = ${(b2.gjkIters / b2.gjkCalls).toFixed(
-                    1
-                )}, max gjk iters = ${b2.gjkMaxIters.toFixed(0)}`
+        if (b2Gjk.calls > 0) {
+            this.addDebug(
+                "GJK Calls [ave Iters] (max Iters)",
+                `${b2Gjk.calls.toFixed(0)} [${(b2Gjk.iters / b2Gjk.calls).toFixed(1)}] (${b2Gjk.maxIters.toFixed(0)})`
             );
-            this.m_textLine += testbed.DRAW_STRING_NEW_LINE;
         }
 
-        if (b2.toiCalls > 0) {
-            // testbed.g_debugDraw.DrawString(5, this.m_textLine, "toi [max] calls = %d, ave toi iters = %3.1f [%d]",
-            testbed.g_debugDraw.DrawString(
-                5,
-                this.m_textLine,
-                `toi [max] calls = ${b2.toiCalls}, ave toi iters = ${(b2.toiIters / b2.toiCalls).toFixed(1)} [${
-                    b2.toiMaxRootIters
-                }]`
+        if (b2Toi.calls > 0) {
+            this.addDebug(
+                "Toi Calls [ave Iters] (max Iters)",
+                `${b2Toi.calls} [${(b2Toi.iters / b2Toi.calls).toFixed(1)}] (${b2Toi.maxIters})`
             );
-            this.m_textLine += testbed.DRAW_STRING_NEW_LINE;
 
-            // testbed.g_debugDraw.DrawString(5, this.m_textLine, "ave [max] toi root iters = %3.1f [%d]",
-            testbed.g_debugDraw.DrawString(
-                5,
-                this.m_textLine,
-                `ave [max] toi root iters = ${(b2.toiRootIters / b2.toiCalls).toFixed(1)} [${b2.toiMaxRootIters.toFixed(
-                    0
-                )}]`
+            this.addDebug(
+                "Toi Root [ave Iters] (max Iters)",
+                `${b2Toi.calls} [${(b2Toi.rootIters / b2Toi.calls).toFixed(1)}] (${b2Toi.maxRootIters})`
             );
-            this.m_textLine += testbed.DRAW_STRING_NEW_LINE;
 
-            // testbed.g_debugDraw.DrawString(5, this.m_textLine, "ave [max] toi time = %.1f [%.1f] (microseconds)",
-            testbed.g_debugDraw.DrawString(
-                5,
-                this.m_textLine,
-                `ave [max] toi time = ${((1000.0 * b2.toiTime) / b2.toiCalls).toFixed(1)} [${(
-                    1000.0 * b2.toiMaxTime
-                ).toFixed(1)}] (microseconds)`
+            this.addDebug(
+                "Toi Time in ms [ave] (max)",
+                `[${((1000.0 * b2Toi.time) / b2Toi.calls).toFixed(1)}] (${(1000.0 * b2Toi.maxTime).toFixed(1)})`
             );
-            this.m_textLine += testbed.DRAW_STRING_NEW_LINE;
         }
 
         if (this.m_stepCount % 60 === 0) {
@@ -161,7 +154,7 @@ export class ContinuousTest extends testbed.Test {
         }
     }
 
-    public static Create(): testbed.Test {
-        return new ContinuousTest();
+    public GetDefaultViewZoom() {
+        return 50;
     }
 }

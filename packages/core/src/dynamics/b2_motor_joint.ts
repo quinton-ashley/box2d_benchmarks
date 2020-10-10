@@ -16,13 +16,13 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-// DEBUG: import { b2Assert } from "../common/b2_settings.js";
-// DEBUG: import { b2IsValid } from "../common/b2_math.js";
-import { b2Maybe } from "../common/b2_settings.js";
-import { b2Clamp, b2Vec2, b2Mat22, b2Rot, XY } from "../common/b2_math.js";
-import { b2Body } from "./b2_body.js";
-import { b2Joint, b2JointDef, b2JointType, b2IJointDef } from "./b2_joint.js";
-import { b2SolverData } from "./b2_time_step.js";
+// DEBUG: import { b2Assert } from "../common/b2_settings";
+// DEBUG: import { b2IsValid } from "../common/b2_math";
+import { b2Maybe } from "../common/b2_settings";
+import { b2Clamp, b2Vec2, b2Mat22, b2Rot, XY } from "../common/b2_math";
+import { b2Body } from "./b2_body";
+import { b2Joint, b2JointDef, b2JointType, b2IJointDef } from "./b2_joint";
+import { b2SolverData } from "./b2_time_step";
 
 // Point-to-point constraint
 // Cdot = v2 - v1
@@ -54,13 +54,13 @@ export interface b2IMotorJointDef extends b2IJointDef {
 export class b2MotorJointDef extends b2JointDef implements b2IMotorJointDef {
     public readonly linearOffset: b2Vec2 = new b2Vec2(0, 0);
 
-    public angularOffset: number = 0;
+    public angularOffset = 0;
 
-    public maxForce: number = 1;
+    public maxForce = 1;
 
-    public maxTorque: number = 1;
+    public maxTorque = 1;
 
-    public correctionFactor: number = 0.3;
+    public correctionFactor = 0.3;
 
     constructor() {
         super(b2JointType.e_motorJoint);
@@ -82,31 +82,52 @@ export class b2MotorJointDef extends b2JointDef implements b2IMotorJointDef {
 export class b2MotorJoint extends b2Joint {
     // Solver shared
     public readonly m_linearOffset: b2Vec2 = new b2Vec2();
-    public m_angularOffset: number = 0;
+
+    public m_angularOffset = 0;
+
     public readonly m_linearImpulse: b2Vec2 = new b2Vec2();
-    public m_angularImpulse: number = 0;
-    public m_maxForce: number = 0;
-    public m_maxTorque: number = 0;
-    public m_correctionFactor: number = 0.3;
+
+    public m_angularImpulse = 0;
+
+    public m_maxForce = 0;
+
+    public m_maxTorque = 0;
+
+    public m_correctionFactor = 0.3;
 
     // Solver temp
-    public m_indexA: number = 0;
-    public m_indexB: number = 0;
+    public m_indexA = 0;
+
+    public m_indexB = 0;
+
     public readonly m_rA: b2Vec2 = new b2Vec2();
+
     public readonly m_rB: b2Vec2 = new b2Vec2();
+
     public readonly m_localCenterA: b2Vec2 = new b2Vec2();
+
     public readonly m_localCenterB: b2Vec2 = new b2Vec2();
+
     public readonly m_linearError: b2Vec2 = new b2Vec2();
-    public m_angularError: number = 0;
-    public m_invMassA: number = 0;
-    public m_invMassB: number = 0;
-    public m_invIA: number = 0;
-    public m_invIB: number = 0;
+
+    public m_angularError = 0;
+
+    public m_invMassA = 0;
+
+    public m_invMassB = 0;
+
+    public m_invIA = 0;
+
+    public m_invIB = 0;
+
     public readonly m_linearMass: b2Mat22 = new b2Mat22();
-    public m_angularMass: number = 0;
+
+    public m_angularMass = 0;
 
     public readonly m_qA: b2Rot = new b2Rot();
+
     public readonly m_qB: b2Rot = new b2Rot();
+
     public readonly m_K: b2Mat22 = new b2Mat22();
 
     constructor(def: b2IMotorJointDef) {
@@ -125,6 +146,7 @@ export class b2MotorJoint extends b2Joint {
         out.y = pos.y;
         return out;
     }
+
     public GetAnchorB<T extends XY>(out: T): T {
         const pos: Readonly<b2Vec2> = this.m_bodyB.GetPosition();
         out.x = pos.x;
@@ -148,6 +170,7 @@ export class b2MotorJoint extends b2Joint {
             this.m_linearOffset.Copy(linearOffset);
         }
     }
+
     public GetLinearOffset() {
         return this.m_linearOffset;
     }
@@ -159,6 +182,7 @@ export class b2MotorJoint extends b2Joint {
             this.m_angularOffset = angularOffset;
         }
     }
+
     public GetAngularOffset() {
         return this.m_angularOffset;
     }
@@ -201,8 +225,8 @@ export class b2MotorJoint extends b2Joint {
         const vB: b2Vec2 = data.velocities[this.m_indexB].v;
         let wB: number = data.velocities[this.m_indexB].w;
 
-        const qA: b2Rot = this.m_qA.SetAngle(aA),
-            qB: b2Rot = this.m_qB.SetAngle(aB);
+        const qA: b2Rot = this.m_qA.SetAngle(aA);
+        const qB: b2Rot = this.m_qB.SetAngle(aB);
 
         // Compute the effective mass matrix.
         // this.m_rA = b2Mul(qA, m_linearOffset - this.m_localCenterA);
@@ -222,10 +246,10 @@ export class b2MotorJoint extends b2Joint {
         //     [  -r1y*iA*r1x-r2y*iB*r2x, mA+r1x^2*iA+mB+r2x^2*iB,           r1x*iA+r2x*iB]
         //     [          -r1y*iA-r2y*iB,           r1x*iA+r2x*iB,                   iA+iB]
 
-        const mA: number = this.m_invMassA,
-            mB: number = this.m_invMassB;
-        const iA: number = this.m_invIA,
-            iB: number = this.m_invIB;
+        const mA: number = this.m_invMassA;
+        const mB: number = this.m_invMassB;
+        const iA: number = this.m_invIA;
+        const iB: number = this.m_invIB;
 
         // Upper 2 by 2 of K for point to point
         const K: b2Mat22 = this.m_K;
@@ -272,18 +296,21 @@ export class b2MotorJoint extends b2Joint {
     }
 
     private static SolveVelocityConstraints_s_Cdot_v2 = new b2Vec2();
+
     private static SolveVelocityConstraints_s_impulse_v2 = new b2Vec2();
+
     private static SolveVelocityConstraints_s_oldImpulse_v2 = new b2Vec2();
+
     public SolveVelocityConstraints(data: b2SolverData): void {
         const vA: b2Vec2 = data.velocities[this.m_indexA].v;
         let wA: number = data.velocities[this.m_indexA].w;
         const vB: b2Vec2 = data.velocities[this.m_indexB].v;
         let wB: number = data.velocities[this.m_indexB].w;
 
-        const mA: number = this.m_invMassA,
-            mB: number = this.m_invMassB;
-        const iA: number = this.m_invIA,
-            iB: number = this.m_invIB;
+        const mA: number = this.m_invMassA;
+        const mB: number = this.m_invMassB;
+        const iA: number = this.m_invIA;
+        const iB: number = this.m_invIB;
 
         const h: number = data.step.dt;
         const inv_h: number = data.step.inv_dt;
@@ -355,7 +382,7 @@ export class b2MotorJoint extends b2Joint {
         data.velocities[this.m_indexB].w = wB;
     }
 
-    public SolvePositionConstraints(data: b2SolverData): boolean {
+    public SolvePositionConstraints(_data: b2SolverData): boolean {
         return true;
     }
 
