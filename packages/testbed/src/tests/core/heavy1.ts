@@ -20,40 +20,40 @@ import * as b2 from "@box2d";
 import * as testbed from "../testbed.js";
 
 export class HeavyOnLight extends testbed.Test {
-  constructor() {
-    super();
+    constructor() {
+        super();
 
-    {
-      /*b2.BodyDef*/
-      const bd = new b2.BodyDef();
-      /*b2.Body*/
-      const ground = this.m_world.CreateBody(bd);
+        {
+            /*b2.BodyDef*/
+            const bd = new b2.BodyDef();
+            /*b2.Body*/
+            const ground = this.m_world.CreateBody(bd);
 
-      /*b2.EdgeShape*/
-      const shape = new b2.EdgeShape();
-      shape.SetTwoSided(new b2.Vec2(-40.0, 0.0), new b2.Vec2(40.0, 0.0));
-      ground.CreateFixture(shape, 0.0);
+            /*b2.EdgeShape*/
+            const shape = new b2.EdgeShape();
+            shape.SetTwoSided(new b2.Vec2(-40.0, 0.0), new b2.Vec2(40.0, 0.0));
+            ground.CreateFixture(shape, 0.0);
+        }
+
+        /*b2.BodyDef*/
+        const bd = new b2.BodyDef();
+        bd.type = b2.BodyType.b2_dynamicBody;
+        bd.position.Set(0.0, 0.5);
+        /*b2.Body*/
+        let body = this.m_world.CreateBody(bd);
+
+        /*b2.CircleShape*/
+        const shape = new b2.CircleShape();
+        shape.m_radius = 0.5;
+        body.CreateFixture(shape, 10.0);
+
+        bd.position.Set(0.0, 6.0);
+        body = this.m_world.CreateBody(bd);
+        shape.m_radius = 5.0;
+        body.CreateFixture(shape, 10.0);
     }
 
-    /*b2.BodyDef*/
-    const bd = new b2.BodyDef();
-    bd.type = b2.BodyType.b2_dynamicBody;
-    bd.position.Set(0.0, 0.5);
-    /*b2.Body*/
-    let body = this.m_world.CreateBody(bd);
-
-    /*b2.CircleShape*/
-    const shape = new b2.CircleShape();
-    shape.m_radius = 0.5;
-    body.CreateFixture(shape, 10.0);
-
-    bd.position.Set(0.0, 6.0);
-    body = this.m_world.CreateBody(bd);
-    shape.m_radius = 5.0;
-    body.CreateFixture(shape, 10.0);
-  }
-
-  public static Create() {
-    return new HeavyOnLight();
-  }
+    public static Create() {
+        return new HeavyOnLight();
+    }
 }

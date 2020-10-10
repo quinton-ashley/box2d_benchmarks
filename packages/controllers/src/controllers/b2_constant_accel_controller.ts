@@ -27,24 +27,24 @@ import { b2Draw } from "../common/b2_draw.js";
  * Applies a force every frame
  */
 export class b2ConstantAccelController extends b2Controller {
-  /**
-   * The acceleration to apply
-   */
-  public readonly A = new b2Vec2(0, 0);
+    /**
+     * The acceleration to apply
+     */
+    public readonly A = new b2Vec2(0, 0);
 
-  public Step(step: b2TimeStep) {
-    const dtA = b2Vec2.MulSV(step.dt, this.A, b2ConstantAccelController.Step_s_dtA);
-    for (let i = this.m_bodyList; i; i = i.nextBody) {
-      const body = i.body;
-      if (!body.IsAwake()) {
-        continue;
-      }
-      body.SetLinearVelocity(b2Vec2.AddVV(body.GetLinearVelocity(), dtA, b2Vec2.s_t0));
+    public Step(step: b2TimeStep) {
+        const dtA = b2Vec2.MulSV(step.dt, this.A, b2ConstantAccelController.Step_s_dtA);
+        for (let i = this.m_bodyList; i; i = i.nextBody) {
+            const body = i.body;
+            if (!body.IsAwake()) {
+                continue;
+            }
+            body.SetLinearVelocity(b2Vec2.AddVV(body.GetLinearVelocity(), dtA, b2Vec2.s_t0));
+        }
     }
-  }
-  private static Step_s_dtA = new b2Vec2();
+    private static Step_s_dtA = new b2Vec2();
 
-  public Draw(draw: b2Draw) {}
+    public Draw(draw: b2Draw) {}
 }
 
 // #endif

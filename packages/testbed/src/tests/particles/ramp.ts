@@ -22,64 +22,57 @@ import * as b2 from "@box2d";
 import * as testbed from "../testbed.js";
 
 export class Ramp extends testbed.Test {
-  constructor() {
-    super();
+    constructor() {
+        super();
 
-    {
-      const bd = new b2.BodyDef();
-      const ground = this.m_world.CreateBody(bd);
+        {
+            const bd = new b2.BodyDef();
+            const ground = this.m_world.CreateBody(bd);
 
-      // Construct a ramp out of many polygons to ensure there's no
-      // issue with particles moving across vertices
+            // Construct a ramp out of many polygons to ensure there's no
+            // issue with particles moving across vertices
 
-      const xstep = 5.0, ystep = 5.0;
+            const xstep = 5.0,
+                ystep = 5.0;
 
-      for (let y = 30.0; y > 0.0; y -= ystep) {
-        const shape = new b2.PolygonShape();
-        const vertices = [
-          new b2.Vec2(-25.0, y),
-          new b2.Vec2(-25.0, y - ystep),
-          new b2.Vec2(0.0, 15.0),
-        ];
-        shape.Set(vertices, 3);
-        ground.CreateFixture(shape, 0.0);
-      }
+            for (let y = 30.0; y > 0.0; y -= ystep) {
+                const shape = new b2.PolygonShape();
+                const vertices = [new b2.Vec2(-25.0, y), new b2.Vec2(-25.0, y - ystep), new b2.Vec2(0.0, 15.0)];
+                shape.Set(vertices, 3);
+                ground.CreateFixture(shape, 0.0);
+            }
 
-      for (let x = -25.0; x < 25.0; x += xstep) {
-        const shape = new b2.PolygonShape();
-        const vertices = [
-          new b2.Vec2(x, 0.0),
-          new b2.Vec2(x + xstep, 0.0),
-          new b2.Vec2(0.0, 15.0),
-        ];
-        shape.Set(vertices, 3);
-        ground.CreateFixture(shape, 0.0);
-      }
+            for (let x = -25.0; x < 25.0; x += xstep) {
+                const shape = new b2.PolygonShape();
+                const vertices = [new b2.Vec2(x, 0.0), new b2.Vec2(x + xstep, 0.0), new b2.Vec2(0.0, 15.0)];
+                shape.Set(vertices, 3);
+                ground.CreateFixture(shape, 0.0);
+            }
+        }
+
+        this.m_particleSystem.SetRadius(0.25);
+        const particleType = testbed.Test.GetParticleParameterValue();
+        if (particleType === b2.ParticleFlag.b2_waterParticle) {
+            this.m_particleSystem.SetDamping(0.2);
+        }
+
+        {
+            const shape = new b2.CircleShape();
+            shape.m_p.Set(-20, 33);
+            shape.m_radius = 3;
+            const pd = new b2.ParticleGroupDef();
+            pd.flags = particleType;
+            pd.shape = shape;
+            const group = this.m_particleSystem.CreateParticleGroup(pd);
+            if (pd.flags & b2.ParticleFlag.b2_colorMixingParticle) {
+                this.ColorParticleGroup(group, 0);
+            }
+        }
     }
 
-    this.m_particleSystem.SetRadius(0.25);
-    const particleType = testbed.Test.GetParticleParameterValue();
-    if (particleType === b2.ParticleFlag.b2_waterParticle) {
-      this.m_particleSystem.SetDamping(0.2);
+    public static Create() {
+        return new Ramp();
     }
-
-    {
-      const shape = new b2.CircleShape();
-      shape.m_p.Set(-20, 33);
-      shape.m_radius = 3;
-      const pd = new b2.ParticleGroupDef();
-      pd.flags = particleType;
-      pd.shape = shape;
-      const group = this.m_particleSystem.CreateParticleGroup(pd);
-      if (pd.flags & b2.ParticleFlag.b2_colorMixingParticle) {
-        this.ColorParticleGroup(group, 0);
-      }
-    }
-  }
-
-  public static Create() {
-    return new Ramp();
-  }
 }
 
 // #endif

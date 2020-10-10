@@ -22,89 +22,76 @@ import * as b2 from "@box2d";
 import * as testbed from "../testbed.js";
 
 export class CornerCase extends testbed.Test {
-  constructor() {
-    super();
+    constructor() {
+        super();
 
-    {
-      const bd = new b2.BodyDef();
-      const ground = this.m_world.CreateBody(bd);
+        {
+            const bd = new b2.BodyDef();
+            const ground = this.m_world.CreateBody(bd);
 
-      // Construct a pathological corner intersection out of many
-      // polygons to ensure there's no issue with particle oscillation
-      // from many fixture contact impulses at the corner
+            // Construct a pathological corner intersection out of many
+            // polygons to ensure there's no issue with particle oscillation
+            // from many fixture contact impulses at the corner
 
-      // left edge
-      {
-        const shape = new b2.PolygonShape();
-        const vertices = [
-          new b2.Vec2(-20.0, 30.0),
-          new b2.Vec2(-20.0, 0.0),
-          new b2.Vec2(-25.0, 0.0),
-          new b2.Vec2(-25.0, 30.0),
-        ];
-        shape.Set(vertices);
-        ground.CreateFixture(shape, 0.0);
-      }
+            // left edge
+            {
+                const shape = new b2.PolygonShape();
+                const vertices = [
+                    new b2.Vec2(-20.0, 30.0),
+                    new b2.Vec2(-20.0, 0.0),
+                    new b2.Vec2(-25.0, 0.0),
+                    new b2.Vec2(-25.0, 30.0),
+                ];
+                shape.Set(vertices);
+                ground.CreateFixture(shape, 0.0);
+            }
 
-      const yrange = 30.0,
-        ystep = yrange / 10.0,
-        xrange = 20.0,
-        xstep = xrange / 2.0;
+            const yrange = 30.0,
+                ystep = yrange / 10.0,
+                xrange = 20.0,
+                xstep = xrange / 2.0;
 
-      {
-        const shape = new b2.PolygonShape();
-        const vertices = [
-          new b2.Vec2(-25.0, 0.0),
-          new b2.Vec2(20.0, 15.0),
-          new b2.Vec2(25.0, 0.0),
-        ];
-        shape.Set(vertices);
-        ground.CreateFixture(shape, 0.0);
-      }
+            {
+                const shape = new b2.PolygonShape();
+                const vertices = [new b2.Vec2(-25.0, 0.0), new b2.Vec2(20.0, 15.0), new b2.Vec2(25.0, 0.0)];
+                shape.Set(vertices);
+                ground.CreateFixture(shape, 0.0);
+            }
 
-      for (let x = -xrange; x < xrange; x += xstep) {
-        const shape = new b2.PolygonShape();
-        const vertices = [
-          new b2.Vec2(-25.0, 0.0),
-          new b2.Vec2(x, 15.0),
-          new b2.Vec2(x + xstep, 15.0),
-        ];
-        shape.Set(vertices);
-        ground.CreateFixture(shape, 0.0);
-      }
+            for (let x = -xrange; x < xrange; x += xstep) {
+                const shape = new b2.PolygonShape();
+                const vertices = [new b2.Vec2(-25.0, 0.0), new b2.Vec2(x, 15.0), new b2.Vec2(x + xstep, 15.0)];
+                shape.Set(vertices);
+                ground.CreateFixture(shape, 0.0);
+            }
 
-      for (let y = 0.0; y < yrange; y += ystep) {
-        const shape = new b2.PolygonShape();
-        const vertices = [
-          new b2.Vec2(25.0, y),
-          new b2.Vec2(25.0, y + ystep),
-          new b2.Vec2(20.0, 15.0),
-        ];
-        shape.Set(vertices);
-        ground.CreateFixture(shape, 0.0);
-      }
+            for (let y = 0.0; y < yrange; y += ystep) {
+                const shape = new b2.PolygonShape();
+                const vertices = [new b2.Vec2(25.0, y), new b2.Vec2(25.0, y + ystep), new b2.Vec2(20.0, 15.0)];
+                shape.Set(vertices);
+                ground.CreateFixture(shape, 0.0);
+            }
+        }
 
+        this.m_particleSystem.SetRadius(1.0);
+        const particleType = testbed.Test.GetParticleParameterValue();
+
+        {
+            const shape = new b2.CircleShape();
+            shape.m_p.Set(0, 35);
+            shape.m_radius = 12;
+            const pd = new b2.ParticleGroupDef();
+            pd.flags = particleType;
+            pd.shape = shape;
+            const group = this.m_particleSystem.CreateParticleGroup(pd);
+            if (pd.flags & b2.ParticleFlag.b2_colorMixingParticle) {
+                this.ColorParticleGroup(group, 0);
+            }
+        }
     }
-
-    this.m_particleSystem.SetRadius(1.0);
-    const particleType = testbed.Test.GetParticleParameterValue();
-
-    {
-      const shape = new b2.CircleShape();
-      shape.m_p.Set(0, 35);
-      shape.m_radius = 12;
-      const pd = new b2.ParticleGroupDef();
-      pd.flags = particleType;
-      pd.shape = shape;
-      const group = this.m_particleSystem.CreateParticleGroup(pd);
-      if (pd.flags & b2.ParticleFlag.b2_colorMixingParticle) {
-        this.ColorParticleGroup(group, 0);
-      }
+    public static Create() {
+        return new CornerCase();
     }
-  }
-  public static Create() {
-    return new CornerCase();
-  }
 }
 
 // #endif

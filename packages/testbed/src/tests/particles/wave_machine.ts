@@ -22,83 +22,83 @@ import * as b2 from "@box2d";
 import * as testbed from "../testbed.js";
 
 export class WaveMachine extends testbed.Test {
-  public m_joint: b2.RevoluteJoint;
-  public m_time = 0;
+    public m_joint: b2.RevoluteJoint;
+    public m_time = 0;
 
-  constructor() {
-    super();
+    constructor() {
+        super();
 
-    let ground = null;
-    {
-      const bd = new b2.BodyDef();
-      ground = this.m_world.CreateBody(bd);
+        let ground = null;
+        {
+            const bd = new b2.BodyDef();
+            ground = this.m_world.CreateBody(bd);
+        }
+
+        {
+            const bd = new b2.BodyDef();
+            bd.type = b2.BodyType.b2_dynamicBody;
+            bd.allowSleep = false;
+            bd.position.Set(0.0, 1.0);
+            const body = this.m_world.CreateBody(bd);
+
+            const shape = new b2.PolygonShape();
+            shape.SetAsBox(0.05, 1.0, new b2.Vec2(2.0, 0.0), 0.0);
+            body.CreateFixture(shape, 5.0);
+            shape.SetAsBox(0.05, 1.0, new b2.Vec2(-2.0, 0.0), 0.0);
+            body.CreateFixture(shape, 5.0);
+            shape.SetAsBox(2.0, 0.05, new b2.Vec2(0.0, 1.0), 0.0);
+            body.CreateFixture(shape, 5.0);
+            shape.SetAsBox(2.0, 0.05, new b2.Vec2(0.0, -1.0), 0.0);
+            body.CreateFixture(shape, 5.0);
+
+            const jd = new b2.RevoluteJointDef();
+            jd.bodyA = ground;
+            jd.bodyB = body;
+            jd.localAnchorA.Set(0.0, 1.0);
+            jd.localAnchorB.Set(0.0, 0.0);
+            jd.referenceAngle = 0.0;
+            jd.motorSpeed = 0.05 * b2.pi;
+            jd.maxMotorTorque = 1e7;
+            jd.enableMotor = true;
+            this.m_joint = this.m_world.CreateJoint(jd);
+        }
+
+        this.m_particleSystem.SetRadius(0.025 * 2); // HACK: increase particle radius
+        const particleType = testbed.Test.GetParticleParameterValue();
+        this.m_particleSystem.SetDamping(0.2);
+
+        {
+            const pd = new b2.ParticleGroupDef();
+            pd.flags = particleType;
+
+            const shape = new b2.PolygonShape();
+            shape.SetAsBox(0.9, 0.9, new b2.Vec2(0.0, 1.0), 0.0);
+
+            pd.shape = shape;
+            const group = this.m_particleSystem.CreateParticleGroup(pd);
+            if (pd.flags & b2.ParticleFlag.b2_colorMixingParticle) {
+                this.ColorParticleGroup(group, 0);
+            }
+        }
+
+        this.m_time = 0;
     }
 
-    {
-      const bd = new b2.BodyDef();
-      bd.type = b2.BodyType.b2_dynamicBody;
-      bd.allowSleep = false;
-      bd.position.Set(0.0, 1.0);
-      const body = this.m_world.CreateBody(bd);
-
-      const shape = new b2.PolygonShape();
-      shape.SetAsBox(0.05, 1.0, new b2.Vec2(2.0, 0.0), 0.0);
-      body.CreateFixture(shape, 5.0);
-      shape.SetAsBox(0.05, 1.0, new b2.Vec2(-2.0, 0.0), 0.0);
-      body.CreateFixture(shape, 5.0);
-      shape.SetAsBox(2.0, 0.05, new b2.Vec2(0.0, 1.0), 0.0);
-      body.CreateFixture(shape, 5.0);
-      shape.SetAsBox(2.0, 0.05, new b2.Vec2(0.0, -1.0), 0.0);
-      body.CreateFixture(shape, 5.0);
-
-      const jd = new b2.RevoluteJointDef();
-      jd.bodyA = ground;
-      jd.bodyB = body;
-      jd.localAnchorA.Set(0.0, 1.0);
-      jd.localAnchorB.Set(0.0, 0.0);
-      jd.referenceAngle = 0.0;
-      jd.motorSpeed = 0.05 * b2.pi;
-      jd.maxMotorTorque = 1e7;
-      jd.enableMotor = true;
-      this.m_joint = this.m_world.CreateJoint(jd);
+    public Step(settings: testbed.Settings) {
+        super.Step(settings);
+        if (settings.m_hertz > 0) {
+            this.m_time += 1 / settings.m_hertz;
+        }
+        this.m_joint.SetMotorSpeed(0.05 * Math.cos(this.m_time) * b2.pi);
     }
 
-    this.m_particleSystem.SetRadius(0.025 * 2); // HACK: increase particle radius
-    const particleType = testbed.Test.GetParticleParameterValue();
-    this.m_particleSystem.SetDamping(0.2);
-
-    {
-      const pd = new b2.ParticleGroupDef();
-      pd.flags = particleType;
-
-      const shape = new b2.PolygonShape();
-      shape.SetAsBox(0.9, 0.9, new b2.Vec2(0.0, 1.0), 0.0);
-
-      pd.shape = shape;
-      const group = this.m_particleSystem.CreateParticleGroup(pd);
-      if (pd.flags & b2.ParticleFlag.b2_colorMixingParticle) {
-        this.ColorParticleGroup(group, 0);
-      }
+    public GetDefaultViewZoom() {
+        return 0.1;
     }
 
-    this.m_time = 0;
-  }
-
-  public Step(settings: testbed.Settings) {
-    super.Step(settings);
-    if (settings.m_hertz > 0) {
-      this.m_time += 1 / settings.m_hertz;
+    public static Create() {
+        return new WaveMachine();
     }
-    this.m_joint.SetMotorSpeed(0.05 * Math.cos(this.m_time) * b2.pi);
-  }
-
-  public GetDefaultViewZoom() {
-    return 0.1;
-  }
-
-  public static Create() {
-    return new WaveMachine();
-  }
 }
 
 // #endif

@@ -22,104 +22,110 @@ import * as b2 from "@box2d";
 import * as testbed from "../testbed.js";
 
 export class Impulse extends testbed.Test {
-  public static readonly kBoxLeft = -2;
-  public static readonly kBoxRight = 2;
-  public static readonly kBoxBottom = 0;
-  public static readonly kBoxTop = 4;
+    public static readonly kBoxLeft = -2;
+    public static readonly kBoxRight = 2;
+    public static readonly kBoxBottom = 0;
+    public static readonly kBoxTop = 4;
 
-  public m_useLinearImpulse = false;
+    public m_useLinearImpulse = false;
 
-  constructor() {
-    super();
+    constructor() {
+        super();
 
-    // Create the containing box.
-    {
-      const bd = new b2.BodyDef();
-      const ground = this.m_world.CreateBody(bd);
+        // Create the containing box.
+        {
+            const bd = new b2.BodyDef();
+            const ground = this.m_world.CreateBody(bd);
 
-      const box = [
-        new b2.Vec2(Impulse.kBoxLeft, Impulse.kBoxBottom),
-        new b2.Vec2(Impulse.kBoxRight, Impulse.kBoxBottom),
-        new b2.Vec2(Impulse.kBoxRight, Impulse.kBoxTop),
-        new b2.Vec2(Impulse.kBoxLeft, Impulse.kBoxTop),
-      ];
-      const shape = new b2.ChainShape();
-      shape.CreateLoop(box, box.length);
-      ground.CreateFixture(shape, 0.0);
+            const box = [
+                new b2.Vec2(Impulse.kBoxLeft, Impulse.kBoxBottom),
+                new b2.Vec2(Impulse.kBoxRight, Impulse.kBoxBottom),
+                new b2.Vec2(Impulse.kBoxRight, Impulse.kBoxTop),
+                new b2.Vec2(Impulse.kBoxLeft, Impulse.kBoxTop),
+            ];
+            const shape = new b2.ChainShape();
+            shape.CreateLoop(box, box.length);
+            ground.CreateFixture(shape, 0.0);
+        }
+
+        this.m_particleSystem.SetRadius(0.025 * 2); // HACK: increase particle radius
+        this.m_particleSystem.SetDamping(0.2);
+
+        // Create the particles.
+        {
+            const shape = new b2.PolygonShape();
+            shape.SetAsBox(0.8, 1.0, new b2.Vec2(0.0, 1.01), 0);
+            const pd = new b2.ParticleGroupDef();
+            pd.flags = testbed.Test.GetParticleParameterValue();
+            pd.shape = shape;
+            const group = this.m_particleSystem.CreateParticleGroup(pd);
+            if (pd.flags & b2.ParticleFlag.b2_colorMixingParticle) {
+                this.ColorParticleGroup(group, 0);
+            }
+        }
     }
 
-    this.m_particleSystem.SetRadius(0.025 * 2); // HACK: increase particle radius
-    this.m_particleSystem.SetDamping(0.2);
+    public MouseUp(p: b2.Vec2) {
+        super.MouseUp(p);
 
-    // Create the particles.
-    {
-      const shape = new b2.PolygonShape();
-      shape.SetAsBox(0.8, 1.0, new b2.Vec2(0.0, 1.01), 0);
-      const pd = new b2.ParticleGroupDef();
-      pd.flags = testbed.Test.GetParticleParameterValue();
-      pd.shape = shape;
-      const group = this.m_particleSystem.CreateParticleGroup(pd);
-      if (pd.flags & b2.ParticleFlag.b2_colorMixingParticle) {
-        this.ColorParticleGroup(group, 0);
-      }
+        // Apply an impulse to the particles.
+        const isInsideBox =
+            Impulse.kBoxLeft <= p.x && p.x <= Impulse.kBoxRight && Impulse.kBoxBottom <= p.y && p.y <= Impulse.kBoxTop;
+        if (isInsideBox) {
+            const kBoxCenter = new b2.Vec2(
+                0.5 * (Impulse.kBoxLeft + Impulse.kBoxRight),
+                0.5 * (Impulse.kBoxBottom + Impulse.kBoxTop)
+            );
+            const direction = b2.Vec2.SubVV(p, kBoxCenter, new b2.Vec2());
+            direction.Normalize();
+            this.ApplyImpulseOrForce(direction);
+        }
     }
-  }
 
-  public MouseUp(p: b2.Vec2) {
-    super.MouseUp(p);
+    public Keyboard(key: string) {
+        super.Keyboard(key);
 
-    // Apply an impulse to the particles.
-    const isInsideBox = Impulse.kBoxLeft <= p.x && p.x <= Impulse.kBoxRight &&
-      Impulse.kBoxBottom <= p.y && p.y <= Impulse.kBoxTop;
-    if (isInsideBox) {
-      const kBoxCenter = new b2.Vec2(0.5 * (Impulse.kBoxLeft + Impulse.kBoxRight),
-        0.5 * (Impulse.kBoxBottom + Impulse.kBoxTop));
-      const direction = b2.Vec2.SubVV(p, kBoxCenter, new b2.Vec2());
-      direction.Normalize();
-      this.ApplyImpulseOrForce(direction);
+        switch (key) {
+            case "l":
+                this.m_useLinearImpulse = true;
+                break;
+            case "f":
+                this.m_useLinearImpulse = false;
+                break;
+        }
     }
-  }
 
-  public Keyboard(key: string) {
-    super.Keyboard(key);
+    public ApplyImpulseOrForce(direction: b2.Vec2) {
+        const particleSystem = this.m_world.GetParticleSystemList();
+        if (!particleSystem) {
+            throw new Error();
+        }
+        const particleGroup = particleSystem.GetParticleGroupList();
+        if (!particleGroup) {
+            throw new Error();
+        }
+        const numParticles = particleGroup.GetParticleCount();
 
-    switch (key) {
-      case "l":
-        this.m_useLinearImpulse = true;
-        break;
-      case "f":
-        this.m_useLinearImpulse = false;
-        break;
+        if (this.m_useLinearImpulse) {
+            const kImpulseMagnitude = 0.005;
+            ///  const b2Vec2 impulse = kImpulseMagnitude * direction * (float32)numParticles;
+            const impulse = b2.Vec2.MulSV(kImpulseMagnitude * numParticles, direction, new b2.Vec2());
+            particleGroup.ApplyLinearImpulse(impulse);
+        } else {
+            const kForceMagnitude = 1.0;
+            ///  const b2Vec2 force = kForceMagnitude * direction * (float32)numParticles;
+            const force = b2.Vec2.MulSV(kForceMagnitude * numParticles, direction, new b2.Vec2());
+            particleGroup.ApplyForce(force);
+        }
     }
-  }
 
-  public ApplyImpulseOrForce(direction: b2.Vec2) {
-    const particleSystem = this.m_world.GetParticleSystemList();
-    if (!particleSystem) { throw new Error(); }
-    const particleGroup = particleSystem.GetParticleGroupList();
-    if (!particleGroup) { throw new Error(); }
-    const numParticles = particleGroup.GetParticleCount();
-
-    if (this.m_useLinearImpulse) {
-      const kImpulseMagnitude = 0.005;
-      ///  const b2Vec2 impulse = kImpulseMagnitude * direction * (float32)numParticles;
-      const impulse = b2.Vec2.MulSV(kImpulseMagnitude * numParticles, direction, new b2.Vec2());
-      particleGroup.ApplyLinearImpulse(impulse);
-    } else {
-      const kForceMagnitude = 1.0;
-      ///  const b2Vec2 force = kForceMagnitude * direction * (float32)numParticles;
-      const force = b2.Vec2.MulSV(kForceMagnitude * numParticles, direction, new b2.Vec2());
-      particleGroup.ApplyForce(force);
+    public GetDefaultViewZoom() {
+        return 0.1;
     }
-  }
 
-  public GetDefaultViewZoom() {
-    return 0.1;
-  }
-
-  public static Create() {
-    return new Impulse();
-  }
+    public static Create() {
+        return new Impulse();
+    }
 }
 
 // #endif

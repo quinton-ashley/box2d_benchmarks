@@ -22,84 +22,69 @@ import * as b2 from "@box2d";
 import * as testbed from "../testbed.js";
 
 export class Particles extends testbed.Test {
-  constructor() {
-    super();
-    {
-      const bd = new b2.BodyDef();
-      const ground = this.m_world.CreateBody(bd);
+    constructor() {
+        super();
+        {
+            const bd = new b2.BodyDef();
+            const ground = this.m_world.CreateBody(bd);
 
-      {
-        const shape = new b2.PolygonShape();
-        const vertices = [
-          new b2.Vec2(-4, -1),
-          new b2.Vec2(4, -1),
-          new b2.Vec2(4, 0),
-          new b2.Vec2(-4, 0),
-        ];
-        shape.Set(vertices, 4);
-        ground.CreateFixture(shape, 0.0);
-      }
+            {
+                const shape = new b2.PolygonShape();
+                const vertices = [new b2.Vec2(-4, -1), new b2.Vec2(4, -1), new b2.Vec2(4, 0), new b2.Vec2(-4, 0)];
+                shape.Set(vertices, 4);
+                ground.CreateFixture(shape, 0.0);
+            }
 
-      {
-        const shape = new b2.PolygonShape();
-        const vertices = [
-          new b2.Vec2(-4, -0.1),
-          new b2.Vec2(-2, -0.1),
-          new b2.Vec2(-2, 2),
-          new b2.Vec2(-4, 3),
-        ];
-        shape.Set(vertices, 4);
-        ground.CreateFixture(shape, 0.0);
-      }
+            {
+                const shape = new b2.PolygonShape();
+                const vertices = [new b2.Vec2(-4, -0.1), new b2.Vec2(-2, -0.1), new b2.Vec2(-2, 2), new b2.Vec2(-4, 3)];
+                shape.Set(vertices, 4);
+                ground.CreateFixture(shape, 0.0);
+            }
 
-      {
-        const shape = new b2.PolygonShape();
-        const vertices = [
-          new b2.Vec2(2, -0.1),
-          new b2.Vec2(4, -0.1),
-          new b2.Vec2(4, 3),
-          new b2.Vec2(2, 2),
-        ];
-        shape.Set(vertices, 4);
-        ground.CreateFixture(shape, 0.0);
-      }
+            {
+                const shape = new b2.PolygonShape();
+                const vertices = [new b2.Vec2(2, -0.1), new b2.Vec2(4, -0.1), new b2.Vec2(4, 3), new b2.Vec2(2, 2)];
+                shape.Set(vertices, 4);
+                ground.CreateFixture(shape, 0.0);
+            }
+        }
+
+        this.m_particleSystem.SetRadius(0.035 * 2); // HACK: increase particle radius
+        const particleType = testbed.Test.GetParticleParameterValue();
+        this.m_particleSystem.SetDamping(0.2);
+
+        {
+            const shape = new b2.CircleShape();
+            shape.m_p.Set(0, 3);
+            shape.m_radius = 2;
+            const pd = new b2.ParticleGroupDef();
+            pd.flags = particleType;
+            pd.shape = shape;
+            const group = this.m_particleSystem.CreateParticleGroup(pd);
+            if (pd.flags & b2.ParticleFlag.b2_colorMixingParticle) {
+                this.ColorParticleGroup(group, 0);
+            }
+        }
+
+        {
+            const bd = new b2.BodyDef();
+            bd.type = b2.BodyType.b2_dynamicBody;
+            const body = this.m_world.CreateBody(bd);
+            const shape = new b2.CircleShape();
+            shape.m_p.Set(0, 8);
+            shape.m_radius = 0.5;
+            body.CreateFixture(shape, 0.5);
+        }
     }
 
-    this.m_particleSystem.SetRadius(0.035 * 2); // HACK: increase particle radius
-    const particleType = testbed.Test.GetParticleParameterValue();
-    this.m_particleSystem.SetDamping(0.2);
-
-    {
-      const shape = new b2.CircleShape();
-      shape.m_p.Set(0, 3);
-      shape.m_radius = 2;
-      const pd = new b2.ParticleGroupDef();
-      pd.flags = particleType;
-      pd.shape = shape;
-      const group = this.m_particleSystem.CreateParticleGroup(pd);
-      if (pd.flags & b2.ParticleFlag.b2_colorMixingParticle) {
-        this.ColorParticleGroup(group, 0);
-      }
+    public GetDefaultViewZoom() {
+        return 0.1;
     }
 
-    {
-      const bd = new b2.BodyDef();
-      bd.type = b2.BodyType.b2_dynamicBody;
-      const body = this.m_world.CreateBody(bd);
-      const shape = new b2.CircleShape();
-      shape.m_p.Set(0, 8);
-      shape.m_radius = 0.5;
-      body.CreateFixture(shape, 0.5);
+    public static Create() {
+        return new Particles();
     }
-  }
-
-  public GetDefaultViewZoom() {
-    return 0.1;
-  }
-
-  public static Create() {
-    return new Particles();
-  }
 }
 
 // #endif

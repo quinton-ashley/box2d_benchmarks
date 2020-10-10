@@ -27,89 +27,77 @@ import * as testbed from "../testbed.js";
  */
 
 export class AntiPointy extends testbed.Test {
-  public m_particlesToCreate = 300;
+    public m_particlesToCreate = 300;
 
-  constructor() {
-    super();
+    constructor() {
+        super();
 
-    {
-      const bd = new b2.BodyDef();
-      const ground = this.m_world.CreateBody(bd);
+        {
+            const bd = new b2.BodyDef();
+            const ground = this.m_world.CreateBody(bd);
 
-      // Construct a valley out of many polygons to ensure there's no
-      // issue with particles falling directly on an ambiguous set of
-      // fixture corners.
+            // Construct a valley out of many polygons to ensure there's no
+            // issue with particles falling directly on an ambiguous set of
+            // fixture corners.
 
-      const step = 1.0;
+            const step = 1.0;
 
-      for (let i = -10.0; i < 10.0; i += step) {
-        const shape = new b2.PolygonShape();
-        const vertices = [
-          new b2.Vec2(i, -10.0),
-          new b2.Vec2(i + step, -10.0),
-          new b2.Vec2(0.0, 15.0),
-        ];
-        shape.Set(vertices, 3);
-        ground.CreateFixture(shape, 0.0);
-      }
-      for (let i = -10.0; i < 35.0; i += step) {
-        const shape = new b2.PolygonShape();
-        const vertices = [
-          new b2.Vec2(-10.0, i),
-          new b2.Vec2(-10.0, i + step),
-          new b2.Vec2(0.0, 15.0),
-        ];
-        shape.Set(vertices, 3);
-        ground.CreateFixture(shape, 0.0);
+            for (let i = -10.0; i < 10.0; i += step) {
+                const shape = new b2.PolygonShape();
+                const vertices = [new b2.Vec2(i, -10.0), new b2.Vec2(i + step, -10.0), new b2.Vec2(0.0, 15.0)];
+                shape.Set(vertices, 3);
+                ground.CreateFixture(shape, 0.0);
+            }
+            for (let i = -10.0; i < 35.0; i += step) {
+                const shape = new b2.PolygonShape();
+                const vertices = [new b2.Vec2(-10.0, i), new b2.Vec2(-10.0, i + step), new b2.Vec2(0.0, 15.0)];
+                shape.Set(vertices, 3);
+                ground.CreateFixture(shape, 0.0);
 
-        const vertices2 = [
-          new b2.Vec2(10.0, i),
-          new b2.Vec2(10.0, i + step),
-          new b2.Vec2(0.0, 15.0),
-        ];
-        shape.Set(vertices2, 3);
-        ground.CreateFixture(shape, 0.0);
-      }
+                const vertices2 = [new b2.Vec2(10.0, i), new b2.Vec2(10.0, i + step), new b2.Vec2(0.0, 15.0)];
+                shape.Set(vertices2, 3);
+                ground.CreateFixture(shape, 0.0);
+            }
+        }
+
+        // Cap the number of generated particles or we'll fill forever
+        this.m_particlesToCreate = 300;
+
+        this.m_particleSystem.SetRadius(0.25 * 2); // HACK: increase particle radius
+        const particleType = testbed.Test.GetParticleParameterValue();
+        if (particleType === b2.ParticleFlag.b2_waterParticle) {
+            this.m_particleSystem.SetDamping(0.2);
+        }
     }
 
-    // Cap the number of generated particles or we'll fill forever
-    this.m_particlesToCreate = 300;
+    public Step(settings: testbed.Settings) {
+        super.Step(settings);
 
-    this.m_particleSystem.SetRadius(0.25 * 2); // HACK: increase particle radius
-    const particleType = testbed.Test.GetParticleParameterValue();
-    if (particleType === b2.ParticleFlag.b2_waterParticle) {
-      this.m_particleSystem.SetDamping(0.2);
-    }
-  }
+        if (this.m_particlesToCreate <= 0) {
+            return;
+        }
 
-  public Step(settings: testbed.Settings) {
-    super.Step(settings);
+        --this.m_particlesToCreate;
 
-    if (this.m_particlesToCreate <= 0) {
-      return;
-    }
+        const flags = testbed.Test.GetParticleParameterValue();
+        const pd = new b2.ParticleDef();
 
-    --this.m_particlesToCreate;
+        pd.position.Set(0.0, 40.0);
+        pd.velocity.Set(0.0, -1.0);
+        pd.flags = flags;
 
-    const flags = testbed.Test.GetParticleParameterValue();
-    const pd = new b2.ParticleDef();
+        if (flags & (b2.ParticleFlag.b2_springParticle | b2.ParticleFlag.b2_elasticParticle)) {
+            const count = this.m_particleSystem.GetParticleCount();
+            pd.velocity.Set(count & 1 ? -1.0 : 1.0, -5.0);
+            pd.flags |= b2.ParticleFlag.b2_reactiveParticle;
+        }
 
-    pd.position.Set(0.0, 40.0);
-    pd.velocity.Set(0.0, -1.0);
-    pd.flags = flags;
-
-    if (flags & (b2.ParticleFlag.b2_springParticle | b2.ParticleFlag.b2_elasticParticle)) {
-      const count = this.m_particleSystem.GetParticleCount();
-      pd.velocity.Set(count & 1 ? -1.0 : 1.0, -5.0);
-      pd.flags |= b2.ParticleFlag.b2_reactiveParticle;
+        this.m_particleSystem.CreateParticle(pd);
     }
 
-    this.m_particleSystem.CreateParticle(pd);
-  }
-
-  public static Create() {
-    return new AntiPointy();
-  }
+    public static Create() {
+        return new AntiPointy();
+    }
 }
 
 // #endif

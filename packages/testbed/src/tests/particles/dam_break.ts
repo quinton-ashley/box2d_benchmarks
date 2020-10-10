@@ -22,48 +22,42 @@ import * as b2 from "@box2d";
 import * as testbed from "../testbed.js";
 
 export class DamBreak extends testbed.Test {
-  constructor() {
-    super();
+    constructor() {
+        super();
 
-    {
-      const bd = new b2.BodyDef();
-      const ground = this.m_world.CreateBody(bd);
+        {
+            const bd = new b2.BodyDef();
+            const ground = this.m_world.CreateBody(bd);
 
-      const shape = new b2.ChainShape();
-      const vertices = [
-        new b2.Vec2(-2, 0),
-        new b2.Vec2(2, 0),
-        new b2.Vec2(2, 4),
-        new b2.Vec2(-2, 4),
-      ];
-      shape.CreateLoop(vertices, 4);
-      ground.CreateFixture(shape, 0.0);
+            const shape = new b2.ChainShape();
+            const vertices = [new b2.Vec2(-2, 0), new b2.Vec2(2, 0), new b2.Vec2(2, 4), new b2.Vec2(-2, 4)];
+            shape.CreateLoop(vertices, 4);
+            ground.CreateFixture(shape, 0.0);
+        }
 
+        this.m_particleSystem.SetRadius(0.025 * 2); // HACK: increase particle radius
+        this.m_particleSystem.SetDamping(0.2);
+
+        {
+            const shape = new b2.PolygonShape();
+            shape.SetAsBox(0.8, 1.0, new b2.Vec2(-1.2, 1.01), 0);
+            const pd = new b2.ParticleGroupDef();
+            pd.flags = testbed.Test.GetParticleParameterValue();
+            pd.shape = shape;
+            const group = this.m_particleSystem.CreateParticleGroup(pd);
+            if (pd.flags & b2.ParticleFlag.b2_colorMixingParticle) {
+                this.ColorParticleGroup(group, 0);
+            }
+        }
     }
 
-    this.m_particleSystem.SetRadius(0.025 * 2); // HACK: increase particle radius
-    this.m_particleSystem.SetDamping(0.2);
-
-    {
-      const shape = new b2.PolygonShape();
-      shape.SetAsBox(0.8, 1.0, new b2.Vec2(-1.2, 1.01), 0);
-      const pd = new b2.ParticleGroupDef();
-      pd.flags = testbed.Test.GetParticleParameterValue();
-      pd.shape = shape;
-      const group = this.m_particleSystem.CreateParticleGroup(pd);
-      if (pd.flags & b2.ParticleFlag.b2_colorMixingParticle) {
-        this.ColorParticleGroup(group, 0);
-      }
+    public GetDefaultViewZoom() {
+        return 0.1;
     }
-  }
 
-  public GetDefaultViewZoom() {
-    return 0.1;
-  }
-
-  public static Create() {
-    return new DamBreak();
-  }
+    public static Create() {
+        return new DamBreak();
+    }
 }
 
 // #endif

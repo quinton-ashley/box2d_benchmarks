@@ -39,420 +39,432 @@ const FUD_GROUND_AREA = 1;
  * a class to allow subclassing of different fixture user data
  */
 export class FixtureUserData {
-  public m_type: number;
+    public m_type: number;
 
-  constructor(type: number) {
-    this.m_type = type;
-  }
+    constructor(type: number) {
+        this.m_type = type;
+    }
 
-  public getType(): number {
-    return this.m_type;
-  }
+    public getType(): number {
+        return this.m_type;
+    }
 }
 
 /**
  * class to allow marking a fixture as a car tire
  */
 export class CarTireFUD extends FixtureUserData {
-  constructor() {
-    super(FUD_CAR_TIRE);
-  }
+    constructor() {
+        super(FUD_CAR_TIRE);
+    }
 }
 
 // /**
 //  * class to allow marking a fixture as a ground area
 //  */
 export class GroundAreaFUD extends FixtureUserData {
-  public frictionModifier: number;
-  public outOfCourse: boolean;
-  constructor(fm: number, ooc: boolean) {
-    super(FUD_GROUND_AREA);
-    this.frictionModifier = fm;
-    this.outOfCourse = ooc;
-  }
+    public frictionModifier: number;
+    public outOfCourse: boolean;
+    constructor(fm: number, ooc: boolean) {
+        super(FUD_GROUND_AREA);
+        this.frictionModifier = fm;
+        this.outOfCourse = ooc;
+    }
 }
 
 export class TDTire {
-  public m_groundAreas: GroundAreaFUD[] = [];
-  public m_body: b2.Body;
-  public m_currentTraction: number = 1;
-  public m_maxForwardSpeed: number = 0;
-  public m_maxBackwardSpeed: number = 0;
-  public m_maxDriveForce: number = 0;
-  public m_maxLateralImpulse: number = 0;
+    public m_groundAreas: GroundAreaFUD[] = [];
+    public m_body: b2.Body;
+    public m_currentTraction: number = 1;
+    public m_maxForwardSpeed: number = 0;
+    public m_maxBackwardSpeed: number = 0;
+    public m_maxDriveForce: number = 0;
+    public m_maxLateralImpulse: number = 0;
 
-  constructor(world: b2.World) {
-    const bodyDef = new b2.BodyDef();
-    bodyDef.type = b2.BodyType.b2_dynamicBody;
-    this.m_body = world.CreateBody(bodyDef);
+    constructor(world: b2.World) {
+        const bodyDef = new b2.BodyDef();
+        bodyDef.type = b2.BodyType.b2_dynamicBody;
+        this.m_body = world.CreateBody(bodyDef);
 
-    const polygonShape = new b2.PolygonShape();
-    polygonShape.SetAsBox(0.5, 1.25);
-    const fixture = this.m_body.CreateFixture(polygonShape, 1); //shape, density
-    fixture.SetUserData(new CarTireFUD());
+        const polygonShape = new b2.PolygonShape();
+        polygonShape.SetAsBox(0.5, 1.25);
+        const fixture = this.m_body.CreateFixture(polygonShape, 1); //shape, density
+        fixture.SetUserData(new CarTireFUD());
 
-    this.m_body.SetUserData(this);
-  }
+        this.m_body.SetUserData(this);
+    }
 
-  public setCharacteristics(maxForwardSpeed: number, maxBackwardSpeed: number, maxDriveForce: number, maxLateralImpulse: number): void {
-    this.m_maxForwardSpeed = maxForwardSpeed;
-    this.m_maxBackwardSpeed = maxBackwardSpeed;
-    this.m_maxDriveForce = maxDriveForce;
-    this.m_maxLateralImpulse = maxLateralImpulse;
-  }
+    public setCharacteristics(
+        maxForwardSpeed: number,
+        maxBackwardSpeed: number,
+        maxDriveForce: number,
+        maxLateralImpulse: number
+    ): void {
+        this.m_maxForwardSpeed = maxForwardSpeed;
+        this.m_maxBackwardSpeed = maxBackwardSpeed;
+        this.m_maxDriveForce = maxDriveForce;
+        this.m_maxLateralImpulse = maxLateralImpulse;
+    }
 
-  public addGroundArea(ga: GroundAreaFUD): void {
-    this.m_groundAreas.push(ga);
-    this.updateTraction();
-  }
+    public addGroundArea(ga: GroundAreaFUD): void {
+        this.m_groundAreas.push(ga);
+        this.updateTraction();
+    }
 
-  public removeGroundArea(ga: GroundAreaFUD): void {
-    this.m_groundAreas.splice(this.m_groundAreas.indexOf(ga));
-    this.updateTraction();
-  }
+    public removeGroundArea(ga: GroundAreaFUD): void {
+        this.m_groundAreas.splice(this.m_groundAreas.indexOf(ga));
+        this.updateTraction();
+    }
 
-  public updateTraction(): void {
-    if (this.m_groundAreas.length === 0) {
-      this.m_currentTraction = 1;
-    } else {
-      //find area with highest traction
-      this.m_currentTraction = 0;
-      this.m_groundAreas.forEach((ga) => {
-        if (ga.frictionModifier > this.m_currentTraction) {
-          this.m_currentTraction = ga.frictionModifier;
+    public updateTraction(): void {
+        if (this.m_groundAreas.length === 0) {
+            this.m_currentTraction = 1;
+        } else {
+            //find area with highest traction
+            this.m_currentTraction = 0;
+            this.m_groundAreas.forEach((ga) => {
+                if (ga.frictionModifier > this.m_currentTraction) {
+                    this.m_currentTraction = ga.frictionModifier;
+                }
+            });
         }
-      });
-    }
-  }
-
-  public getLateralVelocity(): b2.Vec2 {
-    const currentRightNormal = this.m_body.GetWorldVector(new b2.Vec2(1, 0), new b2.Vec2());
-    return currentRightNormal.SelfMul(b2.Vec2.DotVV(currentRightNormal, this.m_body.GetLinearVelocity()));
-  }
-
-  public getForwardVelocity(): b2.Vec2 {
-    const currentForwardNormal = this.m_body.GetWorldVector(new b2.Vec2(0, 1), new b2.Vec2());
-    return currentForwardNormal.SelfMul(b2.Vec2.DotVV(currentForwardNormal, this.m_body.GetLinearVelocity()));
-  }
-
-  public updateFriction(): void {
-    //lateral linear velocity
-    const impulse = this.getLateralVelocity().SelfMul(-1.0 * this.m_body.GetMass());
-    if (impulse.Length() > this.m_maxLateralImpulse) {
-      impulse.SelfMul(this.m_maxLateralImpulse / impulse.Length());
-    }
-    this.m_body.ApplyLinearImpulse(impulse.SelfMul(this.m_currentTraction), this.m_body.GetWorldCenter());
-
-    //angular velocity
-    this.m_body.ApplyAngularImpulse(this.m_currentTraction * 0.1 * this.m_body.GetInertia() * -this.m_body.GetAngularVelocity());
-
-    //forward linear velocity
-    const currentForwardNormal = this.getForwardVelocity();
-    const currentForwardSpeed = currentForwardNormal.Normalize();
-    const dragForceMagnitude = -2 * currentForwardSpeed;
-    this.m_body.ApplyForce(currentForwardNormal.SelfMul(this.m_currentTraction * dragForceMagnitude), this.m_body.GetWorldCenter());
-  }
-
-  public updateDrive(controlState: number): void {
-
-    //find desired speed
-    let desiredSpeed = 0;
-    switch (controlState & (TDC_UP | TDC_DOWN)) {
-      case TDC_UP:
-        desiredSpeed = this.m_maxForwardSpeed;
-        break;
-      case TDC_DOWN:
-        desiredSpeed = this.m_maxBackwardSpeed;
-        break;
-      default:
-        return; //do nothing
     }
 
-    //find current speed in forward direction
-    const currentForwardNormal = this.m_body.GetWorldVector(new b2.Vec2(0, 1), new b2.Vec2());
-    const currentSpeed = b2.Vec2.DotVV(this.getForwardVelocity(), currentForwardNormal);
-
-    //apply necessary force
-    let force = 0;
-    if (desiredSpeed > currentSpeed) {
-      force = this.m_maxDriveForce;
-    } else if (desiredSpeed < currentSpeed) {
-      force = -this.m_maxDriveForce;
-    } else {
-      return;
+    public getLateralVelocity(): b2.Vec2 {
+        const currentRightNormal = this.m_body.GetWorldVector(new b2.Vec2(1, 0), new b2.Vec2());
+        return currentRightNormal.SelfMul(b2.Vec2.DotVV(currentRightNormal, this.m_body.GetLinearVelocity()));
     }
-    this.m_body.ApplyForce(currentForwardNormal.SelfMul(this.m_currentTraction * force), this.m_body.GetWorldCenter());
-  }
 
-  public updateTurn(controlState: number): void {
-    let desiredTorque = 0;
-    switch (controlState & (TDC_LEFT | TDC_RIGHT)) {
-      case TDC_LEFT:
-        desiredTorque = 15;
-        break;
-      case TDC_RIGHT:
-        desiredTorque = -15;
-        break;
-      default:
-        //nothing
+    public getForwardVelocity(): b2.Vec2 {
+        const currentForwardNormal = this.m_body.GetWorldVector(new b2.Vec2(0, 1), new b2.Vec2());
+        return currentForwardNormal.SelfMul(b2.Vec2.DotVV(currentForwardNormal, this.m_body.GetLinearVelocity()));
     }
-    this.m_body.ApplyTorque(desiredTorque);
-  }
+
+    public updateFriction(): void {
+        //lateral linear velocity
+        const impulse = this.getLateralVelocity().SelfMul(-1.0 * this.m_body.GetMass());
+        if (impulse.Length() > this.m_maxLateralImpulse) {
+            impulse.SelfMul(this.m_maxLateralImpulse / impulse.Length());
+        }
+        this.m_body.ApplyLinearImpulse(impulse.SelfMul(this.m_currentTraction), this.m_body.GetWorldCenter());
+
+        //angular velocity
+        this.m_body.ApplyAngularImpulse(
+            this.m_currentTraction * 0.1 * this.m_body.GetInertia() * -this.m_body.GetAngularVelocity()
+        );
+
+        //forward linear velocity
+        const currentForwardNormal = this.getForwardVelocity();
+        const currentForwardSpeed = currentForwardNormal.Normalize();
+        const dragForceMagnitude = -2 * currentForwardSpeed;
+        this.m_body.ApplyForce(
+            currentForwardNormal.SelfMul(this.m_currentTraction * dragForceMagnitude),
+            this.m_body.GetWorldCenter()
+        );
+    }
+
+    public updateDrive(controlState: number): void {
+        //find desired speed
+        let desiredSpeed = 0;
+        switch (controlState & (TDC_UP | TDC_DOWN)) {
+            case TDC_UP:
+                desiredSpeed = this.m_maxForwardSpeed;
+                break;
+            case TDC_DOWN:
+                desiredSpeed = this.m_maxBackwardSpeed;
+                break;
+            default:
+                return; //do nothing
+        }
+
+        //find current speed in forward direction
+        const currentForwardNormal = this.m_body.GetWorldVector(new b2.Vec2(0, 1), new b2.Vec2());
+        const currentSpeed = b2.Vec2.DotVV(this.getForwardVelocity(), currentForwardNormal);
+
+        //apply necessary force
+        let force = 0;
+        if (desiredSpeed > currentSpeed) {
+            force = this.m_maxDriveForce;
+        } else if (desiredSpeed < currentSpeed) {
+            force = -this.m_maxDriveForce;
+        } else {
+            return;
+        }
+        this.m_body.ApplyForce(
+            currentForwardNormal.SelfMul(this.m_currentTraction * force),
+            this.m_body.GetWorldCenter()
+        );
+    }
+
+    public updateTurn(controlState: number): void {
+        let desiredTorque = 0;
+        switch (controlState & (TDC_LEFT | TDC_RIGHT)) {
+            case TDC_LEFT:
+                desiredTorque = 15;
+                break;
+            case TDC_RIGHT:
+                desiredTorque = -15;
+                break;
+            default:
+            //nothing
+        }
+        this.m_body.ApplyTorque(desiredTorque);
+    }
 }
 
 export class TDCar {
-  public m_tires: TDTire[];
-  public m_body: b2.Body;
-  public flJoint: b2.RevoluteJoint;
-  public frJoint: b2.RevoluteJoint;
+    public m_tires: TDTire[];
+    public m_body: b2.Body;
+    public flJoint: b2.RevoluteJoint;
+    public frJoint: b2.RevoluteJoint;
 
-  constructor(world: b2.World) {
-    this.m_tires = [];
+    constructor(world: b2.World) {
+        this.m_tires = [];
 
-    //create car body
-    const bodyDef = new b2.BodyDef();
-    bodyDef.type = b2.BodyType.b2_dynamicBody;
-    this.m_body = world.CreateBody(bodyDef);
-    this.m_body.SetAngularDamping(3);
+        //create car body
+        const bodyDef = new b2.BodyDef();
+        bodyDef.type = b2.BodyType.b2_dynamicBody;
+        this.m_body = world.CreateBody(bodyDef);
+        this.m_body.SetAngularDamping(3);
 
-    const vertices = [];
-    vertices[0] = new b2.Vec2(1.5, 0);
-    vertices[1] = new b2.Vec2(3, 2.5);
-    vertices[2] = new b2.Vec2(2.8, 5.5);
-    vertices[3] = new b2.Vec2(1, 10);
-    vertices[4] = new b2.Vec2(-1, 10);
-    vertices[5] = new b2.Vec2(-2.8, 5.5);
-    vertices[6] = new b2.Vec2(-3, 2.5);
-    vertices[7] = new b2.Vec2(-1.5, 0);
-    const polygonShape = new b2.PolygonShape();
-    polygonShape.Set(vertices, 8);
-    this.m_body.CreateFixture(polygonShape, 0.1); //shape, density
+        const vertices = [];
+        vertices[0] = new b2.Vec2(1.5, 0);
+        vertices[1] = new b2.Vec2(3, 2.5);
+        vertices[2] = new b2.Vec2(2.8, 5.5);
+        vertices[3] = new b2.Vec2(1, 10);
+        vertices[4] = new b2.Vec2(-1, 10);
+        vertices[5] = new b2.Vec2(-2.8, 5.5);
+        vertices[6] = new b2.Vec2(-3, 2.5);
+        vertices[7] = new b2.Vec2(-1.5, 0);
+        const polygonShape = new b2.PolygonShape();
+        polygonShape.Set(vertices, 8);
+        this.m_body.CreateFixture(polygonShape, 0.1); //shape, density
 
-    //prepare common joint parameters
-    const jointDef = new b2.RevoluteJointDef();
-    jointDef.bodyA = this.m_body;
-    jointDef.enableLimit = true;
-    jointDef.lowerAngle = 0;
-    jointDef.upperAngle = 0;
-    jointDef.localAnchorB.SetZero(); //center of tire
+        //prepare common joint parameters
+        const jointDef = new b2.RevoluteJointDef();
+        jointDef.bodyA = this.m_body;
+        jointDef.enableLimit = true;
+        jointDef.lowerAngle = 0;
+        jointDef.upperAngle = 0;
+        jointDef.localAnchorB.SetZero(); //center of tire
 
-    const maxForwardSpeed = 250;
-    const maxBackwardSpeed = -40;
-    const backTireMaxDriveForce = 300;
-    const frontTireMaxDriveForce = 500;
-    const backTireMaxLateralImpulse = 8.5;
-    const frontTireMaxLateralImpulse = 7.5;
+        const maxForwardSpeed = 250;
+        const maxBackwardSpeed = -40;
+        const backTireMaxDriveForce = 300;
+        const frontTireMaxDriveForce = 500;
+        const backTireMaxLateralImpulse = 8.5;
+        const frontTireMaxLateralImpulse = 7.5;
 
-    //back left tire
-    let tire = new TDTire(world);
-    tire.setCharacteristics(maxForwardSpeed, maxBackwardSpeed, backTireMaxDriveForce, backTireMaxLateralImpulse);
-    jointDef.bodyB = tire.m_body;
-    jointDef.localAnchorA.Set(-3, 0.75);
-    world.CreateJoint(jointDef);
-    this.m_tires.push(tire);
+        //back left tire
+        let tire = new TDTire(world);
+        tire.setCharacteristics(maxForwardSpeed, maxBackwardSpeed, backTireMaxDriveForce, backTireMaxLateralImpulse);
+        jointDef.bodyB = tire.m_body;
+        jointDef.localAnchorA.Set(-3, 0.75);
+        world.CreateJoint(jointDef);
+        this.m_tires.push(tire);
 
-    //back right tire
-    tire = new TDTire(world);
-    tire.setCharacteristics(maxForwardSpeed, maxBackwardSpeed, backTireMaxDriveForce, backTireMaxLateralImpulse);
-    jointDef.bodyB = tire.m_body;
-    jointDef.localAnchorA.Set(3, 0.75);
-    world.CreateJoint(jointDef);
-    this.m_tires.push(tire);
+        //back right tire
+        tire = new TDTire(world);
+        tire.setCharacteristics(maxForwardSpeed, maxBackwardSpeed, backTireMaxDriveForce, backTireMaxLateralImpulse);
+        jointDef.bodyB = tire.m_body;
+        jointDef.localAnchorA.Set(3, 0.75);
+        world.CreateJoint(jointDef);
+        this.m_tires.push(tire);
 
-    //front left tire
-    tire = new TDTire(world);
-    tire.setCharacteristics(maxForwardSpeed, maxBackwardSpeed, frontTireMaxDriveForce, frontTireMaxLateralImpulse);
-    jointDef.bodyB = tire.m_body;
-    jointDef.localAnchorA.Set(-3, 8.5);
-    this.flJoint = world.CreateJoint(jointDef);
-    this.m_tires.push(tire);
+        //front left tire
+        tire = new TDTire(world);
+        tire.setCharacteristics(maxForwardSpeed, maxBackwardSpeed, frontTireMaxDriveForce, frontTireMaxLateralImpulse);
+        jointDef.bodyB = tire.m_body;
+        jointDef.localAnchorA.Set(-3, 8.5);
+        this.flJoint = world.CreateJoint(jointDef);
+        this.m_tires.push(tire);
 
-    //front right tire
-    tire = new TDTire(world);
-    tire.setCharacteristics(maxForwardSpeed, maxBackwardSpeed, frontTireMaxDriveForce, frontTireMaxLateralImpulse);
-    jointDef.bodyB = tire.m_body;
-    jointDef.localAnchorA.Set(3, 8.5);
-    this.frJoint = world.CreateJoint(jointDef);
-    this.m_tires.push(tire);
-  }
-
-  public update(controlState: number) {
-    this.m_tires.forEach((tire) => {
-      tire.updateFriction();
-    });
-    this.m_tires.forEach((tire) => {
-      tire.updateDrive(controlState);
-    });
-
-    //control steering
-    const lockAngle = 35 * DEGTORAD;
-    const turnSpeedPerSec = 160 * DEGTORAD; //from lock to lock in 0.5 sec
-    const turnPerTimeStep = turnSpeedPerSec / 60.0;
-    let desiredAngle = 0;
-    switch (controlState & (TDC_LEFT | TDC_RIGHT)) {
-      case TDC_LEFT:
-        desiredAngle = lockAngle;
-        break;
-      case TDC_RIGHT:
-        desiredAngle = -lockAngle;
-        break;
-      default:
-        //nothing
+        //front right tire
+        tire = new TDTire(world);
+        tire.setCharacteristics(maxForwardSpeed, maxBackwardSpeed, frontTireMaxDriveForce, frontTireMaxLateralImpulse);
+        jointDef.bodyB = tire.m_body;
+        jointDef.localAnchorA.Set(3, 8.5);
+        this.frJoint = world.CreateJoint(jointDef);
+        this.m_tires.push(tire);
     }
-    const angleNow = this.flJoint.GetJointAngle();
-    let angleToTurn = desiredAngle - angleNow;
-    angleToTurn = b2.Clamp(angleToTurn, -turnPerTimeStep, turnPerTimeStep);
-    const newAngle = angleNow + angleToTurn;
-    this.flJoint.SetLimits(newAngle, newAngle);
-    this.frJoint.SetLimits(newAngle, newAngle);
-  }
+
+    public update(controlState: number) {
+        this.m_tires.forEach((tire) => {
+            tire.updateFriction();
+        });
+        this.m_tires.forEach((tire) => {
+            tire.updateDrive(controlState);
+        });
+
+        //control steering
+        const lockAngle = 35 * DEGTORAD;
+        const turnSpeedPerSec = 160 * DEGTORAD; //from lock to lock in 0.5 sec
+        const turnPerTimeStep = turnSpeedPerSec / 60.0;
+        let desiredAngle = 0;
+        switch (controlState & (TDC_LEFT | TDC_RIGHT)) {
+            case TDC_LEFT:
+                desiredAngle = lockAngle;
+                break;
+            case TDC_RIGHT:
+                desiredAngle = -lockAngle;
+                break;
+            default:
+            //nothing
+        }
+        const angleNow = this.flJoint.GetJointAngle();
+        let angleToTurn = desiredAngle - angleNow;
+        angleToTurn = b2.Clamp(angleToTurn, -turnPerTimeStep, turnPerTimeStep);
+        const newAngle = angleNow + angleToTurn;
+        this.flJoint.SetLimits(newAngle, newAngle);
+        this.frJoint.SetLimits(newAngle, newAngle);
+    }
 }
 
 export class MyDestructionListener extends testbed.DestructionListener {
-  public SayGoodbyeFixture(fixture: b2.Fixture): void {
-    ///  if ( FixtureUserData* fud = (FixtureUserData*)fixture.GetUserData() )
-    ///    delete fud;
-    super.SayGoodbyeFixture(fixture);
-  }
+    public SayGoodbyeFixture(fixture: b2.Fixture): void {
+        ///  if ( FixtureUserData* fud = (FixtureUserData*)fixture.GetUserData() )
+        ///    delete fud;
+        super.SayGoodbyeFixture(fixture);
+    }
 
-  /**
-   * (unused but must implement all pure virtual functions)
-   */
-  public SayGoodbyeJoint(joint: b2.Joint): void {
-    super.SayGoodbyeJoint(joint);
-  }
+    /**
+     * (unused but must implement all pure virtual functions)
+     */
+    public SayGoodbyeJoint(joint: b2.Joint): void {
+        super.SayGoodbyeJoint(joint);
+    }
 }
 
 export class TopdownCar extends testbed.Test {
-  public m_car: TDCar;
-  public m_controlState: number;
+    public m_car: TDCar;
+    public m_controlState: number;
 
-  constructor() {
-    super();
+    constructor() {
+        super();
 
-    //this.m_destructionListener = new MyDestructionListener(this);
+        //this.m_destructionListener = new MyDestructionListener(this);
 
-    this.m_world.SetGravity(new b2.Vec2(0.0, 0.0));
-    this.m_world.SetDestructionListener(this.m_destructionListener);
+        this.m_world.SetGravity(new b2.Vec2(0.0, 0.0));
+        this.m_world.SetDestructionListener(this.m_destructionListener);
 
-    //set up ground areas
-    {
-      const bodyDef = new b2.BodyDef();
-      this.m_groundBody = this.m_world.CreateBody(bodyDef);
+        //set up ground areas
+        {
+            const bodyDef = new b2.BodyDef();
+            this.m_groundBody = this.m_world.CreateBody(bodyDef);
 
-      const polygonShape = new b2.PolygonShape();
-      const fixtureDef = new b2.FixtureDef();
-      fixtureDef.shape = polygonShape;
-      fixtureDef.isSensor = true;
+            const polygonShape = new b2.PolygonShape();
+            const fixtureDef = new b2.FixtureDef();
+            fixtureDef.shape = polygonShape;
+            fixtureDef.isSensor = true;
 
-      polygonShape.SetAsBox(9, 7, new b2.Vec2(-10, 15), 20 * DEGTORAD);
-      let groundAreaFixture = this.m_groundBody.CreateFixture(fixtureDef);
-      groundAreaFixture.SetUserData(new GroundAreaFUD(0.5, false));
+            polygonShape.SetAsBox(9, 7, new b2.Vec2(-10, 15), 20 * DEGTORAD);
+            let groundAreaFixture = this.m_groundBody.CreateFixture(fixtureDef);
+            groundAreaFixture.SetUserData(new GroundAreaFUD(0.5, false));
 
-      polygonShape.SetAsBox(9, 5, new b2.Vec2(5, 20), -40 * DEGTORAD);
-      groundAreaFixture = this.m_groundBody.CreateFixture(fixtureDef);
-      groundAreaFixture.SetUserData(new GroundAreaFUD(0.2, false));
+            polygonShape.SetAsBox(9, 5, new b2.Vec2(5, 20), -40 * DEGTORAD);
+            groundAreaFixture = this.m_groundBody.CreateFixture(fixtureDef);
+            groundAreaFixture.SetUserData(new GroundAreaFUD(0.2, false));
+        }
+
+        //this.m_tire = new TDTire(this.m_world);
+        //this.m_tire.setCharacteristics(100, -20, 150);
+
+        this.m_car = new TDCar(this.m_world);
+
+        this.m_controlState = 0;
     }
 
-    //this.m_tire = new TDTire(this.m_world);
-    //this.m_tire.setCharacteristics(100, -20, 150);
-
-    this.m_car = new TDCar(this.m_world);
-
-    this.m_controlState = 0;
-  }
-
-  public Keyboard(key: string): void {
-    switch (key) {
-      case "a":
-        this.m_controlState |= TDC_LEFT;
-        break;
-      case "d":
-        this.m_controlState |= TDC_RIGHT;
-        break;
-      case "w":
-        this.m_controlState |= TDC_UP;
-        break;
-      case "s":
-        this.m_controlState |= TDC_DOWN;
-        break;
-      default:
-        super.Keyboard(key);
-    }
-  }
-
-  public KeyboardUp(key: string): void {
-    switch (key) {
-      case "a":
-        this.m_controlState &= ~TDC_LEFT;
-        break;
-      case "d":
-        this.m_controlState &= ~TDC_RIGHT;
-        break;
-      case "w":
-        this.m_controlState &= ~TDC_UP;
-        break;
-      case "s":
-        this.m_controlState &= ~TDC_DOWN;
-        break;
-      default:
-        super.KeyboardUp(key);
-    }
-  }
-
-  public static handleContact(contact: b2.Contact, began: boolean): void {
-    const a = contact.GetFixtureA();
-    const b = contact.GetFixtureB();
-    const fudA = a.GetUserData();
-    const fudB = b.GetUserData();
-
-    if (!fudA || !fudB) {
-      return;
+    public Keyboard(key: string): void {
+        switch (key) {
+            case "a":
+                this.m_controlState |= TDC_LEFT;
+                break;
+            case "d":
+                this.m_controlState |= TDC_RIGHT;
+                break;
+            case "w":
+                this.m_controlState |= TDC_UP;
+                break;
+            case "s":
+                this.m_controlState |= TDC_DOWN;
+                break;
+            default:
+                super.Keyboard(key);
+        }
     }
 
-    if (fudA.getType() === FUD_CAR_TIRE || fudB.getType() === FUD_GROUND_AREA) {
-      TopdownCar.tire_vs_groundArea(a, b, began);
-    } else if (fudA.getType() === FUD_GROUND_AREA || fudB.getType() === FUD_CAR_TIRE) {
-      TopdownCar.tire_vs_groundArea(b, a, began);
+    public KeyboardUp(key: string): void {
+        switch (key) {
+            case "a":
+                this.m_controlState &= ~TDC_LEFT;
+                break;
+            case "d":
+                this.m_controlState &= ~TDC_RIGHT;
+                break;
+            case "w":
+                this.m_controlState &= ~TDC_UP;
+                break;
+            case "s":
+                this.m_controlState &= ~TDC_DOWN;
+                break;
+            default:
+                super.KeyboardUp(key);
+        }
     }
-  }
 
-  public BeginContact(contact: b2.Contact): void {
-    TopdownCar.handleContact(contact, true);
-  }
+    public static handleContact(contact: b2.Contact, began: boolean): void {
+        const a = contact.GetFixtureA();
+        const b = contact.GetFixtureB();
+        const fudA = a.GetUserData();
+        const fudB = b.GetUserData();
 
-  public EndContact(contact: b2.Contact): void {
-    TopdownCar.handleContact(contact, false);
-  }
+        if (!fudA || !fudB) {
+            return;
+        }
 
-  public static tire_vs_groundArea(tireFixture: b2.Fixture, groundAreaFixture: b2.Fixture, began: boolean): void {
-    const tire = tireFixture.GetBody().GetUserData();
-    const gaFud = groundAreaFixture.GetUserData();
-    if (began) {
-      tire.addGroundArea(gaFud);
-    } else {
-      tire.removeGroundArea(gaFud);
+        if (fudA.getType() === FUD_CAR_TIRE || fudB.getType() === FUD_GROUND_AREA) {
+            TopdownCar.tire_vs_groundArea(a, b, began);
+        } else if (fudA.getType() === FUD_GROUND_AREA || fudB.getType() === FUD_CAR_TIRE) {
+            TopdownCar.tire_vs_groundArea(b, a, began);
+        }
     }
-  }
 
-  public Step(settings: testbed.Settings): void {
-    /*this.m_tire.updateFriction();
+    public BeginContact(contact: b2.Contact): void {
+        TopdownCar.handleContact(contact, true);
+    }
+
+    public EndContact(contact: b2.Contact): void {
+        TopdownCar.handleContact(contact, false);
+    }
+
+    public static tire_vs_groundArea(tireFixture: b2.Fixture, groundAreaFixture: b2.Fixture, began: boolean): void {
+        const tire = tireFixture.GetBody().GetUserData();
+        const gaFud = groundAreaFixture.GetUserData();
+        if (began) {
+            tire.addGroundArea(gaFud);
+        } else {
+            tire.removeGroundArea(gaFud);
+        }
+    }
+
+    public Step(settings: testbed.Settings): void {
+        /*this.m_tire.updateFriction();
     this.m_tire.updateDrive(this.m_controlState);
     this.m_tire.updateTurn(this.m_controlState);*/
 
-    this.m_car.update(this.m_controlState);
+        this.m_car.update(this.m_controlState);
 
-    super.Step(settings);
+        super.Step(settings);
 
-    //show some useful info
-    testbed.g_debugDraw.DrawString(5, this.m_textLine, "Press w/a/s/d to control the car");
-    this.m_textLine += testbed.DRAW_STRING_NEW_LINE;
+        //show some useful info
+        testbed.g_debugDraw.DrawString(5, this.m_textLine, "Press w/a/s/d to control the car");
+        this.m_textLine += testbed.DRAW_STRING_NEW_LINE;
 
-    //testbed.g_debugDraw.DrawString(5, this.m_textLine, "Tire traction: %.2f", this.m_tire.m_currentTraction);
-    //this.m_textLine += testbed.DRAW_STRING_NEW_LINE;
-  }
+        //testbed.g_debugDraw.DrawString(5, this.m_textLine, "Tire traction: %.2f", this.m_tire.m_currentTraction);
+        //this.m_textLine += testbed.DRAW_STRING_NEW_LINE;
+    }
 
-  public static Create() {
-    return new TopdownCar();
-  }
+    public static Create() {
+        return new TopdownCar();
+    }
 }

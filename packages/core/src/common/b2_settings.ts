@@ -1,35 +1,35 @@
 /*
-* Copyright (c) 2006-2009 Erin Catto http://www.box2d.org
-*
-* This software is provided 'as-is', without any express or implied
-* warranty.  In no event will the authors be held liable for any damages
-* arising from the use of this software.
-* Permission is granted to anyone to use this software for any purpose,
-* including commercial applications, and to alter it and redistribute it
-* freely, subject to the following restrictions:
-* 1. The origin of this software must not be misrepresented; you must not
-* claim that you wrote the original software. If you use this software
-* in a product, an acknowledgment in the product documentation would be
-* appreciated but is not required.
-* 2. Altered source versions must be plainly marked as such, and must not be
-* misrepresented as being the original software.
-* 3. This notice may not be removed or altered from any source distribution.
-*/
+ * Copyright (c) 2006-2009 Erin Catto http://www.box2d.org
+ *
+ * This software is provided 'as-is', without any express or implied
+ * warranty.  In no event will the authors be held liable for any damages
+ * arising from the use of this software.
+ * Permission is granted to anyone to use this software for any purpose,
+ * including commercial applications, and to alter it and redistribute it
+ * freely, subject to the following restrictions:
+ * 1. The origin of this software must not be misrepresented; you must not
+ * claim that you wrote the original software. If you use this software
+ * in a product, an acknowledgment in the product documentation would be
+ * appreciated but is not required.
+ * 2. Altered source versions must be plainly marked as such, and must not be
+ * misrepresented as being the original software.
+ * 3. This notice may not be removed or altered from any source distribution.
+ */
 
 export function b2Assert(condition: boolean, ...args: any[]): void {
-  if (!condition) {
-    // debugger;
-    throw new Error(...args);
-  }
+    if (!condition) {
+        // debugger;
+        throw new Error(...args);
+    }
 }
 
 export function b2Maybe<T>(value: T | undefined, def: T): T {
-  return value !== undefined ? value : def;
+    return value !== undefined ? value : def;
 }
 
-export const b2_maxFloat: number = 1E+37; // FLT_MAX instead of Number.MAX_VALUE;
-export const b2_epsilon: number = 1E-5; // FLT_EPSILON instead of Number.MIN_VALUE;
-export const b2_epsilon_sq: number = (b2_epsilon * b2_epsilon);
+export const b2_maxFloat: number = 1e37; // FLT_MAX instead of Number.MAX_VALUE;
+export const b2_epsilon: number = 1e-5; // FLT_EPSILON instead of Number.MIN_VALUE;
+export const b2_epsilon_sq: number = b2_epsilon * b2_epsilon;
 export const b2_pi: number = 3.14159265359; // Math.PI;
 
 /// @file
@@ -62,7 +62,7 @@ export const b2_linearSlop: number = 0.008; // 0.005;
 
 /// A small angle used as a collision and constraint tolerance. Usually it is
 /// chosen to be numerically significant, but visually insignificant.
-export const b2_angularSlop: number = 2 / 180 * b2_pi;
+export const b2_angularSlop: number = (2 / 180) * b2_pi;
 
 /// The radius of the polygon/edge shape skin. This should not be modified. Making
 /// this smaller means polygons will have an insufficient buffer for continuous collision.
@@ -87,7 +87,7 @@ export const b2_maxLinearCorrection: number = 0.2;
 
 /// The maximum angular position correction used when solving constraints. This helps to
 /// prevent overshoot.
-export const b2_maxAngularCorrection: number = 8 / 180 * b2_pi;
+export const b2_maxAngularCorrection: number = (8 / 180) * b2_pi;
 
 /// The maximum linear velocity of a body. This limit is very large and is used
 /// to prevent numerical problems. You shouldn't need to adjust this.
@@ -112,7 +112,7 @@ export const b2_toiBaumgarte: number = 0.75;
 /// A symbolic constant that stands for particle allocation error.
 export const b2_invalidParticleIndex: number = -1;
 
-export const b2_maxParticleIndex: number = 0x7FFFFFFF;
+export const b2_maxParticleIndex: number = 0x7fffffff;
 
 /// The default distance between particles, multiplied by the particle diameter.
 export const b2_particleStride: number = 0.75;
@@ -128,7 +128,7 @@ export const b2_maxParticleForce: number = 0.5;
 
 /// The maximum distance between particles in a triad, multiplied by the particle diameter.
 export const b2_maxTriadDistance: number = 2.0;
-export const b2_maxTriadDistanceSquared: number = (b2_maxTriadDistance * b2_maxTriadDistance);
+export const b2_maxTriadDistanceSquared: number = b2_maxTriadDistance * b2_maxTriadDistance;
 
 /// The initial size of particle data buffers.
 export const b2_minParticleSystemBufferCapacity: number = 256;
@@ -147,22 +147,21 @@ export const b2_timeToSleep: number = 0.5;
 export const b2_linearSleepTolerance: number = 0.01;
 
 /// A body cannot sleep if its angular velocity is above this tolerance.
-export const b2_angularSleepTolerance: number = 2 / 180 * b2_pi;
+export const b2_angularSleepTolerance: number = (2 / 180) * b2_pi;
 
 // Memory Allocation
 
 /// Implement this function to use your own memory allocator.
 export function b2Alloc(size: number): any {
-  return null;
+    return null;
 }
 
 /// If you implement b2Alloc, you should also implement this function.
-export function b2Free(mem: any): void {
-}
+export function b2Free(mem: any): void {}
 
 /// Logging function.
 export function b2Log(message: string, ...args: any[]): void {
-  // console.log(message, ...args);
+    // console.log(message, ...args);
 }
 
 // FILE* b2_dumpFile = nullptr;
@@ -195,19 +194,19 @@ export function b2Log(message: string, ...args: any[]): void {
 /// Version numbering scheme.
 /// See http://en.wikipedia.org/wiki/Software_versioning
 export class b2Version {
-  public major: number = 0; ///< significant changes
-  public minor: number = 0; ///< incremental changes
-  public revision: number = 0; ///< bug fixes
+    public major: number = 0; ///< significant changes
+    public minor: number = 0; ///< incremental changes
+    public revision: number = 0; ///< bug fixes
 
-  constructor(major: number = 0, minor: number = 0, revision: number = 0) {
-    this.major = major;
-    this.minor = minor;
-    this.revision = revision;
-  }
+    constructor(major: number = 0, minor: number = 0, revision: number = 0) {
+        this.major = major;
+        this.minor = minor;
+        this.revision = revision;
+    }
 
-  public toString(): string {
-    return this.major + "." + this.minor + "." + this.revision;
-  }
+    public toString(): string {
+        return this.major + "." + this.minor + "." + this.revision;
+    }
 }
 
 /// Current version.
@@ -217,33 +216,33 @@ export const b2_branch: string = "master";
 export const b2_commit: string = "4d7757feedc9dd36f64393ae08acfd3b9600ac17";
 
 export function b2ParseInt(v: string): number {
-  return parseInt(v, 10);
+    return parseInt(v, 10);
 }
 
 export function b2ParseUInt(v: string): number {
-  return Math.abs(parseInt(v, 10));
+    return Math.abs(parseInt(v, 10));
 }
 
 export function b2MakeArray<T>(length: number, init: (i: number) => T): T[] {
-  const a: T[] = new Array<T>(length);
-  for (let i: number = 0; i < length; ++i) {
-    a[i] = init(i);
-  }
-  return a;
+    const a: T[] = new Array<T>(length);
+    for (let i: number = 0; i < length; ++i) {
+        a[i] = init(i);
+    }
+    return a;
 }
 
 export function b2MakeNullArray<T>(length: number): Array<T | null> {
-  const a: Array<T | null> = new Array<T | null>(length);
-  for (let i: number = 0; i < length; ++i) {
-    a[i] = null;
-  }
-  return a;
+    const a: Array<T | null> = new Array<T | null>(length);
+    for (let i: number = 0; i < length; ++i) {
+        a[i] = null;
+    }
+    return a;
 }
 
 export function b2MakeNumberArray(length: number, init: number = 0): number[] {
-  const a: number[] = new Array<number>(length);
-  for (let i: number = 0; i < length; ++i) {
-    a[i] = init;
-  }
-  return a;
+    const a: number[] = new Array<number>(length);
+    for (let i: number = 0; i < length; ++i) {
+        a[i] = init;
+    }
+    return a;
 }

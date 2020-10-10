@@ -28,74 +28,74 @@ import { b2Draw } from "../common/b2_draw.js";
  * Applies simplified gravity between every pair of bodies
  */
 export class b2GravityController extends b2Controller {
-  /**
-   * Specifies the strength of the gravitiation force
-   */
-  public G = 1;
-  /**
-   * If true, gravity is proportional to r^-2, otherwise r^-1
-   */
-  public invSqr = true;
+    /**
+     * Specifies the strength of the gravitiation force
+     */
+    public G = 1;
+    /**
+     * If true, gravity is proportional to r^-2, otherwise r^-1
+     */
+    public invSqr = true;
 
-  /**
-   * @see b2Controller::Step
-   */
-  public Step(step: b2TimeStep) {
-    if (this.invSqr) {
-      for (let i = this.m_bodyList; i; i = i.nextBody) {
-        const body1 = i.body;
-        const p1 = body1.GetWorldCenter();
-        const mass1 = body1.GetMass();
-        for (let j = this.m_bodyList; j && j !== i; j = j.nextBody) {
-          const body2 = j.body;
-          const p2 = body2.GetWorldCenter();
-          const mass2 = body2.GetMass();
-          const dx = p2.x - p1.x;
-          const dy = p2.y - p1.y;
-          const r2 = dx * dx + dy * dy;
-          if (r2 < b2_epsilon) {
-            continue;
-          }
-          const f = b2GravityController.Step_s_f.Set(dx, dy);
-          f.SelfMul(this.G / r2 / b2Sqrt(r2) * mass1 * mass2);
-          if (body1.IsAwake()) {
-            body1.ApplyForce(f, p1);
-          }
-          if (body2.IsAwake()) {
-            body2.ApplyForce(f.SelfMul(-1), p2);
-          }
+    /**
+     * @see b2Controller::Step
+     */
+    public Step(step: b2TimeStep) {
+        if (this.invSqr) {
+            for (let i = this.m_bodyList; i; i = i.nextBody) {
+                const body1 = i.body;
+                const p1 = body1.GetWorldCenter();
+                const mass1 = body1.GetMass();
+                for (let j = this.m_bodyList; j && j !== i; j = j.nextBody) {
+                    const body2 = j.body;
+                    const p2 = body2.GetWorldCenter();
+                    const mass2 = body2.GetMass();
+                    const dx = p2.x - p1.x;
+                    const dy = p2.y - p1.y;
+                    const r2 = dx * dx + dy * dy;
+                    if (r2 < b2_epsilon) {
+                        continue;
+                    }
+                    const f = b2GravityController.Step_s_f.Set(dx, dy);
+                    f.SelfMul((this.G / r2 / b2Sqrt(r2)) * mass1 * mass2);
+                    if (body1.IsAwake()) {
+                        body1.ApplyForce(f, p1);
+                    }
+                    if (body2.IsAwake()) {
+                        body2.ApplyForce(f.SelfMul(-1), p2);
+                    }
+                }
+            }
+        } else {
+            for (let i = this.m_bodyList; i; i = i.nextBody) {
+                const body1 = i.body;
+                const p1 = body1.GetWorldCenter();
+                const mass1 = body1.GetMass();
+                for (let j = this.m_bodyList; j && j !== i; j = j.nextBody) {
+                    const body2 = j.body;
+                    const p2 = body2.GetWorldCenter();
+                    const mass2 = body2.GetMass();
+                    const dx = p2.x - p1.x;
+                    const dy = p2.y - p1.y;
+                    const r2 = dx * dx + dy * dy;
+                    if (r2 < b2_epsilon) {
+                        continue;
+                    }
+                    const f = b2GravityController.Step_s_f.Set(dx, dy);
+                    f.SelfMul((this.G / r2) * mass1 * mass2);
+                    if (body1.IsAwake()) {
+                        body1.ApplyForce(f, p1);
+                    }
+                    if (body2.IsAwake()) {
+                        body2.ApplyForce(f.SelfMul(-1), p2);
+                    }
+                }
+            }
         }
-      }
-    } else {
-      for (let i = this.m_bodyList; i; i = i.nextBody) {
-        const body1 = i.body;
-        const p1 = body1.GetWorldCenter();
-        const mass1 = body1.GetMass();
-        for (let j = this.m_bodyList; j && j !== i; j = j.nextBody) {
-          const body2 = j.body;
-          const p2 = body2.GetWorldCenter();
-          const mass2 = body2.GetMass();
-          const dx = p2.x - p1.x;
-          const dy = p2.y - p1.y;
-          const r2 = dx * dx + dy * dy;
-          if (r2 < b2_epsilon) {
-            continue;
-          }
-          const f = b2GravityController.Step_s_f.Set(dx, dy);
-          f.SelfMul(this.G / r2 * mass1 * mass2);
-          if (body1.IsAwake()) {
-            body1.ApplyForce(f, p1);
-          }
-          if (body2.IsAwake()) {
-            body2.ApplyForce(f.SelfMul(-1), p2);
-          }
-        }
-      }
     }
-  }
-  private static Step_s_f = new b2Vec2();
+    private static Step_s_f = new b2Vec2();
 
-  public Draw(draw: b2Draw) { }
+    public Draw(draw: b2Draw) {}
 }
 
 // #endif
