@@ -5,6 +5,9 @@ import { Signal } from "typed-signals";
 import { g_camera } from "./utils/camera";
 import { g_debugDraw } from "./utils/draw";
 import { hotKeyPress, HotKey, HotKeyMod } from "./utils/hotkeys";
+import { PreloadedTextures, preloadTextures } from "./utils/gl/preload";
+import { createDefaultShader } from "./utils/gl/defaultShader";
+import { clearGlCanvas, initGlCanvas, resizeGlCanvas } from "./utils/gl/glUtils";
 import { Settings } from "./settings";
 import { Test, TestConstructor } from "./test";
 import { FpsCalculator } from "./utils/FpsCalculator";
@@ -52,6 +55,12 @@ export class TestManager {
     private m_hoveringCanvas = false;
 
     private m_keyMap: { [s: string]: boolean } = {};
+
+    private gl: WebGLRenderingContext | null = null;
+
+    private textures: PreloadedTextures | null = null;
+
+    private defaultShader: ReturnType<typeof createDefaultShader> | null = null;
 
     private activateTest: (label: string) => void = () => {};
 
@@ -107,6 +116,7 @@ export class TestManager {
                 debugCanvas.height = glCanvas.height = clientHeight;
                 g_camera.resize(clientWidth, clientHeight);
                 this.m_test?.Resize(clientWidth, clientHeight);
+                this.gl && resizeGlCanvas(glCanvas, this.gl, clientWidth, wrapper.clientHeight);
             }
         };
         window.addEventListener("resize", onResize);
@@ -129,6 +139,15 @@ export class TestManager {
         window.addEventListener("keydown", (e: KeyboardEvent): void => this.HandleKey(e, true));
         window.addEventListener("keyup", (e: KeyboardEvent): void => this.HandleKey(e, false));
 
+        this.LoadTest();
+
+        this.prepareGl(glCanvas);
+    }
+
+    private async prepareGl(glCanvas: HTMLCanvasElement) {
+        this.gl = initGlCanvas(glCanvas);
+        this.textures = await preloadTextures(this.gl);
+        this.defaultShader = createDefaultShader(this.gl);
         this.LoadTest();
     }
 
@@ -248,7 +267,7 @@ export class TestManager {
     public LoadTest(restartTest = false): void {
         Test.particleParameterSelectionEnabled = false;
         const TestClass = this.testConstructor;
-        if (!TestClass || !this.m_ctx) return;
+        if (!TestClass || !this.m_ctx || !this.gl || !this.defaultShader || !this.textures) return;
 
         if (!restartTest) {
             Test.particleParameter.Reset();
@@ -256,7 +275,7 @@ export class TestManager {
 
         this.m_test?.Destroy();
 
-        this.m_test = new TestClass();
+        this.m_test = new TestClass(this.gl, this.defaultShader, this.textures);
         this.testBaseHotKeys = this.m_test.getBaseHotkeys();
         this.testHotKeys = this.m_test.getHotkeys();
         this.allHotKeys = [...this.ownHotKeys, ...this.testBaseHotKeys, ...this.testHotKeys];
@@ -279,10 +298,16 @@ export class TestManager {
     }
 
     public SimulationLoop(): void {
-        if (this.m_fpsCalculator.addFrame() <= 0 || !this.m_ctx) return;
+        if (this.m_fpsCalculator.addFrame() <= 0 || !this.gl || !this.defaultShader || !this.m_ctx) return;
         const ctx = this.m_ctx;
 
         const restartTest = [false];
+
+        clearGlCanvas(this.gl, 0, 0, 0, 0);
+        this.gl.enable(this.gl.BLEND);
+        this.defaultShader.use();
+        this.defaultShader.uMVMatrix.set(false, g_camera.modelView);
+        this.defaultShader.uPMatrix.set(false, g_camera.projection);
 
         // Draw World
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);

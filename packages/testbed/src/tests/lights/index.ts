@@ -16,22 +16,11 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import { TestEntry } from "../test";
-import { particleTests } from "./particles";
-import { lightTests } from "./lights";
-import { controllerTests } from "./controllers";
-import { coreTests } from "./core";
+import { TestEntry } from "../../test";
+import { DrawWorld } from "./draw_world";
+import { OfficialDemo } from "./official_demo";
 
-export type TestGroup = [string, TestEntry[]];
-
-export const g_testEntries: TestGroup[] = [
-    ["Core", coreTests],
-    ["Lights", lightTests],
-    ["Controllers", controllerTests],
-    ["Particles & Liquids", particleTests],
+export const lightTests: TestEntry[] = [
+    ["Draw World", DrawWorld],
+    ["Official Demo", OfficialDemo],
 ];
-
-export const g_testEntriesFlat: TestEntry[] = [];
-for (const [, list] of g_testEntries) {
-    g_testEntriesFlat.push(...list);
-}

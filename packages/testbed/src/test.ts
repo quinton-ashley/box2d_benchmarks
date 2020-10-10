@@ -44,6 +44,8 @@ import {
     ParticleParameterDefinition,
 } from "./utils/particles/particle_parameter";
 import { hotKeyPress, HotKey } from "./utils/hotkeys";
+import { DefaultShader } from "./utils/gl/defaultShader";
+import { PreloadedTextures } from "./utils/gl/preload";
 
 export function RandomFloat(lo = -1, hi = 1) {
     let r = Math.random();
@@ -52,7 +54,7 @@ export function RandomFloat(lo = -1, hi = 1) {
 }
 
 export interface TestConstructor {
-    new (): Test;
+    new (gl: WebGLRenderingContext, shader: DefaultShader, textures: PreloadedTextures): Test;
 }
 
 export type TestEntry = [string, TestConstructor];
