@@ -1,0 +1,41 @@
+{
+  "name": "@box2d/benchmark",
+  "version": "0.7.0",
+  "description": "A benchmark to compare various js/ts Box2D implementations",
+  "homepage": "https://github.com/lusito/box2d.ts",
+  "bugs": {
+    "url": "https://github.com/lusito/box2d.ts/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lusito/box2d.ts.git"
+  },
+  "license": "ISC",
+  "author": "Santo Pfingsten",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "thirdparty"
+  ],
+  "scripts": {
+    "build": "rimraf dist && tsc --build tsconfig-build.json",
+    "start": "parcel src/webapp/index.html",
+    "test": "ts-node src/cli/index.ts"
+  },
+  "browserslist": [
+    "> 5%"
+  ],
+  "dependencies": {
+    "@box2d/core": "0.7.0",
+    "@flyover/box2d": "^1.0.1",
+    "box2d.js": "^1.0.4",
+    "planck-js": "^0.3.22"
+  },
+  "devDependencies": {
+    "parcel-bundler": "^1.12.4",
+    "rimraf": "^3.0.2",
+    "ts-node": "^9.0.0",
+    "typescript": "^4.0.3"
+  }
+}

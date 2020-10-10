@@ -5,9 +5,12 @@
     "packages/controllers",
     "packages/particles",
     "packages/lights",
-    "packages/testbed"
+    "packages/testbed",
+    "packages/benchmark"
   ],
   "scripts": {
+    "bench": "yarn workspace @box2d/benchmark test",
+    "bench:web": "yarn workspace @box2d/benchmark start",
     "lint": "npm run lint:es && npm run lint:scss && npm run lint:package && npm run lint:style",
     "lint:es": "eslint packages/*/src/**/*.{ts,tsx} --ext .ts,.tsx --ignore-path .prettierignore",
     "lint:es:fix": "npm run lint:es -- --fix",
