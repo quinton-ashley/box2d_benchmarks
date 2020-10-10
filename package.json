@@ -1,7 +1,6 @@
 {
   "private": true,
-  "workspaces": [
-  ],
+  "workspaces": [],
   "scripts": {
     "lint": "npm run lint:es && npm run lint:package && npm run lint:style",
     "lint:es": "eslint packages/*/{src,testbed,unit-test}/**/*.{ts,tsx} --ext .ts,.tsx --ignore-path .prettierignore",
