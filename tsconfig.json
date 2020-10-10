@@ -1,20 +1,17 @@
 {
   "compilerOptions": {
-    "target": "ES2016",
-    "module": "system",
-    "strict": true,
-    "noImplicitAny": true,
-    "noImplicitReturns": true,
-    "noImplicitThis": true,
-    "noUnusedLocals": true,
-    "outDir": "./build",
+    "target": "ES2018",
+    "module": "CommonJS",
     "declaration": true,
-    "sourceMap": true,
-  },
-  "include": [
-    "src/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+    "lib": ["ES2018", "DOM"],
+    "strict": true,
+    "noUnusedLocals": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "declarationMap": true,
+    "esModuleInterop": true,
+    "moduleResolution": "node"
+  }
 }
