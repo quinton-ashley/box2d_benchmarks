@@ -19,7 +19,8 @@
     "dist"
   ],
   "scripts": {
-    "build": "rimraf dist && tsc && parcel build src/ui/index.html --public-url . --no-source-maps",
+    "build": "rimraf dist && tsc && yarn run build:docs",
+    "build:docs": "rimraf ../../docs/testbed && parcel build src/ui/index.html --public-url testbed --no-source-maps --out-dir ../../docs/testbed",
     "start": "parcel src/ui/index.html",
     "watch": "parcel watch src/ui/index.html"
   },

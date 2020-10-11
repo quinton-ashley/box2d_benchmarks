@@ -19,7 +19,8 @@
     "thirdparty"
   ],
   "scripts": {
-    "build": "rimraf dist && tsc --build tsconfig-build.json",
+    "build": "rimraf dist && tsc --build tsconfig-build.json && yarn run build:docs",
+    "build:docs": "rimraf ../../docs/benchmark && parcel build src/webapp/index.html --public-url benchmark --no-source-maps --out-dir ../../docs/benchmark",
     "start": "parcel src/webapp/index.html",
     "test": "ts-node src/cli/index.ts"
   },
