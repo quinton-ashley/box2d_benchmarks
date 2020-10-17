@@ -17,7 +17,7 @@
  */
 
 // DEBUG: import { b2Assert } from "../common/b2_settings";
-import { b2_linearSlop, b2Maybe } from "../common/b2_settings";
+import { b2_linearSlop } from "../common/b2_settings";
 import { b2Vec2, b2Rot, b2Transform, XY } from "../common/b2_math";
 import { b2Joint, b2JointDef, b2JointType, b2IJointDef } from "./b2_joint";
 import { b2PrismaticJoint } from "./b2_prismatic_joint";
@@ -245,7 +245,7 @@ export class b2GearJoint extends b2Joint {
             coordinateB = b2Vec2.DotVV(b2Vec2.SubVV(pB, pD, b2Vec2.s_t0), this.m_localAxisD);
         }
 
-        this.m_ratio = b2Maybe(def.ratio, 1);
+        this.m_ratio = def.ratio ?? 1;
 
         this.m_constant = coordinateA + this.m_ratio * coordinateB;
 

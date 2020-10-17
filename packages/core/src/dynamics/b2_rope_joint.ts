@@ -16,7 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import { b2_linearSlop, b2_maxLinearCorrection, b2Maybe } from "../common/b2_settings";
+import { b2_linearSlop, b2_maxLinearCorrection } from "../common/b2_settings";
 import { b2Clamp, b2Vec2, b2Rot, XY } from "../common/b2_math";
 import { b2Joint, b2JointDef, b2JointType, b2IJointDef } from "./b2_joint";
 import { b2SolverData } from "./b2_time_step";
@@ -93,9 +93,9 @@ export class b2RopeJoint extends b2Joint {
     constructor(def: b2IRopeJointDef) {
         super(def);
 
-        this.m_localAnchorA.Copy(b2Maybe(def.localAnchorA, new b2Vec2(-1, 0)));
-        this.m_localAnchorB.Copy(b2Maybe(def.localAnchorB, new b2Vec2(1, 0)));
-        this.m_maxLength = b2Maybe(def.maxLength, 0);
+        this.m_localAnchorA.Copy(def.localAnchorA ?? new b2Vec2(-1, 0));
+        this.m_localAnchorB.Copy(def.localAnchorB ?? new b2Vec2(1, 0));
+        this.m_maxLength = def.maxLength ?? 0;
     }
 
     private static InitVelocityConstraints_s_P = new b2Vec2();

@@ -17,7 +17,7 @@
  */
 
 // DEBUG: import { b2Assert } from "../common/b2_settings";
-import { b2_linearSlop, b2Maybe } from "../common/b2_settings";
+import { b2_linearSlop } from "../common/b2_settings";
 import { b2Clamp, b2Vec2, b2Rot, XY } from "../common/b2_math";
 import { b2Joint, b2JointDef, b2JointType, b2IJointDef } from "./b2_joint";
 import { b2SolverData } from "./b2_time_step";
@@ -193,24 +193,24 @@ export class b2WheelJoint extends b2Joint {
     constructor(def: b2IWheelJointDef) {
         super(def);
 
-        this.m_localAnchorA.Copy(b2Maybe(def.localAnchorA, b2Vec2.ZERO));
-        this.m_localAnchorB.Copy(b2Maybe(def.localAnchorB, b2Vec2.ZERO));
-        this.m_localXAxisA.Copy(b2Maybe(def.localAxisA, b2Vec2.UNITX));
+        this.m_localAnchorA.Copy(def.localAnchorA ?? b2Vec2.ZERO);
+        this.m_localAnchorB.Copy(def.localAnchorB ?? b2Vec2.ZERO);
+        this.m_localXAxisA.Copy(def.localAxisA ?? b2Vec2.UNITX);
         b2Vec2.CrossOneV(this.m_localXAxisA, this.m_localYAxisA);
 
-        this.m_lowerTranslation = b2Maybe(def.lowerTranslation, 0);
-        this.m_upperTranslation = b2Maybe(def.upperTranslation, 0);
-        this.m_enableLimit = b2Maybe(def.enableLimit, false);
+        this.m_lowerTranslation = def.lowerTranslation ?? 0;
+        this.m_upperTranslation = def.upperTranslation ?? 0;
+        this.m_enableLimit = def.enableLimit ?? false;
 
-        this.m_maxMotorTorque = b2Maybe(def.maxMotorTorque, 0);
-        this.m_motorSpeed = b2Maybe(def.motorSpeed, 0);
-        this.m_enableMotor = b2Maybe(def.enableMotor, false);
+        this.m_maxMotorTorque = def.maxMotorTorque ?? 0;
+        this.m_motorSpeed = def.motorSpeed ?? 0;
+        this.m_enableMotor = def.enableMotor ?? false;
 
         this.m_ax.SetZero();
         this.m_ay.SetZero();
 
-        this.m_stiffness = b2Maybe(def.stiffness, 0);
-        this.m_damping = b2Maybe(def.damping, 0);
+        this.m_stiffness = def.stiffness ?? 0;
+        this.m_damping = def.damping ?? 0;
     }
 
     public GetMotorSpeed(): number {

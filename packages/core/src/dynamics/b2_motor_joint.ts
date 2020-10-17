@@ -17,7 +17,6 @@
  */
 
 // DEBUG: import { b2Assert } from "../common/b2_settings";
-import { b2Maybe } from "../common/b2_settings";
 import { b2Clamp, b2Vec2, b2Mat22, b2Rot, XY } from "../common/b2_math";
 import { b2Body } from "./b2_body";
 import { b2Joint, b2JointDef, b2JointType, b2IJointDef } from "./b2_joint";
@@ -132,11 +131,11 @@ export class b2MotorJoint extends b2Joint {
     constructor(def: b2IMotorJointDef) {
         super(def);
 
-        this.m_linearOffset.Copy(b2Maybe(def.linearOffset, b2Vec2.ZERO));
+        this.m_linearOffset.Copy(def.linearOffset ?? b2Vec2.ZERO);
         this.m_linearImpulse.SetZero();
-        this.m_maxForce = b2Maybe(def.maxForce, 0);
-        this.m_maxTorque = b2Maybe(def.maxTorque, 0);
-        this.m_correctionFactor = b2Maybe(def.correctionFactor, 0.3);
+        this.m_maxForce = def.maxForce ?? 0;
+        this.m_maxTorque = def.maxTorque ?? 0;
+        this.m_correctionFactor = def.correctionFactor ?? 0.3;
     }
 
     public GetAnchorA<T extends XY>(out: T): T {

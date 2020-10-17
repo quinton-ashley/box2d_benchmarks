@@ -17,7 +17,6 @@
  */
 
 // DEBUG: import { b2Assert, b2_epsilon } from "../common/b2_settings";
-import { b2Maybe } from "../common/b2_settings";
 import { b2Vec2, b2Mat22, b2Rot, b2Transform, XY } from "../common/b2_math";
 import { b2Joint, b2JointDef, b2JointType, b2IJointDef } from "./b2_joint";
 import { b2SolverData } from "./b2_time_step";
@@ -92,17 +91,17 @@ export class b2MouseJoint extends b2Joint {
     constructor(def: b2IMouseJointDef) {
         super(def);
 
-        this.m_targetA.Copy(b2Maybe(def.target, b2Vec2.ZERO));
+        this.m_targetA.Copy(def.target ?? b2Vec2.ZERO);
         // DEBUG: b2Assert(this.m_targetA.IsValid());
         b2Transform.MulTXV(this.m_bodyB.GetTransform(), this.m_targetA, this.m_localAnchorB);
 
-        this.m_maxForce = b2Maybe(def.maxForce, 0);
+        this.m_maxForce = def.maxForce ?? 0;
         // DEBUG: b2Assert(Number.isFinite(this.m_maxForce) && this.m_maxForce >= 0);
         this.m_impulse.SetZero();
 
-        this.m_stiffness = b2Maybe(def.stiffness, 0);
+        this.m_stiffness = def.stiffness ?? 0;
         // DEBUG: b2Assert(Number.isFinite(this.m_stiffness) && this.m_stiffness >= 0);
-        this.m_damping = b2Maybe(def.damping, 0);
+        this.m_damping = def.damping ?? 0;
         // DEBUG: b2Assert(Number.isFinite(this.m_damping) && this.m_damping >= 0);
 
         this.m_beta = 0;

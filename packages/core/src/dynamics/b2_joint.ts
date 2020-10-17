@@ -17,7 +17,6 @@
  */
 
 // DEBUG: import { b2Assert } from "../common/b2_settings";
-import { b2Maybe } from "../common/b2_settings";
 import { b2Vec2, XY } from "../common/b2_math";
 import type { b2Body } from "./b2_body";
 import { b2SolverData } from "./b2_time_step";
@@ -227,9 +226,9 @@ export abstract class b2Joint {
         this.m_bodyA = def.bodyA;
         this.m_bodyB = def.bodyB;
 
-        this.m_collideConnected = b2Maybe(def.collideConnected, false);
+        this.m_collideConnected = def.collideConnected ?? false;
 
-        this.m_userData = b2Maybe(def.userData, null);
+        this.m_userData = def.userData ?? null;
     }
 
     /// Get the type of the concrete joint.

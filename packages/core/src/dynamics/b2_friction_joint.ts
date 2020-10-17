@@ -16,7 +16,6 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import { b2Maybe } from "../common/b2_settings";
 import { b2Clamp, b2Vec2, b2Mat22, b2Rot, XY } from "../common/b2_math";
 import { b2Joint, b2JointDef, b2JointType, b2IJointDef } from "./b2_joint";
 import { b2SolverData } from "./b2_time_step";
@@ -110,8 +109,8 @@ export class b2FrictionJoint extends b2Joint {
         this.m_localAnchorB.Copy(def.localAnchorB);
 
         this.m_linearImpulse.SetZero();
-        this.m_maxForce = b2Maybe(def.maxForce, 0);
-        this.m_maxTorque = b2Maybe(def.maxTorque, 0);
+        this.m_maxForce = def.maxForce ?? 0;
+        this.m_maxTorque = def.maxTorque ?? 0;
 
         this.m_linearMass.SetZero();
     }

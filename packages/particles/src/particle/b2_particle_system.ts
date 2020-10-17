@@ -24,7 +24,6 @@ import {
     b2Body,
     b2Color,
     b2World,
-    b2Maybe,
     b2Shape,
     b2Transform,
     b2AABB,
@@ -940,10 +939,10 @@ export class b2ParticleSystem {
             this.m_consecutiveContactStepsBuffer.data[index] = 0;
         }
         this.m_positionBuffer.data[index] = (this.m_positionBuffer.data[index] || new b2Vec2()).Copy(
-            b2Maybe(def.position, b2Vec2.ZERO)
+            def.position ?? b2Vec2.ZERO
         );
         this.m_velocityBuffer.data[index] = (this.m_velocityBuffer.data[index] || new b2Vec2()).Copy(
-            b2Maybe(def.velocity, b2Vec2.ZERO)
+            def.velocity ?? b2Vec2.ZERO
         );
         this.m_weightBuffer[index] = 0;
         this.m_forceBuffer[index] = (this.m_forceBuffer[index] || new b2Vec2()).SetZero();
@@ -953,7 +952,7 @@ export class b2ParticleSystem {
         if (this.m_depthBuffer) {
             this.m_depthBuffer[index] = 0;
         }
-        const color: b2Color = new b2Color().Copy(b2Maybe(def.color, b2Color.ZERO));
+        const color: b2Color = new b2Color().Copy(def.color ?? b2Color.ZERO);
         if (this.m_colorBuffer.data || !color.IsZero()) {
             this.m_colorBuffer.data = this.RequestBuffer(this.m_colorBuffer.data);
             this.m_colorBuffer.data[index] = (this.m_colorBuffer.data[index] || new b2Color()).Copy(color);
@@ -970,7 +969,7 @@ export class b2ParticleSystem {
 
         // If particle lifetimes are enabled or the lifetime is set in the particle
         // definition, initialize the lifetime.
-        const lifetime = b2Maybe(def.lifetime, 0.0);
+        const lifetime = def.lifetime ?? 0.0;
         const finiteLifetime = lifetime > 0.0;
         if (this.m_expirationTimeBuffer.data || finiteLifetime) {
             this.SetParticleLifetime(
@@ -983,7 +982,7 @@ export class b2ParticleSystem {
         }
 
         proxy.index = index;
-        const group = b2Maybe(def.group, null);
+        const group = def.group ?? null;
         this.m_groupBuffer[index] = group;
         if (group) {
             if (group.m_firstIndex < group.m_lastIndex) {
@@ -999,7 +998,7 @@ export class b2ParticleSystem {
                 group.m_lastIndex = index + 1;
             }
         }
-        this.SetParticleFlags(index, b2Maybe(def.flags, 0));
+        this.SetParticleFlags(index, def.flags ?? 0);
         return index;
     }
 
@@ -1120,7 +1119,7 @@ export class b2ParticleSystem {
         }
 
         const transform = s_transform;
-        transform.SetPositionAngle(b2Maybe(groupDef.position, b2Vec2.ZERO), b2Maybe(groupDef.angle, 0));
+        transform.SetPositionAngle(groupDef.position ?? b2Vec2.ZERO, groupDef.angle ?? 0);
         const firstIndex = this.m_count;
         if (groupDef.shape) {
             this.CreateParticlesWithShapeForGroup(groupDef.shape, groupDef, transform);
@@ -1128,13 +1127,13 @@ export class b2ParticleSystem {
         if (groupDef.shapes) {
             this.CreateParticlesWithShapesForGroup(
                 groupDef.shapes,
-                b2Maybe(groupDef.shapeCount, groupDef.shapes.length),
+                groupDef.shapeCount ?? groupDef.shapes.length,
                 groupDef,
                 transform
             );
         }
         if (groupDef.positionData) {
-            const count = b2Maybe(groupDef.particleCount, groupDef.positionData.length);
+            const count = groupDef.particleCount ?? groupDef.positionData.length;
             for (let i = 0; i < count; i++) {
                 const p = groupDef.positionData[i];
                 this.CreateParticleForGroup(groupDef, transform, p);
@@ -1145,7 +1144,7 @@ export class b2ParticleSystem {
         let group = new b2ParticleGroup(this);
         group.m_firstIndex = firstIndex;
         group.m_lastIndex = lastIndex;
-        group.m_strength = b2Maybe(groupDef.strength, 1);
+        group.m_strength = groupDef.strength ?? 1;
         group.m_userData = groupDef.userData;
         group.m_transform.Copy(transform);
         group.m_prev = null;
@@ -1158,7 +1157,7 @@ export class b2ParticleSystem {
         for (let i = firstIndex; i < lastIndex; i++) {
             this.m_groupBuffer[i] = group;
         }
-        this.SetGroupFlags(group, b2Maybe(groupDef.groupFlags, 0));
+        this.SetGroupFlags(group, groupDef.groupFlags ?? 0);
 
         // Create pairs and triads between particles in the group.
         const filter = new b2ParticleSystem_ConnectionFilter();
@@ -2358,7 +2357,7 @@ export class b2ParticleSystem {
 
     public CreateParticleForGroup(groupDef: b2IParticleGroupDef, xf: b2Transform, p: XY): void {
         const particleDef = new b2ParticleDef();
-        particleDef.flags = b2Maybe(groupDef.flags, 0);
+        particleDef.flags = groupDef.flags ?? 0;
         /// particleDef.position = b2Mul(xf, p);
         b2Transform.MulXV(xf, p, particleDef.position);
         /// particleDef.velocity =
@@ -2366,16 +2365,16 @@ export class b2ParticleSystem {
         ///  b2Cross(groupDef.angularVelocity,
         ///      particleDef.position - groupDef.position);
         b2Vec2.AddVV(
-            b2Maybe(groupDef.linearVelocity, b2Vec2.ZERO),
+            groupDef.linearVelocity ?? b2Vec2.ZERO,
             b2Vec2.CrossSV(
-                b2Maybe(groupDef.angularVelocity, 0),
-                b2Vec2.SubVV(particleDef.position, b2Maybe(groupDef.position, b2Vec2.ZERO), b2Vec2.s_t0),
+                groupDef.angularVelocity ?? 0,
+                b2Vec2.SubVV(particleDef.position, groupDef.position ?? b2Vec2.ZERO, b2Vec2.s_t0),
                 b2Vec2.s_t0
             ),
             particleDef.velocity
         );
-        particleDef.color.Copy(b2Maybe(groupDef.color, b2Color.ZERO));
-        particleDef.lifetime = b2Maybe(groupDef.lifetime, 0);
+        particleDef.color.Copy(groupDef.color ?? b2Color.ZERO);
+        particleDef.lifetime = groupDef.lifetime ?? 0;
         particleDef.userData = groupDef.userData;
         this.CreateParticle(particleDef);
     }
@@ -2384,7 +2383,7 @@ export class b2ParticleSystem {
         const s_edge = b2ParticleSystem.CreateParticlesStrokeShapeForGroup_s_edge;
         const s_d = b2ParticleSystem.CreateParticlesStrokeShapeForGroup_s_d;
         const s_p = b2ParticleSystem.CreateParticlesStrokeShapeForGroup_s_p;
-        let stride = b2Maybe(groupDef.stride, 0);
+        let stride = groupDef.stride ?? 0;
         if (stride === 0) {
             stride = this.GetParticleStride();
         }
@@ -2421,7 +2420,7 @@ export class b2ParticleSystem {
     public CreateParticlesFillShapeForGroup(shape: b2Shape, groupDef: b2IParticleGroupDef, xf: b2Transform): void {
         const s_aabb = b2ParticleSystem.CreateParticlesFillShapeForGroup_s_aabb;
         const s_p = b2ParticleSystem.CreateParticlesFillShapeForGroup_s_p;
-        let stride = b2Maybe(groupDef.stride, 0);
+        let stride = groupDef.stride ?? 0;
         if (stride === 0) {
             stride = this.GetParticleStride();
         }

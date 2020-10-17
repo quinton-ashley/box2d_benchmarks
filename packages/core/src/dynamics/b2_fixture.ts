@@ -17,7 +17,6 @@
  */
 
 // DEBUG: import { b2Assert } from "../common/b2_settings";
-import { b2Maybe } from "../common/b2_settings";
 import { b2Vec2, b2Transform, XY } from "../common/b2_math";
 import { b2AABB, b2RayCastInput, b2RayCastOutput } from "../collision/b2_collision";
 import { b2TreeNode } from "../collision/b2_dynamic_tree";
@@ -204,12 +203,12 @@ export class b2Fixture {
     constructor(body: b2Body, def: b2IFixtureDef) {
         this.m_body = body;
         this.m_shape = def.shape.Clone();
-        this.m_userData = b2Maybe(def.userData, null);
-        this.m_friction = b2Maybe(def.friction, 0.2);
-        this.m_restitution = b2Maybe(def.restitution, 0);
-        this.m_filter.Copy(b2Maybe(def.filter, b2Filter.DEFAULT));
-        this.m_isSensor = b2Maybe(def.isSensor, false);
-        this.m_density = b2Maybe(def.density, 0);
+        this.m_userData = def.userData ?? null;
+        this.m_friction = def.friction ?? 0.2;
+        this.m_restitution = def.restitution ?? 0;
+        this.m_filter.Copy(def.filter ?? b2Filter.DEFAULT);
+        this.m_isSensor = def.isSensor ?? false;
+        this.m_density = def.density ?? 0;
     }
 
     public Reset(): void {

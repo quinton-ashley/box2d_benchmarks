@@ -1,5 +1,5 @@
 // DEBUG: import { b2Assert } from "../common/b2_settings";
-import { b2_epsilon, b2_linearSlop, b2_maxLinearCorrection, b2MakeNumberArray, b2Maybe } from "../common/b2_settings";
+import { b2_epsilon, b2_linearSlop, b2_maxLinearCorrection, b2MakeNumberArray } from "../common/b2_settings";
 import { b2Vec2, XY } from "../common/b2_math";
 import { b2Joint, b2JointDef, b2JointType, b2IJointDef } from "./b2_joint";
 import { b2DistanceJoint, b2DistanceJointDef } from "./b2_distance_joint";
@@ -67,8 +67,8 @@ export class b2AreaJoint extends b2Joint {
         // DEBUG: b2Assert(def.bodies.length >= 3, "You cannot create an area joint with less than three bodies.");
 
         this.m_bodies = def.bodies;
-        this.m_stiffness = b2Maybe(def.stiffness, 0);
-        this.m_damping = b2Maybe(def.damping, 0);
+        this.m_stiffness = def.stiffness ?? 0;
+        this.m_damping = def.damping ?? 0;
 
         this.m_targetLengths = b2MakeNumberArray(def.bodies.length);
         this.m_normals = b2Vec2.MakeArray(def.bodies.length);

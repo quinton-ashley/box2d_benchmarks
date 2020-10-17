@@ -16,7 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import { b2_linearSlop, b2_angularSlop, b2_maxAngularCorrection, b2Maybe } from "../common/b2_settings";
+import { b2_linearSlop, b2_angularSlop, b2_maxAngularCorrection } from "../common/b2_settings";
 import { b2Clamp, b2Vec2, b2Mat22, b2Rot, XY } from "../common/b2_math";
 import { b2Body } from "./b2_body";
 import { b2Joint, b2JointDef, b2JointType, b2IJointDef } from "./b2_joint";
@@ -150,19 +150,19 @@ export class b2RevoluteJoint extends b2Joint {
     constructor(def: b2IRevoluteJointDef) {
         super(def);
 
-        this.m_localAnchorA.Copy(b2Maybe(def.localAnchorA, b2Vec2.ZERO));
-        this.m_localAnchorB.Copy(b2Maybe(def.localAnchorB, b2Vec2.ZERO));
-        this.m_referenceAngle = b2Maybe(def.referenceAngle, 0);
+        this.m_localAnchorA.Copy(def.localAnchorA ?? b2Vec2.ZERO);
+        this.m_localAnchorB.Copy(def.localAnchorB ?? b2Vec2.ZERO);
+        this.m_referenceAngle = def.referenceAngle ?? 0;
 
         this.m_impulse.SetZero();
         this.m_motorImpulse = 0;
 
-        this.m_lowerAngle = b2Maybe(def.lowerAngle, 0);
-        this.m_upperAngle = b2Maybe(def.upperAngle, 0);
-        this.m_maxMotorTorque = b2Maybe(def.maxMotorTorque, 0);
-        this.m_motorSpeed = b2Maybe(def.motorSpeed, 0);
-        this.m_enableLimit = b2Maybe(def.enableLimit, false);
-        this.m_enableMotor = b2Maybe(def.enableMotor, false);
+        this.m_lowerAngle = def.lowerAngle ?? 0;
+        this.m_upperAngle = def.upperAngle ?? 0;
+        this.m_maxMotorTorque = def.maxMotorTorque ?? 0;
+        this.m_motorSpeed = def.motorSpeed ?? 0;
+        this.m_enableLimit = def.enableLimit ?? false;
+        this.m_enableMotor = def.enableMotor ?? false;
     }
 
     private static InitVelocityConstraints_s_P = new b2Vec2();

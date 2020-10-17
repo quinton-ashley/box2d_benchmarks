@@ -17,7 +17,6 @@
  */
 
 // DEBUG: import { b2Assert } from "../common/b2_settings";
-import { b2Maybe } from "../common/b2_settings";
 import { b2Vec2, b2Rot, b2Transform, b2Sweep, XY } from "../common/b2_math";
 import { b2Shape, b2MassData } from "../collision/b2_shape";
 import type { b2ContactEdge } from "./b2_contact";
@@ -217,20 +216,20 @@ export class b2Body {
     public m_userData: any = null;
 
     constructor(bd: b2IBodyDef, world: b2World) {
-        this.m_bulletFlag = b2Maybe(bd.bullet, false);
-        this.m_fixedRotationFlag = b2Maybe(bd.fixedRotation, false);
-        this.m_autoSleepFlag = b2Maybe(bd.allowSleep, true);
-        // this.m_awakeFlag = b2Maybe(bd.awake, true);
-        if (b2Maybe(bd.awake, false) && b2Maybe(bd.type, b2BodyType.b2_staticBody) !== b2BodyType.b2_staticBody) {
+        this.m_bulletFlag = bd.bullet ?? false;
+        this.m_fixedRotationFlag = bd.fixedRotation ?? false;
+        this.m_autoSleepFlag = bd.allowSleep ?? true;
+        // this.m_awakeFlag = bd.awake ?? true;
+        if ((bd.awake ?? false) && (bd.type ?? b2BodyType.b2_staticBody) !== b2BodyType.b2_staticBody) {
             this.m_awakeFlag = true;
         }
-        this.m_enabledFlag = b2Maybe(bd.enabled, true);
+        this.m_enabledFlag = bd.enabled ?? true;
 
         this.m_world = world;
 
-        this.m_xf.p.Copy(b2Maybe(bd.position, b2Vec2.ZERO));
+        this.m_xf.p.Copy(bd.position ?? b2Vec2.ZERO);
         // DEBUG: b2Assert(this.m_xf.p.IsValid());
-        this.m_xf.q.SetAngle(b2Maybe(bd.angle, 0));
+        this.m_xf.q.SetAngle(bd.angle ?? 0);
         // DEBUG: b2Assert(Number.isFinite(this.m_xf.q.GetAngle()));
 
         this.m_sweep.localCenter.SetZero();
@@ -239,14 +238,14 @@ export class b2Body {
         this.m_sweep.a0 = this.m_sweep.a = this.m_xf.q.GetAngle();
         this.m_sweep.alpha0 = 0;
 
-        this.m_linearVelocity.Copy(b2Maybe(bd.linearVelocity, b2Vec2.ZERO));
+        this.m_linearVelocity.Copy(bd.linearVelocity ?? b2Vec2.ZERO);
         // DEBUG: b2Assert(this.m_linearVelocity.IsValid());
-        this.m_angularVelocity = b2Maybe(bd.angularVelocity, 0);
+        this.m_angularVelocity = bd.angularVelocity ?? 0;
         // DEBUG: b2Assert(Number.isFinite(this.m_angularVelocity));
 
-        this.m_linearDamping = b2Maybe(bd.linearDamping, 0);
-        this.m_angularDamping = b2Maybe(bd.angularDamping, 0);
-        this.m_gravityScale = b2Maybe(bd.gravityScale, 1);
+        this.m_linearDamping = bd.linearDamping ?? 0;
+        this.m_angularDamping = bd.angularDamping ?? 0;
+        this.m_gravityScale = bd.gravityScale ?? 1;
         // DEBUG: b2Assert(Number.isFinite(this.m_gravityScale) && this.m_gravityScale >= 0);
         // DEBUG: b2Assert(Number.isFinite(this.m_angularDamping) && this.m_angularDamping >= 0);
         // DEBUG: b2Assert(Number.isFinite(this.m_linearDamping) && this.m_linearDamping >= 0);
@@ -256,7 +255,7 @@ export class b2Body {
 
         this.m_sleepTime = 0;
 
-        this.m_type = b2Maybe(bd.type, b2BodyType.b2_staticBody);
+        this.m_type = bd.type ?? b2BodyType.b2_staticBody;
 
         this.m_mass = 0;
         this.m_invMass = 0;

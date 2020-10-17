@@ -17,7 +17,7 @@
  */
 
 // DEBUG: import { b2Assert, b2_epsilon } from "../common/b2_settings";
-import { b2_linearSlop, b2Maybe } from "../common/b2_settings";
+import { b2_linearSlop } from "../common/b2_settings";
 import { b2Vec2, b2Rot, XY } from "../common/b2_math";
 import { b2Body } from "./b2_body";
 import { b2Joint, b2JointDef, b2JointType, b2IJointDef } from "./b2_joint";
@@ -143,18 +143,18 @@ export class b2PulleyJoint extends b2Joint {
     constructor(def: b2IPulleyJointDef) {
         super(def);
 
-        this.m_groundAnchorA.Copy(b2Maybe(def.groundAnchorA, new b2Vec2(-1, 1)));
-        this.m_groundAnchorB.Copy(b2Maybe(def.groundAnchorB, new b2Vec2(1, 0)));
-        this.m_localAnchorA.Copy(b2Maybe(def.localAnchorA, new b2Vec2(-1, 0)));
-        this.m_localAnchorB.Copy(b2Maybe(def.localAnchorB, new b2Vec2(1, 0)));
+        this.m_groundAnchorA.Copy(def.groundAnchorA ?? new b2Vec2(-1, 1));
+        this.m_groundAnchorB.Copy(def.groundAnchorB ?? new b2Vec2(1, 0));
+        this.m_localAnchorA.Copy(def.localAnchorA ?? new b2Vec2(-1, 0));
+        this.m_localAnchorB.Copy(def.localAnchorB ?? new b2Vec2(1, 0));
 
-        this.m_lengthA = b2Maybe(def.lengthA, 0);
-        this.m_lengthB = b2Maybe(def.lengthB, 0);
+        this.m_lengthA = def.lengthA ?? 0;
+        this.m_lengthB = def.lengthB ?? 0;
 
-        // DEBUG: b2Assert(b2Maybe(def.ratio, 1) !== 0);
-        this.m_ratio = b2Maybe(def.ratio, 1);
+        // DEBUG: b2Assert((def.ratio ?? 1) !== 0);
+        this.m_ratio = def.ratio ?? 1;
 
-        this.m_constant = b2Maybe(def.lengthA, 0) + this.m_ratio * b2Maybe(def.lengthB, 0);
+        this.m_constant = (def.lengthA ?? 0) + this.m_ratio * (def.lengthB ?? 0);
 
         this.m_impulse = 0;
     }

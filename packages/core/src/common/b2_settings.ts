@@ -23,10 +23,6 @@ export function b2Assert(condition: boolean, ...args: any[]): void {
     }
 }
 
-export function b2Maybe<T>(value: T | undefined, def: T): T {
-    return value !== undefined ? value : def;
-}
-
 export const b2_maxFloat = 1e37; // FLT_MAX instead of Number.MAX_VALUE;
 export const b2_epsilon = 1e-5; // FLT_EPSILON instead of Number.MIN_VALUE;
 export const b2_epsilon_sq: number = b2_epsilon * b2_epsilon;

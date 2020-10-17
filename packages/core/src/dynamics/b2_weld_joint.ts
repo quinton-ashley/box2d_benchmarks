@@ -16,7 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import { b2_linearSlop, b2_angularSlop, b2Maybe } from "../common/b2_settings";
+import { b2_linearSlop, b2_angularSlop } from "../common/b2_settings";
 import { b2Vec2, b2Vec3, b2Mat33, b2Rot, XY } from "../common/b2_math";
 import { b2Body } from "./b2_body";
 import { b2Joint, b2JointDef, b2JointType, b2IJointDef } from "./b2_joint";
@@ -115,12 +115,12 @@ export class b2WeldJoint extends b2Joint {
     constructor(def: b2IWeldJointDef) {
         super(def);
 
-        this.m_stiffness = b2Maybe(def.stiffness, 0);
-        this.m_damping = b2Maybe(def.damping, 0);
+        this.m_stiffness = def.stiffness ?? 0;
+        this.m_damping = def.damping ?? 0;
 
-        this.m_localAnchorA.Copy(b2Maybe(def.localAnchorA, b2Vec2.ZERO));
-        this.m_localAnchorB.Copy(b2Maybe(def.localAnchorB, b2Vec2.ZERO));
-        this.m_referenceAngle = b2Maybe(def.referenceAngle, 0);
+        this.m_localAnchorA.Copy(def.localAnchorA ?? b2Vec2.ZERO);
+        this.m_localAnchorB.Copy(def.localAnchorB ?? b2Vec2.ZERO);
+        this.m_referenceAngle = def.referenceAngle ?? 0;
         this.m_impulse.SetZero();
     }
 

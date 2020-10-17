@@ -16,7 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import { b2_linearSlop, b2_angularSlop, b2Maybe } from "../common/b2_settings";
+import { b2_linearSlop, b2_angularSlop } from "../common/b2_settings";
 import { b2Clamp, b2Vec2, b2Mat22, b2Vec3, b2Mat33, b2Rot, XY } from "../common/b2_math";
 import { b2Body } from "./b2_body";
 import { b2Joint, b2JointDef, b2JointType, b2IJointDef } from "./b2_joint";
@@ -215,18 +215,18 @@ export class b2PrismaticJoint extends b2Joint {
     constructor(def: b2IPrismaticJointDef) {
         super(def);
 
-        this.m_localAnchorA.Copy(b2Maybe(def.localAnchorA, b2Vec2.ZERO));
-        this.m_localAnchorB.Copy(b2Maybe(def.localAnchorB, b2Vec2.ZERO));
-        this.m_localXAxisA.Copy(b2Maybe(def.localAxisA, new b2Vec2(1, 0))).SelfNormalize();
+        this.m_localAnchorA.Copy(def.localAnchorA ?? b2Vec2.ZERO);
+        this.m_localAnchorB.Copy(def.localAnchorB ?? b2Vec2.ZERO);
+        this.m_localXAxisA.Copy(def.localAxisA ?? new b2Vec2(1, 0)).SelfNormalize();
         b2Vec2.CrossOneV(this.m_localXAxisA, this.m_localYAxisA);
-        this.m_referenceAngle = b2Maybe(def.referenceAngle, 0);
-        this.m_lowerTranslation = b2Maybe(def.lowerTranslation, 0);
-        this.m_upperTranslation = b2Maybe(def.upperTranslation, 0);
+        this.m_referenceAngle = def.referenceAngle ?? 0;
+        this.m_lowerTranslation = def.lowerTranslation ?? 0;
+        this.m_upperTranslation = def.upperTranslation ?? 0;
         // b2Assert(this.m_lowerTranslation <= this.m_upperTranslation);
-        this.m_maxMotorForce = b2Maybe(def.maxMotorForce, 0);
-        this.m_motorSpeed = b2Maybe(def.motorSpeed, 0);
-        this.m_enableLimit = b2Maybe(def.enableLimit, false);
-        this.m_enableMotor = b2Maybe(def.enableMotor, false);
+        this.m_maxMotorForce = def.maxMotorForce ?? 0;
+        this.m_motorSpeed = def.motorSpeed ?? 0;
+        this.m_enableLimit = def.enableLimit ?? false;
+        this.m_enableMotor = def.enableMotor ?? false;
     }
 
     private static InitVelocityConstraints_s_d = new b2Vec2();
