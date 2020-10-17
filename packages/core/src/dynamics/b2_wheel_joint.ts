@@ -18,7 +18,7 @@
 
 // DEBUG: import { b2Assert } from "../common/b2_settings";
 import { b2_linearSlop, b2Maybe } from "../common/b2_settings";
-import { b2Abs, b2Clamp, b2Vec2, b2Rot, XY, b2Max, b2Min } from "../common/b2_math";
+import { b2Clamp, b2Vec2, b2Rot, XY } from "../common/b2_math";
 import { b2Joint, b2JointDef, b2JointType, b2IJointDef } from "./b2_joint";
 import { b2SolverData } from "./b2_time_step";
 import { b2Body } from "./b2_body";
@@ -445,9 +445,9 @@ export class b2WheelJoint extends b2Joint {
                 const C: number = this.m_translation - this.m_lowerTranslation;
                 const Cdot: number =
                     b2Vec2.DotVV(this.m_ax, b2Vec2.SubVV(vB, vA, b2Vec2.s_t0)) + this.m_sBx * wB - this.m_sAx * wA;
-                let impulse: number = -this.m_axialMass * (Cdot + b2Max(C, 0.0) * data.step.inv_dt);
+                let impulse: number = -this.m_axialMass * (Cdot + Math.min(C, 0.0) * data.step.inv_dt);
                 const oldImpulse: number = this.m_lowerImpulse;
-                this.m_lowerImpulse = b2Max(this.m_lowerImpulse + impulse, 0.0);
+                this.m_lowerImpulse = Math.min(this.m_lowerImpulse + impulse, 0.0);
                 impulse = this.m_lowerImpulse - oldImpulse;
 
                 // b2Vec2 P = impulse * this.m_ax;
@@ -470,9 +470,9 @@ export class b2WheelJoint extends b2Joint {
                 const C: number = this.m_upperTranslation - this.m_translation;
                 const Cdot: number =
                     b2Vec2.DotVV(this.m_ax, b2Vec2.SubVV(vA, vB, b2Vec2.s_t0)) + this.m_sAx * wA - this.m_sBx * wB;
-                let impulse: number = -this.m_axialMass * (Cdot + b2Max(C, 0.0) * data.step.inv_dt);
+                let impulse: number = -this.m_axialMass * (Cdot + Math.min(C, 0.0) * data.step.inv_dt);
                 const oldImpulse: number = this.m_upperImpulse;
-                this.m_upperImpulse = b2Max(this.m_upperImpulse + impulse, 0.0);
+                this.m_upperImpulse = Math.min(this.m_upperImpulse + impulse, 0.0);
                 impulse = this.m_upperImpulse - oldImpulse;
 
                 // b2Vec2 P = impulse * this.m_ax;
@@ -605,12 +605,12 @@ export class b2WheelJoint extends b2Joint {
 
             let C = 0.0;
             const translation: number = b2Vec2.DotVV(ax, d);
-            if (b2Abs(this.m_upperTranslation - this.m_lowerTranslation) < 2.0 * b2_linearSlop) {
+            if (Math.abs(this.m_upperTranslation - this.m_lowerTranslation) < 2.0 * b2_linearSlop) {
                 C = translation;
             } else if (translation <= this.m_lowerTranslation) {
-                C = b2Min(translation - this.m_lowerTranslation, 0.0);
+                C = Math.min(translation - this.m_lowerTranslation, 0.0);
             } else if (translation >= this.m_upperTranslation) {
-                C = b2Max(translation - this.m_upperTranslation, 0.0);
+                C = Math.min(translation - this.m_upperTranslation, 0.0);
             }
 
             if (C !== 0.0) {
@@ -633,7 +633,7 @@ export class b2WheelJoint extends b2Joint {
                 // aB += m_invIB * LB;
                 aB += this.m_invIB * LB;
 
-                linearError = b2Abs(C);
+                linearError = Math.abs(C);
             }
         }
 
@@ -696,7 +696,7 @@ export class b2WheelJoint extends b2Joint {
             cB.SelfMulAdd(this.m_invMassB, P);
             aB += this.m_invIB * LB;
 
-            linearError = b2Max(linearError, b2Abs(C));
+            linearError = Math.min(linearError, Math.abs(C));
         }
 
         // data.positions[this.m_indexA].c = cA;

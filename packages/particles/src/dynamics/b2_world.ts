@@ -19,7 +19,6 @@
 import {
     b2World,
     b2_maxFloat,
-    b2Min,
     b2Transform,
     b2Body,
     b2_augment,
@@ -53,7 +52,7 @@ b2_augment(b2World, {
 function GetSmallestRadius(world: b2World): number {
     let smallestRadius = b2_maxFloat;
     for (let system = world.GetParticleSystemList(); system !== null; system = system.m_next) {
-        smallestRadius = b2Min(smallestRadius, system.GetRadius());
+        smallestRadius = Math.min(smallestRadius, system.GetRadius());
     }
     return smallestRadius;
 }

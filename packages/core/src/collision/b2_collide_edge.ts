@@ -1,6 +1,6 @@
 // DEBUG: import { b2Assert } from "../common/b2_settings";
 import { b2_maxManifoldPoints } from "../common/b2_settings";
-import { b2Min, b2Vec2, b2Rot, b2Transform } from "../common/b2_math";
+import { b2Vec2, b2Rot, b2Transform } from "../common/b2_math";
 import {
     b2ContactFeatureType,
     b2ContactID,
@@ -273,8 +273,8 @@ function b2ComputePolygonSeparation(
         const s1: number = b2Vec2.DotVV(n, b2Vec2.SubVV(polygonB.vertices[i], v1, b2Vec2.s_t0));
         // float s2 = b2Dot(n, polygonB.vertices[i] - v2);
         const s2: number = b2Vec2.DotVV(n, b2Vec2.SubVV(polygonB.vertices[i], v2, b2Vec2.s_t0));
-        // float s = b2Min(s1, s2);
-        const s: number = b2Min(s1, s2);
+        // float s = Math.min(s1, s2);
+        const s: number = Math.min(s1, s2);
 
         if (s > axis.separation) {
             axis.type = b2EPAxisType.e_edgeB;

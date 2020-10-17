@@ -20,7 +20,6 @@ import {
     b2PolygonShape,
     b2Transform,
     b2Vec2,
-    b2_pi,
     b2Manifold,
     b2CollidePolygons,
     b2WorldManifold,
@@ -81,10 +80,10 @@ export class PolyCollision extends Test {
                 this.move.y = down ? 0.1 : 0;
             }),
             hotKey([], "q", "Turn Left", (down) => {
-                this.move.angle = down ? 0.02 * b2_pi : 0;
+                this.move.angle = down ? 0.02 * Math.PI : 0;
             }),
             hotKey([], "e", "Turn Right", (down) => {
-                this.move.angle = down ? -0.02 * b2_pi : 0;
+                this.move.angle = down ? -0.02 * Math.PI : 0;
             }),
         ];
     }

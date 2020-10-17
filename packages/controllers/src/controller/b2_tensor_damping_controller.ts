@@ -16,7 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import { b2TimeStep, b2_epsilon, b2Vec2, b2Mat22, b2Max } from "@box2d/core";
+import { b2TimeStep, b2_epsilon, b2Vec2, b2Mat22 } from "@box2d/core";
 
 import { b2Controller } from "./b2_controller";
 
@@ -77,7 +77,7 @@ export class b2TensorDampingController extends b2Controller {
         this.T.ey.x = 0;
         this.T.ey.y = -yDamping;
         if (xDamping > 0 || yDamping > 0) {
-            this.maxTimestep = 1 / b2Max(xDamping, yDamping);
+            this.maxTimestep = 1 / Math.min(xDamping, yDamping);
         } else {
             this.maxTimestep = 0;
         }

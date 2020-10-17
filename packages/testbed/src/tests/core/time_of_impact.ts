@@ -57,13 +57,13 @@ export class TimeOfImpact extends Test {
 
         const sweepB = new b2Sweep();
         sweepB.c0.Set(20.0, 40.0); // (53.474274, -50.252514);
-        sweepB.a0 = 0.1; // 513.36676; // - 162.0 * b2_pi;
+        sweepB.a0 = 0.1; // 513.36676; // - 162.0 * Math.PI;
         sweepB.c.Set(-20.0, 0.0); // (54.595478, -51.083473);
-        sweepB.a = 3.1; // 513.62781; //  - 162.0 * b2_pi;
+        sweepB.a = 3.1; // 513.62781; //  - 162.0 * Math.PI;
         sweepB.localCenter.SetZero();
 
-        // sweepB.a0 -= 300.0 * b2_pi;
-        // sweepB.a -= 300.0 * b2_pi;
+        // sweepB.a0 -= 300.0 * Math.PI;
+        // sweepB.a -= 300.0 * Math.PI;
 
         const input = new b2TOIInput();
         input.proxyA.SetShape(this.m_shapeA, 0);

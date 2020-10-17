@@ -31,7 +31,6 @@ import {
     b2Contact,
     b2Manifold,
     b2ContactImpulse,
-    b2Max,
     b2World,
     XY,
 } from "@box2d/core";
@@ -852,7 +851,7 @@ export class Fracker extends Test {
             Fracker.LerpColor(
                 FrackerSettings.k_playerColor,
                 FrackerSettings.k_playerFrackColor,
-                b2Max(this.m_frackingFluidChargeTime / FrackerSettings.k_frackingFluidChargeTime, 0.0)
+                Math.min(this.m_frackingFluidChargeTime / FrackerSettings.k_frackingFluidChargeTime, 0.0)
             ),
             true
         );

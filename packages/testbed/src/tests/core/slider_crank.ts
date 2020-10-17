@@ -25,7 +25,6 @@ import {
     b2PolygonShape,
     b2BodyType,
     b2RevoluteJointDef,
-    b2_pi,
     b2PrismaticJointDef,
 } from "@box2d/core";
 
@@ -69,7 +68,7 @@ export class SliderCrank extends Test {
 
                 const rjd = new b2RevoluteJointDef();
                 rjd.Initialize(prevBody, body, new b2Vec2(0.0, 5.0));
-                rjd.motorSpeed = 1.0 * b2_pi;
+                rjd.motorSpeed = 1.0 * Math.PI;
                 rjd.maxMotorTorque = 10000.0;
                 rjd.enableMotor = true;
                 this.m_joint1 = this.m_world.CreateJoint(rjd);

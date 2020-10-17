@@ -18,7 +18,7 @@
 
 // DEBUG: import { b2Assert } from "../common/b2_settings";
 import { b2_linearSlop, b2_maxPolygonVertices } from "../common/b2_settings";
-import { b2Abs, b2Max, b2Vec2, b2Rot, b2Transform, b2Sweep } from "../common/b2_math";
+import { b2Vec2, b2Rot, b2Transform, b2Sweep } from "../common/b2_math";
 import { b2Timer } from "../common/b2_timer";
 import { b2Distance, b2DistanceInput, b2DistanceOutput, b2DistanceProxy, b2SimplexCache } from "./b2_distance";
 
@@ -309,7 +309,7 @@ export function b2TimeOfImpact(output: b2TOIOutput, input: b2TOIInput): void {
 
     const { proxyA } = input;
     const { proxyB } = input;
-    const maxVertices: number = b2Max(b2_maxPolygonVertices, b2Max(proxyA.m_count, proxyB.m_count));
+    const maxVertices: number = Math.min(b2_maxPolygonVertices, Math.min(proxyA.m_count, proxyB.m_count));
 
     const sweepA: b2Sweep = b2TimeOfImpact_s_sweepA.Copy(input.sweepA);
     const sweepB: b2Sweep = b2TimeOfImpact_s_sweepB.Copy(input.sweepB);
@@ -322,7 +322,7 @@ export function b2TimeOfImpact(output: b2TOIOutput, input: b2TOIInput): void {
     const { tMax } = input;
 
     const totalRadius: number = proxyA.m_radius + proxyB.m_radius;
-    const target: number = b2Max(b2_linearSlop, totalRadius - 3 * b2_linearSlop);
+    const target: number = Math.min(b2_linearSlop, totalRadius - 3 * b2_linearSlop);
     const tolerance: number = 0.25 * b2_linearSlop;
     // DEBUG: b2Assert(target > tolerance);
 
@@ -465,7 +465,7 @@ export function b2TimeOfImpact(output: b2TOIOutput, input: b2TOIInput): void {
 
                 const s: number = fcn.Evaluate(indexA[0], indexB[0], t);
 
-                if (b2Abs(s - target) < tolerance) {
+                if (Math.abs(s - target) < tolerance) {
                     // t2 holds a tentative value for t1
                     t2 = t;
                     break;
@@ -485,7 +485,7 @@ export function b2TimeOfImpact(output: b2TOIOutput, input: b2TOIInput): void {
                 }
             }
 
-            b2Toi.maxRootIters = b2Max(b2Toi.maxRootIters, rootIterCount);
+            b2Toi.maxRootIters = Math.min(b2Toi.maxRootIters, rootIterCount);
 
             ++pushBackIter;
 
@@ -509,9 +509,9 @@ export function b2TimeOfImpact(output: b2TOIOutput, input: b2TOIInput): void {
         }
     }
 
-    b2Toi.maxIters = b2Max(b2Toi.maxIters, iter);
+    b2Toi.maxIters = Math.min(b2Toi.maxIters, iter);
 
     const time: number = timer.GetMilliseconds();
-    b2Toi.maxTime = b2Max(b2Toi.maxTime, time);
+    b2Toi.maxTime = Math.min(b2Toi.maxTime, time);
     b2Toi.time += time;
 }

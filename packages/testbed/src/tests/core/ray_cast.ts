@@ -25,12 +25,8 @@ import {
     b2CircleShape,
     b2EdgeShape,
     b2BodyDef,
-    b2Sqrt,
     b2RandomRange,
-    b2_pi,
     b2FixtureDef,
-    b2Cos,
-    b2Sin,
     b2Color,
 } from "@box2d/core";
 
@@ -203,8 +199,8 @@ export class RayCast extends Test {
 
         {
             const w = 1.0;
-            const b = w / (2.0 + b2Sqrt(2.0));
-            const s = b2Sqrt(2.0) * b;
+            const b = w / (2.0 + Math.sqrt(2.0));
+            const s = Math.sqrt(2.0) * b;
 
             const vertices: b2Vec2[] = [
                 /* 8 */
@@ -247,7 +243,7 @@ export class RayCast extends Test {
         const x: number = b2RandomRange(-10.0, 10.0);
         const y: number = b2RandomRange(0.0, 20.0);
         bd.position.Set(x, y);
-        bd.angle = b2RandomRange(-b2_pi, b2_pi);
+        bd.angle = b2RandomRange(-Math.PI, Math.PI);
 
         bd.userData = {};
         bd.userData.index = index;
@@ -330,7 +326,7 @@ export class RayCast extends Test {
 
         const L = 11.0;
         const point1 = new b2Vec2(0.0, 10.0);
-        const d = new b2Vec2(L * b2Cos(this.m_angle), L * b2Sin(this.m_angle));
+        const d = new b2Vec2(L * Math.cos(this.m_angle), L * Math.sin(this.m_angle));
         const point2 = b2Vec2.AddVV(point1, d, new b2Vec2());
 
         if (this.m_mode === RayCastMode.e_closest) {
@@ -381,7 +377,7 @@ export class RayCast extends Test {
         }
 
         if (advanceRay) {
-            this.m_angle += (0.25 * b2_pi) / 180.0;
+            this.m_angle += (0.25 * Math.PI) / 180.0;
         }
 
         /*

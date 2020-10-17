@@ -21,13 +21,10 @@ import {
     b2BodyDef,
     b2EdgeShape,
     b2Vec2,
-    b2_pi,
     b2ChainShape,
     b2PolygonShape,
     b2BodyType,
     b2FixtureDef,
-    b2Cos,
-    b2Sin,
     b2CircleShape,
     XY,
 } from "@box2d/core";
@@ -70,7 +67,7 @@ export class CharacterCollision extends Test {
         // Chain shape
         {
             const bd = new b2BodyDef();
-            bd.angle = 0.25 * b2_pi;
+            bd.angle = 0.25 * Math.PI;
             const ground = this.m_world.CreateBody(bd);
 
             /* b2Vec2[] */
@@ -191,10 +188,10 @@ export class CharacterCollision extends Test {
             const body = this.m_world.CreateBody(bd);
 
             let angle = 0.0;
-            const delta = b2_pi / 3.0;
+            const delta = Math.PI / 3.0;
             const vertices = b2Vec2.MakeArray(6);
             for (let i = 0; i < 6; ++i) {
-                vertices[i].Set(0.5 * b2Cos(angle), 0.5 * b2Sin(angle));
+                vertices[i].Set(0.5 * Math.cos(angle), 0.5 * Math.sin(angle));
                 angle += delta;
             }
 

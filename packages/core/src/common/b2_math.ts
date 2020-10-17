@@ -17,20 +17,11 @@
  */
 
 // DEBUG: import { b2Assert } from "./b2_settings";
-import { b2_pi, b2_epsilon, b2MakeArray } from "./b2_settings";
+import { b2_epsilon, b2MakeArray } from "./b2_settings";
 
-export const b2_pi_over_180: number = b2_pi / 180;
-export const b2_180_over_pi: number = 180 / b2_pi;
-export const b2_two_pi: number = 2 * b2_pi;
-
-export const b2Abs = Math.abs;
-
-export function b2Min(a: number, b: number): number {
-    return a < b ? a : b;
-}
-export function b2Max(a: number, b: number): number {
-    return a > b ? a : b;
-}
+export const b2_pi_over_180: number = Math.PI / 180;
+export const b2_180_over_pi: number = 180 / Math.PI;
+export const b2_two_pi: number = 2 * Math.PI;
 
 export function b2Clamp(a: number, lo: number, hi: number): number {
     // eslint-disable-next-line no-nested-ternary
@@ -45,23 +36,10 @@ export function b2Swap<T>(a: T[], b: T[]): void {
     b[0] = tmp;
 }
 
-/// This function is used to ensure that a floating point number is
-/// not a NaN or infinity.
-export const b2IsValid = Number.isFinite;
-
-export function b2Sq(n: number): number {
-    return n * n;
-}
-
 /// This is a approximate yet fast inverse square-root.
 export function b2InvSqrt(n: number): number {
     return 1 / Math.sqrt(n);
 }
-
-export const b2Sqrt = Math.sqrt;
-
-// eslint-disable-next-line no-restricted-properties
-export const b2Pow = Math.pow;
 
 export function b2DegToRad(degrees: number): number {
     return degrees * b2_pi_over_180;
@@ -70,12 +48,6 @@ export function b2DegToRad(degrees: number): number {
 export function b2RadToDeg(radians: number): number {
     return radians * b2_180_over_pi;
 }
-
-export const b2Cos = Math.cos;
-export const b2Sin = Math.sin;
-export const b2Acos = Math.acos;
-export const b2Asin = Math.asin;
-export const b2Atan2 = Math.atan2;
 
 export function b2NextPowerOfTwo(x: number): number {
     x |= (x >> 1) & 0x7fffffff;
@@ -267,20 +239,20 @@ export class b2Vec2 implements XY {
     }
 
     public SelfMinV(v: XY): this {
-        this.x = b2Min(this.x, v.x);
-        this.y = b2Min(this.y, v.y);
+        this.x = Math.min(this.x, v.x);
+        this.y = Math.min(this.y, v.y);
         return this;
     }
 
     public SelfMaxV(v: XY): this {
-        this.x = b2Max(this.x, v.x);
-        this.y = b2Max(this.y, v.y);
+        this.x = Math.min(this.x, v.x);
+        this.y = Math.min(this.y, v.y);
         return this;
     }
 
     public SelfAbs(): this {
-        this.x = b2Abs(this.x);
-        this.y = b2Abs(this.y);
+        this.x = Math.abs(this.x);
+        this.y = Math.abs(this.y);
         return this;
     }
 
@@ -302,20 +274,20 @@ export class b2Vec2 implements XY {
     }
 
     public static AbsV<T extends XY>(v: XY, out: T): T {
-        out.x = b2Abs(v.x);
-        out.y = b2Abs(v.y);
+        out.x = Math.abs(v.x);
+        out.y = Math.abs(v.y);
         return out;
     }
 
     public static MinV<T extends XY>(a: XY, b: XY, out: T): T {
-        out.x = b2Min(a.x, b.x);
-        out.y = b2Min(a.y, b.y);
+        out.x = Math.min(a.x, b.x);
+        out.y = Math.min(a.y, b.y);
         return out;
     }
 
     public static MaxV<T extends XY>(a: XY, b: XY, out: T): T {
-        out.x = b2Max(a.x, b.x);
-        out.y = b2Max(a.y, b.y);
+        out.x = Math.min(a.x, b.x);
+        out.y = Math.min(a.y, b.y);
         return out;
     }
 
@@ -680,10 +652,10 @@ export class b2Mat22 {
     public static AbsM(M: b2Mat22, out: b2Mat22): b2Mat22 {
         const M_ex: b2Vec2 = M.ex;
         const M_ey: b2Vec2 = M.ey;
-        out.ex.x = b2Abs(M_ex.x);
-        out.ex.y = b2Abs(M_ex.y);
-        out.ey.x = b2Abs(M_ey.x);
-        out.ey.y = b2Abs(M_ey.y);
+        out.ex.x = Math.abs(M_ex.x);
+        out.ex.y = Math.abs(M_ex.y);
+        out.ey.x = Math.abs(M_ey.x);
+        out.ey.y = Math.abs(M_ey.y);
         return out;
     }
 

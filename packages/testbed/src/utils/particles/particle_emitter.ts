@@ -16,7 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import { b2Vec2, b2Color, b2_pi } from "@box2d/core";
+import { b2Vec2, b2Color } from "@box2d/core";
 import {
     b2ParticleSystem,
     b2ParticleFlag,
@@ -286,7 +286,7 @@ export class RadialEmitter {
             this.m_emitRemainder -= 1.0;
 
             // Randomly pick a position within the emitter's radius.
-            const angle = RadialEmitter.Random() * 2.0 * b2_pi;
+            const angle = RadialEmitter.Random() * 2.0 * Math.PI;
             // Distance from the center of the circle.
             const distance = RadialEmitter.Random();
             const positionOnUnitCircle = new b2Vec2(Math.sin(angle), Math.cos(angle));

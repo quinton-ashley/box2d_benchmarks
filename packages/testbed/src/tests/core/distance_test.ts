@@ -20,7 +20,6 @@ import {
     b2Vec2,
     b2Transform,
     b2PolygonShape,
-    b2_pi,
     b2DistanceInput,
     b2SimplexCache,
     b2DistanceOutput,
@@ -78,8 +77,8 @@ export class DistanceTest extends Test {
             hotKeyPress([], "d", "Move Right", () => this.Adjust(0.1, 0, 0)),
             hotKeyPress([], "s", "Move Down", () => this.Adjust(0, -0.1, 0)),
             hotKeyPress([], "w", "Move Up", () => this.Adjust(0, 0.1, 0)),
-            hotKeyPress([], "q", "Turn Left", () => this.Adjust(0, 0, 0.1 * b2_pi)),
-            hotKeyPress([], "e", "Turn Right", () => this.Adjust(0, 0, -0.1 * b2_pi)),
+            hotKeyPress([], "q", "Turn Left", () => this.Adjust(0, 0, 0.1 * Math.PI)),
+            hotKeyPress([], "e", "Turn Right", () => this.Adjust(0, 0, -0.1 * Math.PI)),
         ];
     }
 

@@ -23,8 +23,6 @@ import {
     b2ChainShape,
     b2FixtureDef,
     b2PolygonShape,
-    b2Min,
-    b2Max,
     b2Clamp,
     b2Vec2_zero,
     XY,
@@ -200,11 +198,11 @@ export class Maxwell extends Test {
         return [
             hotKeyPress([], "a", "Toggle Barrier", () => this.ToggleBarrier()),
             hotKeyPress([], "=", "Increase the Particle Density", () => {
-                this.m_density = b2Min(this.m_density * Maxwell.k_densityStep, Maxwell.k_densityMax);
+                this.m_density = Math.min(this.m_density * Maxwell.k_densityStep, Maxwell.k_densityMax);
                 this.Reset();
             }),
             hotKeyPress([], "-", "Reduce the Particle Density", () => {
-                this.m_density = b2Max(this.m_density / Maxwell.k_densityStep, Maxwell.k_densityMin);
+                this.m_density = Math.min(this.m_density / Maxwell.k_densityStep, Maxwell.k_densityMin);
                 this.Reset();
             }),
             hotKeyPress([], ".", "Move the location of the divider up", () =>
@@ -214,11 +212,11 @@ export class Maxwell extends Test {
                 this.MoveDivider(this.m_position - Maxwell.k_barrierMovementIncrement)
             ),
             hotKeyPress([], ";", "Reduce the temperature (velocity of particles)", () => {
-                this.m_temperature = b2Max(this.m_temperature - Maxwell.k_temperatureStep, Maxwell.k_temperatureMin);
+                this.m_temperature = Math.min(this.m_temperature - Maxwell.k_temperatureStep, Maxwell.k_temperatureMin);
                 this.Reset();
             }),
             hotKeyPress([], "'", "Increase the temperature (velocity of particles)", () => {
-                this.m_temperature = b2Min(this.m_temperature + Maxwell.k_temperatureStep, Maxwell.k_temperatureMax);
+                this.m_temperature = Math.min(this.m_temperature + Maxwell.k_temperatureStep, Maxwell.k_temperatureMax);
                 this.Reset();
             }),
         ];

@@ -23,7 +23,6 @@ import {
     b2Vec2,
     b2PolygonShape,
     b2BodyType,
-    b2_pi,
     b2PrismaticJointDef,
 } from "@box2d/core";
 
@@ -55,7 +54,7 @@ export class Prismatic extends Test {
             const bd = new b2BodyDef();
             bd.type = b2BodyType.b2_dynamicBody;
             bd.position.Set(-10.0, 10.0);
-            bd.angle = 0.5 * b2_pi;
+            bd.angle = 0.5 * Math.PI;
             bd.allowSleep = false;
             const body = this.m_world.CreateBody(bd);
             body.CreateFixture(shape, 5.0);

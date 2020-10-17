@@ -26,7 +26,6 @@ import {
     b2BodyType,
     b2PolygonShape,
     b2RevoluteJointDef,
-    b2_pi,
     b2CircleShape,
     XY,
 } from "@box2d/core";
@@ -119,15 +118,15 @@ export class Pinball extends Test {
             jd.motorSpeed = 0.0;
             jd.localAnchorA.Copy(p1);
             jd.bodyB = leftFlipper;
-            jd.lowerAngle = (-30.0 * b2_pi) / 180.0;
-            jd.upperAngle = (5.0 * b2_pi) / 180.0;
+            jd.lowerAngle = (-30.0 * Math.PI) / 180.0;
+            jd.upperAngle = (5.0 * Math.PI) / 180.0;
             this.m_leftJoint = this.m_world.CreateJoint(jd);
 
             jd.motorSpeed = 0.0;
             jd.localAnchorA.Copy(p2);
             jd.bodyB = rightFlipper;
-            jd.lowerAngle = (-5.0 * b2_pi) / 180.0;
-            jd.upperAngle = (30.0 * b2_pi) / 180.0;
+            jd.lowerAngle = (-5.0 * Math.PI) / 180.0;
+            jd.upperAngle = (30.0 * Math.PI) / 180.0;
             this.m_rightJoint = this.m_world.CreateJoint(jd);
         }
 

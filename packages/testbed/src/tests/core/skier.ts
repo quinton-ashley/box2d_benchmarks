@@ -2,7 +2,7 @@
 Test case for collision/jerking issue.
 */
 
-import { b2Body, b2_pi, b2Vec2, b2ChainShape, b2FixtureDef, b2BodyDef, b2BodyType, b2PolygonShape } from "@box2d/core";
+import { b2Body, b2Vec2, b2ChainShape, b2FixtureDef, b2BodyDef, b2BodyType, b2PolygonShape } from "@box2d/core";
 
 import { Test } from "../../test";
 import { Settings } from "../../settings";
@@ -41,8 +41,8 @@ export class Skier extends Test {
         const SurfaceFriction = 0.2;
 
         // Convert to radians
-        const Slope1Incline = (-Angle1Degrees * b2_pi) / 180.0;
-        const Slope2Incline = Slope1Incline - (Angle2Degrees * b2_pi) / 180.0;
+        const Slope1Incline = (-Angle1Degrees * Math.PI) / 180.0;
+        const Slope2Incline = Slope1Incline - (Angle2Degrees * Math.PI) / 180.0;
         //
 
         this.m_platform_width = PlatformWidth;

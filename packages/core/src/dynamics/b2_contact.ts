@@ -17,7 +17,7 @@
  */
 
 import { b2_linearSlop } from "../common/b2_settings";
-import { b2Sqrt, b2Transform, b2Sweep } from "../common/b2_math";
+import { b2Transform, b2Sweep } from "../common/b2_math";
 import {
     b2Manifold,
     b2WorldManifold,
@@ -34,7 +34,7 @@ import type { b2ContactListener } from "./b2_world_callbacks";
 /// Friction mixing law. The idea is to allow either fixture to drive the friction to zero.
 /// For example, anything slides on ice.
 export function b2MixFriction(friction1: number, friction2: number): number {
-    return b2Sqrt(friction1 * friction2);
+    return Math.sqrt(friction1 * friction2);
 }
 
 /// Restitution mixing law. The idea is allow for anything to bounce off an inelastic surface.

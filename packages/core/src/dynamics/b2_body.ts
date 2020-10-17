@@ -17,7 +17,6 @@
  */
 
 // DEBUG: import { b2Assert } from "../common/b2_settings";
-// DEBUG: import { b2IsValid } from "../common/b2_math";
 import { b2Maybe } from "../common/b2_settings";
 import { b2Vec2, b2Rot, b2Transform, b2Sweep, XY } from "../common/b2_math";
 import { b2Shape, b2MassData } from "../collision/b2_shape";
@@ -232,7 +231,7 @@ export class b2Body {
         this.m_xf.p.Copy(b2Maybe(bd.position, b2Vec2.ZERO));
         // DEBUG: b2Assert(this.m_xf.p.IsValid());
         this.m_xf.q.SetAngle(b2Maybe(bd.angle, 0));
-        // DEBUG: b2Assert(b2IsValid(this.m_xf.q.GetAngle()));
+        // DEBUG: b2Assert(Number.isFinite(this.m_xf.q.GetAngle()));
 
         this.m_sweep.localCenter.SetZero();
         this.m_sweep.c0.Copy(this.m_xf.p);
@@ -243,14 +242,14 @@ export class b2Body {
         this.m_linearVelocity.Copy(b2Maybe(bd.linearVelocity, b2Vec2.ZERO));
         // DEBUG: b2Assert(this.m_linearVelocity.IsValid());
         this.m_angularVelocity = b2Maybe(bd.angularVelocity, 0);
-        // DEBUG: b2Assert(b2IsValid(this.m_angularVelocity));
+        // DEBUG: b2Assert(Number.isFinite(this.m_angularVelocity));
 
         this.m_linearDamping = b2Maybe(bd.linearDamping, 0);
         this.m_angularDamping = b2Maybe(bd.angularDamping, 0);
         this.m_gravityScale = b2Maybe(bd.gravityScale, 1);
-        // DEBUG: b2Assert(b2IsValid(this.m_gravityScale) && this.m_gravityScale >= 0);
-        // DEBUG: b2Assert(b2IsValid(this.m_angularDamping) && this.m_angularDamping >= 0);
-        // DEBUG: b2Assert(b2IsValid(this.m_linearDamping) && this.m_linearDamping >= 0);
+        // DEBUG: b2Assert(Number.isFinite(this.m_gravityScale) && this.m_gravityScale >= 0);
+        // DEBUG: b2Assert(Number.isFinite(this.m_angularDamping) && this.m_angularDamping >= 0);
+        // DEBUG: b2Assert(Number.isFinite(this.m_linearDamping) && this.m_linearDamping >= 0);
 
         this.m_force.SetZero();
         this.m_torque = 0;

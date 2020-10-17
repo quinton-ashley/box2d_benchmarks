@@ -29,10 +29,8 @@ import {
     b2BodyDef,
     b2EdgeShape,
     b2Vec2,
-    b2Sqrt,
     b2BodyType,
     b2RandomRange,
-    b2_pi,
     b2FixtureDef,
     b2AABB,
 } from "@box2d/core";
@@ -121,8 +119,8 @@ export class PolyShapes extends Test {
 
         {
             const w = 1.0;
-            const b = w / (2.0 + b2Sqrt(2.0));
-            const s = b2Sqrt(2.0) * b;
+            const b = w / (2.0 + Math.sqrt(2.0));
+            const s = Math.sqrt(2.0) * b;
 
             const vertices = new Array(8);
             vertices[0] = new b2Vec2(0.5 * s, 0.0);
@@ -157,7 +155,7 @@ export class PolyShapes extends Test {
 
         const x = b2RandomRange(-2.0, 2.0);
         bd.position.Set(x, 10.0);
-        bd.angle = b2RandomRange(-b2_pi, b2_pi);
+        bd.angle = b2RandomRange(-Math.PI, Math.PI);
 
         if (index === 4) {
             bd.angularDamping = 0.02;

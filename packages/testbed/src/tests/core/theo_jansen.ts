@@ -30,7 +30,6 @@ import {
     b2RevoluteJointDef,
     b2EdgeShape,
     b2CircleShape,
-    b2_pi,
 } from "@box2d/core";
 
 import { Test } from "../../test";
@@ -134,11 +133,11 @@ export class TheoJansen extends Test {
         this.CreateLeg(-1.0, wheelAnchor);
         this.CreateLeg(1.0, wheelAnchor);
 
-        this.m_wheel.SetTransformVec(this.m_wheel.GetPosition(), (120.0 * b2_pi) / 180.0);
+        this.m_wheel.SetTransformVec(this.m_wheel.GetPosition(), (120.0 * Math.PI) / 180.0);
         this.CreateLeg(-1.0, wheelAnchor);
         this.CreateLeg(1.0, wheelAnchor);
 
-        this.m_wheel.SetTransformVec(this.m_wheel.GetPosition(), (-120.0 * b2_pi) / 180.0);
+        this.m_wheel.SetTransformVec(this.m_wheel.GetPosition(), (-120.0 * Math.PI) / 180.0);
         this.CreateLeg(-1.0, wheelAnchor);
         this.CreateLeg(1.0, wheelAnchor);
     }

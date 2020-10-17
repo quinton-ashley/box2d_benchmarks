@@ -635,7 +635,7 @@ export class b2PolygonShape extends b2Shape {
       const root = p[i - 1];
       const uxX = p[i].x - root.x;
       const uxY = p[i].y - root.y;
-      const length = b2Sqrt(uxX * uxX + uxY * uxY);
+      const length = Math.sqrt(uxX * uxX + uxY * uxY);
       uxX /= length;
       uxY /= length;
       const uyX = (-uxY);

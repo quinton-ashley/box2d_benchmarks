@@ -17,7 +17,7 @@
  */
 
 import { b2_linearSlop, b2_angularSlop, b2Maybe } from "../common/b2_settings";
-import { b2Abs, b2Vec2, b2Vec3, b2Mat33, b2Rot, XY } from "../common/b2_math";
+import { b2Vec2, b2Vec3, b2Mat33, b2Rot, XY } from "../common/b2_math";
 import { b2Body } from "./b2_body";
 import { b2Joint, b2JointDef, b2JointType, b2IJointDef } from "./b2_joint";
 import { b2SolverData } from "./b2_time_step";
@@ -389,7 +389,7 @@ export class b2WeldJoint extends b2Joint {
             const C2: number = aB - aA - this.m_referenceAngle;
 
             positionError = C1.Length();
-            angularError = b2Abs(C2);
+            angularError = Math.abs(C2);
 
             // b2Vec3 C(C1.x, C1.y, C2);
 

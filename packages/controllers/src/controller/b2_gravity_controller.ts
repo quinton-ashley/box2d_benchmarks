@@ -16,7 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import { b2TimeStep, b2_epsilon, b2Sqrt, b2Vec2 } from "@box2d/core";
+import { b2TimeStep, b2_epsilon, b2Vec2 } from "@box2d/core";
 
 import { b2Controller } from "./b2_controller";
 
@@ -55,7 +55,7 @@ export class b2GravityController extends b2Controller {
                     if (r2 < b2_epsilon) {
                         continue;
                     }
-                    tempF.Set(dx, dy).SelfMul((this.G / r2 / b2Sqrt(r2)) * mass1 * mass2);
+                    tempF.Set(dx, dy).SelfMul((this.G / r2 / Math.sqrt(r2)) * mass1 * mass2);
                     if (body1.IsAwake()) {
                         body1.ApplyForce(tempF, p1);
                     }

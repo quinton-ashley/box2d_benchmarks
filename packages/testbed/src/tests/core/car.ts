@@ -26,7 +26,6 @@ import {
     b2BodyType,
     b2PolygonShape,
     b2RevoluteJointDef,
-    b2_pi,
     b2CircleShape,
     b2WheelJointDef,
 } from "@box2d/core";
@@ -125,8 +124,8 @@ export class Car extends Test {
 
             const jd: b2RevoluteJointDef = new b2RevoluteJointDef();
             jd.Initialize(ground, body, body.GetPosition());
-            jd.lowerAngle = (-8.0 * b2_pi) / 180.0;
-            jd.upperAngle = (8.0 * b2_pi) / 180.0;
+            jd.lowerAngle = (-8.0 * Math.PI) / 180.0;
+            jd.upperAngle = (8.0 * Math.PI) / 180.0;
             jd.enableLimit = true;
             this.m_world.CreateJoint(jd);
 
@@ -238,7 +237,7 @@ export class Car extends Test {
 
             const hertz = 4.0;
             const dampingRatio = 0.7;
-            const omega: number = 2.0 * b2_pi * hertz;
+            const omega: number = 2.0 * Math.PI * hertz;
 
             jd.Initialize(this.m_car, this.m_wheel1, this.m_wheel1.GetPosition(), axis);
             jd.motorSpeed = 0.0;

@@ -25,7 +25,6 @@ import {
     b2BodyType,
     b2PolygonShape,
     b2MotorJointDef,
-    b2Sin,
     b2Color,
 } from "@box2d/core";
 
@@ -102,8 +101,8 @@ export class MotorJoint extends Test {
 
         /* b2Vec2 */
         const linearOffset = new b2Vec2();
-        linearOffset.x = 6.0 * b2Sin(2.0 * this.m_time);
-        linearOffset.y = 8.0 + 4.0 * b2Sin(1.0 * this.m_time);
+        linearOffset.x = 6.0 * Math.sin(2.0 * this.m_time);
+        linearOffset.y = 8.0 + 4.0 * Math.sin(1.0 * this.m_time);
 
         /* float32 */
         const angularOffset = 4.0 * this.m_time;

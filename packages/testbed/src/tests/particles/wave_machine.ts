@@ -16,16 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import {
-    b2RevoluteJoint,
-    b2BodyDef,
-    b2BodyType,
-    b2PolygonShape,
-    b2Vec2,
-    b2RevoluteJointDef,
-    b2_pi,
-    XY,
-} from "@box2d/core";
+import { b2RevoluteJoint, b2BodyDef, b2BodyType, b2PolygonShape, b2Vec2, b2RevoluteJointDef, XY } from "@box2d/core";
 import { b2ParticleGroupDef, b2ParticleFlag } from "@box2d/particles";
 
 import { Test } from "../../test";
@@ -68,7 +59,7 @@ export class WaveMachine extends Test {
             jd.localAnchorA.Set(0.0, 1.0);
             jd.localAnchorB.Set(0.0, 0.0);
             jd.referenceAngle = 0.0;
-            jd.motorSpeed = 0.05 * b2_pi;
+            jd.motorSpeed = 0.05 * Math.PI;
             jd.maxMotorTorque = 1e7;
             jd.enableMotor = true;
             this.m_joint = this.m_world.CreateJoint(jd);
@@ -100,7 +91,7 @@ export class WaveMachine extends Test {
         if (settings.m_hertz > 0) {
             this.m_time += 1 / settings.m_hertz;
         }
-        this.m_joint.SetMotorSpeed(0.05 * Math.cos(this.m_time) * b2_pi);
+        this.m_joint.SetMotorSpeed(0.05 * Math.cos(this.m_time) * Math.PI);
     }
 
     public GetDefaultViewZoom() {

@@ -618,12 +618,12 @@ export class Rope extends Test {
 //   public Keyboard(key: string) {
 //     switch (key) {
 //       case "q":
-//         this.m_angle = b2Max(-b2_pi, this.m_angle - 0.05 * b2_pi);
+//         this.m_angle = Math.min(-Math.PI, this.m_angle - 0.05 * Math.PI);
 //         // this.m_rope.SetAngle(this.m_angle);
 //         break;
 
 //       case "e":
-//         this.m_angle = b2Min(b2_pi, this.m_angle + 0.05 * b2_pi);
+//         this.m_angle = Math.min(Math.PI, this.m_angle + 0.05 * Math.PI);
 //         // this.m_rope.SetAngle(this.m_angle);
 //         break;
 //     }
@@ -641,6 +641,6 @@ export class Rope extends Test {
 
 //     // this.m_rope.Draw(g_debugDraw);
 
-//     this.addDebug("Target Angle", `${(this.m_angle * 180.0 / b2_pi).toFixed(2)} degrees`);
+//     this.addDebug("Target Angle", `${(this.m_angle * 180.0 / Math.PI).toFixed(2)} degrees`);
 //   }
 // }

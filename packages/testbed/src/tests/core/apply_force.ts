@@ -23,11 +23,9 @@ import {
     b2EdgeShape,
     b2FixtureDef,
     b2Transform,
-    b2_pi,
     b2Rot,
     b2PolygonShape,
     b2BodyType,
-    b2Sqrt,
     b2FrictionJointDef,
     b2Vec2_zero,
     XY,
@@ -82,7 +80,7 @@ export class ApplyForce extends Test {
         {
             /* b2Transform */
             const xf1 = new b2Transform();
-            xf1.q.SetAngle(0.3524 * b2_pi);
+            xf1.q.SetAngle(0.3524 * Math.PI);
             xf1.p.Copy(b2Rot.MulRV(xf1.q, new b2Vec2(1.0, 0.0), new b2Vec2()));
 
             /* b2Vec2[] */
@@ -102,7 +100,7 @@ export class ApplyForce extends Test {
 
             /* b2Transform */
             const xf2 = new b2Transform();
-            xf2.q.SetAngle(-0.3524 * b2_pi);
+            xf2.q.SetAngle(-0.3524 * Math.PI);
             xf2.p.Copy(b2Rot.MulRV(xf2.q, new b2Vec2(-1.0, 0.0), new b2Vec2()));
 
             vertices[0] = b2Transform.MulXV(xf2, new b2Vec2(-1.0, 0.0), new b2Vec2());
@@ -123,7 +121,7 @@ export class ApplyForce extends Test {
             bd.type = b2BodyType.b2_dynamicBody;
 
             bd.position.Set(0.0, 3.0);
-            bd.angle = b2_pi;
+            bd.angle = Math.PI;
             bd.allowSleep = false;
             this.m_body = this.m_world.CreateBody(bd);
             this.m_body.CreateFixture(sd1);
@@ -136,7 +134,7 @@ export class ApplyForce extends Test {
             // Compute an effective radius that can be used to
             // set the max torque for a friction joint
             // For a circle: I = 0.5 * m * r * r ==> r = sqrt(2 * I / m)
-            const radius: number = b2Sqrt((2.0 * I) / mass);
+            const radius: number = Math.sqrt((2.0 * I) / mass);
 
             // b2FrictionJointDef jd;
             const jd = new b2FrictionJointDef();
@@ -182,7 +180,7 @@ export class ApplyForce extends Test {
 
                 // For a circle: I = 0.5 * m * r * r ==> r = sqrt(2 * I / m)
                 /* float32 */
-                const radius = b2Sqrt((2.0 * I) / mass);
+                const radius = Math.sqrt((2.0 * I) / mass);
 
                 /* b2FrictionJointDef */
                 const jd = new b2FrictionJointDef();

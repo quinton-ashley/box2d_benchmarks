@@ -17,7 +17,7 @@
  */
 
 import { b2_linearSlop, b2_angularSlop, b2_maxAngularCorrection, b2Maybe } from "../common/b2_settings";
-import { b2Abs, b2Clamp, b2Vec2, b2Mat22, b2Rot, XY, b2Max } from "../common/b2_math";
+import { b2Clamp, b2Vec2, b2Mat22, b2Rot, XY } from "../common/b2_math";
 import { b2Body } from "./b2_body";
 import { b2Joint, b2JointDef, b2JointType, b2IJointDef } from "./b2_joint";
 import { b2SolverData } from "./b2_time_step";
@@ -303,9 +303,9 @@ export class b2RevoluteJoint extends b2Joint {
             {
                 const C: number = this.m_angle - this.m_lowerAngle;
                 const Cdot: number = wB - wA;
-                let impulse: number = -this.m_axialMass * (Cdot + b2Max(C, 0.0) * data.step.inv_dt);
+                let impulse: number = -this.m_axialMass * (Cdot + Math.min(C, 0.0) * data.step.inv_dt);
                 const oldImpulse: number = this.m_lowerImpulse;
-                this.m_lowerImpulse = b2Max(this.m_lowerImpulse + impulse, 0.0);
+                this.m_lowerImpulse = Math.min(this.m_lowerImpulse + impulse, 0.0);
                 impulse = this.m_lowerImpulse - oldImpulse;
 
                 wA -= iA * impulse;
@@ -318,9 +318,9 @@ export class b2RevoluteJoint extends b2Joint {
             {
                 const C: number = this.m_upperAngle - this.m_angle;
                 const Cdot: number = wA - wB;
-                let impulse: number = -this.m_axialMass * (Cdot + b2Max(C, 0.0) * data.step.inv_dt);
+                let impulse: number = -this.m_axialMass * (Cdot + Math.min(C, 0.0) * data.step.inv_dt);
                 const oldImpulse: number = this.m_upperImpulse;
-                this.m_upperImpulse = b2Max(this.m_upperImpulse + impulse, 0.0);
+                this.m_upperImpulse = Math.min(this.m_upperImpulse + impulse, 0.0);
                 impulse = this.m_upperImpulse - oldImpulse;
 
                 wA += iA * impulse;
@@ -386,7 +386,7 @@ export class b2RevoluteJoint extends b2Joint {
             const angle: number = aB - aA - this.m_referenceAngle;
             let C = 0.0;
 
-            if (b2Abs(this.m_upperAngle - this.m_lowerAngle) < 2.0 * b2_angularSlop) {
+            if (Math.abs(this.m_upperAngle - this.m_lowerAngle) < 2.0 * b2_angularSlop) {
                 // Prevent large angular corrections
                 C = b2Clamp(angle - this.m_lowerAngle, -b2_maxAngularCorrection, b2_maxAngularCorrection);
             } else if (angle <= this.m_lowerAngle) {
@@ -400,7 +400,7 @@ export class b2RevoluteJoint extends b2Joint {
             const limitImpulse: number = -this.m_axialMass * C;
             aA -= this.m_invIA * limitImpulse;
             aB += this.m_invIB * limitImpulse;
-            angularError = b2Abs(C);
+            angularError = Math.abs(C);
         }
 
         // Solve point-to-point constraint.

@@ -22,7 +22,6 @@ import {
     b2RayCastInput,
     b2RayCastOutput,
     b2MakeArray,
-    b2Max,
     b2Color,
     b2Vec2,
     b2RandomRange,
@@ -104,7 +103,7 @@ export class DynamicTreeTest extends Test {
         this.Reset();
 
         if (this.m_automated) {
-            const actionCount = b2Max(1, DynamicTreeTest.e_actorCount >> 2);
+            const actionCount = Math.min(1, DynamicTreeTest.e_actorCount >> 2);
 
             for (let i = 0; i < actionCount; ++i) {
                 this.Action();

@@ -21,7 +21,6 @@ import {
     b2QueryCallback,
     b2Fixture,
     b2Vec2,
-    b2Abs,
     b2Body,
     b2Color,
     b2World,
@@ -32,15 +31,12 @@ import {
     b2MakeArray,
     XY,
     b2RayCastCallback,
-    b2Sqrt,
-    b2Min,
     b2_maxFloat,
     b2EdgeShape,
     b2ShapeType,
     b2ChainShape,
     b2InvSqrt,
     b2TimeStep,
-    b2Max,
     b2Clamp,
     b2Rot,
     b2ContactFilter,
@@ -417,7 +413,7 @@ export class b2ParticleContact {
             this.indexA === rhs.indexA &&
             this.indexB === rhs.indexB &&
             this.flags === rhs.flags &&
-            b2Abs(this.weight - rhs.weight) < MAX_WEIGHT_DIFF &&
+            Math.abs(this.weight - rhs.weight) < MAX_WEIGHT_DIFF &&
             b2Vec2.DistanceSquaredVV(this.normal, rhs.normal) < MAX_NORMAL_DIFF_SQ
         );
     }
@@ -2051,7 +2047,7 @@ export class b2ParticleSystem {
             const p2 = b2Vec2.DotVV(p, p);
             const determinant = pv * pv - v2 * (p2 - this.m_squaredDiameter);
             if (determinant >= 0) {
-                const sqrtDeterminant = b2Sqrt(determinant);
+                const sqrtDeterminant = Math.sqrt(determinant);
                 // find a solution between 0 and fraction
                 let t = (-pv - sqrtDeterminant) / v2;
                 if (t > fraction) {
@@ -2068,7 +2064,7 @@ export class b2ParticleSystem {
                 n.Normalize();
                 /// float32 f = callback.ReportParticle(this, i, point1 + t * v, n, t);
                 const f = callback.ReportParticle(this, i, b2Vec2.AddVMulSV(point1, t, v, s_point), n, t);
-                fraction = b2Min(fraction, f);
+                fraction = Math.min(fraction, f);
                 if (fraction <= 0) {
                     break;
                 }
@@ -2612,7 +2608,7 @@ export class b2ParticleSystem {
                     pair.indexA = a;
                     pair.indexB = b;
                     pair.flags = contact.flags;
-                    pair.strength = b2Min(groupA ? groupA.m_strength : 1, groupB ? groupB.m_strength : 1);
+                    pair.strength = Math.min(groupA ? groupA.m_strength : 1, groupB ? groupB.m_strength : 1);
                     /// pair.distance = b2Distance(pos_data[a], pos_data[b]); // TODO: this was wrong!
                     pair.distance = b2Vec2.DistanceVV(pos_data[a], pos_data[b]);
                 }
@@ -2679,8 +2675,8 @@ export class b2ParticleSystem {
                     triad.indexB = b;
                     triad.indexC = c;
                     triad.flags = af | bf | cf;
-                    triad.strength = b2Min(
-                        b2Min(groupA ? groupA.m_strength : 1, groupB ? groupB.m_strength : 1),
+                    triad.strength = Math.min(
+                        Math.min(groupA ? groupA.m_strength : 1, groupB ? groupB.m_strength : 1),
                         groupC ? groupC.m_strength : 1
                     );
                     /// let midPoint = b2Vec2.MulSV(1.0 / 3.0, b2Vec2.AddVV(pa, b2Vec2.AddVV(pb, pc, new b2Vec2()), new b2Vec2()), new b2Vec2());
@@ -2983,8 +2979,8 @@ export class b2ParticleSystem {
         // The number of iterations is equal to particle number from the deepest
         // particle to the nearest surface particle, and in general it is smaller
         // than sqrt of total particle number.
-        /// int32 iterationCount = (int32)b2Sqrt((float)m_count);
-        const iterationCount = b2Sqrt(this.m_count) >> 0;
+        /// int32 iterationCount = (int32)Math.sqrt((float)m_count);
+        const iterationCount = Math.sqrt(this.m_count) >> 0;
         for (let t = 0; t < iterationCount; t++) {
             let updated = false;
             for (let k = 0; k < contactGroupsCount; k++) {
@@ -3481,12 +3477,12 @@ export class b2ParticleSystem {
             /// let p2 = p1 + step.dt * v;
             const p2_x = p1.x + step.dt * v.x;
             const p2_y = p1.y + step.dt * v.y;
-            /// aabb.lowerBound = b2Min(aabb.lowerBound, b2Min(p1, p2));
-            aabb.lowerBound.x = b2Min(aabb.lowerBound.x, b2Min(p1.x, p2_x));
-            aabb.lowerBound.y = b2Min(aabb.lowerBound.y, b2Min(p1.y, p2_y));
-            /// aabb.upperBound = b2Max(aabb.upperBound, b2Max(p1, p2));
-            aabb.upperBound.x = b2Max(aabb.upperBound.x, b2Max(p1.x, p2_x));
-            aabb.upperBound.y = b2Max(aabb.upperBound.y, b2Max(p1.y, p2_y));
+            /// aabb.lowerBound = Math.min(aabb.lowerBound, Math.min(p1, p2));
+            aabb.lowerBound.x = Math.min(aabb.lowerBound.x, Math.min(p1.x, p2_x));
+            aabb.lowerBound.y = Math.min(aabb.lowerBound.y, Math.min(p1.y, p2_y));
+            /// aabb.upperBound = Math.min(aabb.upperBound, Math.min(p1, p2));
+            aabb.upperBound.x = Math.min(aabb.upperBound.x, Math.min(p1.x, p2_x));
+            aabb.upperBound.y = Math.min(aabb.upperBound.y, Math.min(p1.y, p2_y));
         }
         if (this.SolveCollision_callback === null) {
             this.SolveCollision_callback = new b2ParticleSystem_SolveCollisionCallback(this, step);
@@ -3507,8 +3503,8 @@ export class b2ParticleSystem {
             const v = vel_data[i];
             const v2 = b2Vec2.DotVV(v, v);
             if (v2 > criticalVelocitySquared) {
-                /// v *= b2Sqrt(criticalVelocitySquared / v2);
-                v.SelfMul(b2Sqrt(criticalVelocitySquared / v2));
+                /// v *= Math.sqrt(criticalVelocitySquared / v2);
+                v.SelfMul(Math.sqrt(criticalVelocitySquared / v2));
             }
         }
     }
@@ -3560,9 +3556,9 @@ export class b2ParticleSystem {
                 const pb = pos_data[b];
                 /// b2AABB aabb;
                 const aabb = s_aabb;
-                /// aabb.lowerBound = b2Min(pa, pb);
+                /// aabb.lowerBound = Math.min(pa, pb);
                 b2Vec2.MinV(pa, pb, aabb.lowerBound);
-                /// aabb.upperBound = b2Max(pa, pb);
+                /// aabb.upperBound = Math.min(pa, pb);
                 b2Vec2.MaxV(pa, pb, aabb.upperBound);
                 const aGroup = this.m_groupBuffer[a];
                 const bGroup = this.m_groupBuffer[b];
@@ -3622,7 +3618,7 @@ export class b2ParticleSystem {
                             if (det < 0) {
                                 continue;
                             }
-                            const sqrtDet = b2Sqrt(det);
+                            const sqrtDet = Math.sqrt(det);
                             let t1 = (-e1 - sqrtDet) / (2 * e2);
                             let t2 = (-e1 + sqrtDet) / (2 * e2);
                             /// if (t1 > t2) b2Swap(t1, t2);
@@ -3791,8 +3787,8 @@ export class b2ParticleSystem {
         const maxPressure = b2_maxParticlePressure * criticalPressure;
         for (let i = 0; i < this.m_count; i++) {
             const w = this.m_weightBuffer[i];
-            const h = pressurePerWeight * b2Max(0.0, w - b2_minParticleWeight);
-            this.m_accumulationBuffer[i] = b2Min(h, maxPressure);
+            const h = pressurePerWeight * Math.min(0.0, w - b2_minParticleWeight);
+            this.m_accumulationBuffer[i] = Math.min(h, maxPressure);
         }
         // ignores particles which have their own repulsive force
         if (this.m_allParticleFlags & b2ParticleSystem.k_noPressureFlags) {
@@ -3868,7 +3864,7 @@ export class b2ParticleSystem {
             const v = b2Vec2.SubVV(b.GetLinearVelocityFromWorldPoint(p, b2Vec2.s_t0), vel_data[a], s_v);
             const vn = b2Vec2.DotVV(v, n);
             if (vn < 0) {
-                const damping = b2Max(linearDamping * w, b2Min(-quadraticDamping * vn, 0.5));
+                const damping = Math.min(linearDamping * w, Math.min(-quadraticDamping * vn, 0.5));
                 /// b2Vec2 f = damping * m * vn * n;
                 const f = b2Vec2.MulSV(damping * m * vn, n, s_f);
                 /// m_velocityBuffer.data[a] += GetParticleInvMass() * f;
@@ -3887,8 +3883,8 @@ export class b2ParticleSystem {
             const v = b2Vec2.SubVV(vel_data[b], vel_data[a], s_v);
             const vn = b2Vec2.DotVV(v, n);
             if (vn < 0) {
-                /// float32 damping = b2Max(linearDamping * w, b2Min(- quadraticDamping * vn, 0.5f));
-                const damping = b2Max(linearDamping * w, b2Min(-quadraticDamping * vn, 0.5));
+                /// float32 damping = Math.min(linearDamping * w, Math.min(- quadraticDamping * vn, 0.5f));
+                const damping = Math.min(linearDamping * w, Math.min(-quadraticDamping * vn, 0.5));
                 /// b2Vec2 f = damping * vn * n;
                 const f = b2Vec2.MulSV(damping * vn, n, s_f);
                 /// this.m_velocityBuffer.data[a] += f;
@@ -3960,10 +3956,10 @@ export class b2ParticleSystem {
                         p,
                         n
                     );
-                    /// float32 f = damping * b2Min(w, 1.0) * this.ComputeDampingImpulse(invMassA, invInertiaA, tangentDistanceA, invMassB, invInertiaB, tangentDistanceB, vn);
+                    /// float32 f = damping * Math.min(w, 1.0) * this.ComputeDampingImpulse(invMassA, invInertiaA, tangentDistanceA, invMassB, invInertiaB, tangentDistanceB, vn);
                     const f =
                         damping *
-                        b2Min(w, 1.0) *
+                        Math.min(w, 1.0) *
                         this.ComputeDampingImpulse(
                             invMassA[0],
                             invInertiaA[0],
@@ -4327,7 +4323,8 @@ export class b2ParticleSystem {
                 /// b2Vec2 s = m_accumulation2Buffer[b] - m_accumulation2Buffer[a];
                 const s = b2Vec2.SubVV(this.m_accumulation2Buffer[b], this.m_accumulation2Buffer[a], s_s);
                 const fn =
-                    b2Min(pressureStrength * (h - 2) + normalStrength * b2Vec2.DotVV(s, n), maxVelocityVariation) * w;
+                    Math.min(pressureStrength * (h - 2) + normalStrength * b2Vec2.DotVV(s, n), maxVelocityVariation) *
+                    w;
                 /// b2Vec2 f = fn * n;
                 const f = b2Vec2.MulSV(fn, n, s_f);
                 /// m_velocityBuffer.data[a] -= f;
@@ -4667,8 +4664,8 @@ export class b2ParticleSystem {
             for (let i = group.m_firstIndex; i < group.m_lastIndex; i++) {
                 const j = newIndices[i];
                 if (j >= 0) {
-                    firstIndex = b2Min(firstIndex, j);
-                    lastIndex = b2Max(lastIndex, j + 1);
+                    firstIndex = Math.min(firstIndex, j);
+                    lastIndex = Math.min(lastIndex, j + 1);
                 } else {
                     modified = true;
                 }

@@ -17,7 +17,6 @@
  */
 
 // DEBUG: import { b2Assert } from "../common/b2_settings";
-// DEBUG: import { b2IsValid } from "../common/b2_math";
 import { b2_linearSlop, b2Maybe } from "../common/b2_settings";
 import { b2Vec2, b2Rot, b2Transform, XY } from "../common/b2_math";
 import { b2Joint, b2JointDef, b2JointType, b2IJointDef } from "./b2_joint";
@@ -601,7 +600,7 @@ export class b2GearJoint extends b2Joint {
     }
 
     public SetRatio(ratio: number): void {
-        // DEBUG: b2Assert(b2IsValid(ratio));
+        // DEBUG: b2Assert(Number.isFinite(ratio));
         this.m_ratio = ratio;
     }
 

@@ -20,8 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import { b2Vec2, b2Atan2 } from "../common/b2_math";
-import { b2_pi } from "../common/b2_settings";
+import { b2Vec2 } from "../common/b2_math";
 
 export enum b2StretchingModel {
     b2_pbdStretchingModel,
@@ -318,7 +317,7 @@ export class b2Rope {
 
         // Pre-compute spring and damper values based on tuning
 
-        const bendOmega: number = 2.0 * b2_pi * this.m_tuning.bendHertz;
+        const bendOmega: number = 2.0 * Math.PI * this.m_tuning.bendHertz;
 
         for (let i = 0; i < this.m_bendCount; ++i) {
             const c: b2RopeBend = this.m_bendConstraints[i];
@@ -347,7 +346,7 @@ export class b2Rope {
             c.damper = 2.0 * mass * this.m_tuning.bendDamping * bendOmega;
         }
 
-        const stretchOmega: number = 2.0 * b2_pi * this.m_tuning.stretchHertz;
+        const stretchOmega: number = 2.0 * Math.PI * this.m_tuning.stretchHertz;
 
         for (let i = 0; i < this.m_stretchCount; ++i) {
             const c: b2RopeStretch = this.m_stretchConstraints[i];
@@ -560,7 +559,7 @@ export class b2Rope {
             const a: number = b2Vec2.CrossVV(d1, d2);
             const b: number = b2Vec2.DotVV(d1, d2);
 
-            const angle: number = b2Atan2(a, b);
+            const angle: number = Math.atan2(a, b);
 
             let L1sqr = 0.0;
             let L2sqr = 0.0;
@@ -664,7 +663,7 @@ export class b2Rope {
             const a: number = b2Vec2.CrossVV(d1, d2);
             const b: number = b2Vec2.DotVV(d1, d2);
 
-            const angle: number = b2Atan2(a, b);
+            const angle: number = Math.atan2(a, b);
 
             // b2Vec2 Jd1 = (-1.0 / L1sqr) * d1.Skew();
             // b2Vec2 Jd2 = (1.0 / L2sqr) * d2.Skew();
@@ -830,7 +829,7 @@ export class b2Rope {
 
     private ApplyBendForces(dt: number): void {
         // omega = 2 * pi * hz
-        const omega: number = 2.0 * b2_pi * this.m_tuning.bendHertz;
+        const omega: number = 2.0 * Math.PI * this.m_tuning.bendHertz;
 
         for (let i = 0; i < this.m_bendCount; ++i) {
             const c: b2RopeBend = this.m_bendConstraints[i];
@@ -866,7 +865,7 @@ export class b2Rope {
             const a: number = b2Vec2.CrossVV(d1, d2);
             const b: number = b2Vec2.DotVV(d1, d2);
 
-            const angle: number = b2Atan2(a, b);
+            const angle: number = Math.atan2(a, b);
 
             // b2Vec2 Jd1 = (-1.0 / L1sqr) * d1.Skew();
             // b2Vec2 Jd2 = (1.0 / L2sqr) * d2.Skew();

@@ -24,15 +24,10 @@ import {
     b2PolygonShape,
     b2CircleShape,
     b2BodyDef,
-    b2Cos,
-    b2_pi,
     b2EdgeShape,
-    b2Sqrt,
     b2RandomRange,
     b2BodyType,
     b2FixtureDef,
-    b2Abs,
-    b2Sin,
     b2Color,
 } from "@box2d/core";
 
@@ -88,10 +83,10 @@ export class EdgeShapes extends Test {
             const ground = this.m_world.CreateBody(bd);
 
             let x1 = -20.0;
-            let y1 = 2.0 * b2Cos((x1 / 10.0) * b2_pi);
+            let y1 = 2.0 * Math.cos((x1 / 10.0) * Math.PI);
             for (let i = 0; i < 80; ++i) {
                 const x2 = x1 + 0.5;
-                const y2 = 2.0 * b2Cos((x2 / 10.0) * b2_pi);
+                const y2 = 2.0 * Math.cos((x2 / 10.0) * Math.PI);
 
                 const shape = new b2EdgeShape();
                 shape.SetTwoSided(new b2Vec2(x1, y1), new b2Vec2(x2, y2));
@@ -120,8 +115,8 @@ export class EdgeShapes extends Test {
 
         {
             const w = 1.0;
-            const b = w / (2.0 + b2Sqrt(2.0));
-            const s = b2Sqrt(2.0) * b;
+            const b = w / (2.0 + Math.sqrt(2.0));
+            const s = Math.sqrt(2.0) * b;
 
             const vertices = new Array(8);
             vertices[0] = new b2Vec2(0.5 * s, 0.0);
@@ -156,7 +151,7 @@ export class EdgeShapes extends Test {
         const x = b2RandomRange(-10.0, 10.0);
         const y = b2RandomRange(10.0, 20.0);
         bd.position.Set(x, y);
-        bd.angle = b2RandomRange(-b2_pi, b2_pi);
+        bd.angle = b2RandomRange(-Math.PI, Math.PI);
         bd.type = b2BodyType.b2_dynamicBody;
 
         if (index === 4) {
@@ -211,7 +206,7 @@ export class EdgeShapes extends Test {
 
         const L = 25.0;
         const point1 = new b2Vec2(0.0, 10.0);
-        const d = new b2Vec2(L * b2Cos(this.m_angle), -L * b2Abs(b2Sin(this.m_angle)));
+        const d = new b2Vec2(L * Math.cos(this.m_angle), -L * Math.abs(Math.sin(this.m_angle)));
         const point2 = b2Vec2.AddVV(point1, d, new b2Vec2());
 
         const callback = new EdgeShapesCallback();
@@ -231,7 +226,7 @@ export class EdgeShapes extends Test {
         }
 
         if (advanceRay) {
-            this.m_angle += (0.25 * b2_pi) / 180.0;
+            this.m_angle += (0.25 * Math.PI) / 180.0;
         }
     }
 }

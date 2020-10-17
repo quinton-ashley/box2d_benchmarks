@@ -16,7 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import { b2Body, b2BodyDef, b2PolygonShape, b2Vec2, b2Color, b2Max, b2Min, XY } from "@box2d/core";
+import { b2Body, b2BodyDef, b2PolygonShape, b2Vec2, b2Color, XY } from "@box2d/core";
 import { b2ParticleSystem, b2ParticleFlag } from "@box2d/particles";
 
 import { Test } from "../../test";
@@ -335,12 +335,12 @@ export class Faucet extends Test {
             ),
             hotKeyPress(["ctrl"], "+", "Increase Flow", () =>
                 this.SetEmitRate(
-                    b2Max(Faucet.k_emitRateMin, this.m_emitter.GetEmitRate() * Faucet.k_emitRateChangeFactor)
+                    Math.min(Faucet.k_emitRateMin, this.m_emitter.GetEmitRate() * Faucet.k_emitRateChangeFactor)
                 )
             ),
             hotKeyPress(["ctrl"], "-", "Decrease Flow", () =>
                 this.SetEmitRate(
-                    b2Min(Faucet.k_emitRateMax, this.m_emitter.GetEmitRate() / Faucet.k_emitRateChangeFactor)
+                    Math.min(Faucet.k_emitRateMax, this.m_emitter.GetEmitRate() / Faucet.k_emitRateChangeFactor)
                 )
             ),
         ];

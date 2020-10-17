@@ -17,7 +17,6 @@
  */
 
 // DEBUG: import { b2Assert } from "../common/b2_settings";
-// DEBUG: import { b2IsValid } from "../common/b2_math";
 import { b2Maybe } from "../common/b2_settings";
 import { b2Clamp, b2Vec2, b2Mat22, b2Rot, XY } from "../common/b2_math";
 import { b2Body } from "./b2_body";
@@ -188,7 +187,7 @@ export class b2MotorJoint extends b2Joint {
     }
 
     public SetMaxForce(force: number): void {
-        // DEBUG: b2Assert(b2IsValid(force) && force >= 0);
+        // DEBUG: b2Assert(Number.isFinite(force) && force >= 0);
         this.m_maxForce = force;
     }
 
@@ -197,7 +196,7 @@ export class b2MotorJoint extends b2Joint {
     }
 
     public SetMaxTorque(torque: number): void {
-        // DEBUG: b2Assert(b2IsValid(torque) && torque >= 0);
+        // DEBUG: b2Assert(Number.isFinite(torque) && torque >= 0);
         this.m_maxTorque = torque;
     }
 

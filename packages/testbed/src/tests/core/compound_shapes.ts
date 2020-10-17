@@ -23,7 +23,6 @@ import {
     b2CircleShape,
     b2RandomRange,
     b2BodyType,
-    b2_pi,
     b2PolygonShape,
     b2Transform,
     b2Rot,
@@ -60,7 +59,7 @@ export class CompoundShapes extends Test {
                 const bd = new b2BodyDef();
                 bd.type = b2BodyType.b2_dynamicBody;
                 bd.position.Set(x + 5.0, 1.05 + 2.5 * i);
-                bd.angle = b2RandomRange(-b2_pi, b2_pi);
+                bd.angle = b2RandomRange(-Math.PI, Math.PI);
                 const body = this.m_world.CreateBody(bd);
                 body.CreateFixture(circle1, 2.0);
                 body.CreateFixture(circle2, 0.0);
@@ -72,14 +71,14 @@ export class CompoundShapes extends Test {
             polygon1.SetAsBox(0.25, 0.5);
 
             const polygon2 = new b2PolygonShape();
-            polygon2.SetAsBox(0.25, 0.5, new b2Vec2(0.0, -0.5), 0.5 * b2_pi);
+            polygon2.SetAsBox(0.25, 0.5, new b2Vec2(0.0, -0.5), 0.5 * Math.PI);
 
             for (let i = 0; i < 10; ++i) {
                 const x = b2RandomRange(-0.1, 0.1);
                 const bd = new b2BodyDef();
                 bd.type = b2BodyType.b2_dynamicBody;
                 bd.position.Set(x - 5.0, 1.05 + 2.5 * i);
-                bd.angle = b2RandomRange(-b2_pi, b2_pi);
+                bd.angle = b2RandomRange(-Math.PI, Math.PI);
                 const body = this.m_world.CreateBody(bd);
                 body.CreateFixture(polygon1, 2.0);
                 body.CreateFixture(polygon2, 2.0);
@@ -88,7 +87,7 @@ export class CompoundShapes extends Test {
 
         {
             const xf1 = new b2Transform();
-            xf1.q.SetAngle(0.3524 * b2_pi);
+            xf1.q.SetAngle(0.3524 * Math.PI);
             xf1.p.Copy(b2Rot.MulRV(xf1.q, new b2Vec2(1.0, 0.0), new b2Vec2()));
 
             const vertices = [];
@@ -100,7 +99,7 @@ export class CompoundShapes extends Test {
             triangle1.Set(vertices, 3);
 
             const xf2 = new b2Transform();
-            xf2.q.SetAngle(-0.3524 * b2_pi);
+            xf2.q.SetAngle(-0.3524 * Math.PI);
             xf2.p.Copy(b2Rot.MulRV(xf2.q, new b2Vec2(-1.0, 0.0), new b2Vec2()));
 
             const triangle2 = new b2PolygonShape();

@@ -18,7 +18,7 @@
 
 // DEBUG: import { b2Assert } from "../common/b2_settings";
 import { b2_epsilon, b2_epsilon_sq, b2_polygonRadius, b2_linearSlop } from "../common/b2_settings";
-import { b2Max, b2Vec2, b2Rot, b2Transform, b2Abs } from "../common/b2_math";
+import { b2Vec2, b2Rot, b2Transform } from "../common/b2_math";
 import type { b2Shape } from "./b2_shape";
 
 /// A distance proxy is used by the GJK algorithm.
@@ -643,7 +643,7 @@ export function b2Distance(output: b2DistanceOutput, cache: b2SimplexCache, inpu
         ++simplex.m_count;
     }
 
-    b2Gjk.maxIters = b2Max(b2Gjk.maxIters, iter);
+    b2Gjk.maxIters = Math.min(b2Gjk.maxIters, iter);
 
     // Prepare output.
     simplex.GetWitnessPoints(output.pointA, output.pointB);
@@ -702,10 +702,10 @@ export function b2ShapeCast(output: b2ShapeCastOutput, input: b2ShapeCastInput):
     // const b2DistanceProxy* proxyB = &input.proxyB;
     const { proxyB } = input;
 
-    // float32 radiusA = b2Max(proxyA.m_radius, b2_polygonRadius);
-    const radiusA = b2Max(proxyA.m_radius, b2_polygonRadius);
-    // float32 radiusB = b2Max(proxyB.m_radius, b2_polygonRadius);
-    const radiusB = b2Max(proxyB.m_radius, b2_polygonRadius);
+    // float32 radiusA = Math.min(proxyA.m_radius, b2_polygonRadius);
+    const radiusA = Math.min(proxyA.m_radius, b2_polygonRadius);
+    // float32 radiusB = Math.min(proxyB.m_radius, b2_polygonRadius);
+    const radiusB = Math.min(proxyB.m_radius, b2_polygonRadius);
     // float32 radius = radiusA + radiusB;
     const radius = radiusA + radiusB;
 
@@ -742,8 +742,8 @@ export function b2ShapeCast(output: b2ShapeCastOutput, input: b2ShapeCastInput):
     const v = b2Vec2.SubVV(wA, wB, b2ShapeCast_s_v);
 
     // Sigma is the target distance between polygons
-    // float32 sigma = b2Max(b2_polygonRadius, radius - b2_polygonRadius);
-    const sigma = b2Max(b2_polygonRadius, radius - b2_polygonRadius);
+    // float32 sigma = Math.min(b2_polygonRadius, radius - b2_polygonRadius);
+    const sigma = Math.min(b2_polygonRadius, radius - b2_polygonRadius);
     // const float32 tolerance = 0.5f * b2_linearSlop;
     const tolerance = 0.5 * b2_linearSlop;
 
@@ -752,8 +752,8 @@ export function b2ShapeCast(output: b2ShapeCastOutput, input: b2ShapeCastInput):
     const k_maxIters = 20;
     // int32 iter = 0;
     let iter = 0;
-    // while (iter < k_maxIters && b2Abs(v.Length() - sigma) > tolerance)
-    while (iter < k_maxIters && b2Abs(v.Length() - sigma) > tolerance) {
+    // while (iter < k_maxIters && Math.abs(v.Length() - sigma) > tolerance)
+    while (iter < k_maxIters && Math.abs(v.Length() - sigma) > tolerance) {
         // DEBUG: b2Assert(simplex.m_count < 3);
 
         output.iterations += 1;

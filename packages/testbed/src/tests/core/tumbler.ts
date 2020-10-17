@@ -16,16 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import {
-    b2RevoluteJoint,
-    b2BodyDef,
-    b2BodyType,
-    b2PolygonShape,
-    b2Vec2,
-    b2RevoluteJointDef,
-    b2_pi,
-    XY,
-} from "@box2d/core";
+import { b2RevoluteJoint, b2BodyDef, b2BodyType, b2PolygonShape, b2Vec2, b2RevoluteJointDef, XY } from "@box2d/core";
 
 import { Test } from "../../test";
 import { Settings } from "../../settings";
@@ -65,7 +56,7 @@ export class Tumbler extends Test {
             jd.localAnchorA.Set(0.0, 10.0);
             jd.localAnchorB.Set(0.0, 0.0);
             jd.referenceAngle = 0.0;
-            jd.motorSpeed = 0.05 * b2_pi;
+            jd.motorSpeed = 0.05 * Math.PI;
             jd.maxMotorTorque = 1e8;
             jd.enableMotor = true;
             this.m_joint = this.m_world.CreateJoint(jd);

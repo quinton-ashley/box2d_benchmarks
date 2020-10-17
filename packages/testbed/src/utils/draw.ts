@@ -16,7 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import { b2Vec2, b2Draw, b2Transform, b2Color, b2_pi, b2AABB, RGBA, XY } from "@box2d/core";
+import { b2Vec2, b2Draw, b2Transform, b2Color, b2AABB, RGBA, XY } from "@box2d/core";
 
 import { g_camera } from "./camera";
 
@@ -75,7 +75,7 @@ export class DebugDraw implements b2Draw {
         const ctx: CanvasRenderingContext2D | null = this.m_ctx;
         if (ctx) {
             ctx.beginPath();
-            ctx.arc(center.x, center.y, radius, 0, b2_pi * 2, true);
+            ctx.arc(center.x, center.y, radius, 0, Math.PI * 2, true);
             ctx.strokeStyle = b2Color.MakeStyleString(color.r, color.g, color.b, 1);
             ctx.stroke();
         }
@@ -87,7 +87,7 @@ export class DebugDraw implements b2Draw {
             const cx: number = center.x;
             const cy: number = center.y;
             ctx.beginPath();
-            ctx.arc(cx, cy, radius, 0, b2_pi * 2, true);
+            ctx.arc(cx, cy, radius, 0, Math.PI * 2, true);
             ctx.moveTo(cx, cy);
             ctx.lineTo(cx + axis.x * radius, cy + axis.y * radius);
             ctx.fillStyle = b2Color.MakeStyleString(color.r, color.g, color.b, 0.5);
@@ -107,7 +107,7 @@ export class DebugDraw implements b2Draw {
                     ctx.fillStyle = b2Color.MakeStyleString(color.r, color.g, color.b);
                     // ctx.fillRect(center.x - radius, center.y - radius, 2 * radius, 2 * radius);
                     ctx.beginPath();
-                    ctx.arc(center.x, center.y, radius, 0, b2_pi * 2, true);
+                    ctx.arc(center.x, center.y, radius, 0, Math.PI * 2, true);
                     ctx.fill();
                 }
             } else {
@@ -117,7 +117,7 @@ export class DebugDraw implements b2Draw {
                     const center = centers[i];
                     // ctx.rect(center.x - radius, center.y - radius, 2 * radius, 2 * radius);
                     ctx.beginPath();
-                    ctx.arc(center.x, center.y, radius, 0, b2_pi * 2, true);
+                    ctx.arc(center.x, center.y, radius, 0, Math.PI * 2, true);
                     ctx.fill();
                 }
                 // ctx.fill();

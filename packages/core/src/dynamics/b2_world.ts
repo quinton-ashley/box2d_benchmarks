@@ -18,7 +18,7 @@
 
 // DEBUG: import { b2Assert } from "../common/b2_settings";
 import { b2_epsilon, b2_maxSubSteps, b2_maxTOIContacts } from "../common/b2_settings";
-import { b2Min, b2Vec2, b2Transform, b2Sweep, XY } from "../common/b2_math";
+import { b2Vec2, b2Transform, b2Sweep, XY } from "../common/b2_math";
 import { b2Timer } from "../common/b2_timer";
 import { b2AABB, b2RayCastInput, b2RayCastOutput, b2TestOverlapShape } from "../collision/b2_collision";
 import { b2TreeNode } from "../collision/b2_dynamic_tree";
@@ -1190,7 +1190,7 @@ export class b2World {
                     // Beta is the fraction of the remaining portion of the .
                     const beta: number = output.t;
                     if (output.state === b2TOIOutputState.e_touching) {
-                        alpha = b2Min(alpha0 + (1 - alpha0) * beta, 1);
+                        alpha = Math.min(alpha0 + (1 - alpha0) * beta, 1);
                     } else {
                         alpha = 1;
                     }

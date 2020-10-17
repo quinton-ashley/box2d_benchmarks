@@ -17,7 +17,7 @@
  */
 
 import { b2_linearSlop, b2_maxLinearCorrection, b2Maybe } from "../common/b2_settings";
-import { b2Abs, b2Clamp, b2Vec2, b2Rot, XY } from "../common/b2_math";
+import { b2Clamp, b2Vec2, b2Rot, XY } from "../common/b2_math";
 import { b2Joint, b2JointDef, b2JointType, b2IJointDef } from "./b2_joint";
 import { b2SolverData } from "./b2_time_step";
 import type { b2Body } from "./b2_body";
@@ -377,6 +377,6 @@ export class b2DistanceJoint extends b2Joint {
         // data.positions[this.m_indexB].c = cB;
         data.positions[this.m_indexB].a = aB;
 
-        return b2Abs(C) < b2_linearSlop;
+        return Math.abs(C) < b2_linearSlop;
     }
 }

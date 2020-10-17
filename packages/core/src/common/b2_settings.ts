@@ -30,7 +30,6 @@ export function b2Maybe<T>(value: T | undefined, def: T): T {
 export const b2_maxFloat = 1e37; // FLT_MAX instead of Number.MAX_VALUE;
 export const b2_epsilon = 1e-5; // FLT_EPSILON instead of Number.MIN_VALUE;
 export const b2_epsilon_sq: number = b2_epsilon * b2_epsilon;
-export const b2_pi = 3.14159265359; // Math.PI;
 
 /// @file
 /// Global tuning constants based on meters-kilograms-seconds (MKS) units.
@@ -62,7 +61,7 @@ export const b2_linearSlop = 0.008; // 0.005;
 
 /// A small angle used as a collision and constraint tolerance. Usually it is
 /// chosen to be numerically significant, but visually insignificant.
-export const b2_angularSlop: number = (2 / 180) * b2_pi;
+export const b2_angularSlop: number = (2 / 180) * Math.PI;
 
 /// The radius of the polygon/edge shape skin. This should not be modified. Making
 /// this smaller means polygons will have an insufficient buffer for continuous collision.
@@ -87,7 +86,7 @@ export const b2_maxLinearCorrection = 0.2;
 
 /// The maximum angular position correction used when solving constraints. This helps to
 /// prevent overshoot.
-export const b2_maxAngularCorrection: number = (8 / 180) * b2_pi;
+export const b2_maxAngularCorrection: number = (8 / 180) * Math.PI;
 
 /// The maximum linear velocity of a body. This limit is very large and is used
 /// to prevent numerical problems. You shouldn't need to adjust this.
@@ -96,7 +95,7 @@ export const b2_maxTranslationSquared: number = b2_maxTranslation * b2_maxTransl
 
 /// The maximum angular velocity of a body. This limit is very large and is used
 /// to prevent numerical problems. You shouldn't need to adjust this.
-export const b2_maxRotation: number = 0.5 * b2_pi;
+export const b2_maxRotation: number = 0.5 * Math.PI;
 export const b2_maxRotationSquared: number = b2_maxRotation * b2_maxRotation;
 
 /// This scale factor controls how fast overlap is resolved. Ideally this would be 1 so
@@ -114,7 +113,7 @@ export const b2_timeToSleep = 0.5;
 export const b2_linearSleepTolerance = 0.01;
 
 /// A body cannot sleep if its angular velocity is above this tolerance.
-export const b2_angularSleepTolerance: number = (2 / 180) * b2_pi;
+export const b2_angularSleepTolerance: number = (2 / 180) * Math.PI;
 
 // Memory Allocation
 

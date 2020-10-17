@@ -25,7 +25,7 @@ import {
     b2MakeArray,
     b2MakeNumberArray,
 } from "../common/b2_settings";
-import { b2Abs, b2Min, b2Max, b2Vec2, b2Rot, b2Transform, XY } from "../common/b2_math";
+import { b2Vec2, b2Rot, b2Transform, XY } from "../common/b2_math";
 import type { b2Shape } from "./b2_shape";
 import { b2Distance, b2DistanceInput, b2DistanceOutput, b2SimplexCache } from "./b2_distance";
 
@@ -497,19 +497,19 @@ export class b2AABB {
 
     /// Combine an AABB into this one.
     public Combine1(aabb: b2AABB): b2AABB {
-        this.lowerBound.x = b2Min(this.lowerBound.x, aabb.lowerBound.x);
-        this.lowerBound.y = b2Min(this.lowerBound.y, aabb.lowerBound.y);
-        this.upperBound.x = b2Max(this.upperBound.x, aabb.upperBound.x);
-        this.upperBound.y = b2Max(this.upperBound.y, aabb.upperBound.y);
+        this.lowerBound.x = Math.min(this.lowerBound.x, aabb.lowerBound.x);
+        this.lowerBound.y = Math.min(this.lowerBound.y, aabb.lowerBound.y);
+        this.upperBound.x = Math.min(this.upperBound.x, aabb.upperBound.x);
+        this.upperBound.y = Math.min(this.upperBound.y, aabb.upperBound.y);
         return this;
     }
 
     /// Combine two AABBs into this one.
     public Combine2(aabb1: b2AABB, aabb2: b2AABB): b2AABB {
-        this.lowerBound.x = b2Min(aabb1.lowerBound.x, aabb2.lowerBound.x);
-        this.lowerBound.y = b2Min(aabb1.lowerBound.y, aabb2.lowerBound.y);
-        this.upperBound.x = b2Max(aabb1.upperBound.x, aabb2.upperBound.x);
-        this.upperBound.y = b2Max(aabb1.upperBound.y, aabb2.upperBound.y);
+        this.lowerBound.x = Math.min(aabb1.lowerBound.x, aabb2.lowerBound.x);
+        this.lowerBound.y = Math.min(aabb1.lowerBound.y, aabb2.lowerBound.y);
+        this.upperBound.x = Math.min(aabb1.upperBound.x, aabb2.upperBound.x);
+        this.upperBound.y = Math.min(aabb1.upperBound.y, aabb2.upperBound.y);
         return this;
     }
 
@@ -544,8 +544,8 @@ export class b2AABB {
         const p_y: number = input.p1.y;
         const d_x: number = input.p2.x - input.p1.x;
         const d_y: number = input.p2.y - input.p1.y;
-        const absD_x: number = b2Abs(d_x);
-        const absD_y: number = b2Abs(d_y);
+        const absD_x: number = Math.abs(d_x);
+        const absD_y: number = Math.abs(d_y);
 
         const { normal } = output;
 
@@ -577,7 +577,7 @@ export class b2AABB {
             }
 
             // Pull the max down
-            tmax = b2Min(tmax, t2);
+            tmax = Math.min(tmax, t2);
 
             if (tmin > tmax) {
                 return false;
@@ -612,7 +612,7 @@ export class b2AABB {
             }
 
             // Pull the max down
-            tmax = b2Min(tmax, t2);
+            tmax = Math.min(tmax, t2);
 
             if (tmin > tmax) {
                 return false;

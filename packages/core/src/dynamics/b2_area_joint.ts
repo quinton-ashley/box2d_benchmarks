@@ -1,6 +1,6 @@
 // DEBUG: import { b2Assert } from "../common/b2_settings";
 import { b2_epsilon, b2_linearSlop, b2_maxLinearCorrection, b2MakeNumberArray, b2Maybe } from "../common/b2_settings";
-import { b2Sq, b2Sqrt, b2Vec2, XY } from "../common/b2_math";
+import { b2Vec2, XY } from "../common/b2_math";
 import { b2Joint, b2JointDef, b2JointType, b2IJointDef } from "./b2_joint";
 import { b2DistanceJoint, b2DistanceJointDef } from "./b2_distance_joint";
 import { b2SolverData } from "./b2_time_step";
@@ -238,10 +238,10 @@ export class b2AreaJoint extends b2Joint {
             delta.SelfMul(toExtrude);
 
             const norm_sq: number = delta.LengthSquared();
-            if (norm_sq > b2Sq(b2_maxLinearCorrection)) {
-                delta.SelfMul(b2_maxLinearCorrection / b2Sqrt(norm_sq));
+            if (norm_sq > b2_maxLinearCorrection ** 2) {
+                delta.SelfMul(b2_maxLinearCorrection / Math.sqrt(norm_sq));
             }
-            if (norm_sq > b2Sq(b2_linearSlop)) {
+            if (norm_sq > b2_linearSlop ** 2) {
                 done = false;
             }
 

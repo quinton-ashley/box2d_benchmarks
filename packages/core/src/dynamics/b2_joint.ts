@@ -17,7 +17,7 @@
  */
 
 // DEBUG: import { b2Assert } from "../common/b2_settings";
-import { b2Maybe, b2_pi } from "../common/b2_settings";
+import { b2Maybe } from "../common/b2_settings";
 import { b2Vec2, XY } from "../common/b2_math";
 import type { b2Body } from "./b2_body";
 import { b2SolverData } from "./b2_time_step";
@@ -161,7 +161,7 @@ export function b2LinearStiffness(
         mass = massB;
     }
 
-    const omega: number = 2.0 * b2_pi * frequencyHertz;
+    const omega: number = 2.0 * Math.PI * frequencyHertz;
     def.stiffness = mass * omega * omega;
     def.damping = 2.0 * mass * dampingRatio * omega;
 }
@@ -188,7 +188,7 @@ export function b2AngularStiffness(
         I = IB;
     }
 
-    const omega: number = 2.0 * b2_pi * frequencyHertz;
+    const omega: number = 2.0 * Math.PI * frequencyHertz;
     def.stiffness = I * omega * omega;
     def.damping = 2.0 * I * dampingRatio * omega;
 }

@@ -17,8 +17,8 @@
  */
 
 // DEBUG: import { b2Assert } from "../common/b2_settings";
-import { b2_pi, b2_epsilon } from "../common/b2_settings";
-import { b2Sq, b2Sqrt, b2Asin, b2Pow, b2Vec2, b2Transform, XY } from "../common/b2_math";
+import { b2_epsilon } from "../common/b2_settings";
+import { b2Vec2, b2Transform, XY } from "../common/b2_math";
 import { b2AABB, b2RayCastInput, b2RayCastOutput } from "./b2_collision";
 import { b2DistanceProxy } from "./b2_distance";
 import { b2MassData, b2Shape, b2ShapeType } from "./b2_shape";
@@ -64,7 +64,7 @@ export class b2CircleShape extends b2Shape {
     public TestPoint(transform: b2Transform, p: XY): boolean {
         const center: b2Vec2 = b2Transform.MulXV(transform, this.m_p, b2CircleShape.TestPoint_s_center);
         const d: b2Vec2 = b2Vec2.SubVV(p, center, b2CircleShape.TestPoint_s_d);
-        return b2Vec2.DotVV(d, d) <= b2Sq(this.m_radius);
+        return b2Vec2.DotVV(d, d) <= this.m_radius ** 2;
     }
 
     /// Implement b2Shape.
@@ -88,7 +88,7 @@ export class b2CircleShape extends b2Shape {
     ): boolean {
         const position: b2Vec2 = b2Transform.MulXV(transform, this.m_p, b2CircleShape.RayCast_s_position);
         const s: b2Vec2 = b2Vec2.SubVV(input.p1, position, b2CircleShape.RayCast_s_s);
-        const b: number = b2Vec2.DotVV(s, s) - b2Sq(this.m_radius);
+        const b: number = b2Vec2.DotVV(s, s) - this.m_radius ** 2;
 
         // Solve quadratic equation.
         const r: b2Vec2 = b2Vec2.SubVV(input.p2, input.p1, b2CircleShape.RayCast_s_r);
@@ -102,7 +102,7 @@ export class b2CircleShape extends b2Shape {
         }
 
         // Find the point of intersection of the line with the circle.
-        let a: number = -(c + b2Sqrt(sigma));
+        let a: number = -(c + Math.sqrt(sigma));
 
         // Is the intersection point on the segment?
         if (a >= 0 && a <= input.maxFraction * rr) {
@@ -126,8 +126,8 @@ export class b2CircleShape extends b2Shape {
 
     /// @see b2Shape::ComputeMass
     public ComputeMass(massData: b2MassData, density: number): void {
-        const radius_sq: number = b2Sq(this.m_radius);
-        massData.mass = density * b2_pi * radius_sq;
+        const radius_sq = this.m_radius ** 2;
+        massData.mass = density * Math.PI * radius_sq;
         massData.center.Copy(this.m_p);
 
         // inertia about the local origin
@@ -152,14 +152,14 @@ export class b2CircleShape extends b2Shape {
         if (l > this.m_radius) {
             // Completely wet
             c.Copy(p);
-            return b2_pi * this.m_radius * this.m_radius;
+            return Math.PI * this.m_radius * this.m_radius;
         }
 
         // Magic
         const r2: number = this.m_radius * this.m_radius;
         const l2: number = l * l;
-        const area: number = r2 * (b2Asin(l / this.m_radius) + b2_pi / 2) + l * b2Sqrt(r2 - l2);
-        const com: number = ((-2 / 3) * b2Pow(r2 - l2, 1.5)) / area;
+        const area: number = r2 * (Math.asin(l / this.m_radius) + Math.PI / 2) + l * Math.sqrt(r2 - l2);
+        const com: number = ((-2 / 3) * (r2 - l2) ** 1.5) / area;
 
         c.x = p.x + normal.x * com;
         c.y = p.y + normal.y * com;
