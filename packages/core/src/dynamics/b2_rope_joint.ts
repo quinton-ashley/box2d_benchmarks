@@ -45,6 +45,9 @@ export class b2RopeJointDef extends b2JointDef implements b2IRopeJointDef {
     }
 }
 
+const defaultLocalAnchorA = new b2Vec2(-1, 0);
+const defaultLocalAnchorB = b2Vec2.UNITX;
+
 export class b2RopeJoint extends b2Joint {
     // Solver shared
     public readonly m_localAnchorA: b2Vec2 = new b2Vec2();
@@ -93,8 +96,8 @@ export class b2RopeJoint extends b2Joint {
     constructor(def: b2IRopeJointDef) {
         super(def);
 
-        this.m_localAnchorA.Copy(def.localAnchorA ?? new b2Vec2(-1, 0));
-        this.m_localAnchorB.Copy(def.localAnchorB ?? new b2Vec2(1, 0));
+        this.m_localAnchorA.Copy(def.localAnchorA ?? defaultLocalAnchorA);
+        this.m_localAnchorB.Copy(def.localAnchorB ?? defaultLocalAnchorB);
         this.m_maxLength = def.maxLength ?? 0;
     }
 

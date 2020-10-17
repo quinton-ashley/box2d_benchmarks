@@ -217,7 +217,7 @@ export class b2PrismaticJoint extends b2Joint {
 
         this.m_localAnchorA.Copy(def.localAnchorA ?? b2Vec2.ZERO);
         this.m_localAnchorB.Copy(def.localAnchorB ?? b2Vec2.ZERO);
-        this.m_localXAxisA.Copy(def.localAxisA ?? new b2Vec2(1, 0)).SelfNormalize();
+        this.m_localXAxisA.Copy(def.localAxisA ?? b2Vec2.UNITX).SelfNormalize();
         b2Vec2.CrossOneV(this.m_localXAxisA, this.m_localYAxisA);
         this.m_referenceAngle = def.referenceAngle ?? 0;
         this.m_lowerTranslation = def.lowerTranslation ?? 0;

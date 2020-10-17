@@ -85,6 +85,11 @@ export class b2PulleyJointDef extends b2JointDef implements b2IPulleyJointDef {
     }
 }
 
+const defaultGroundAnchorA = new b2Vec2(-1, 1);
+const defaultGroundAnchorB = b2Vec2.UNITX;
+const defaultLocalAnchorA = new b2Vec2(-1, 0);
+const defaultLocalAnchorB = b2Vec2.UNITX;
+
 export class b2PulleyJoint extends b2Joint {
     public readonly m_groundAnchorA: b2Vec2 = new b2Vec2();
 
@@ -143,10 +148,10 @@ export class b2PulleyJoint extends b2Joint {
     constructor(def: b2IPulleyJointDef) {
         super(def);
 
-        this.m_groundAnchorA.Copy(def.groundAnchorA ?? new b2Vec2(-1, 1));
-        this.m_groundAnchorB.Copy(def.groundAnchorB ?? new b2Vec2(1, 0));
-        this.m_localAnchorA.Copy(def.localAnchorA ?? new b2Vec2(-1, 0));
-        this.m_localAnchorB.Copy(def.localAnchorB ?? new b2Vec2(1, 0));
+        this.m_groundAnchorA.Copy(def.groundAnchorA ?? defaultGroundAnchorA);
+        this.m_groundAnchorB.Copy(def.groundAnchorB ?? defaultGroundAnchorB);
+        this.m_localAnchorA.Copy(def.localAnchorA ?? defaultLocalAnchorA);
+        this.m_localAnchorB.Copy(def.localAnchorB ?? defaultLocalAnchorB);
 
         this.m_lengthA = def.lengthA ?? 0;
         this.m_lengthB = def.lengthB ?? 0;
