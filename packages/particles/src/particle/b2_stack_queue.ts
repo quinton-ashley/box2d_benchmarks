@@ -16,6 +16,8 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
+import { b2Assert } from "@box2d/core";
+
 // DEBUG: import { b2Assert } from "../common/b2_settings";
 
 export class b2StackQueue<T> {
@@ -58,9 +60,7 @@ export class b2StackQueue<T> {
 
     public Front(): T {
         const item = this.m_buffer[this.m_front];
-        if (!item) {
-            throw new Error();
-        }
+        b2Assert(item !== null);
         return item;
     }
 }

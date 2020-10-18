@@ -16,7 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import { XY, RGBA, b2Shape, b2Vec2, b2Color, b2Transform } from "@box2d/core";
+import { XY, RGBA, b2Shape, b2Vec2, b2Color, b2Transform, b2Assert } from "@box2d/core";
 
 import { b2ParticleFlag } from "./b2_particle";
 import type { b2ParticleSystem } from "./b2_particle_system";
@@ -149,9 +149,7 @@ export class b2ParticleGroup {
     }
 
     public GetAllParticleFlags(): b2ParticleFlag {
-        if (!this.m_system.m_flagsBuffer.data) {
-            throw new Error();
-        }
+        b2Assert(this.m_system.m_flagsBuffer.data !== null);
         let flags = 0;
         for (let i = this.m_firstIndex; i < this.m_lastIndex; i++) {
             flags |= this.m_system.m_flagsBuffer.data[i];
@@ -237,9 +235,7 @@ export class b2ParticleGroup {
     }
 
     public DestroyParticles(callDestructionListener: boolean): void {
-        if (this.m_system.m_world.IsLocked()) {
-            throw new Error();
-        }
+        b2Assert(!this.m_system.m_world.IsLocked());
 
         for (let i = this.m_firstIndex; i < this.m_lastIndex; i++) {
             this.m_system.DestroyParticle(i, callDestructionListener);
@@ -247,12 +243,8 @@ export class b2ParticleGroup {
     }
 
     public UpdateStatistics(): void {
-        if (!this.m_system.m_positionBuffer.data) {
-            throw new Error();
-        }
-        if (!this.m_system.m_velocityBuffer.data) {
-            throw new Error();
-        }
+        b2Assert(this.m_system.m_positionBuffer.data !== null);
+        b2Assert(this.m_system.m_velocityBuffer.data !== null);
         const p = new b2Vec2();
         const v = new b2Vec2();
         if (this.m_timestamp !== this.m_system.m_timestamp) {

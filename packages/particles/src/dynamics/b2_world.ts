@@ -25,6 +25,7 @@ import {
     b2QueryCallback,
     b2RayCastCallback,
     b2Writeable,
+    b2Assert,
 } from "@box2d/core";
 
 import { b2CalculateParticleIterations } from "../particle/b2_particle";
@@ -58,9 +59,7 @@ function GetSmallestRadius(world: b2World): number {
 }
 Object.assign(b2World.prototype, {
     CreateParticleSystem(this: b2World, def: b2ParticleSystemDef): b2ParticleSystem {
-        if (this.IsLocked()) {
-            throw new Error();
-        }
+        b2Assert(!this.IsLocked());
 
         const p = new b2ParticleSystem(def, this);
 
@@ -75,9 +74,7 @@ Object.assign(b2World.prototype, {
         return p;
     },
     DestroyParticleSystem(this: b2World, p: b2ParticleSystem): void {
-        if (this.IsLocked()) {
-            throw new Error();
-        }
+        b2Assert(!this.IsLocked());
 
         // Remove world particleSystem list.
         if (p.m_prev) {

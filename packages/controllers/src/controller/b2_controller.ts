@@ -16,7 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import { b2TimeStep, b2Body } from "@box2d/core";
+import { b2TimeStep, b2Body, b2Assert } from "@box2d/core";
 
 /**
  * A controller edge is used to connect bodies and controllers
@@ -117,10 +117,7 @@ export abstract class b2Controller {
      * Removes a body from the controller list.
      */
     public RemoveBody(body: b2Body): void {
-        // Assert that the controller is not empty
-        if (this.m_bodyCount <= 0) {
-            throw new Error();
-        }
+        b2Assert(this.m_bodyCount > 0, "Controller is empty");
 
         // Find the corresponding edge
         /* b2ControllerEdge */
@@ -129,10 +126,7 @@ export abstract class b2Controller {
             edge = edge.nextBody;
         }
 
-        // Assert that we are removing a body that is currently attached to the controller
-        if (edge === null) {
-            throw new Error();
-        }
+        b2Assert(edge !== null, "Body is not attached to the controller");
 
         // Remove edge from controller list
         if (edge.prevBody) {

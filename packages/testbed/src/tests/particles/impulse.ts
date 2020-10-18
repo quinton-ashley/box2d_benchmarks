@@ -16,7 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import { b2BodyDef, b2Vec2, b2ChainShape, b2PolygonShape, XY } from "@box2d/core";
+import { b2BodyDef, b2Vec2, b2ChainShape, b2PolygonShape, XY, b2Assert } from "@box2d/core";
 import { b2ParticleGroupDef, b2ParticleFlag } from "@box2d/particles";
 
 import { HotKey, hotKeyPress } from "../../utils/hotkeys";
@@ -99,13 +99,9 @@ export class Impulse extends Test {
 
     public ApplyImpulseOrForce(direction: b2Vec2) {
         const particleSystem = this.m_world.GetParticleSystemList();
-        if (!particleSystem) {
-            throw new Error();
-        }
+        b2Assert(particleSystem !== null);
         const particleGroup = particleSystem.GetParticleGroupList();
-        if (!particleGroup) {
-            throw new Error();
-        }
+        b2Assert(particleGroup !== null);
         const numParticles = particleGroup.GetParticleCount();
 
         if (this.m_useLinearImpulse) {

@@ -23,6 +23,7 @@ import type { b2ContactEdge } from "./b2_contact";
 import { b2JointEdge } from "./b2_joint";
 import { b2Fixture, b2FixtureDef, b2IFixtureDef } from "./b2_fixture";
 import type { b2World } from "./b2_world";
+import { b2Assert } from "../common/b2_settings";
 
 /// The body type.
 /// static: zero mass, zero velocity, may be manually moved
@@ -290,9 +291,7 @@ export class b2Body {
     /// @param def the fixture definition.
     /// @warning This function is locked during callbacks.
     public CreateFixtureDef(def: b2IFixtureDef): b2Fixture {
-        if (this.m_world.IsLocked()) {
-            throw new Error();
-        }
+        b2Assert(!this.m_world.IsLocked());
 
         const fixture: b2Fixture = new b2Fixture(this, def);
 
@@ -342,9 +341,7 @@ export class b2Body {
     /// @param fixture the fixture to be removed.
     /// @warning This function is locked during callbacks.
     public DestroyFixture(fixture: b2Fixture): void {
-        if (this.m_world.IsLocked()) {
-            throw new Error();
-        }
+        b2Assert(!this.m_world.IsLocked());
 
         // DEBUG: b2Assert(fixture.m_body === this);
 
@@ -411,9 +408,7 @@ export class b2Body {
     }
 
     public SetTransformXY(x: number, y: number, angle: number): void {
-        if (this.m_world.IsLocked()) {
-            throw new Error();
-        }
+        b2Assert(!this.m_world.IsLocked());
 
         this.m_xf.q.SetAngle(angle);
         this.m_xf.p.Set(x, y);
@@ -683,9 +678,7 @@ export class b2Body {
     private static SetMassData_s_oldCenter: b2Vec2 = new b2Vec2();
 
     public SetMassData(massData: b2MassData): void {
-        if (this.m_world.IsLocked()) {
-            throw new Error();
-        }
+        b2Assert(!this.m_world.IsLocked());
 
         if (this.m_type !== b2BodyType.b2_dynamicBody) {
             return;
@@ -875,9 +868,7 @@ export class b2Body {
 
     /// Set the type of this body. This may alter the mass and velocity.
     public SetType(type: b2BodyType): void {
-        if (this.m_world.IsLocked()) {
-            throw new Error();
-        }
+        b2Assert(!this.m_world.IsLocked());
 
         if (this.m_type === type) {
             return;
@@ -984,9 +975,7 @@ export class b2Body {
     /// An diabled body is still owned by a b2World object and remains
     /// in the body list.
     public SetEnabled(flag: boolean): void {
-        if (this.m_world.IsLocked()) {
-            throw new Error();
-        }
+        b2Assert(!this.m_world.IsLocked());
 
         if (flag === this.IsEnabled()) {
             return;

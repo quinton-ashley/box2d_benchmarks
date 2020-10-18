@@ -17,7 +17,7 @@
  */
 
 // DEBUG: import { b2Assert, b2_epsilon_sq } from "../common/b2_settings";
-import { b2_epsilon, b2_linearSlop, b2_polygonRadius } from "../common/b2_settings";
+import { b2Assert, b2_epsilon, b2_linearSlop, b2_polygonRadius } from "../common/b2_settings";
 import { b2Vec2, b2Rot, b2Transform, XY } from "../common/b2_math";
 import { b2AABB, b2RayCastInput, b2RayCastOutput } from "./b2_collision";
 import { b2DistanceProxy } from "./b2_distance";
@@ -82,9 +82,7 @@ export class b2PolygonShape extends b2Shape {
     public Set(...args: any[]): b2PolygonShape {
         if (typeof args[0][0] === "number") {
             const vertices: number[] = args[0];
-            if (vertices.length % 2 !== 0) {
-                throw new Error();
-            }
+            b2Assert(vertices.length % 2 === 0);
             return this.SetEx(
                 (index: number): XY => ({ x: vertices[index * 2], y: vertices[index * 2 + 1] }),
                 vertices.length / 2

@@ -17,7 +17,7 @@
  */
 
 // DEBUG: import { b2Assert } from "../common/b2_settings";
-import { b2_epsilon, b2_maxSubSteps, b2_maxTOIContacts } from "../common/b2_settings";
+import { b2Assert, b2_epsilon, b2_maxSubSteps, b2_maxTOIContacts } from "../common/b2_settings";
 import { b2Vec2, b2Transform, b2Sweep, XY } from "../common/b2_math";
 import { b2Timer } from "../common/b2_timer";
 import { b2AABB, b2RayCastInput, b2RayCastOutput, b2TestOverlapShape } from "../collision/b2_collision";
@@ -131,9 +131,7 @@ export class b2World {
     /// is retained.
     /// @warning This function is locked during callbacks.
     public CreateBody(def: b2IBodyDef = {}): b2Body {
-        if (this.IsLocked()) {
-            throw new Error();
-        }
+        b2Assert(!this.IsLocked());
 
         const b: b2Body = new b2Body(def, this);
 
@@ -155,9 +153,7 @@ export class b2World {
     /// @warning This function is locked during callbacks.
     public DestroyBody(b: b2Body): void {
         // DEBUG: b2Assert(this.m_bodyCount > 0);
-        if (this.IsLocked()) {
-            throw new Error();
-        }
+        b2Assert(!this.IsLocked());
 
         // Delete the attached joints.
         let je: b2JointEdge | null = b.m_jointList;
@@ -277,9 +273,7 @@ export class b2World {
     public CreateJoint(def: b2IWheelJointDef): b2WheelJoint;
 
     public CreateJoint(def: b2IJointDef): b2Joint {
-        if (this.IsLocked()) {
-            throw new Error();
-        }
+        b2Assert(!this.IsLocked());
 
         const j: b2Joint = b2World.Joint_Create(def);
 
@@ -335,9 +329,7 @@ export class b2World {
     /// Destroy a joint. This may cause the connected bodies to begin colliding.
     /// @warning This function is locked during callbacks.
     public DestroyJoint(j: b2Joint): void {
-        if (this.IsLocked()) {
-            throw new Error();
-        }
+        b2Assert(!this.IsLocked());
 
         // Remove from the doubly linked list.
         if (j.m_prev) {
@@ -822,9 +814,7 @@ export class b2World {
     /// The body shift formula is: position -= newOrigin
     /// @param newOrigin the new origin with respect to the old origin
     public ShiftOrigin(newOrigin: XY): void {
-        if (this.IsLocked()) {
-            throw new Error();
-        }
+        b2Assert(!this.IsLocked());
 
         for (let b: b2Body | null = this.m_bodyList; b; b = b.m_next) {
             b.m_xf.p.SelfSub(newOrigin);
@@ -953,9 +943,7 @@ export class b2World {
             while (stackCount > 0) {
                 // Grab the next body off the stack and add it to the island.
                 const b: b2Body | null = stack[--stackCount];
-                if (!b) {
-                    throw new Error();
-                }
+                b2Assert(b !== null);
                 // DEBUG: b2Assert(b.IsEnabled());
                 island.AddBody(b);
 

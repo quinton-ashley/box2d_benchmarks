@@ -16,6 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
+import { b2Assert } from "@box2d/core";
 import { b2ParticleFlag } from "@box2d/particles";
 
 export enum ParticleParameterOptions {
@@ -205,23 +206,17 @@ export class ParticleParameter {
     }
 
     public GetValue(): number {
-        if (this.m_value === null) {
-            throw new Error();
-        }
+        b2Assert(this.m_value !== null);
         return this.m_value.value;
     }
 
     public GetName(): string {
-        if (this.m_value === null) {
-            throw new Error();
-        }
+        b2Assert(this.m_value !== null);
         return this.m_value.name;
     }
 
     public GetOptions(): ParticleParameterOptions {
-        if (this.m_value === null) {
-            throw new Error();
-        }
+        b2Assert(this.m_value !== null);
         return this.m_value.options;
     }
 

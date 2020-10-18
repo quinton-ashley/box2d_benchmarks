@@ -17,14 +17,12 @@
  */
 
 // DEBUG: import { b2Assert } from "../common/b2_settings";
-import { b2_aabbExtension, b2_aabbMultiplier } from "../common/b2_settings";
+import { b2Assert, b2_aabbExtension, b2_aabbMultiplier } from "../common/b2_settings";
 import { b2Vec2, XY } from "../common/b2_math";
 import { b2AABB, b2RayCastInput, b2TestOverlapAABB } from "./b2_collision";
 
 function verify<T>(value: T | null): T {
-    if (value === null) {
-        throw new Error();
-    }
+    b2Assert(value !== null);
     return value;
 }
 
@@ -37,16 +35,12 @@ export class b2TreeNode<T> {
     private m_userData: T | null = null;
 
     public get userData(): T {
-        if (this.m_userData === null) {
-            throw new Error();
-        }
+        b2Assert(this.m_userData !== null);
         return this.m_userData;
     }
 
     public set userData(value: T) {
-        if (this.m_userData !== null) {
-            throw new Error();
-        }
+        b2Assert(this.m_userData === null);
         this.m_userData = value;
     }
 

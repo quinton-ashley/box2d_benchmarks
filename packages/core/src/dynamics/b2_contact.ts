@@ -16,7 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import { b2_linearSlop } from "../common/b2_settings";
+import { b2Assert, b2_linearSlop } from "../common/b2_settings";
 import { b2Transform, b2Sweep } from "../common/b2_math";
 import {
     b2Manifold,
@@ -47,16 +47,12 @@ export class b2ContactEdge {
     private m_other: b2Body | null = null; /// < provides quick access to the other body attached.
 
     public get other(): b2Body {
-        if (this.m_other === null) {
-            throw new Error();
-        }
+        b2Assert(this.m_other !== null);
         return this.m_other;
     }
 
     public set other(value: b2Body) {
-        if (this.m_other !== null) {
-            throw new Error();
-        }
+        b2Assert(this.m_other === null);
         this.m_other = value;
     }
 

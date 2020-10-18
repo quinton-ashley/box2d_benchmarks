@@ -18,6 +18,7 @@
 
 // DEBUG: import { b2Assert } from "../common/b2_settings";
 import { b2Vec2, XY } from "../common/b2_math";
+import { b2Assert } from "../common/b2_settings";
 import type { b2Body } from "./b2_body";
 import { b2SolverData } from "./b2_time_step";
 
@@ -68,16 +69,12 @@ export class b2JointEdge {
     private m_other: b2Body | null = null; /// < provides quick access to the other body attached.
 
     public get other(): b2Body {
-        if (this.m_other === null) {
-            throw new Error();
-        }
+        b2Assert(this.m_other !== null);
         return this.m_other;
     }
 
     public set other(value: b2Body) {
-        if (this.m_other !== null) {
-            throw new Error();
-        }
+        b2Assert(this.m_other === null);
         this.m_other = value;
     }
 

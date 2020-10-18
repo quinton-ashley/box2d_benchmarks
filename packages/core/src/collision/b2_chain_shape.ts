@@ -17,7 +17,7 @@
  */
 
 // DEBUG: import { b2Assert, b2_linearSlop } from "../common/b2_settings";
-import { b2_polygonRadius } from "../common/b2_settings";
+import { b2Assert, b2_polygonRadius } from "../common/b2_settings";
 import { b2Vec2, b2Transform, XY } from "../common/b2_math";
 import { b2AABB, b2RayCastInput, b2RayCastOutput } from "./b2_collision";
 import { b2DistanceProxy } from "./b2_distance";
@@ -54,9 +54,7 @@ export class b2ChainShape extends b2Shape {
     public CreateLoop(...args: any[]): b2ChainShape {
         if (typeof args[0][0] === "number") {
             const vertices: number[] = args[0];
-            if (vertices.length % 2 !== 0) {
-                throw new Error();
-            }
+            b2Assert(vertices.length % 2 === 0);
             return this.CreateLoopEx(
                 (index: number): XY => ({ x: vertices[index * 2], y: vertices[index * 2 + 1] }),
                 vertices.length / 2
@@ -106,9 +104,7 @@ export class b2ChainShape extends b2Shape {
             const vertices: number[] = args[0];
             const prevVertex: Readonly<XY> = args[1];
             const nextVertex: Readonly<XY> = args[2];
-            if (vertices.length % 2 !== 0) {
-                throw new Error();
-            }
+            b2Assert(vertices.length % 2 === 0);
             return this.CreateChainEx(
                 (index: number): XY => ({ x: vertices[index * 2], y: vertices[index * 2 + 1] }),
                 vertices.length / 2,

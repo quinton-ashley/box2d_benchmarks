@@ -22,6 +22,7 @@ import { b2AABB, b2RayCastInput, b2RayCastOutput } from "../collision/b2_collisi
 import { b2TreeNode } from "../collision/b2_dynamic_tree";
 import { b2Shape, b2ShapeType, b2MassData } from "../collision/b2_shape";
 import type { b2Body } from "./b2_body";
+import { b2Assert } from "../common/b2_settings";
 
 /// This holds contact filtering data.
 export interface b2IFilter {
@@ -384,9 +385,7 @@ export class b2Fixture {
 
     // These support body activation/deactivation.
     public CreateProxies(): void {
-        if (this.m_proxies.length !== 0) {
-            throw new Error();
-        }
+        b2Assert(this.m_proxies.length === 0);
         // Create proxies in the broad-phase.
         for (let i = 0; i < this.m_shape.GetChildCount(); ++i) {
             this.m_proxies[i] = new b2FixtureProxy(this, i);

@@ -16,7 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import { b2Vec2, b2Color } from "@box2d/core";
+import { b2Vec2, b2Color, b2Assert } from "@box2d/core";
 import {
     b2ParticleSystem,
     b2ParticleFlag,
@@ -268,9 +268,7 @@ export class RadialEmitter {
         particleIndices?: number[],
         particleIndicesCount: number = particleIndices ? particleIndices.length : 0
     ): number {
-        if (this.m_particleSystem === null) {
-            throw new Error();
-        }
+        b2Assert(this.m_particleSystem !== null);
         let numberOfParticlesCreated = 0;
         // How many (fractional) particles should we have emitted this frame?
         this.m_emitRemainder += this.m_emitRate * dt;

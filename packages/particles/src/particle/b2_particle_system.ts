@@ -44,6 +44,7 @@ import {
     b2RayCastInput,
     b2MassData,
     b2DistanceProxy,
+    b2Assert,
 } from "@box2d/core";
 
 // DEBUG: import { b2Assert, b2_maxParticleIndex } from "../common/b2_settings";
@@ -907,9 +908,7 @@ export class b2ParticleSystem {
      * warning: This function is locked during callbacks.
      */
     public CreateParticle(def: b2IParticleDef): number {
-        if (this.m_world.IsLocked()) {
-            throw new Error();
-        }
+        b2Assert(!this.m_world.IsLocked());
 
         if (this.m_count >= this.m_internalAllocatedCapacity) {
             // Double the particle capacity.
@@ -1090,9 +1089,7 @@ export class b2ParticleSystem {
      */
     public DestroyParticlesInShape(shape: b2Shape, xf: b2Transform, callDestructionListener = false): number {
         const s_aabb = b2ParticleSystem.DestroyParticlesInShape_s_aabb;
-        if (this.m_world.IsLocked()) {
-            throw new Error();
-        }
+        b2Assert(!this.m_world.IsLocked());
 
         const callback = new b2ParticleSystem_DestroyParticlesInShapeCallback(this, shape, xf, callDestructionListener);
 
@@ -1114,9 +1111,7 @@ export class b2ParticleSystem {
     public CreateParticleGroup(groupDef: b2IParticleGroupDef): b2ParticleGroup {
         const s_transform = b2ParticleSystem.CreateParticleGroup_s_transform;
 
-        if (this.m_world.IsLocked()) {
-            throw new Error();
-        }
+        b2Assert(!this.m_world.IsLocked());
 
         const transform = s_transform;
         transform.SetPositionAngle(groupDef.position ?? b2Vec2.ZERO, groupDef.angle ?? 0);
@@ -1183,9 +1178,7 @@ export class b2ParticleSystem {
      * @param groupB the second group. It is destroyed.
      */
     public JoinParticleGroups(groupA: b2ParticleGroup, groupB: b2ParticleGroup): void {
-        if (this.m_world.IsLocked()) {
-            throw new Error();
-        }
+        b2Assert(!this.m_world.IsLocked());
 
         // DEBUG: b2Assert(groupA !== groupB);
         this.RotateBuffer(groupB.m_firstIndex, groupB.m_lastIndex, this.m_count);
@@ -2145,10 +2138,7 @@ export class b2ParticleSystem {
      * Reallocate a buffer
      */
     public ReallocateBuffer3<T>(oldBuffer: T[] | null, oldCapacity: number, newCapacity: number): T[] {
-        // b2Assert(newCapacity > oldCapacity);
-        if (newCapacity <= oldCapacity) {
-            throw new Error();
-        }
+        b2Assert(newCapacity > oldCapacity);
         const newBuffer = oldBuffer ? oldBuffer.slice() : [];
         newBuffer.length = newCapacity;
         return newBuffer;
@@ -2164,21 +2154,15 @@ export class b2ParticleSystem {
         newCapacity: number,
         deferred: boolean
     ): T[] {
-        // b2Assert(newCapacity > oldCapacity);
-        if (newCapacity <= oldCapacity) {
-            throw new Error();
-        }
+        b2Assert(newCapacity > oldCapacity);
         // A 'deferred' buffer is reallocated only if it is not NULL.
         // If 'userSuppliedCapacity' is not zero, buffer is user supplied and must
         // be kept.
-        // b2Assert(!userSuppliedCapacity || newCapacity <= userSuppliedCapacity);
-        if (!(!userSuppliedCapacity || newCapacity <= userSuppliedCapacity)) {
-            throw new Error();
-        }
+        b2Assert(!userSuppliedCapacity || newCapacity <= userSuppliedCapacity);
         if ((!deferred || buffer) && !userSuppliedCapacity) {
             buffer = this.ReallocateBuffer3(buffer, oldCapacity, newCapacity);
         }
-        return buffer as any; // TODO: fix this
+        return buffer as T[]; // TODO: fix this
     }
 
     /**
@@ -5573,7 +5557,6 @@ export class b2ParticleSystem_CompositeShape extends b2Shape {
     public m_shapeCount = 0;
 
     public Clone(): b2Shape {
-        // DEBUG: b2Assert(false);
         throw new Error();
     }
 

@@ -16,11 +16,8 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-export function b2Assert(condition: boolean, ...args: any[]): void {
-    if (!condition) {
-        // debugger;
-        throw new Error(...args);
-    }
+export function b2Assert(condition: boolean, message?: string): asserts condition {
+    if (!condition) throw new Error(message);
 }
 
 export const b2_maxFloat = 1e37; // FLT_MAX instead of Number.MAX_VALUE;
