@@ -104,35 +104,6 @@ export const b2_linearSleepTolerance = 0.01;
 /// A body cannot sleep if its angular velocity is above this tolerance.
 export const b2_angularSleepTolerance: number = (2 / 180) * Math.PI;
 
-// Memory Allocation
-
-// FILE* b2_dumpFile = nullptr;
-
-// void b2OpenDump(const char* fileName)
-// {
-// 	b2Assert(b2_dumpFile == nullptr);
-// 	b2_dumpFile = fopen(fileName, "w");
-// }
-
-// void b2Dump(const char* string, ...)
-// {
-// 	if (b2_dumpFile == nullptr)
-// 	{
-// 		return;
-// 	}
-
-// 	va_list args;
-// 	va_start(args, string);
-// 	vfprintf(b2_dumpFile, string, args);
-// 	va_end(args);
-// }
-
-// void b2CloseDump()
-// {
-// 	fclose(b2_dumpFile);
-// 	b2_dumpFile = nullptr;
-// }
-
 /// Version numbering scheme.
 /// See http://en.wikipedia.org/wiki/Software_versioning
 export class b2Version {
@@ -155,9 +126,6 @@ export class b2Version {
 
 /// Current version.
 export const b2_version: b2Version = new b2Version(2, 4, 0);
-
-export const b2_branch = "master";
-export const b2_commit = "4d7757feedc9dd36f64393ae08acfd3b9600ac17";
 
 export function b2ParseInt(v: string): number {
     return parseInt(v, 10);
