@@ -16,6 +16,13 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
+// Tunable Constants
+// TODO: Make this overridable by user as box2d allows it too.
+
+/// You can use this to change the length scale used by your game.
+/// For example for inches you could use 39.4.
+export const b2_lengthUnitsPerMeter = 1;
+
 /// The maximum number of vertices on a convex polygon. You cannot increase
 /// this too much because b2BlockAllocator has a maximum object size.
 export const b2_maxPolygonVertices = 8;

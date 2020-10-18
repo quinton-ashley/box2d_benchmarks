@@ -16,6 +16,8 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
+import { b2_lengthUnitsPerMeter } from "./b2_settings";
+
 export function b2Assert(condition: boolean, message?: string): asserts condition {
     if (!condition) throw new Error(message);
 }
@@ -37,7 +39,7 @@ export const b2_maxManifoldPoints = 2;
 /// This is used to fatten AABBs in the dynamic tree. This allows proxies
 /// to move by a small amount without triggering a tree adjustment.
 /// This is in meters.
-export const b2_aabbExtension = 0.1;
+export const b2_aabbExtension = 0.1 * b2_lengthUnitsPerMeter;
 
 /// This is used to fatten AABBs in the dynamic tree. This is used to predict
 /// the future position based on the current displacement.
@@ -46,7 +48,7 @@ export const b2_aabbMultiplier = 4;
 
 /// A small length used as a collision and constraint tolerance. Usually it is
 /// chosen to be numerically significant, but visually insignificant.
-export const b2_linearSlop = 0.008; // 0.005;
+export const b2_linearSlop = 0.005 * b2_lengthUnitsPerMeter;
 
 /// A small angle used as a collision and constraint tolerance. Usually it is
 /// chosen to be numerically significant, but visually insignificant.
@@ -65,13 +67,9 @@ export const b2_maxSubSteps = 8;
 /// Maximum number of contacts to be handled to solve a TOI impact.
 export const b2_maxTOIContacts = 32;
 
-/// A velocity threshold for elastic collisions. Any collision with a relative linear
-/// velocity below this threshold will be treated as inelastic.
-export const b2_velocityThreshold = 1;
-
 /// The maximum linear position correction used when solving constraints. This helps to
 /// prevent overshoot.
-export const b2_maxLinearCorrection = 0.2;
+export const b2_maxLinearCorrection = 0.2 * b2_lengthUnitsPerMeter;
 
 /// The maximum angular position correction used when solving constraints. This helps to
 /// prevent overshoot.
@@ -79,7 +77,7 @@ export const b2_maxAngularCorrection: number = (8 / 180) * Math.PI;
 
 /// The maximum linear velocity of a body. This limit is very large and is used
 /// to prevent numerical problems. You shouldn't need to adjust this.
-export const b2_maxTranslation = 2;
+export const b2_maxTranslation = 2 * b2_lengthUnitsPerMeter;
 export const b2_maxTranslationSquared: number = b2_maxTranslation * b2_maxTranslation;
 
 /// The maximum angular velocity of a body. This limit is very large and is used
@@ -99,7 +97,7 @@ export const b2_toiBaumgarte = 0.75;
 export const b2_timeToSleep = 0.5;
 
 /// A body cannot sleep if its linear velocity is above this tolerance.
-export const b2_linearSleepTolerance = 0.01;
+export const b2_linearSleepTolerance = 0.01 * b2_lengthUnitsPerMeter;
 
 /// A body cannot sleep if its angular velocity is above this tolerance.
 export const b2_angularSleepTolerance: number = (2 / 180) * Math.PI;

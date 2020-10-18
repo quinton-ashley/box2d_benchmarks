@@ -23,6 +23,7 @@ import { b2TreeNode } from "../collision/b2_dynamic_tree";
 import { b2Shape, b2ShapeType, b2MassData } from "../collision/b2_shape";
 import type { b2Body } from "./b2_body";
 import { b2Assert } from "../common/b2_common";
+import { b2_lengthUnitsPerMeter } from "../common/b2_settings";
 
 /// This holds contact filtering data.
 export interface b2IFilter {
@@ -83,6 +84,10 @@ export interface b2IFixtureDef {
 
     /// The restitution (elasticity) usually in the range [0,1].
     restitution?: number;
+
+    /// Restitution velocity threshold, usually in m/s. Collisions above this
+    /// speed have restitution applied (will bounce).
+    restitutionThreshold?: number;
 
     /// The density, usually in kg/m^2.
     density?: number;
@@ -189,6 +194,8 @@ export class b2Fixture {
 
     public m_restitution = 0;
 
+    public m_restitutionThreshold = 0;
+
     public readonly m_proxies: b2FixtureProxy[] = [];
 
     public get m_proxyCount(): number {
@@ -207,6 +214,7 @@ export class b2Fixture {
         this.m_userData = def.userData ?? null;
         this.m_friction = def.friction ?? 0.2;
         this.m_restitution = def.restitution ?? 0;
+        this.m_restitutionThreshold = def.restitutionThreshold ?? b2_lengthUnitsPerMeter;
         this.m_filter.Copy(def.filter ?? b2Filter.DEFAULT);
         this.m_isSensor = def.isSensor ?? false;
         this.m_density = def.density ?? 0;
@@ -369,6 +377,7 @@ export class b2Fixture {
         log("    const fd: b2FixtureDef = new b2FixtureDef();\n");
         log("    fd.friction = %.15f;\n", this.m_friction);
         log("    fd.restitution = %.15f;\n", this.m_restitution);
+        log("    fd.m_restitutionThreshold = %.15f;\n", this.m_restitutionThreshold);
         log("    fd.density = %.15f;\n", this.m_density);
         log("    fd.isSensor = %s;\n", this.m_isSensor ? "true" : "false");
         log("    fd.filter.categoryBits = %d;\n", this.m_filter.categoryBits);

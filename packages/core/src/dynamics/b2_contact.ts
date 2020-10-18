@@ -43,6 +43,11 @@ export function b2MixRestitution(restitution1: number, restitution2: number): nu
     return restitution1 > restitution2 ? restitution1 : restitution2;
 }
 
+/// Restitution mixing law. This picks the lowest value.
+export function b2MixRestitutionThreshold(threshold1: number, threshold2: number) {
+    return threshold1 < threshold2 ? threshold1 : threshold2;
+}
+
 export class b2ContactEdge {
     private m_other: b2Body | null = null; /// < provides quick access to the other body attached.
 
@@ -111,6 +116,8 @@ export abstract class b2Contact<A extends b2Shape = b2Shape, B extends b2Shape =
     public m_friction = 0;
 
     public m_restitution = 0;
+
+    public m_restitutionThreshold = 0;
 
     public m_tangentSpeed = 0;
 
@@ -204,6 +211,25 @@ export abstract class b2Contact<A extends b2Shape = b2Shape, B extends b2Shape =
         this.m_restitution = b2MixRestitution(this.m_fixtureA.m_restitution, this.m_fixtureB.m_restitution);
     }
 
+    /// Override the default restitution velocity threshold mixture. You can call this in b2ContactListener::PreSolve.
+    /// The value persists until you set or reset.
+    public SetRestitutionThreshold(threshold: number) {
+        this.m_restitutionThreshold = threshold;
+    }
+
+    /// Get the restitution threshold.
+    public GetRestitutionThreshold() {
+        return this.m_restitutionThreshold;
+    }
+
+    /// Reset the restitution threshold to the default value.
+    public ResetRestitutionThreshold() {
+        this.m_restitutionThreshold = b2MixRestitutionThreshold(
+            this.m_fixtureA.m_restitutionThreshold,
+            this.m_fixtureB.m_restitutionThreshold,
+        );
+    }
+
     public SetTangentSpeed(speed: number): void {
         this.m_tangentSpeed = speed;
     }
@@ -238,6 +264,10 @@ export abstract class b2Contact<A extends b2Shape = b2Shape, B extends b2Shape =
 
         this.m_friction = b2MixFriction(this.m_fixtureA.m_friction, this.m_fixtureB.m_friction);
         this.m_restitution = b2MixRestitution(this.m_fixtureA.m_restitution, this.m_fixtureB.m_restitution);
+        this.m_restitutionThreshold = b2MixRestitutionThreshold(
+            this.m_fixtureA.m_restitutionThreshold,
+            this.m_fixtureB.m_restitutionThreshold,
+        );
     }
 
     public Update(listener: b2ContactListener): void {
