@@ -16,13 +16,13 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-// DEBUG: import { b2Assert } from "../common/b2_settings";
+// DEBUG: import { b2Assert } from "../common/b2_common";
 import { b2Vec2, b2Transform, XY } from "../common/b2_math";
 import { b2AABB, b2RayCastInput, b2RayCastOutput } from "../collision/b2_collision";
 import { b2TreeNode } from "../collision/b2_dynamic_tree";
 import { b2Shape, b2ShapeType, b2MassData } from "../collision/b2_shape";
 import type { b2Body } from "./b2_body";
-import { b2Assert } from "../common/b2_settings";
+import { b2Assert } from "../common/b2_common";
 
 /// This holds contact filtering data.
 export interface b2IFilter {

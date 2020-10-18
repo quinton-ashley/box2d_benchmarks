@@ -16,7 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-// DEBUG: import { b2Assert } from "../common/b2_settings";
+// DEBUG: import { b2Assert } from "../common/b2_common";
 import {
     b2_linearSlop,
     b2_maxManifoldPoints,
@@ -25,7 +25,7 @@ import {
     b2_baumgarte,
     b2_toiBaumgarte,
     b2MakeArray,
-} from "../common/b2_settings";
+} from "../common/b2_common";
 import { b2Clamp, b2Vec2, b2Mat22, b2Rot, b2Transform } from "../common/b2_math";
 import { b2Manifold, b2ManifoldPoint, b2WorldManifold, b2ManifoldType } from "../collision/b2_collision";
 import { b2Shape } from "../collision/b2_shape";

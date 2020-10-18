@@ -16,8 +16,9 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-// DEBUG: import { b2Assert } from "../common/b2_settings";
-import { b2_linearSlop, b2_maxPolygonVertices } from "../common/b2_settings";
+// DEBUG: import { b2Assert } from "../common/b2_common";
+import { b2_linearSlop } from "../common/b2_common";
+import { b2_maxPolygonVertices } from "../common/b2_settings";
 import { b2Vec2, b2Rot, b2Transform, b2Sweep } from "../common/b2_math";
 import { b2Timer } from "../common/b2_timer";
 import { b2Distance, b2DistanceInput, b2DistanceOutput, b2DistanceProxy, b2SimplexCache } from "./b2_distance";

@@ -1,4 +1,4 @@
-import { b2_linearSlop, b2_maxFloat, b2_maxManifoldPoints } from "../common/b2_settings";
+import { b2_linearSlop, b2_maxFloat, b2_maxManifoldPoints } from "../common/b2_common";
 import { b2Vec2, b2Transform, b2Rot } from "../common/b2_math";
 import {
     b2ContactFeatureType,

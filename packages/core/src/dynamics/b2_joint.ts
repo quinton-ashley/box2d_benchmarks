@@ -16,9 +16,9 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-// DEBUG: import { b2Assert } from "../common/b2_settings";
+// DEBUG: import { b2Assert } from "../common/b2_common";
 import { b2Vec2, XY } from "../common/b2_math";
-import { b2Assert } from "../common/b2_settings";
+import { b2Assert } from "../common/b2_common";
 import type { b2Body } from "./b2_body";
 import { b2SolverData } from "./b2_time_step";
 

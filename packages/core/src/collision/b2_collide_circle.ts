@@ -1,4 +1,4 @@
-import { b2_maxFloat, b2_epsilon } from "../common/b2_settings";
+import { b2_maxFloat, b2_epsilon } from "../common/b2_common";
 import { b2Vec2, b2Transform } from "../common/b2_math";
 import { b2Manifold, b2ManifoldType } from "./b2_collision";
 import { b2CircleShape } from "./b2_circle_shape";

@@ -25,6 +25,7 @@
 
 // These include files constitute the main Box2D API
 
+export * from "./common/b2_common";
 export * from "./common/b2_settings";
 export * from "./common/b2_math";
 export * from "./common/b2_draw";

@@ -16,8 +16,8 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-// DEBUG: import { b2Assert } from "../common/b2_settings";
-import { b2Assert, b2_aabbExtension, b2_aabbMultiplier } from "../common/b2_settings";
+// DEBUG: import { b2Assert } from "../common/b2_common";
+import { b2Assert, b2_aabbExtension, b2_aabbMultiplier } from "../common/b2_common";
 import { b2Vec2, XY } from "../common/b2_math";
 import { b2AABB, b2RayCastInput, b2TestOverlapAABB } from "./b2_collision";
 

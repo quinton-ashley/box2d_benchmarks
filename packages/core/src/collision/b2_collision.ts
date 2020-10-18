@@ -16,7 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-// DEBUG: import { b2Assert } from "../common/b2_settings";
+// DEBUG: import { b2Assert } from "../common/b2_common";
 import {
     b2_maxFloat,
     b2_epsilon,
@@ -24,7 +24,7 @@ import {
     b2_maxManifoldPoints,
     b2MakeArray,
     b2MakeNumberArray,
-} from "../common/b2_settings";
+} from "../common/b2_common";
 import { b2Vec2, b2Rot, b2Transform, XY } from "../common/b2_math";
 import type { b2Shape } from "./b2_shape";
 import { b2Distance, b2DistanceInput, b2DistanceOutput, b2SimplexCache } from "./b2_distance";

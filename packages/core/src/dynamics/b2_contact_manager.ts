@@ -16,7 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-// DEBUG: import { b2Assert } from "../common/b2_settings";
+// DEBUG: import { b2Assert } from "../common/b2_common";
 import { b2BroadPhase } from "../collision/b2_broad_phase";
 import { b2TreeNode } from "../collision/b2_dynamic_tree";
 import { b2TestOverlapAABB } from "../collision/b2_collision";

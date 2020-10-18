@@ -16,7 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-// DEBUG: import { b2Assert } from "../common/b2_settings";
+// DEBUG: import { b2Assert } from "../common/b2_common";
 import {
     b2_maxFloat,
     b2_timeToSleep,
@@ -26,7 +26,7 @@ import {
     b2_maxRotationSquared,
     b2_linearSleepTolerance,
     b2_angularSleepTolerance,
-} from "../common/b2_settings";
+} from "../common/b2_common";
 import { b2Vec2 } from "../common/b2_math";
 import { b2Timer } from "../common/b2_timer";
 import { b2Contact } from "./b2_contact";

@@ -16,8 +16,8 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-// DEBUG: import { b2Assert, b2_epsilon } from "../common/b2_settings";
-import { b2_linearSlop } from "../common/b2_settings";
+// DEBUG: import { b2Assert, b2_epsilon } from "../common/b2_common";
+import { b2_linearSlop } from "../common/b2_common";
 import { b2Vec2, b2Rot, XY } from "../common/b2_math";
 import { b2Body } from "./b2_body";
 import { b2Joint, b2JointDef, b2JointType, b2IJointDef } from "./b2_joint";

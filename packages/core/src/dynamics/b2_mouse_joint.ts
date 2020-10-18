@@ -16,7 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-// DEBUG: import { b2Assert, b2_epsilon } from "../common/b2_settings";
+// DEBUG: import { b2Assert, b2_epsilon } from "../common/b2_common";
 import { b2Vec2, b2Mat22, b2Rot, b2Transform, XY } from "../common/b2_math";
 import { b2Joint, b2JointDef, b2JointType, b2IJointDef } from "./b2_joint";
 import { b2SolverData } from "./b2_time_step";

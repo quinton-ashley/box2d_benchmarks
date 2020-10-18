@@ -1,4 +1,4 @@
-// DEBUG: import { b2Assert } from "../common/b2_settings";
+// DEBUG: import { b2Assert } from "../common/b2_common";
 import { b2ShapeType } from "../collision/b2_shape";
 import { b2Contact } from "./b2_contact";
 import { b2CircleContact } from "./b2_circle_contact";

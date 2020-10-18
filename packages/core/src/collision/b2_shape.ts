@@ -16,7 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-// DEBUG: import { b2Assert } from "../common/b2_settings";
+// DEBUG: import { b2Assert } from "../common/b2_common";
 import { b2Vec2, b2Transform, XY } from "../common/b2_math";
 import { b2AABB, b2RayCastInput, b2RayCastOutput } from "./b2_collision";
 import { b2DistanceProxy } from "./b2_distance";
@@ -34,6 +34,7 @@ export class b2MassData {
 }
 
 export enum b2ShapeType {
+    e_unknown = -1,
     e_circle = 0,
     e_edge = 1,
     e_polygon = 2,

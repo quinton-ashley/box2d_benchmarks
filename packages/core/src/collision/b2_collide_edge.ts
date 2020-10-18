@@ -1,5 +1,5 @@
-// DEBUG: import { b2Assert } from "../common/b2_settings";
-import { b2_maxManifoldPoints } from "../common/b2_settings";
+// DEBUG: import { b2Assert } from "../common/b2_common";
+import { b2_maxManifoldPoints } from "../common/b2_common";
 import { b2Vec2, b2Rot, b2Transform } from "../common/b2_math";
 import {
     b2ContactFeatureType,

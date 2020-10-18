@@ -16,7 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import { b2Assert, b2_linearSlop } from "../common/b2_settings";
+import { b2Assert, b2_linearSlop } from "../common/b2_common";
 import { b2Transform, b2Sweep } from "../common/b2_math";
 import {
     b2Manifold,

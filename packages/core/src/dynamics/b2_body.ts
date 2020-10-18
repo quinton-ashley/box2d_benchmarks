@@ -16,14 +16,14 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-// DEBUG: import { b2Assert } from "../common/b2_settings";
+// DEBUG: import { b2Assert } from "../common/b2_common";
 import { b2Vec2, b2Rot, b2Transform, b2Sweep, XY } from "../common/b2_math";
 import { b2Shape, b2MassData } from "../collision/b2_shape";
 import type { b2ContactEdge } from "./b2_contact";
 import { b2JointEdge } from "./b2_joint";
 import { b2Fixture, b2FixtureDef, b2IFixtureDef } from "./b2_fixture";
 import type { b2World } from "./b2_world";
-import { b2Assert } from "../common/b2_settings";
+import { b2Assert } from "../common/b2_common";
 
 /// The body type.
 /// static: zero mass, zero velocity, may be manually moved

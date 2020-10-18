@@ -16,8 +16,8 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-// DEBUG: import { b2Assert } from "../common/b2_settings";
-import { b2_epsilon, b2_epsilon_sq, b2_polygonRadius, b2_linearSlop } from "../common/b2_settings";
+// DEBUG: import { b2Assert } from "../common/b2_common";
+import { b2_epsilon, b2_epsilon_sq, b2_polygonRadius, b2_linearSlop } from "../common/b2_common";
 import { b2Vec2, b2Rot, b2Transform } from "../common/b2_math";
 import type { b2Shape } from "./b2_shape";
 

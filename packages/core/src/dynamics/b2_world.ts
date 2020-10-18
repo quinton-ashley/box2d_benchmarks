@@ -16,8 +16,8 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-// DEBUG: import { b2Assert } from "../common/b2_settings";
-import { b2Assert, b2_epsilon, b2_maxSubSteps, b2_maxTOIContacts } from "../common/b2_settings";
+// DEBUG: import { b2Assert } from "../common/b2_common";
+import { b2Assert, b2_epsilon, b2_maxSubSteps, b2_maxTOIContacts } from "../common/b2_common";
 import { b2Vec2, b2Transform, b2Sweep, XY } from "../common/b2_math";
 import { b2Timer } from "../common/b2_timer";
 import { b2AABB, b2RayCastInput, b2RayCastOutput, b2TestOverlapShape } from "../collision/b2_collision";

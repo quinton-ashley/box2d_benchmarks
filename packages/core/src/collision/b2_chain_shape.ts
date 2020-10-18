@@ -16,8 +16,8 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-// DEBUG: import { b2Assert, b2_linearSlop } from "../common/b2_settings";
-import { b2Assert, b2_polygonRadius } from "../common/b2_settings";
+// DEBUG: import { b2Assert, b2_linearSlop } from "../common/b2_common";
+import { b2Assert, b2_polygonRadius } from "../common/b2_common";
 import { b2Vec2, b2Transform, XY } from "../common/b2_math";
 import { b2AABB, b2RayCastInput, b2RayCastOutput } from "./b2_collision";
 import { b2DistanceProxy } from "./b2_distance";
