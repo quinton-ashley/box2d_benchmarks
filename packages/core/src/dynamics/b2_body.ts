@@ -547,7 +547,7 @@ export class b2Body {
             this.SetAwake(true);
         }
 
-        // Don't accumulate a force if the body is sleeping.
+        // Don't accumulate a force if the body is sleeping
         if (this.m_awakeFlag) {
             this.m_force.x += force.x;
             this.m_force.y += force.y;
@@ -567,7 +567,7 @@ export class b2Body {
             this.SetAwake(true);
         }
 
-        // Don't accumulate a force if the body is sleeping.
+        // Don't accumulate a force if the body is sleeping
         if (this.m_awakeFlag) {
             this.m_force.x += force.x;
             this.m_force.y += force.y;
@@ -587,7 +587,7 @@ export class b2Body {
             this.SetAwake(true);
         }
 
-        // Don't accumulate a force if the body is sleeping.
+        // Don't accumulate a force if the body is sleeping
         if (this.m_awakeFlag) {
             this.m_torque += torque;
         }
@@ -608,7 +608,7 @@ export class b2Body {
             this.SetAwake(true);
         }
 
-        // Don't accumulate a force if the body is sleeping.
+        // Don't accumulate velocity if the body is sleeping
         if (this.m_awakeFlag) {
             this.m_linearVelocity.x += this.m_invMass * impulse.x;
             this.m_linearVelocity.y += this.m_invMass * impulse.y;
@@ -629,7 +629,7 @@ export class b2Body {
             this.SetAwake(true);
         }
 
-        // Don't accumulate a force if the body is sleeping.
+        // Don't accumulate velocity if the body is sleeping
         if (this.m_awakeFlag) {
             this.m_linearVelocity.x += this.m_invMass * impulse.x;
             this.m_linearVelocity.y += this.m_invMass * impulse.y;
@@ -648,7 +648,7 @@ export class b2Body {
             this.SetAwake(true);
         }
 
-        // Don't accumulate a force if the body is sleeping.
+        // Don't accumulate velocity if the body is sleeping
         if (this.m_awakeFlag) {
             this.m_angularVelocity += this.m_invI * impulse;
         }
