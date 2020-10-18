@@ -161,7 +161,7 @@ export function DrawShape(draw: b2Draw, fixture: b2Fixture, color: b2Color): voi
     const shape: b2Shape = fixture.GetShape();
 
     switch (shape.m_type) {
-        case b2ShapeType.e_circleShape: {
+        case b2ShapeType.e_circle: {
             const circle: b2CircleShape = shape as b2CircleShape;
             const center: b2Vec2 = circle.m_p;
             const radius: number = circle.m_radius;
@@ -170,7 +170,7 @@ export function DrawShape(draw: b2Draw, fixture: b2Fixture, color: b2Color): voi
             break;
         }
 
-        case b2ShapeType.e_edgeShape: {
+        case b2ShapeType.e_edge: {
             const edge: b2EdgeShape = shape as b2EdgeShape;
             const v1: b2Vec2 = edge.m_vertex1;
             const v2: b2Vec2 = edge.m_vertex2;
@@ -183,7 +183,7 @@ export function DrawShape(draw: b2Draw, fixture: b2Fixture, color: b2Color): voi
             break;
         }
 
-        case b2ShapeType.e_chainShape: {
+        case b2ShapeType.e_chain: {
             const chain: b2ChainShape = shape as b2ChainShape;
             const count: number = chain.m_count;
             const vertices: b2Vec2[] = chain.m_vertices;
@@ -197,7 +197,7 @@ export function DrawShape(draw: b2Draw, fixture: b2Fixture, color: b2Color): voi
             break;
         }
 
-        case b2ShapeType.e_polygonShape: {
+        case b2ShapeType.e_polygon: {
             const poly: b2PolygonShape = shape as b2PolygonShape;
             const vertexCount: number = poly.m_count;
             const vertices: b2Vec2[] = poly.m_vertices;

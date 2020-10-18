@@ -33,6 +33,7 @@ export enum b2BendingModel {
     b2_xpbdAngleBendingModel,
     b2_pbdDistanceBendingModel,
     b2_pbdHeightBendingModel,
+    b2_pbdTriangleBendingModel,
 }
 
 ///

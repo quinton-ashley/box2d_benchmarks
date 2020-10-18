@@ -30,13 +30,9 @@ import { b2Assert } from "../common/b2_settings";
 /// kinematic: zero mass, non-zero velocity set by user, moved by solver
 /// dynamic: positive mass, non-zero velocity determined by forces, moved by solver
 export enum b2BodyType {
-    b2_unknown = -1,
-    b2_staticBody = 0,
-    b2_kinematicBody = 1,
-    b2_dynamicBody = 2,
-
-    // TODO_ERIN
-    // b2_bulletBody = 3
+    b2_staticBody,
+    b2_kinematicBody,
+    b2_dynamicBody,
 }
 
 export interface b2IBodyDef {

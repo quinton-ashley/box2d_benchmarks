@@ -23,19 +23,19 @@ import type { b2Body } from "./b2_body";
 import { b2SolverData } from "./b2_time_step";
 
 export enum b2JointType {
-    e_unknownJoint = 0,
-    e_revoluteJoint = 1,
-    e_prismaticJoint = 2,
-    e_distanceJoint = 3,
-    e_pulleyJoint = 4,
-    e_mouseJoint = 5,
-    e_gearJoint = 6,
-    e_wheelJoint = 7,
-    e_weldJoint = 8,
-    e_frictionJoint = 9,
-    e_ropeJoint = 10,
-    e_motorJoint = 11,
-    e_areaJoint = 12,
+    e_unknownJoint,
+    e_revoluteJoint,
+    e_prismaticJoint,
+    e_distanceJoint,
+    e_pulleyJoint,
+    e_mouseJoint,
+    e_gearJoint,
+    e_wheelJoint,
+    e_weldJoint,
+    e_frictionJoint,
+    e_ropeJoint,
+    e_motorJoint,
+    e_areaJoint,
 }
 
 export class b2Jacobian {

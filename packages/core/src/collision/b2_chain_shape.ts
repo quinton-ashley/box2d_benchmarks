@@ -39,7 +39,7 @@ export class b2ChainShape extends b2Shape {
     public readonly m_nextVertex: b2Vec2 = new b2Vec2();
 
     constructor() {
-        super(b2ShapeType.e_chainShape, b2_polygonRadius);
+        super(b2ShapeType.e_chain, b2_polygonRadius);
     }
 
     /// Create a loop. This automatically adjusts connectivity.

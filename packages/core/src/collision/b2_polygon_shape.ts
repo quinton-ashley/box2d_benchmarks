@@ -36,7 +36,7 @@ export class b2PolygonShape extends b2Shape {
     public m_count = 0;
 
     constructor() {
-        super(b2ShapeType.e_polygonShape, b2_polygonRadius);
+        super(b2ShapeType.e_polygon, b2_polygonRadius);
     }
 
     /// Implement b2Shape.

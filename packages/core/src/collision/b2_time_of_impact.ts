@@ -64,11 +64,11 @@ export class b2TOIInput {
 
 /// Output parameters for b2TimeOfImpact.
 export enum b2TOIOutputState {
-    e_unknown = 0,
-    e_failed = 1,
-    e_overlapped = 2,
-    e_touching = 3,
-    e_separated = 4,
+    e_unknown,
+    e_failed,
+    e_overlapped,
+    e_touching,
+    e_separated,
 }
 
 export class b2TOIOutput {
@@ -78,10 +78,9 @@ export class b2TOIOutput {
 }
 
 export enum b2SeparationFunctionType {
-    e_unknown = -1,
-    e_points = 0,
-    e_faceA = 1,
-    e_faceB = 2,
+    e_points,
+    e_faceA,
+    e_faceB,
 }
 
 export class b2SeparationFunction {
@@ -93,7 +92,7 @@ export class b2SeparationFunction {
 
     public readonly m_sweepB: b2Sweep = new b2Sweep();
 
-    public m_type: b2SeparationFunctionType = b2SeparationFunctionType.e_unknown;
+    public m_type: b2SeparationFunctionType = b2SeparationFunctionType.e_points;
 
     public readonly m_localPoint: b2Vec2 = new b2Vec2();
 

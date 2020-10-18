@@ -106,7 +106,7 @@ const implementations: Array<ComputeDistanceFn<any>> = [
     },
     (shape: b2ChainShape, xf, p, normal, childIndex) => {
         shape.GetChildEdge(tempEdgeShape, childIndex);
-        return implementations[b2ShapeType.e_edgeShape](tempEdgeShape, xf, p, normal, 0);
+        return implementations[b2ShapeType.e_edge](tempEdgeShape, xf, p, normal, 0);
     },
 ];
 

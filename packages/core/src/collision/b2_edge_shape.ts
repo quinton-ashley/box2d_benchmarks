@@ -39,7 +39,7 @@ export class b2EdgeShape extends b2Shape {
     public m_oneSided = false;
 
     constructor() {
-        super(b2ShapeType.e_edgeShape, b2_polygonRadius);
+        super(b2ShapeType.e_edge, b2_polygonRadius);
     }
 
     /// Set this as a part of a sequence. Vertex v0 precedes the edge and vertex v3

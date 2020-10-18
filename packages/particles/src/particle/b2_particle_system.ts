@@ -2375,10 +2375,10 @@ export class b2ParticleSystem {
         const childCount = shape.GetChildCount();
         for (let childIndex = 0; childIndex < childCount; childIndex++) {
             let edge: b2EdgeShape | null = null;
-            if (shape.GetType() === b2ShapeType.e_edgeShape) {
+            if (shape.GetType() === b2ShapeType.e_edge) {
                 edge = shape as b2EdgeShape;
             } else {
-                // DEBUG: b2Assert(shape.GetType() === b2ShapeType.e_chainShape);
+                // DEBUG: b2Assert(shape.GetType() === b2ShapeType.e_chain);
                 edge = s_edge;
                 (shape as b2ChainShape).GetChildEdge(edge, childIndex);
             }
@@ -2430,12 +2430,12 @@ export class b2ParticleSystem {
 
     public CreateParticlesWithShapeForGroup(shape: b2Shape, groupDef: b2IParticleGroupDef, xf: b2Transform): void {
         switch (shape.GetType()) {
-            case b2ShapeType.e_edgeShape:
-            case b2ShapeType.e_chainShape:
+            case b2ShapeType.e_edge:
+            case b2ShapeType.e_chain:
                 this.CreateParticlesStrokeShapeForGroup(shape, groupDef, xf);
                 break;
-            case b2ShapeType.e_polygonShape:
-            case b2ShapeType.e_circleShape:
+            case b2ShapeType.e_polygon:
+            case b2ShapeType.e_circle:
                 this.CreateParticlesFillShapeForGroup(shape, groupDef, xf);
                 break;
             default:
@@ -5729,7 +5729,7 @@ export class b2ParticleSystem_SolveCollisionCallback extends b2FixtureParticleQu
             // Put 'ap' in the local space of the previous frame
             /// b2Vec2 p1 = b2MulT(body.m_xf0, ap);
             const p1 = b2Transform.MulTXV(body.m_xf0, ap, s_p1);
-            if (fixture.GetShape().GetType() === b2ShapeType.e_circleShape) {
+            if (fixture.GetShape().GetType() === b2ShapeType.e_circle) {
                 // Make relative to the center of the circle
                 /// p1 -= body.GetLocalCenter();
                 p1.SelfSub(body.GetLocalCenter());

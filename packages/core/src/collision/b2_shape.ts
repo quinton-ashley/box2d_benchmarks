@@ -34,19 +34,18 @@ export class b2MassData {
 }
 
 export enum b2ShapeType {
-    e_unknown = -1,
-    e_circleShape = 0,
-    e_edgeShape = 1,
-    e_polygonShape = 2,
-    e_chainShape = 3,
-    e_shapeTypeCount = 4,
+    e_circle = 0,
+    e_edge = 1,
+    e_polygon = 2,
+    e_chain = 3,
+    e_typeCount = 4,
 }
 
 /// A shape is used for collision detection. You can create a shape however you like.
 /// Shapes used for simulation in b2World are created automatically when a b2Fixture
 /// is created. Shapes may encapsulate a one or more child shapes.
 export abstract class b2Shape {
-    public readonly m_type: b2ShapeType = b2ShapeType.e_unknown;
+    public readonly m_type: b2ShapeType;
 
     /// Radius of a shape. For polygonal shapes this must be b2_polygonRadius. There is no support for
     /// making rounded polygons.

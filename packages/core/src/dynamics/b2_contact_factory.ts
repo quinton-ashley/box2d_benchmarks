@@ -26,17 +26,17 @@ export class b2ContactFactory {
     public readonly m_registers: b2ContactRegister[][];
 
     constructor() {
-        this.m_registers = Array.from({ length: b2ShapeType.e_shapeTypeCount }, () =>
-            Array.from({ length: b2ShapeType.e_shapeTypeCount }, () => new b2ContactRegister()),
+        this.m_registers = Array.from({ length: b2ShapeType.e_typeCount }, () =>
+            Array.from({ length: b2ShapeType.e_typeCount }, () => new b2ContactRegister()),
         );
 
-        this.AddType(b2CircleContact, b2ShapeType.e_circleShape, b2ShapeType.e_circleShape);
-        this.AddType(b2PolygonAndCircleContact, b2ShapeType.e_polygonShape, b2ShapeType.e_circleShape);
-        this.AddType(b2PolygonContact, b2ShapeType.e_polygonShape, b2ShapeType.e_polygonShape);
-        this.AddType(b2EdgeAndCircleContact, b2ShapeType.e_edgeShape, b2ShapeType.e_circleShape);
-        this.AddType(b2EdgeAndPolygonContact, b2ShapeType.e_edgeShape, b2ShapeType.e_polygonShape);
-        this.AddType(b2ChainAndCircleContact, b2ShapeType.e_chainShape, b2ShapeType.e_circleShape);
-        this.AddType(b2ChainAndPolygonContact, b2ShapeType.e_chainShape, b2ShapeType.e_polygonShape);
+        this.AddType(b2CircleContact, b2ShapeType.e_circle, b2ShapeType.e_circle);
+        this.AddType(b2PolygonAndCircleContact, b2ShapeType.e_polygon, b2ShapeType.e_circle);
+        this.AddType(b2PolygonContact, b2ShapeType.e_polygon, b2ShapeType.e_polygon);
+        this.AddType(b2EdgeAndCircleContact, b2ShapeType.e_edge, b2ShapeType.e_circle);
+        this.AddType(b2EdgeAndPolygonContact, b2ShapeType.e_edge, b2ShapeType.e_polygon);
+        this.AddType(b2ChainAndCircleContact, b2ShapeType.e_chain, b2ShapeType.e_circle);
+        this.AddType(b2ChainAndPolygonContact, b2ShapeType.e_chain, b2ShapeType.e_polygon);
     }
 
     private AddType(Contact: ContactConstructor, typeA: b2ShapeType, typeB: b2ShapeType): void {
@@ -70,8 +70,8 @@ export class b2ContactFactory {
         const typeA: b2ShapeType = fixtureA.GetType();
         const typeB: b2ShapeType = fixtureB.GetType();
 
-        // DEBUG: b2Assert(0 <= typeA && typeA < b2ShapeType.e_shapeTypeCount);
-        // DEBUG: b2Assert(0 <= typeB && typeB < b2ShapeType.e_shapeTypeCount);
+        // DEBUG: b2Assert(0 <= typeA && typeA < b2ShapeType.e_typeCount);
+        // DEBUG: b2Assert(0 <= typeB && typeB < b2ShapeType.e_typeCount);
 
         const reg: b2ContactRegister = this.m_registers[typeA][typeB];
         return reg.createFcn ? reg.createFcn(fixtureA, indexA, fixtureB, indexB) : null;
@@ -81,8 +81,8 @@ export class b2ContactFactory {
         const typeA: b2ShapeType = contact.m_fixtureA.GetType();
         const typeB: b2ShapeType = contact.m_fixtureB.GetType();
 
-        // DEBUG: b2Assert(0 <= typeA && typeB < b2ShapeType.e_shapeTypeCount);
-        // DEBUG: b2Assert(0 <= typeA && typeB < b2ShapeType.e_shapeTypeCount);
+        // DEBUG: b2Assert(0 <= typeA && typeB < b2ShapeType.e_typeCount);
+        // DEBUG: b2Assert(0 <= typeA && typeB < b2ShapeType.e_typeCount);
 
         const reg: b2ContactRegister = this.m_registers[typeA][typeB];
         reg.destroyFcn?.(contact);

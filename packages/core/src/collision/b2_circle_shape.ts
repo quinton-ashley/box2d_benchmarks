@@ -28,7 +28,7 @@ export class b2CircleShape extends b2Shape {
     public readonly m_p: b2Vec2 = new b2Vec2();
 
     constructor(radius = 0) {
-        super(b2ShapeType.e_circleShape, radius);
+        super(b2ShapeType.e_circle, radius);
     }
 
     public Set(position: XY, radius: number = this.m_radius): this {

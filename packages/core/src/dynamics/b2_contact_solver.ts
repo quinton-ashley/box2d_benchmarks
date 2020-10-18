@@ -120,7 +120,7 @@ export class b2ContactPositionConstraint {
 
     public invIB = 0;
 
-    public type: b2ManifoldType = b2ManifoldType.e_unknown;
+    public type: b2ManifoldType = b2ManifoldType.e_circles;
 
     public radiusA = 0;
 

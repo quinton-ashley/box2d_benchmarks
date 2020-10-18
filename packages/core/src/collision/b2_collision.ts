@@ -169,10 +169,9 @@ export class b2ManifoldPoint {
 }
 
 export enum b2ManifoldType {
-    e_unknown = -1,
-    e_circles = 0,
-    e_faceA = 1,
-    e_faceB = 2,
+    e_circles,
+    e_faceA,
+    e_faceB,
 }
 
 /// A manifold for two touching convex shapes.
@@ -198,7 +197,7 @@ export class b2Manifold {
 
     public readonly localPoint: b2Vec2 = new b2Vec2();
 
-    public type: b2ManifoldType = b2ManifoldType.e_unknown;
+    public type: b2ManifoldType = b2ManifoldType.e_circles;
 
     public pointCount = 0;
 
@@ -209,7 +208,7 @@ export class b2Manifold {
         }
         this.localNormal.SetZero();
         this.localPoint.SetZero();
-        this.type = b2ManifoldType.e_unknown;
+        this.type = b2ManifoldType.e_circles;
         this.pointCount = 0;
     }
 
@@ -346,10 +345,10 @@ export class b2WorldManifold {
 
 /// This is used for determining the state of contact points.
 export enum b2PointState {
-    b2_nullState = 0, /// < point does not exist
-    b2_addState = 1, /// < point was added in the update
-    b2_persistState = 2, /// < point persisted across the update
-    b2_removeState = 3, /// < point was removed in the update
+    b2_nullState, /// < point does not exist
+    b2_addState, /// < point was added in the update
+    b2_persistState, /// < point persisted across the update
+    b2_removeState, /// < point was removed in the update
 }
 
 /// Compute the point states given two manifolds. The states pertain to the transition from manifold1
