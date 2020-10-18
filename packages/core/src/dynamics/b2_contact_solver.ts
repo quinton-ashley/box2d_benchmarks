@@ -248,14 +248,14 @@ export class b2ContactSolver {
         this.m_count = def.count;
         // TODO:
         if (this.m_positionConstraints.length < this.m_count) {
-            const new_length: number = Math.min(this.m_positionConstraints.length * 2, this.m_count);
+            const new_length: number = Math.max(this.m_positionConstraints.length * 2, this.m_count);
             while (this.m_positionConstraints.length < new_length) {
                 this.m_positionConstraints[this.m_positionConstraints.length] = new b2ContactPositionConstraint();
             }
         }
         // TODO:
         if (this.m_velocityConstraints.length < this.m_count) {
-            const new_length: number = Math.min(this.m_velocityConstraints.length * 2, this.m_count);
+            const new_length: number = Math.max(this.m_velocityConstraints.length * 2, this.m_count);
             while (this.m_velocityConstraints.length < new_length) {
                 this.m_velocityConstraints[this.m_velocityConstraints.length] = new b2ContactVelocityConstraint();
             }
@@ -630,8 +630,8 @@ export class b2ContactSolver {
                     let lambda: number = -vcp.normalMass * (vn - vcp.velocityBias);
 
                     // b2Clamp the accumulated impulse
-                    // float32 newImpulse = Math.min(vcp->normalImpulse + lambda, 0.0f);
-                    const newImpulse: number = Math.min(vcp.normalImpulse + lambda, 0);
+                    // float32 newImpulse = Math.max(vcp->normalImpulse + lambda, 0.0f);
+                    const newImpulse: number = Math.max(vcp.normalImpulse + lambda, 0);
                     lambda = newImpulse - vcp.normalImpulse;
                     vcp.normalImpulse = newImpulse;
 

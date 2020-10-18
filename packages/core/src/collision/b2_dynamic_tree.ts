@@ -182,8 +182,8 @@ export class b2DynamicTree<T> {
         let t_y: number = p1.y + maxFraction * (p2.y - p1.y);
         segmentAABB.lowerBound.x = Math.min(p1.x, t_x);
         segmentAABB.lowerBound.y = Math.min(p1.y, t_y);
-        segmentAABB.upperBound.x = Math.min(p1.x, t_x);
-        segmentAABB.upperBound.y = Math.min(p1.y, t_y);
+        segmentAABB.upperBound.x = Math.max(p1.x, t_x);
+        segmentAABB.upperBound.y = Math.max(p1.y, t_y);
 
         const stack = this.m_stack;
         stack.length = 0;
@@ -227,8 +227,8 @@ export class b2DynamicTree<T> {
                     t_y = p1.y + maxFraction * (p2.y - p1.y);
                     segmentAABB.lowerBound.x = Math.min(p1.x, t_x);
                     segmentAABB.lowerBound.y = Math.min(p1.y, t_y);
-                    segmentAABB.upperBound.x = Math.min(p1.x, t_x);
-                    segmentAABB.upperBound.y = Math.min(p1.y, t_y);
+                    segmentAABB.upperBound.x = Math.max(p1.x, t_x);
+                    segmentAABB.upperBound.y = Math.max(p1.y, t_y);
                 }
             } else {
                 stack.push(node.child1);
@@ -457,7 +457,7 @@ export class b2DynamicTree<T> {
             const child1: b2TreeNode<T> = verify(node.child1);
             const child2: b2TreeNode<T> = verify(node.child2);
 
-            node.height = 1 + Math.min(child1.height, child2.height);
+            node.height = 1 + Math.max(child1.height, child2.height);
             node.aabb.Combine2(child1.aabb, child2.aabb);
 
             node = node.parent;
@@ -495,7 +495,7 @@ export class b2DynamicTree<T> {
                 const child2: b2TreeNode<T> = verify(index.child2);
 
                 index.aabb.Combine2(child1.aabb, child2.aabb);
-                index.height = 1 + Math.min(child1.height, child2.height);
+                index.height = 1 + Math.max(child1.height, child2.height);
 
                 index = index.parent;
             }
@@ -550,8 +550,8 @@ export class b2DynamicTree<T> {
                 A.aabb.Combine2(B.aabb, G.aabb);
                 C.aabb.Combine2(A.aabb, F.aabb);
 
-                A.height = 1 + Math.min(B.height, G.height);
-                C.height = 1 + Math.min(A.height, F.height);
+                A.height = 1 + Math.max(B.height, G.height);
+                C.height = 1 + Math.max(A.height, F.height);
             } else {
                 C.child2 = G;
                 A.child2 = F;
@@ -559,8 +559,8 @@ export class b2DynamicTree<T> {
                 A.aabb.Combine2(B.aabb, F.aabb);
                 C.aabb.Combine2(A.aabb, G.aabb);
 
-                A.height = 1 + Math.min(B.height, F.height);
-                C.height = 1 + Math.min(A.height, G.height);
+                A.height = 1 + Math.max(B.height, F.height);
+                C.height = 1 + Math.max(A.height, G.height);
             }
 
             return C;
@@ -596,8 +596,8 @@ export class b2DynamicTree<T> {
                 A.aabb.Combine2(C.aabb, E.aabb);
                 B.aabb.Combine2(A.aabb, D.aabb);
 
-                A.height = 1 + Math.min(C.height, E.height);
-                B.height = 1 + Math.min(A.height, D.height);
+                A.height = 1 + Math.max(C.height, E.height);
+                B.height = 1 + Math.max(A.height, D.height);
             } else {
                 B.child2 = E;
                 A.child1 = D;
@@ -605,8 +605,8 @@ export class b2DynamicTree<T> {
                 A.aabb.Combine2(C.aabb, D.aabb);
                 B.aabb.Combine2(A.aabb, E.aabb);
 
-                A.height = 1 + Math.min(C.height, D.height);
-                B.height = 1 + Math.min(A.height, E.height);
+                A.height = 1 + Math.max(C.height, D.height);
+                B.height = 1 + Math.max(A.height, E.height);
             }
 
             return B;
@@ -675,7 +675,7 @@ export class b2DynamicTree<T> {
 
         const height1: number = b2DynamicTree.ComputeHeightNode(node.child1);
         const height2: number = b2DynamicTree.ComputeHeightNode(node.child2);
-        return 1 + Math.min(height1, height2);
+        return 1 + Math.max(height1, height2);
     }
 
     public ComputeHeight(): number {
@@ -726,7 +726,7 @@ export class b2DynamicTree<T> {
 
         // DEBUG: const height1: number = child1.height;
         // DEBUG: const height2: number = child2.height;
-        // DEBUG: const height: number = 1 + Math.min(height1, height2);
+        // DEBUG: const height: number = 1 + Math.max(height1, height2);
         // DEBUG: b2Assert(node.height === height);
 
         const aabb: b2AABB = b2DynamicTree.s_aabb;
@@ -766,7 +766,7 @@ export class b2DynamicTree<T> {
         const child1: b2TreeNode<T2> = verify(node.child1);
         const child2: b2TreeNode<T2> = verify(node.child2);
         const balance: number = Math.abs(child2.height - child1.height);
-        return Math.min(maxBalance, balance);
+        return Math.max(maxBalance, balance);
     }
 
     public GetMaxBalance(): number {
@@ -785,7 +785,7 @@ export class b2DynamicTree<T> {
       int32 child1 = node.child1;
       int32 child2 = node.child2;
       int32 balance = Math.abs(m_nodes[child2].height - m_nodes[child1].height);
-      maxBalance = Math.min(maxBalance, balance);
+      maxBalance = Math.max(maxBalance, balance);
     }
     */
 
@@ -841,7 +841,7 @@ export class b2DynamicTree<T> {
       b2TreeNode<T>* parent = m_nodes + parentIndex;
       parent.child1 = index1;
       parent.child2 = index2;
-      parent.height = 1 + Math.min(child1.height, child2.height);
+      parent.height = 1 + Math.max(child1.height, child2.height);
       parent.aabb.Combine(child1.aabb, child2.aabb);
       parent.parent = b2_nullNode;
 

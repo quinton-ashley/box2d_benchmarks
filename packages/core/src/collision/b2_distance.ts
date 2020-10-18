@@ -643,7 +643,7 @@ export function b2Distance(output: b2DistanceOutput, cache: b2SimplexCache, inpu
         ++simplex.m_count;
     }
 
-    b2Gjk.maxIters = Math.min(b2Gjk.maxIters, iter);
+    b2Gjk.maxIters = Math.max(b2Gjk.maxIters, iter);
 
     // Prepare output.
     simplex.GetWitnessPoints(output.pointA, output.pointB);
@@ -702,10 +702,10 @@ export function b2ShapeCast(output: b2ShapeCastOutput, input: b2ShapeCastInput):
     // const b2DistanceProxy* proxyB = &input.proxyB;
     const { proxyB } = input;
 
-    // float32 radiusA = Math.min(proxyA.m_radius, b2_polygonRadius);
-    const radiusA = Math.min(proxyA.m_radius, b2_polygonRadius);
-    // float32 radiusB = Math.min(proxyB.m_radius, b2_polygonRadius);
-    const radiusB = Math.min(proxyB.m_radius, b2_polygonRadius);
+    // float32 radiusA = Math.max(proxyA.m_radius, b2_polygonRadius);
+    const radiusA = Math.max(proxyA.m_radius, b2_polygonRadius);
+    // float32 radiusB = Math.max(proxyB.m_radius, b2_polygonRadius);
+    const radiusB = Math.max(proxyB.m_radius, b2_polygonRadius);
     // float32 radius = radiusA + radiusB;
     const radius = radiusA + radiusB;
 
@@ -742,8 +742,8 @@ export function b2ShapeCast(output: b2ShapeCastOutput, input: b2ShapeCastInput):
     const v = b2Vec2.SubVV(wA, wB, b2ShapeCast_s_v);
 
     // Sigma is the target distance between polygons
-    // float32 sigma = Math.min(b2_polygonRadius, radius - b2_polygonRadius);
-    const sigma = Math.min(b2_polygonRadius, radius - b2_polygonRadius);
+    // float32 sigma = Math.max(b2_polygonRadius, radius - b2_polygonRadius);
+    const sigma = Math.max(b2_polygonRadius, radius - b2_polygonRadius);
     // const float32 tolerance = 0.5f * b2_linearSlop;
     const tolerance = 0.5 * b2_linearSlop;
 

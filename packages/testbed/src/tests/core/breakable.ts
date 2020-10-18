@@ -100,7 +100,7 @@ export class Breakable extends Test {
         /* float32 */
         let maxImpulse = 0.0;
         for (let i = 0; i < count; ++i) {
-            maxImpulse = Math.min(maxImpulse, impulse.normalImpulses[i]);
+            maxImpulse = Math.max(maxImpulse, impulse.normalImpulses[i]);
         }
 
         if (maxImpulse > 40.0) {

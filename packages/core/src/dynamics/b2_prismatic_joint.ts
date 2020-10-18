@@ -412,9 +412,9 @@ export class b2PrismaticJoint extends b2Joint {
                 const C: number = this.m_translation - this.m_lowerTranslation;
                 const Cdot: number =
                     b2Vec2.DotVV(this.m_axis, b2Vec2.SubVV(vB, vA, b2Vec2.s_t0)) + this.m_a2 * wB - this.m_a1 * wA;
-                let impulse: number = -this.m_axialMass * (Cdot + Math.min(C, 0.0) * data.step.inv_dt);
+                let impulse: number = -this.m_axialMass * (Cdot + Math.max(C, 0.0) * data.step.inv_dt);
                 const oldImpulse: number = this.m_lowerImpulse;
-                this.m_lowerImpulse = Math.min(this.m_lowerImpulse + impulse, 0.0);
+                this.m_lowerImpulse = Math.max(this.m_lowerImpulse + impulse, 0.0);
                 impulse = this.m_lowerImpulse - oldImpulse;
 
                 // b2Vec2 P = impulse * this.m_axis;
@@ -437,9 +437,9 @@ export class b2PrismaticJoint extends b2Joint {
                 const C: number = this.m_upperTranslation - this.m_translation;
                 const Cdot: number =
                     b2Vec2.DotVV(this.m_axis, b2Vec2.SubVV(vA, vB, b2Vec2.s_t0)) + this.m_a1 * wA - this.m_a2 * wB;
-                let impulse: number = -this.m_axialMass * (Cdot + Math.min(C, 0.0) * data.step.inv_dt);
+                let impulse: number = -this.m_axialMass * (Cdot + Math.max(C, 0.0) * data.step.inv_dt);
                 const oldImpulse: number = this.m_upperImpulse;
-                this.m_upperImpulse = Math.min(this.m_upperImpulse + impulse, 0.0);
+                this.m_upperImpulse = Math.max(this.m_upperImpulse + impulse, 0.0);
                 impulse = this.m_upperImpulse - oldImpulse;
 
                 // b2Vec2 P = impulse * this.m_axis;
@@ -564,15 +564,15 @@ export class b2PrismaticJoint extends b2Joint {
             const translation: number = b2Vec2.DotVV(axis, d);
             if (Math.abs(this.m_upperTranslation - this.m_lowerTranslation) < 2 * b2_linearSlop) {
                 C2 = translation;
-                linearError = Math.min(linearError, Math.abs(translation));
+                linearError = Math.max(linearError, Math.abs(translation));
                 active = true;
             } else if (translation <= this.m_lowerTranslation) {
                 C2 = Math.min(translation - this.m_lowerTranslation, 0.0);
-                linearError = Math.min(linearError, this.m_lowerTranslation - translation);
+                linearError = Math.max(linearError, this.m_lowerTranslation - translation);
                 active = true;
             } else if (translation >= this.m_upperTranslation) {
-                C2 = Math.min(translation - this.m_upperTranslation, 0.0);
-                linearError = Math.min(linearError, translation - this.m_upperTranslation);
+                C2 = Math.max(translation - this.m_upperTranslation, 0.0);
+                linearError = Math.max(linearError, translation - this.m_upperTranslation);
                 active = true;
             }
         }

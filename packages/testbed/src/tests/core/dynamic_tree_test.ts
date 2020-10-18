@@ -103,7 +103,7 @@ export class DynamicTreeTest extends Test {
         this.Reset();
 
         if (this.m_automated) {
-            const actionCount = Math.min(1, DynamicTreeTest.e_actorCount >> 2);
+            const actionCount = Math.max(1, DynamicTreeTest.e_actorCount >> 2);
 
             for (let i = 0; i < actionCount; ++i) {
                 this.Action();

@@ -335,7 +335,7 @@ export class Faucet extends Test {
             ),
             hotKeyPress(["ctrl"], "+", "Increase Flow", () =>
                 this.SetEmitRate(
-                    Math.min(Faucet.k_emitRateMin, this.m_emitter.GetEmitRate() * Faucet.k_emitRateChangeFactor)
+                    Math.max(Faucet.k_emitRateMin, this.m_emitter.GetEmitRate() * Faucet.k_emitRateChangeFactor)
                 )
             ),
             hotKeyPress(["ctrl"], "-", "Decrease Flow", () =>

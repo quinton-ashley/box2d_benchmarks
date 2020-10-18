@@ -851,7 +851,7 @@ export class Fracker extends Test {
             Fracker.LerpColor(
                 FrackerSettings.k_playerColor,
                 FrackerSettings.k_playerFrackColor,
-                Math.min(this.m_frackingFluidChargeTime / FrackerSettings.k_frackingFluidChargeTime, 0.0)
+                Math.max(this.m_frackingFluidChargeTime / FrackerSettings.k_frackingFluidChargeTime, 0.0)
             ),
             true
         );

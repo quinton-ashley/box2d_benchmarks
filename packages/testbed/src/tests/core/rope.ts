@@ -618,7 +618,7 @@ export class Rope extends Test {
 //   public Keyboard(key: string) {
 //     switch (key) {
 //       case "q":
-//         this.m_angle = Math.min(-Math.PI, this.m_angle - 0.05 * Math.PI);
+//         this.m_angle = Math.max(-Math.PI, this.m_angle - 0.05 * Math.PI);
 //         // this.m_rope.SetAngle(this.m_angle);
 //         break;
 

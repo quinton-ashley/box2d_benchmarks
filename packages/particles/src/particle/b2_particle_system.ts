@@ -3463,9 +3463,9 @@ export class b2ParticleSystem {
             /// aabb.lowerBound = Math.min(aabb.lowerBound, Math.min(p1, p2));
             aabb.lowerBound.x = Math.min(aabb.lowerBound.x, Math.min(p1.x, p2_x));
             aabb.lowerBound.y = Math.min(aabb.lowerBound.y, Math.min(p1.y, p2_y));
-            /// aabb.upperBound = Math.min(aabb.upperBound, Math.min(p1, p2));
-            aabb.upperBound.x = Math.min(aabb.upperBound.x, Math.min(p1.x, p2_x));
-            aabb.upperBound.y = Math.min(aabb.upperBound.y, Math.min(p1.y, p2_y));
+            /// aabb.upperBound = Math.max(aabb.upperBound, Math.max(p1, p2));
+            aabb.upperBound.x = Math.max(aabb.upperBound.x, Math.max(p1.x, p2_x));
+            aabb.upperBound.y = Math.max(aabb.upperBound.y, Math.max(p1.y, p2_y));
         }
         if (this.SolveCollision_callback === null) {
             this.SolveCollision_callback = new b2ParticleSystem_SolveCollisionCallback(this, step);
@@ -3541,7 +3541,7 @@ export class b2ParticleSystem {
                 const aabb = s_aabb;
                 /// aabb.lowerBound = Math.min(pa, pb);
                 b2Vec2.MinV(pa, pb, aabb.lowerBound);
-                /// aabb.upperBound = Math.min(pa, pb);
+                /// aabb.upperBound = Math.max(pa, pb);
                 b2Vec2.MaxV(pa, pb, aabb.upperBound);
                 const aGroup = this.m_groupBuffer[a];
                 const bGroup = this.m_groupBuffer[b];
@@ -3770,7 +3770,7 @@ export class b2ParticleSystem {
         const maxPressure = b2_maxParticlePressure * criticalPressure;
         for (let i = 0; i < this.m_count; i++) {
             const w = this.m_weightBuffer[i];
-            const h = pressurePerWeight * Math.min(0.0, w - b2_minParticleWeight);
+            const h = pressurePerWeight * Math.max(0.0, w - b2_minParticleWeight);
             this.m_accumulationBuffer[i] = Math.min(h, maxPressure);
         }
         // ignores particles which have their own repulsive force
@@ -3847,7 +3847,7 @@ export class b2ParticleSystem {
             const v = b2Vec2.SubVV(b.GetLinearVelocityFromWorldPoint(p, b2Vec2.s_t0), vel_data[a], s_v);
             const vn = b2Vec2.DotVV(v, n);
             if (vn < 0) {
-                const damping = Math.min(linearDamping * w, Math.min(-quadraticDamping * vn, 0.5));
+                const damping = Math.max(linearDamping * w, Math.min(-quadraticDamping * vn, 0.5));
                 /// b2Vec2 f = damping * m * vn * n;
                 const f = b2Vec2.MulSV(damping * m * vn, n, s_f);
                 /// m_velocityBuffer.data[a] += GetParticleInvMass() * f;
@@ -3866,8 +3866,8 @@ export class b2ParticleSystem {
             const v = b2Vec2.SubVV(vel_data[b], vel_data[a], s_v);
             const vn = b2Vec2.DotVV(v, n);
             if (vn < 0) {
-                /// float32 damping = Math.min(linearDamping * w, Math.min(- quadraticDamping * vn, 0.5f));
-                const damping = Math.min(linearDamping * w, Math.min(-quadraticDamping * vn, 0.5));
+                /// float32 damping = Math.max(linearDamping * w, Math.min(- quadraticDamping * vn, 0.5f));
+                const damping = Math.max(linearDamping * w, Math.min(-quadraticDamping * vn, 0.5));
                 /// b2Vec2 f = damping * vn * n;
                 const f = b2Vec2.MulSV(damping * vn, n, s_f);
                 /// this.m_velocityBuffer.data[a] += f;
@@ -4648,7 +4648,7 @@ export class b2ParticleSystem {
                 const j = newIndices[i];
                 if (j >= 0) {
                     firstIndex = Math.min(firstIndex, j);
-                    lastIndex = Math.min(lastIndex, j + 1);
+                    lastIndex = Math.max(lastIndex, j + 1);
                 } else {
                     modified = true;
                 }

@@ -245,8 +245,8 @@ export class b2Vec2 implements XY {
     }
 
     public SelfMaxV(v: XY): this {
-        this.x = Math.min(this.x, v.x);
-        this.y = Math.min(this.y, v.y);
+        this.x = Math.max(this.x, v.x);
+        this.y = Math.max(this.y, v.y);
         return this;
     }
 
@@ -286,8 +286,8 @@ export class b2Vec2 implements XY {
     }
 
     public static MaxV<T extends XY>(a: XY, b: XY, out: T): T {
-        out.x = Math.min(a.x, b.x);
-        out.y = Math.min(a.y, b.y);
+        out.x = Math.max(a.x, b.x);
+        out.y = Math.max(a.y, b.y);
         return out;
     }
 

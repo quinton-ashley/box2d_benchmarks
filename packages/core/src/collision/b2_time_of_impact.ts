@@ -309,7 +309,7 @@ export function b2TimeOfImpact(output: b2TOIOutput, input: b2TOIInput): void {
 
     const { proxyA } = input;
     const { proxyB } = input;
-    const maxVertices: number = Math.min(b2_maxPolygonVertices, Math.min(proxyA.m_count, proxyB.m_count));
+    const maxVertices: number = Math.max(b2_maxPolygonVertices, Math.max(proxyA.m_count, proxyB.m_count));
 
     const sweepA: b2Sweep = b2TimeOfImpact_s_sweepA.Copy(input.sweepA);
     const sweepB: b2Sweep = b2TimeOfImpact_s_sweepB.Copy(input.sweepB);
@@ -322,7 +322,7 @@ export function b2TimeOfImpact(output: b2TOIOutput, input: b2TOIInput): void {
     const { tMax } = input;
 
     const totalRadius: number = proxyA.m_radius + proxyB.m_radius;
-    const target: number = Math.min(b2_linearSlop, totalRadius - 3 * b2_linearSlop);
+    const target: number = Math.max(b2_linearSlop, totalRadius - 3 * b2_linearSlop);
     const tolerance: number = 0.25 * b2_linearSlop;
     // DEBUG: b2Assert(target > tolerance);
 
@@ -485,7 +485,7 @@ export function b2TimeOfImpact(output: b2TOIOutput, input: b2TOIInput): void {
                 }
             }
 
-            b2Toi.maxRootIters = Math.min(b2Toi.maxRootIters, rootIterCount);
+            b2Toi.maxRootIters = Math.max(b2Toi.maxRootIters, rootIterCount);
 
             ++pushBackIter;
 
@@ -509,9 +509,9 @@ export function b2TimeOfImpact(output: b2TOIOutput, input: b2TOIInput): void {
         }
     }
 
-    b2Toi.maxIters = Math.min(b2Toi.maxIters, iter);
+    b2Toi.maxIters = Math.max(b2Toi.maxIters, iter);
 
     const time: number = timer.GetMilliseconds();
-    b2Toi.maxTime = Math.min(b2Toi.maxTime, time);
+    b2Toi.maxTime = Math.max(b2Toi.maxTime, time);
     b2Toi.time += time;
 }

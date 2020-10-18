@@ -215,14 +215,14 @@ export class b2Island {
 
         // TODO:
         if (this.m_positions.length < bodyCapacity) {
-            const new_length = Math.min(this.m_positions.length * 2, bodyCapacity);
+            const new_length = Math.max(this.m_positions.length * 2, bodyCapacity);
             while (this.m_positions.length < new_length) {
                 this.m_positions[this.m_positions.length] = new b2Position();
             }
         }
         // TODO:
         if (this.m_velocities.length < bodyCapacity) {
-            const new_length = Math.min(this.m_velocities.length * 2, bodyCapacity);
+            const new_length = Math.max(this.m_velocities.length * 2, bodyCapacity);
             while (this.m_velocities.length < new_length) {
                 this.m_velocities[this.m_velocities.length] = new b2Velocity();
             }

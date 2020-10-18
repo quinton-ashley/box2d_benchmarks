@@ -303,9 +303,9 @@ export class b2RevoluteJoint extends b2Joint {
             {
                 const C: number = this.m_angle - this.m_lowerAngle;
                 const Cdot: number = wB - wA;
-                let impulse: number = -this.m_axialMass * (Cdot + Math.min(C, 0.0) * data.step.inv_dt);
+                let impulse: number = -this.m_axialMass * (Cdot + Math.max(C, 0.0) * data.step.inv_dt);
                 const oldImpulse: number = this.m_lowerImpulse;
-                this.m_lowerImpulse = Math.min(this.m_lowerImpulse + impulse, 0.0);
+                this.m_lowerImpulse = Math.max(this.m_lowerImpulse + impulse, 0.0);
                 impulse = this.m_lowerImpulse - oldImpulse;
 
                 wA -= iA * impulse;
@@ -318,9 +318,9 @@ export class b2RevoluteJoint extends b2Joint {
             {
                 const C: number = this.m_upperAngle - this.m_angle;
                 const Cdot: number = wA - wB;
-                let impulse: number = -this.m_axialMass * (Cdot + Math.min(C, 0.0) * data.step.inv_dt);
+                let impulse: number = -this.m_axialMass * (Cdot + Math.max(C, 0.0) * data.step.inv_dt);
                 const oldImpulse: number = this.m_upperImpulse;
-                this.m_upperImpulse = Math.min(this.m_upperImpulse + impulse, 0.0);
+                this.m_upperImpulse = Math.max(this.m_upperImpulse + impulse, 0.0);
                 impulse = this.m_upperImpulse - oldImpulse;
 
                 wA += iA * impulse;

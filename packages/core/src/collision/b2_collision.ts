@@ -499,8 +499,8 @@ export class b2AABB {
     public Combine1(aabb: b2AABB): b2AABB {
         this.lowerBound.x = Math.min(this.lowerBound.x, aabb.lowerBound.x);
         this.lowerBound.y = Math.min(this.lowerBound.y, aabb.lowerBound.y);
-        this.upperBound.x = Math.min(this.upperBound.x, aabb.upperBound.x);
-        this.upperBound.y = Math.min(this.upperBound.y, aabb.upperBound.y);
+        this.upperBound.x = Math.max(this.upperBound.x, aabb.upperBound.x);
+        this.upperBound.y = Math.max(this.upperBound.y, aabb.upperBound.y);
         return this;
     }
 
@@ -508,8 +508,8 @@ export class b2AABB {
     public Combine2(aabb1: b2AABB, aabb2: b2AABB): b2AABB {
         this.lowerBound.x = Math.min(aabb1.lowerBound.x, aabb2.lowerBound.x);
         this.lowerBound.y = Math.min(aabb1.lowerBound.y, aabb2.lowerBound.y);
-        this.upperBound.x = Math.min(aabb1.upperBound.x, aabb2.upperBound.x);
-        this.upperBound.y = Math.min(aabb1.upperBound.y, aabb2.upperBound.y);
+        this.upperBound.x = Math.max(aabb1.upperBound.x, aabb2.upperBound.x);
+        this.upperBound.y = Math.max(aabb1.upperBound.y, aabb2.upperBound.y);
         return this;
     }
 

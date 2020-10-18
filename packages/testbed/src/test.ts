@@ -484,14 +484,14 @@ export class Test extends b2ContactListener {
         // Track maximum profile times
         {
             const p = this.m_world.GetProfile();
-            this.m_maxProfile.step = Math.min(this.m_maxProfile.step, p.step);
-            this.m_maxProfile.collide = Math.min(this.m_maxProfile.collide, p.collide);
-            this.m_maxProfile.solve = Math.min(this.m_maxProfile.solve, p.solve);
-            this.m_maxProfile.solveInit = Math.min(this.m_maxProfile.solveInit, p.solveInit);
-            this.m_maxProfile.solveVelocity = Math.min(this.m_maxProfile.solveVelocity, p.solveVelocity);
-            this.m_maxProfile.solvePosition = Math.min(this.m_maxProfile.solvePosition, p.solvePosition);
-            this.m_maxProfile.solveTOI = Math.min(this.m_maxProfile.solveTOI, p.solveTOI);
-            this.m_maxProfile.broadphase = Math.min(this.m_maxProfile.broadphase, p.broadphase);
+            this.m_maxProfile.step = Math.max(this.m_maxProfile.step, p.step);
+            this.m_maxProfile.collide = Math.max(this.m_maxProfile.collide, p.collide);
+            this.m_maxProfile.solve = Math.max(this.m_maxProfile.solve, p.solve);
+            this.m_maxProfile.solveInit = Math.max(this.m_maxProfile.solveInit, p.solveInit);
+            this.m_maxProfile.solveVelocity = Math.max(this.m_maxProfile.solveVelocity, p.solveVelocity);
+            this.m_maxProfile.solvePosition = Math.max(this.m_maxProfile.solvePosition, p.solvePosition);
+            this.m_maxProfile.solveTOI = Math.max(this.m_maxProfile.solveTOI, p.solveTOI);
+            this.m_maxProfile.broadphase = Math.max(this.m_maxProfile.broadphase, p.broadphase);
 
             this.m_totalProfile.step += p.step;
             this.m_totalProfile.collide += p.collide;
