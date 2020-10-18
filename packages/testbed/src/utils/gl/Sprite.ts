@@ -54,7 +54,7 @@ export class Sprite {
         rotation: number,
         centerX: number,
         centerY: number,
-        scale = 1
+        scale = 1,
     ) {
         this.vertBuffer.setData(setRotatedRect(tempArray, x, y, width, height, rotation, centerX, centerY, scale));
     }

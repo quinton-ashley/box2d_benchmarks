@@ -107,7 +107,7 @@ export class PolyCollision extends Test {
             this.m_transformA,
             this.m_polygonA.m_radius,
             this.m_transformB,
-            this.m_polygonB.m_radius
+            this.m_polygonB.m_radius,
         );
 
         this.addDebug("Point Count", manifold.pointCount);

@@ -128,24 +128,24 @@ export class ContinuousTest extends Test {
         if (b2Gjk.calls > 0) {
             this.addDebug(
                 "GJK Calls [ave Iters] (max Iters)",
-                `${b2Gjk.calls.toFixed(0)} [${(b2Gjk.iters / b2Gjk.calls).toFixed(1)}] (${b2Gjk.maxIters.toFixed(0)})`
+                `${b2Gjk.calls.toFixed(0)} [${(b2Gjk.iters / b2Gjk.calls).toFixed(1)}] (${b2Gjk.maxIters.toFixed(0)})`,
             );
         }
 
         if (b2Toi.calls > 0) {
             this.addDebug(
                 "Toi Calls [ave Iters] (max Iters)",
-                `${b2Toi.calls} [${(b2Toi.iters / b2Toi.calls).toFixed(1)}] (${b2Toi.maxIters})`
+                `${b2Toi.calls} [${(b2Toi.iters / b2Toi.calls).toFixed(1)}] (${b2Toi.maxIters})`,
             );
 
             this.addDebug(
                 "Toi Root [ave Iters] (max Iters)",
-                `${b2Toi.calls} [${(b2Toi.rootIters / b2Toi.calls).toFixed(1)}] (${b2Toi.maxRootIters})`
+                `${b2Toi.calls} [${(b2Toi.rootIters / b2Toi.calls).toFixed(1)}] (${b2Toi.maxRootIters})`,
             );
 
             this.addDebug(
                 "Toi Time in ms [ave] (max)",
-                `[${((1000.0 * b2Toi.time) / b2Toi.calls).toFixed(1)}] (${(1000.0 * b2Toi.maxTime).toFixed(1)})`
+                `[${((1000.0 * b2Toi.time) / b2Toi.calls).toFixed(1)}] (${(1000.0 * b2Toi.maxTime).toFixed(1)})`,
             );
         }
 

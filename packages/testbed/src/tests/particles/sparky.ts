@@ -52,7 +52,7 @@ class ParticleVFX {
         size: number,
         speed: number,
         lifetime: number,
-        particleFlags: b2ParticleFlag
+        particleFlags: b2ParticleFlag,
     ) {
         // Create a circle to house the particles of size size
         const shape = new b2CircleShape();
@@ -271,7 +271,7 @@ export class Sparky extends Test {
             RandomFloat(1.0, 2.0),
             RandomFloat(10.0, 20.0),
             RandomFloat(0.5, 1.0),
-            particleFlags
+            particleFlags,
         );
         if (++this.m_VFXIndex >= Sparky.c_maxVFX) {
             this.m_VFXIndex = 0;

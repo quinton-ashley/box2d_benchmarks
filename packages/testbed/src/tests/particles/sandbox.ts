@@ -189,7 +189,7 @@ export class SpecialParticleTracker extends b2DestructionListener {
             const particleIndex = particleIndices[i];
             this.m_particleSystem.SetParticleFlags(
                 particleIndex,
-                this.m_particleSystem.GetFlagsBuffer()[particleIndex] | b2ParticleFlag.b2_destructionListenerParticle
+                this.m_particleSystem.GetFlagsBuffer()[particleIndex] | b2ParticleFlag.b2_destructionListenerParticle,
             );
             this.m_particles.push(this.m_particleSystem.GetParticleHandleFromIndex(particleIndex));
         }
@@ -209,7 +209,7 @@ export class SpecialParticleTracker extends b2DestructionListener {
             128 + 128.0 * (1.0 - colorCoeff),
             128 + 256.0 * Math.abs(0.5 - colorCoeff),
             128 + 128.0 * colorCoeff,
-            255
+            255,
         );
         // Update the color of all special particles.
         for (const particle of this.m_particles) {
@@ -302,7 +302,7 @@ export class Sandbox extends Test {
         new ParticleParameterValue(
             b2ParticleFlag.b2_waterParticle,
             ParticleParameter.k_DefaultOptions | ParticleParameterOptions.OptionStrictContacts,
-            "water (strict)"
+            "water (strict)",
         ),
         new ParticleParameterValue(b2ParticleFlag.b2_powderParticle, ParticleParameter.k_DefaultOptions, "powder"),
         new ParticleParameterValue(b2ParticleFlag.b2_tensileParticle, ParticleParameter.k_DefaultOptions, "tensile"),
@@ -310,22 +310,22 @@ export class Sandbox extends Test {
         new ParticleParameterValue(
             b2ParticleFlag.b2_tensileParticle | b2ParticleFlag.b2_powderParticle,
             ParticleParameter.k_DefaultOptions,
-            "tensile powder"
+            "tensile powder",
         ),
         new ParticleParameterValue(
             b2ParticleFlag.b2_viscousParticle | b2ParticleFlag.b2_powderParticle,
             ParticleParameter.k_DefaultOptions,
-            "viscous powder"
+            "viscous powder",
         ),
         new ParticleParameterValue(
             b2ParticleFlag.b2_viscousParticle | b2ParticleFlag.b2_tensileParticle | b2ParticleFlag.b2_powderParticle,
             ParticleParameter.k_DefaultOptions,
-            "viscous tensile powder"
+            "viscous tensile powder",
         ),
         new ParticleParameterValue(
             b2ParticleFlag.b2_viscousParticle | b2ParticleFlag.b2_tensileParticle,
             ParticleParameter.k_DefaultOptions,
-            "tensile viscous water"
+            "tensile viscous water",
         ),
     ];
 
@@ -479,7 +479,7 @@ export class Sandbox extends Test {
                     SandboxParams.k_playfieldLeftEdge + SandboxParams.k_tileRadius * 2 * i + SandboxParams.k_tileRadius,
                     SandboxParams.k_playfieldBottomEdge -
                         SandboxParams.k_tileRadius * 2 * j +
-                        SandboxParams.k_tileRadius
+                        SandboxParams.k_tileRadius,
                 );
 
                 // Let's add some items

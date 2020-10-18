@@ -116,7 +116,7 @@ export class MultipleParticleSystems extends Test {
                 MultipleParticleSystems.k_dynamicBoxSize.x,
                 MultipleParticleSystems.k_dynamicBoxSize.y,
                 center,
-                0.0
+                0.0,
             );
             body.CreateFixture(shape, 0.0);
             ///  b2MassData massData = { MultipleParticleSystems.k_boxMass, center, 0.0 };
@@ -134,19 +134,19 @@ export class MultipleParticleSystems extends Test {
             emitter.SetPosition(
                 new b2Vec2(
                     MultipleParticleSystems.k_emitterPosition.x * mirrorAlongY,
-                    MultipleParticleSystems.k_emitterPosition.y
-                )
+                    MultipleParticleSystems.k_emitterPosition.y,
+                ),
             );
             emitter.SetSize(MultipleParticleSystems.k_emitterSize);
             emitter.SetVelocity(
                 new b2Vec2(
                     MultipleParticleSystems.k_emitterVelocity.x * mirrorAlongY,
-                    MultipleParticleSystems.k_emitterVelocity.y
-                )
+                    MultipleParticleSystems.k_emitterVelocity.y,
+                ),
             );
             emitter.SetEmitRate(MultipleParticleSystems.k_emitRate);
             emitter.SetColor(
-                i & 1 ? MultipleParticleSystems.k_rightEmitterColor : MultipleParticleSystems.k_leftEmitterColor
+                i & 1 ? MultipleParticleSystems.k_rightEmitterColor : MultipleParticleSystems.k_leftEmitterColor,
             );
             emitter.SetParticleSystem(i & 1 ? this.m_particleSystem2 : this.m_particleSystem);
         }

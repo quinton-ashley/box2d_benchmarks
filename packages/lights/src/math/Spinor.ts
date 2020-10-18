@@ -78,7 +78,7 @@ export class Spinor {
     public mul(other: Spinor) {
         this.set(
             this.real * other.real - this.complex * other.complex,
-            this.real * other.complex + this.complex * other.real
+            this.real * other.complex + this.complex * other.real,
         );
         return this;
     }

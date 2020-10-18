@@ -14,7 +14,7 @@ module.exports = {
         "@typescript-eslint/no-empty-function": "off",
         "no-useless-constructor": "off",
         "@typescript-eslint/no-useless-constructor": "error",
-        "react/require-default-props": "off",
+        "react/require-default-props": "off"
     },
     env: {
         browser: true,

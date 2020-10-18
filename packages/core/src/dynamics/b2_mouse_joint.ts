@@ -235,10 +235,10 @@ export class b2MouseJoint extends b2Joint {
                 .AddVV(
                     Cdot,
                     b2Vec2.AddVV(this.m_C, b2Vec2.MulSV(this.m_gamma, this.m_impulse, b2Vec2.s_t0), b2Vec2.s_t0),
-                    b2Vec2.s_t0
+                    b2Vec2.s_t0,
                 )
                 .SelfNeg(),
-            b2MouseJoint.SolveVelocityConstraints_s_impulse
+            b2MouseJoint.SolveVelocityConstraints_s_impulse,
         );
 
         // b2Vec2 oldImpulse = m_impulse;

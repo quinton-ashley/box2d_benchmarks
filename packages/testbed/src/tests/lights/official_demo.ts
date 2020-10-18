@@ -85,7 +85,7 @@ export class Marble {
             SIZE,
             b2RadToDeg(this.body.GetAngle()),
             RADIUS,
-            RADIUS
+            RADIUS,
         );
         this.sprite.render();
     }
@@ -129,7 +129,7 @@ export class OfficialDemo extends Test {
     public constructor(
         public readonly gl: WebGLRenderingContext,
         public readonly shader: DefaultShader,
-        public readonly textures: PreloadedTextures
+        public readonly textures: PreloadedTextures,
     ) {
         super({ x: 0, y: 0 });
         this.blendFunc = new BlendFunc(gl, gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
@@ -172,7 +172,7 @@ export class OfficialDemo extends Test {
             g_camera.getWidth() / 4,
             g_camera.getHeight() / 4,
             viewportWidth,
-            viewportHeight
+            viewportHeight,
         );
         this.rayHandler.setAmbientLight(0, 0, 0, 0.5);
         this.rayHandler.setBlurNum(3);
@@ -287,7 +287,7 @@ export class OfficialDemo extends Test {
             viewportWidth / 2,
             viewportHeight / 2,
             viewportWidth,
-            viewportHeight
+            viewportHeight,
         );
 
         if (timeStep > 0) this.rayHandler.update();
@@ -350,7 +350,7 @@ export class OfficialDemo extends Test {
                 0,
                 0,
                 0,
-                random(15, 40)
+                random(15, 40),
             );
             light.attachToBody(marble.body, RADIUS / 2, RADIUS / 2, random(0, 360));
             setRandomLightColor(light);
@@ -386,7 +386,7 @@ export class OfficialDemo extends Test {
             this.rayHandler,
             4 * RAYS_PER_BALL,
             Light.DefaultColor,
-            this.sunDirection
+            this.sunDirection,
         );
         this.directionalLight.setSoftnessLength(5);
         this.directionalLight.setSoft(this.soft);

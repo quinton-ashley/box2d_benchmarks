@@ -65,19 +65,19 @@ export class ParticleCollisionFilter extends Test {
             const vertices: b2Vec2[] = [
                 new b2Vec2(
                     -ParticleCollisionFilter.kBoxSize,
-                    -ParticleCollisionFilter.kBoxSize + ParticleCollisionFilter.kOffset
+                    -ParticleCollisionFilter.kBoxSize + ParticleCollisionFilter.kOffset,
                 ),
                 new b2Vec2(
                     ParticleCollisionFilter.kBoxSize,
-                    -ParticleCollisionFilter.kBoxSize + ParticleCollisionFilter.kOffset
+                    -ParticleCollisionFilter.kBoxSize + ParticleCollisionFilter.kOffset,
                 ),
                 new b2Vec2(
                     ParticleCollisionFilter.kBoxSize,
-                    ParticleCollisionFilter.kBoxSize + ParticleCollisionFilter.kOffset
+                    ParticleCollisionFilter.kBoxSize + ParticleCollisionFilter.kOffset,
                 ),
                 new b2Vec2(
                     -ParticleCollisionFilter.kBoxSize,
-                    ParticleCollisionFilter.kBoxSize + ParticleCollisionFilter.kOffset
+                    ParticleCollisionFilter.kBoxSize + ParticleCollisionFilter.kOffset,
                 ),
             ];
             shape.CreateLoop(vertices);
@@ -100,9 +100,9 @@ export class ParticleCollisionFilter extends Test {
                 1.5,
                 new b2Vec2(
                     ParticleCollisionFilter.kBoxSizeHalf,
-                    ParticleCollisionFilter.kBoxSizeHalf + ParticleCollisionFilter.kOffset
+                    ParticleCollisionFilter.kBoxSizeHalf + ParticleCollisionFilter.kOffset,
                 ),
-                0.0
+                0.0,
             );
             // b2ParticleGroupDef pd;
             const pd = new b2ParticleGroupDef();

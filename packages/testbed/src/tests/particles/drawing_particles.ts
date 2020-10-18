@@ -57,32 +57,32 @@ export class DrawingParticles extends Test {
         new ParticleParameterValue(
             DrawingParticles.Parameters.e_parameterMove,
             ParticleParameter.k_DefaultOptions,
-            "move"
+            "move",
         ),
         new ParticleParameterValue(
             DrawingParticles.Parameters.e_parameterRigid,
             ParticleParameter.k_DefaultOptions,
-            "rigid"
+            "rigid",
         ),
         new ParticleParameterValue(
             DrawingParticles.Parameters.e_parameterRigidBarrier,
             ParticleParameter.k_DefaultOptions,
-            "rigid barrier"
+            "rigid barrier",
         ),
         new ParticleParameterValue(
             DrawingParticles.Parameters.e_parameterElasticBarrier,
             ParticleParameter.k_DefaultOptions,
-            "elastic barrier"
+            "elastic barrier",
         ),
         new ParticleParameterValue(
             DrawingParticles.Parameters.e_parameterSpringBarrier,
             ParticleParameter.k_DefaultOptions,
-            "spring barrier"
+            "spring barrier",
         ),
         new ParticleParameterValue(
             DrawingParticles.Parameters.e_parameterRepulsive,
             ParticleParameter.k_DefaultOptions,
-            "repulsive wall"
+            "repulsive wall",
         ),
     ];
 
@@ -200,13 +200,13 @@ export class DrawingParticles extends Test {
 
             hotKeyPress([], "h", "Rigid Barrier", () => this.SetFlags(b2_barrierParticle, b2_rigidParticleGroup, true)),
             hotKeyPress([], "n", "Elastic Barrier", () =>
-                this.SetFlags(b2_barrierParticle | b2_elasticParticle, b2_solidParticleGroup, true)
+                this.SetFlags(b2_barrierParticle | b2_elasticParticle, b2_solidParticleGroup, true),
             ),
             hotKeyPress([], "m", "Spring Barrier", () =>
-                this.SetFlags(b2_barrierParticle | b2_springParticle, b2_solidParticleGroup, true)
+                this.SetFlags(b2_barrierParticle | b2_springParticle, b2_solidParticleGroup, true),
             ),
             hotKeyPress([], "f", "Repulsive Wall", () =>
-                this.SetFlags(b2_wallParticle | b2_repulsiveParticle, 0, true)
+                this.SetFlags(b2_wallParticle | b2_repulsiveParticle, 0, true),
             ),
             hotKeyPress([], "c", "Color Mixing", () => this.SetFlags(b2_colorMixingParticle, 0, true)),
             hotKeyPress([], "z", "Erase", () => this.SetFlags(b2_zombieParticle, 0, true)),

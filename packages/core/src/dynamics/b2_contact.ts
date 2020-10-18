@@ -130,7 +130,7 @@ export abstract class b2Contact<A extends b2Shape = b2Shape, B extends b2Shape =
             bodyA.GetTransform(),
             shapeA.m_radius,
             bodyB.GetTransform(),
-            shapeB.m_radius
+            shapeB.m_radius,
         );
     }
 

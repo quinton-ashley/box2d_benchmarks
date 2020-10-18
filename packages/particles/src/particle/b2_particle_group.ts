@@ -212,7 +212,7 @@ export class b2ParticleGroup {
             this.m_linearVelocity,
             this.m_angularVelocity,
             b2Vec2.SubVV(worldPoint, this.m_center, s_t0),
-            out
+            out,
         );
     }
 

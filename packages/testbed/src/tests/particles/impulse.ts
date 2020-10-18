@@ -78,7 +78,7 @@ export class Impulse extends Test {
         if (isInsideBox) {
             const kBoxCenter = new b2Vec2(
                 0.5 * (Impulse.kBoxLeft + Impulse.kBoxRight),
-                0.5 * (Impulse.kBoxBottom + Impulse.kBoxTop)
+                0.5 * (Impulse.kBoxBottom + Impulse.kBoxTop),
             );
             const direction = b2Vec2.SubVV(p, kBoxCenter, new b2Vec2());
             direction.Normalize();

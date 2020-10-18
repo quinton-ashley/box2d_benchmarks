@@ -70,7 +70,7 @@ export class b2PulleyJointDef extends b2JointDef implements b2IPulleyJointDef {
         groundB: b2Vec2,
         anchorA: b2Vec2,
         anchorB: b2Vec2,
-        r: number
+        r: number,
     ): void {
         this.bodyA = bA;
         this.bodyB = bB;
@@ -244,7 +244,7 @@ export class b2PulleyJoint extends b2Joint {
             const PB: b2Vec2 = b2Vec2.MulSV(
                 -this.m_ratio * this.m_impulse,
                 this.m_uB,
-                b2PulleyJoint.InitVelocityConstraints_s_PB
+                b2PulleyJoint.InitVelocityConstraints_s_PB,
             );
 
             // vA += m_invMassA * PA;
@@ -292,7 +292,7 @@ export class b2PulleyJoint extends b2Joint {
         const PB: b2Vec2 = b2Vec2.MulSV(
             -this.m_ratio * impulse,
             this.m_uB,
-            b2PulleyJoint.SolveVelocityConstraints_s_PB
+            b2PulleyJoint.SolveVelocityConstraints_s_PB,
         );
         // vA += m_invMassA * PA;
         vA.SelfMulAdd(this.m_invMassA, PA);

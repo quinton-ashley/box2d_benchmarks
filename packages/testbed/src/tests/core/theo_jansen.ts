@@ -218,7 +218,7 @@ export class TheoJansen extends Test {
                 body1,
                 body2,
                 b2Vec2.AddVV(p2, this.m_offset, new b2Vec2()),
-                b2Vec2.AddVV(p5, this.m_offset, new b2Vec2())
+                b2Vec2.AddVV(p5, this.m_offset, new b2Vec2()),
             );
             b2LinearStiffness(jd, frequencyHz, dampingRatio, jd.bodyA, jd.bodyB);
             this.m_world.CreateJoint(jd);
@@ -227,7 +227,7 @@ export class TheoJansen extends Test {
                 body1,
                 body2,
                 b2Vec2.AddVV(p3, this.m_offset, new b2Vec2()),
-                b2Vec2.AddVV(p4, this.m_offset, new b2Vec2())
+                b2Vec2.AddVV(p4, this.m_offset, new b2Vec2()),
             );
             b2LinearStiffness(jd, frequencyHz, dampingRatio, jd.bodyA, jd.bodyB);
             this.m_world.CreateJoint(jd);
@@ -236,7 +236,7 @@ export class TheoJansen extends Test {
                 body1,
                 this.m_wheel,
                 b2Vec2.AddVV(p3, this.m_offset, new b2Vec2()),
-                b2Vec2.AddVV(wheelAnchor, this.m_offset, new b2Vec2())
+                b2Vec2.AddVV(wheelAnchor, this.m_offset, new b2Vec2()),
             );
             b2LinearStiffness(jd, frequencyHz, dampingRatio, jd.bodyA, jd.bodyB);
             this.m_world.CreateJoint(jd);
@@ -245,7 +245,7 @@ export class TheoJansen extends Test {
                 body2,
                 this.m_wheel,
                 b2Vec2.AddVV(p6, this.m_offset, new b2Vec2()),
-                b2Vec2.AddVV(wheelAnchor, this.m_offset, new b2Vec2())
+                b2Vec2.AddVV(wheelAnchor, this.m_offset, new b2Vec2()),
             );
             b2LinearStiffness(jd, frequencyHz, dampingRatio, jd.bodyA, jd.bodyB);
             this.m_world.CreateJoint(jd);
@@ -265,7 +265,7 @@ export class TheoJansen extends Test {
             hotKeyPress([], "s", "Brake", () => this.m_motorJoint.SetMotorSpeed(0)),
             hotKeyPress([], "d", "Right", () => this.m_motorJoint.SetMotorSpeed(this.m_motorSpeed)),
             hotKeyPress([], "m", "Toggle Enabled", () =>
-                this.m_motorJoint.EnableMotor(!this.m_motorJoint.IsMotorEnabled())
+                this.m_motorJoint.EnableMotor(!this.m_motorJoint.IsMotorEnabled()),
             ),
         ];
     }

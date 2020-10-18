@@ -124,7 +124,7 @@ export class TDTire {
         maxForwardSpeed: number,
         maxBackwardSpeed: number,
         maxDriveForce: number,
-        maxLateralImpulse: number
+        maxLateralImpulse: number,
     ): void {
         this.m_maxForwardSpeed = maxForwardSpeed;
         this.m_maxBackwardSpeed = maxBackwardSpeed;
@@ -176,7 +176,7 @@ export class TDTire {
 
         // angular velocity
         this.m_body.ApplyAngularImpulse(
-            this.m_currentTraction * 0.1 * this.m_body.GetInertia() * -this.m_body.GetAngularVelocity()
+            this.m_currentTraction * 0.1 * this.m_body.GetInertia() * -this.m_body.GetAngularVelocity(),
         );
 
         // forward linear velocity
@@ -185,7 +185,7 @@ export class TDTire {
         const dragForceMagnitude = -2 * currentForwardSpeed;
         this.m_body.ApplyForce(
             currentForwardNormal.SelfMul(this.m_currentTraction * dragForceMagnitude),
-            this.m_body.GetWorldCenter()
+            this.m_body.GetWorldCenter(),
         );
     }
 
@@ -218,7 +218,7 @@ export class TDTire {
         }
         this.m_body.ApplyForce(
             currentForwardNormal.SelfMul(this.m_currentTraction * force),
-            this.m_body.GetWorldCenter()
+            this.m_body.GetWorldCenter(),
         );
     }
 

@@ -20,7 +20,7 @@ function b2FindMaxSeparation(
     poly1: b2PolygonShape,
     xf1: b2Transform,
     poly2: b2PolygonShape,
-    xf2: b2Transform
+    xf2: b2Transform,
 ): number {
     const count1: number = poly1.m_count;
     const count2: number = poly2.m_count;
@@ -63,7 +63,7 @@ function b2FindIncidentEdge(
     xf1: b2Transform,
     edge1: number,
     poly2: b2PolygonShape,
-    xf2: b2Transform
+    xf2: b2Transform,
 ): void {
     const normals1: b2Vec2[] = poly1.m_normals;
 
@@ -77,7 +77,7 @@ function b2FindIncidentEdge(
     const normal1: b2Vec2 = b2Rot.MulTRV(
         xf2.q,
         b2Rot.MulRV(xf1.q, normals1[edge1], b2Vec2.s_t0),
-        b2FindIncidentEdge_s_normal1
+        b2FindIncidentEdge_s_normal1,
     );
 
     // Find the incident edge on poly2.
@@ -137,7 +137,7 @@ export function b2CollidePolygons(
     polyA: b2PolygonShape,
     xfA: b2Transform,
     polyB: b2PolygonShape,
-    xfB: b2Transform
+    xfB: b2Transform,
 ): void {
     manifold.pointCount = 0;
     const totalRadius: number = polyA.m_radius + polyB.m_radius;

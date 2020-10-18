@@ -180,7 +180,7 @@ export function logResults(results: TestResult[]) {
         (r.avg / results[0].avg).toFixed(2),
     ]);
     const lengths = header.map((label, index) =>
-        Math.max(label.length, ...rows.map((columns) => columns[index].length))
+        Math.max(label.length, ...rows.map((columns) => columns[index].length)),
     );
 
     function getDashes(length: number) {

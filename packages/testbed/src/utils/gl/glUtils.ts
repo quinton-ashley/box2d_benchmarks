@@ -17,7 +17,7 @@ export function clearGlCanvas(
     red: GLclampf,
     green: GLclampf,
     blue: GLclampf,
-    alpha: GLclampf
+    alpha: GLclampf,
 ) {
     gl.clearColor(red, green, blue, alpha);
     gl.clear(gl.COLOR_BUFFER_BIT);

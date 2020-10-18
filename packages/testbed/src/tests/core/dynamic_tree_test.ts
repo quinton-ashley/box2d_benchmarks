@@ -54,7 +54,7 @@ export class DynamicTreeTest extends Test {
 
     public m_actors: DynamicTreeTest_Actor[] = b2MakeArray(
         DynamicTreeTest.e_actorCount,
-        () => new DynamicTreeTest_Actor()
+        () => new DynamicTreeTest_Actor(),
     );
 
     public m_stepCount = 0;
@@ -148,9 +148,9 @@ export class DynamicTreeTest extends Test {
                 b2Vec2.MulSV(
                     this.m_rayActor.fraction,
                     b2Vec2.SubVV(this.m_rayCastInput.p2, this.m_rayCastInput.p1, new b2Vec2()),
-                    new b2Vec2()
+                    new b2Vec2(),
                 ),
-                new b2Vec2()
+                new b2Vec2(),
             );
             g_debugDraw.DrawPoint(p, 6.0, cr);
         }

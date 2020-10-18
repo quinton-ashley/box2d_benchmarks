@@ -11,7 +11,7 @@ export function b2CollideCircles(
     circleA: b2CircleShape,
     xfA: b2Transform,
     circleB: b2CircleShape,
-    xfB: b2Transform
+    xfB: b2Transform,
 ): void {
     manifold.pointCount = 0;
 
@@ -41,7 +41,7 @@ export function b2CollidePolygonAndCircle(
     polygonA: b2PolygonShape,
     xfA: b2Transform,
     circleB: b2CircleShape,
-    xfB: b2Transform
+    xfB: b2Transform,
 ): void {
     manifold.pointCount = 0;
 

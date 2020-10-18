@@ -27,7 +27,7 @@ export class b2ContactFactory {
 
     constructor() {
         this.m_registers = Array.from({ length: b2ShapeType.e_shapeTypeCount }, () =>
-            Array.from({ length: b2ShapeType.e_shapeTypeCount }, () => new b2ContactRegister())
+            Array.from({ length: b2ShapeType.e_shapeTypeCount }, () => new b2ContactRegister()),
         );
 
         this.AddType(b2CircleContact, b2ShapeType.e_circleShape, b2ShapeType.e_circleShape);

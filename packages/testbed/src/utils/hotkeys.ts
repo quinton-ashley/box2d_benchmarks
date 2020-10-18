@@ -12,7 +12,7 @@ export function hotKey(
     modifiers: HotKeyMod[],
     key: string,
     description: string,
-    callback: (down: boolean) => void
+    callback: (down: boolean) => void,
 ): HotKey {
     return {
         key,

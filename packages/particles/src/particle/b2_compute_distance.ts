@@ -34,7 +34,7 @@ type ComputeDistanceFn<T extends b2Shape> = (
     xf: b2Transform,
     p: b2Vec2,
     normal: b2Vec2,
-    childIndex: number
+    childIndex: number,
 ) => number;
 
 const tempEdgeShape = new b2EdgeShape();

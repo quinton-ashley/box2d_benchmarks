@@ -65,7 +65,7 @@ declare module "@box2d/core" {
             index: number,
             point: b2Vec2,
             normal: b2Vec2,
-            fraction: number
+            fraction: number,
         ): number;
         ShouldQueryParticleSystem(system: b2ParticleSystem): boolean;
     }

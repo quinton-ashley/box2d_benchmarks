@@ -189,7 +189,7 @@ export class b2Island {
         bodyCapacity: number,
         contactCapacity: number,
         jointCapacity: number,
-        listener: b2ContactListener
+        listener: b2ContactListener,
     ): void {
         this.m_bodyCapacity = bodyCapacity;
         this.m_contactCapacity = contactCapacity;

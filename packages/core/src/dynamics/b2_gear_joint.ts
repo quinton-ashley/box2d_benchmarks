@@ -197,9 +197,9 @@ export class b2GearJoint extends b2Joint {
                 b2Vec2.AddVV(
                     b2Rot.MulRV(xfA.q, this.m_localAnchorA, b2Vec2.s_t0),
                     b2Vec2.SubVV(xfA.p, xfC.p, b2Vec2.s_t1),
-                    b2Vec2.s_t0
+                    b2Vec2.s_t0,
                 ),
-                b2Vec2.s_t0
+                b2Vec2.s_t0,
             ); // pA uses s_t0
             // coordinateA = b2Dot(pA - pC, m_localAxisC);
             coordinateA = b2Vec2.DotVV(b2Vec2.SubVV(pA, pC, b2Vec2.s_t0), this.m_localAxisC);
@@ -237,9 +237,9 @@ export class b2GearJoint extends b2Joint {
                 b2Vec2.AddVV(
                     b2Rot.MulRV(xfB.q, this.m_localAnchorB, b2Vec2.s_t0),
                     b2Vec2.SubVV(xfB.p, xfD.p, b2Vec2.s_t1),
-                    b2Vec2.s_t0
+                    b2Vec2.s_t0,
                 ),
-                b2Vec2.s_t0
+                b2Vec2.s_t0,
             ); // pB uses s_t0
             // coordinateB = b2Dot(pB - pD, m_localAxisD);
             coordinateB = b2Vec2.DotVV(b2Vec2.SubVV(pB, pD, b2Vec2.s_t0), this.m_localAxisD);
@@ -493,7 +493,7 @@ export class b2GearJoint extends b2Joint {
             const pA: b2Vec2 = b2Rot.MulTRV(
                 qC,
                 b2Vec2.AddVV(rA, b2Vec2.SubVV(cA, cC, b2Vec2.s_t0), b2Vec2.s_t0),
-                b2Vec2.s_t0
+                b2Vec2.s_t0,
             ); // pA uses s_t0
             // coordinateA = b2Dot(pA - pC, m_localAxisC);
             coordinateA = b2Vec2.DotVV(b2Vec2.SubVV(pA, pC, b2Vec2.s_t0), this.m_localAxisC);
@@ -528,7 +528,7 @@ export class b2GearJoint extends b2Joint {
             const pB: b2Vec2 = b2Rot.MulTRV(
                 qD,
                 b2Vec2.AddVV(rB, b2Vec2.SubVV(cB, cD, b2Vec2.s_t0), b2Vec2.s_t0),
-                b2Vec2.s_t0
+                b2Vec2.s_t0,
             ); // pB uses s_t0
             // coordinateB = b2Dot(pB - pD, m_localAxisD);
             coordinateB = b2Vec2.DotVV(b2Vec2.SubVV(pB, pD, b2Vec2.s_t0), this.m_localAxisD);

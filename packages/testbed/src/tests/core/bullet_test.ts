@@ -128,19 +128,19 @@ export class BulletTest extends Test {
         if (b2Gjk.calls > 0) {
             this.addDebug(
                 "GJK Calls [ave Iters] (max Iters)",
-                formatValueAveMax(b2Gjk.calls, b2Gjk.iters / b2Gjk.calls, b2Gjk.maxIters)
+                formatValueAveMax(b2Gjk.calls, b2Gjk.iters / b2Gjk.calls, b2Gjk.maxIters),
             );
         }
 
         if (b2Toi.calls > 0) {
             this.addDebug(
                 "Toi Calls [ave Iters] (max Iters)",
-                formatValueAveMax(b2Toi.calls, b2Toi.iters / b2Toi.calls, b2Toi.maxIters)
+                formatValueAveMax(b2Toi.calls, b2Toi.iters / b2Toi.calls, b2Toi.maxIters),
             );
 
             this.addDebug(
                 "Root Toi [ave Iters] (max Iters)",
-                `[${(b2Toi.rootIters / b2Toi.calls).toFixed(1)}] (${b2Toi.maxRootIters})`
+                `[${(b2Toi.rootIters / b2Toi.calls).toFixed(1)}] (${b2Toi.maxRootIters})`,
             );
         }
 

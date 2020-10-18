@@ -53,7 +53,7 @@ export class Skier extends Test {
         const v3: b2Vec2 = new b2Vec2(SlopeLength * Math.cos(Slope1Incline), -SlopeLength * Math.sin(Slope1Incline));
         const v4: b2Vec2 = new b2Vec2(
             v3.x + SlopeLength * Math.cos(Slope2Incline),
-            v3.y - SlopeLength * Math.sin(Slope2Incline)
+            v3.y - SlopeLength * Math.sin(Slope2Incline),
         );
         const v5: b2Vec2 = new b2Vec2(v4.x, v4.y - 1.0);
 

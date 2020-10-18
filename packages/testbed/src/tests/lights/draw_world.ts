@@ -58,7 +58,7 @@ export class DrawWorld extends Test {
     public constructor(
         public readonly gl: WebGLRenderingContext,
         public readonly shader: DefaultShader,
-        public readonly textures: PreloadedTextures
+        public readonly textures: PreloadedTextures,
     ) {
         super({ x: 0, y: 0 });
         this.blendFunc = new BlendFunc(gl, gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
@@ -72,7 +72,7 @@ export class DrawWorld extends Test {
             g_camera.getWidth() / 4,
             g_camera.getHeight() / 4,
             g_camera.getWidth(),
-            g_camera.getHeight()
+            g_camera.getHeight(),
         );
         this.rayHandler.setAmbientLight(0, 0, 0, 0.5);
         this.rayHandler.setBlurNum(3);
@@ -190,7 +190,7 @@ export class DrawWorld extends Test {
             center.x,
             center.y,
             g_camera.getWidth(),
-            g_camera.getHeight()
+            g_camera.getHeight(),
         );
 
         if (timeStep > 0) this.rayHandler.update();

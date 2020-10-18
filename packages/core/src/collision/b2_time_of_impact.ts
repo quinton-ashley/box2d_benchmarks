@@ -105,7 +105,7 @@ export class b2SeparationFunction {
         sweepA: b2Sweep,
         proxyB: b2DistanceProxy,
         sweepB: b2Sweep,
-        t1: number
+        t1: number,
     ): number {
         this.m_proxyA = proxyA;
         this.m_proxyB = proxyB;
@@ -187,7 +187,7 @@ export class b2SeparationFunction {
                 const axisB: b2Vec2 = b2Rot.MulTRV(
                     xfB.q,
                     b2Vec2.NegV(this.m_axis, b2Vec2.s_t0),
-                    b2TimeOfImpact_s_axisB
+                    b2TimeOfImpact_s_axisB,
                 );
 
                 indexA[0] = this.m_proxyA.GetSupport(axisA);

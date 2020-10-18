@@ -10,7 +10,7 @@ export class RayHandlerImpl extends RayHandler {
         fboWidth: number,
         fboHeight: number,
         viewportWidth: number,
-        viewportHeight: number
+        viewportHeight: number,
     ) {
         super(gl, fboWidth, fboHeight, viewportWidth, viewportHeight);
         this.world = world;

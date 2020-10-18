@@ -55,7 +55,7 @@ export class PyramidTopple extends Test {
             for (let j = 0; j < n - i; j++) {
                 const offset = new b2Vec2(
                     (j - (n - 1 - i) * 0.5) * 1.5 * HEIGHT,
-                    (i + 0.5) * (HEIGHT + 2 * WIDTH) - WIDTH - 240
+                    (i + 0.5) * (HEIGHT + 2 * WIDTH) - WIDTH - 240,
                 );
                 add_domino(world, offset, false);
                 add_domino(world, b2Vec2.AddVV(offset, new b2Vec2(0, (HEIGHT + WIDTH) / 2), new b2Vec2()), true);
@@ -64,7 +64,7 @@ export class PyramidTopple extends Test {
                     add_domino(
                         world,
                         b2Vec2.AddVV(offset, new b2Vec2(0.5 * (WIDTH - HEIGHT), HEIGHT + WIDTH), new b2Vec2()),
-                        false
+                        false,
                     );
                 }
 
@@ -72,13 +72,13 @@ export class PyramidTopple extends Test {
                     add_domino(
                         world,
                         b2Vec2.AddVV(offset, new b2Vec2(HEIGHT * 0.75, (HEIGHT + 3 * WIDTH) / 2), new b2Vec2()),
-                        true
+                        true,
                     );
                 } else {
                     add_domino(
                         world,
                         b2Vec2.AddVV(offset, new b2Vec2(0.5 * (HEIGHT - WIDTH), HEIGHT + WIDTH), new b2Vec2()),
-                        false
+                        false,
                     );
                 }
             }

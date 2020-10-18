@@ -134,7 +134,7 @@ export class Maxwell extends Test {
                 Maxwell.k_containerHalfWidth,
                 Maxwell.k_barrierHeight,
                 new b2Vec2(0, this.m_position),
-                0
+                0,
             );
             const def = new b2FixtureDef();
             def.shape = barrierShape;
@@ -171,7 +171,7 @@ export class Maxwell extends Test {
                 this.m_density * Maxwell.k_containerHalfWidth,
                 this.m_density * Maxwell.k_containerHalfHeight,
                 new b2Vec2(0, Maxwell.k_containerHalfHeight),
-                0
+                0,
             );
             const pd = new b2ParticleGroupDef();
             pd.flags = b2ParticleFlag.b2_powderParticle;
@@ -206,10 +206,10 @@ export class Maxwell extends Test {
                 this.Reset();
             }),
             hotKeyPress([], ".", "Move the location of the divider up", () =>
-                this.MoveDivider(this.m_position + Maxwell.k_barrierMovementIncrement)
+                this.MoveDivider(this.m_position + Maxwell.k_barrierMovementIncrement),
             ),
             hotKeyPress([], ",", "Move the location of the divider down", () =>
-                this.MoveDivider(this.m_position - Maxwell.k_barrierMovementIncrement)
+                this.MoveDivider(this.m_position - Maxwell.k_barrierMovementIncrement),
             ),
             hotKeyPress([], ";", "Reduce the temperature (velocity of particles)", () => {
                 this.m_temperature = Math.max(this.m_temperature - Maxwell.k_temperatureStep, Maxwell.k_temperatureMin);
@@ -310,7 +310,7 @@ export class Maxwell extends Test {
         this.m_position = b2Clamp(
             newPosition,
             Maxwell.k_barrierMovementIncrement,
-            Maxwell.k_containerHeight - Maxwell.k_barrierMovementIncrement
+            Maxwell.k_containerHeight - Maxwell.k_barrierMovementIncrement,
         );
         this.Reset();
     }

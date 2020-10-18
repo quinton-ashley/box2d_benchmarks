@@ -84,7 +84,7 @@ export class b2CircleShape extends b2Shape {
         output: b2RayCastOutput,
         input: b2RayCastInput,
         transform: b2Transform,
-        _childIndex: number
+        _childIndex: number,
     ): boolean {
         const position: b2Vec2 = b2Transform.MulXV(transform, this.m_p, b2CircleShape.RayCast_s_position);
         const s: b2Vec2 = b2Vec2.SubVV(input.p1, position, b2CircleShape.RayCast_s_s);

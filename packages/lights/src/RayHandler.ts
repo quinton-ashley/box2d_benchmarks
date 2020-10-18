@@ -96,7 +96,7 @@ export abstract class RayHandler {
         fboWidth: number,
         fboHeight: number,
         viewportWidth: number,
-        viewportHeight: number
+        viewportHeight: number,
     ) {
         this.gl = gl;
         this.diffuseBlendFunc = new BlendFunc(gl, gl.DST_COLOR, gl.ZERO);
@@ -144,7 +144,7 @@ export abstract class RayHandler {
         x: number,
         y: number,
         viewPortWidth: number,
-        viewPortHeight: number
+        viewPortHeight: number,
     ) {
         this.combined.set(combined);
 

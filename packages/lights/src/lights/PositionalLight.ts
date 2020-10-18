@@ -58,7 +58,7 @@ export abstract class PositionalLight extends Light {
         distance: number,
         x: number,
         y: number,
-        directionDegree: number
+        directionDegree: number,
     ) {
         super(rayHandler, rays, color, distance, directionDegree);
         this.start.x = x;
@@ -90,7 +90,7 @@ export abstract class PositionalLight extends Light {
         this.softShadowMesh?.render(
             this.rayHandler.lightShader,
             this.gl.TRIANGLE_STRIP,
-            this.getSoftShadowVertexCount() - 2
+            this.getSoftShadowVertexCount() - 2,
         );
     }
 

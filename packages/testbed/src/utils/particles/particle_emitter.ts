@@ -266,7 +266,7 @@ export class RadialEmitter {
     public Step(
         dt: number,
         particleIndices?: number[],
-        particleIndicesCount: number = particleIndices ? particleIndices.length : 0
+        particleIndicesCount: number = particleIndices ? particleIndices.length : 0,
     ): number {
         b2Assert(this.m_particleSystem !== null);
         let numberOfParticlesCreated = 0;
@@ -292,7 +292,7 @@ export class RadialEmitter {
             // Initial position.
             pd.position.Set(
                 this.m_origin.x + positionOnUnitCircle.x * distance * this.m_halfSize.x,
-                this.m_origin.y + positionOnUnitCircle.y * distance * this.m_halfSize.y
+                this.m_origin.y + positionOnUnitCircle.y * distance * this.m_halfSize.y,
             );
             // Send it flying
             pd.velocity.Copy(this.m_startingVelocity);

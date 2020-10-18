@@ -424,8 +424,8 @@ export class b2ContactSolver {
                     b2Vec2.SubVV(
                         b2Vec2.AddVCrossSV(vB, wB, vcp.rB, b2Vec2.s_t0),
                         b2Vec2.AddVCrossSV(vA, wA, vcp.rA, b2Vec2.s_t1),
-                        b2Vec2.s_t0
-                    )
+                        b2Vec2.s_t0,
+                    ),
                 );
                 if (vRel < -b2_velocityThreshold) {
                     vcp.velocityBias += -vc.restitution * vRel;
@@ -494,7 +494,7 @@ export class b2ContactSolver {
                 b2Vec2.AddVV(
                     b2Vec2.MulSV(vcp.normalImpulse, normal, b2Vec2.s_t0),
                     b2Vec2.MulSV(vcp.tangentImpulse, tangent, b2Vec2.s_t1),
-                    P
+                    P,
                 );
                 // wA -= iA * b2Cross(vcp->rA, P);
                 wA -= iA * b2Vec2.CrossVV(vcp.rA, P);
@@ -582,7 +582,7 @@ export class b2ContactSolver {
                 b2Vec2.SubVV(
                     b2Vec2.AddVCrossSV(vB, wB, vcp.rB, b2Vec2.s_t0),
                     b2Vec2.AddVCrossSV(vA, wA, vcp.rA, b2Vec2.s_t1),
-                    dv
+                    dv,
                 );
 
                 // Compute tangent force
@@ -621,7 +621,7 @@ export class b2ContactSolver {
                     b2Vec2.SubVV(
                         b2Vec2.AddVCrossSV(vB, wB, vcp.rB, b2Vec2.s_t0),
                         b2Vec2.AddVCrossSV(vA, wA, vcp.rA, b2Vec2.s_t1),
-                        dv
+                        dv,
                     );
 
                     // Compute normal impulse
@@ -694,13 +694,13 @@ export class b2ContactSolver {
                 b2Vec2.SubVV(
                     b2Vec2.AddVCrossSV(vB, wB, cp1.rB, b2Vec2.s_t0),
                     b2Vec2.AddVCrossSV(vA, wA, cp1.rA, b2Vec2.s_t1),
-                    dv1
+                    dv1,
                 );
                 // b2Vec2 dv2 = vB + b2Cross(wB, cp2->rB) - vA - b2Cross(wA, cp2->rA);
                 b2Vec2.SubVV(
                     b2Vec2.AddVCrossSV(vB, wB, cp2.rB, b2Vec2.s_t0),
                     b2Vec2.AddVCrossSV(vA, wA, cp2.rA, b2Vec2.s_t1),
-                    dv2
+                    dv2,
                 );
 
                 // Compute normal velocity

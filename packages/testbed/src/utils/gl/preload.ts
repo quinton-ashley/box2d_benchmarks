@@ -39,7 +39,7 @@ export async function loadImages<T extends { [s: string]: string }>(gl: WebGLRen
                 };
                 image.src = imagesToLoad[key as keyof T];
                 textures[key as keyof T] = textureInfo;
-            })
+            }),
     );
     await Promise.all(imagePromises);
     return textures;

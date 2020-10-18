@@ -140,14 +140,14 @@ export class Breakable extends Test {
             this.m_velocity,
             this.m_angularVelocity,
             b2Vec2.SubVV(center1, center, b2Vec2.s_t0),
-            new b2Vec2()
+            new b2Vec2(),
         );
         /* b2Vec2 */
         const velocity2 = b2Vec2.AddVCrossSV(
             this.m_velocity,
             this.m_angularVelocity,
             b2Vec2.SubVV(center2, center, b2Vec2.s_t0),
-            new b2Vec2()
+            new b2Vec2(),
         );
 
         body1.SetAngularVelocity(this.m_angularVelocity);

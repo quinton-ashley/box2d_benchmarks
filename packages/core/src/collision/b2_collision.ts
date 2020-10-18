@@ -254,7 +254,7 @@ export class b2WorldManifold {
         xfA: b2Transform,
         radiusA: number,
         xfB: b2Transform,
-        radiusB: number
+        radiusB: number,
     ): void {
         if (manifold.pointCount === 0) {
             return;
@@ -267,7 +267,7 @@ export class b2WorldManifold {
                 const pointB: b2Vec2 = b2Transform.MulXV(
                     xfB,
                     manifold.points[0].localPoint,
-                    b2WorldManifold.Initialize_s_pointB
+                    b2WorldManifold.Initialize_s_pointB,
                 );
                 if (b2Vec2.DistanceSquaredVV(pointA, pointB) > b2_epsilon_sq) {
                     b2Vec2.SubVV(pointB, pointA, this.normal).SelfNormalize();
@@ -285,14 +285,14 @@ export class b2WorldManifold {
                 const planePoint: b2Vec2 = b2Transform.MulXV(
                     xfA,
                     manifold.localPoint,
-                    b2WorldManifold.Initialize_s_planePoint
+                    b2WorldManifold.Initialize_s_planePoint,
                 );
 
                 for (let i = 0; i < manifold.pointCount; ++i) {
                     const clipPoint: b2Vec2 = b2Transform.MulXV(
                         xfB,
                         manifold.points[i].localPoint,
-                        b2WorldManifold.Initialize_s_clipPoint
+                        b2WorldManifold.Initialize_s_clipPoint,
                     );
                     const s: number =
                         radiusA - b2Vec2.DotVV(b2Vec2.SubVV(clipPoint, planePoint, b2Vec2.s_t0), this.normal);
@@ -301,7 +301,7 @@ export class b2WorldManifold {
                         clipPoint,
                         radiusB,
                         this.normal,
-                        b2WorldManifold.Initialize_s_cB
+                        b2WorldManifold.Initialize_s_cB,
                     );
                     b2Vec2.MidVV(cA, cB, this.points[i]);
                     this.separations[i] = b2Vec2.DotVV(b2Vec2.SubVV(cB, cA, b2Vec2.s_t0), this.normal); // b2Dot(cB - cA, normal);
@@ -314,14 +314,14 @@ export class b2WorldManifold {
                 const planePoint: b2Vec2 = b2Transform.MulXV(
                     xfB,
                     manifold.localPoint,
-                    b2WorldManifold.Initialize_s_planePoint
+                    b2WorldManifold.Initialize_s_planePoint,
                 );
 
                 for (let i = 0; i < manifold.pointCount; ++i) {
                     const clipPoint: b2Vec2 = b2Transform.MulXV(
                         xfA,
                         manifold.points[i].localPoint,
-                        b2WorldManifold.Initialize_s_clipPoint
+                        b2WorldManifold.Initialize_s_clipPoint,
                     );
                     const s: number =
                         radiusB - b2Vec2.DotVV(b2Vec2.SubVV(clipPoint, planePoint, b2Vec2.s_t0), this.normal);
@@ -330,7 +330,7 @@ export class b2WorldManifold {
                         clipPoint,
                         radiusA,
                         this.normal,
-                        b2WorldManifold.Initialize_s_cA
+                        b2WorldManifold.Initialize_s_cA,
                     );
                     b2Vec2.MidVV(cA, cB, this.points[i]);
                     this.separations[i] = b2Vec2.DotVV(b2Vec2.SubVV(cA, cB, b2Vec2.s_t0), this.normal); // b2Dot(cA - cB, normal);
@@ -358,7 +358,7 @@ export function b2GetPointStates(
     state1: b2PointState[],
     state2: b2PointState[],
     manifold1: b2Manifold,
-    manifold2: b2Manifold
+    manifold2: b2Manifold,
 ): void {
     // Detect persists and removes.
     let i: number;
@@ -680,7 +680,7 @@ export function b2ClipSegmentToLine(
     vIn: [b2ClipVertex, b2ClipVertex],
     normal: b2Vec2,
     offset: number,
-    vertexIndexA: number
+    vertexIndexA: number,
 ): number {
     // Start with no output points
     let count = 0;
@@ -732,7 +732,7 @@ export function b2TestOverlapShape(
     shapeB: b2Shape,
     indexB: number,
     xfA: b2Transform,
-    xfB: b2Transform
+    xfB: b2Transform,
 ): boolean {
     const input: b2DistanceInput = b2TestOverlapShape_s_input.Reset();
     input.proxyA.SetShape(shapeA, indexA);

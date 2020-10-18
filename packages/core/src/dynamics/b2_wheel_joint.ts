@@ -280,7 +280,7 @@ export class b2WheelJoint extends b2Joint {
         const d: b2Vec2 = b2Vec2.SubVV(
             b2Vec2.AddVV(cB, rB, b2Vec2.s_t0),
             b2Vec2.AddVV(cA, rA, b2Vec2.s_t1),
-            b2WheelJoint.InitVelocityConstraints_s_d
+            b2WheelJoint.InitVelocityConstraints_s_d,
         );
 
         // Point to line constraint
@@ -363,7 +363,7 @@ export class b2WheelJoint extends b2Joint {
             const P: b2Vec2 = b2Vec2.AddVV(
                 b2Vec2.MulSV(this.m_impulse, this.m_ay, b2Vec2.s_t0),
                 b2Vec2.MulSV(axialImpulse, this.m_ax, b2Vec2.s_t1),
-                b2WheelJoint.InitVelocityConstraints_s_P
+                b2WheelJoint.InitVelocityConstraints_s_P,
             );
             // float32 LA = m_impulse * m_sAy + m_springImpulse * m_sAx + m_motorImpulse;
             const LA: number = this.m_impulse * this.m_sAy + axialImpulse * this.m_sAx + this.m_motorImpulse;
@@ -593,7 +593,7 @@ export class b2WheelJoint extends b2Joint {
             const d: b2Vec2 = b2Vec2.AddVV(
                 b2Vec2.SubVV(cB, cA, b2Vec2.s_t0),
                 b2Vec2.SubVV(rB, rA, b2Vec2.s_t1),
-                b2WheelJoint.SolvePositionConstraints_s_d
+                b2WheelJoint.SolvePositionConstraints_s_d,
             );
 
             // b2Vec2 ax = b2Mul(qA, this.m_localXAxisA);
@@ -657,7 +657,7 @@ export class b2WheelJoint extends b2Joint {
             const d: b2Vec2 = b2Vec2.AddVV(
                 b2Vec2.SubVV(cB, cA, b2Vec2.s_t0),
                 b2Vec2.SubVV(rB, rA, b2Vec2.s_t1),
-                b2WheelJoint.SolvePositionConstraints_s_d
+                b2WheelJoint.SolvePositionConstraints_s_d,
             );
 
             // b2Vec2 ay = b2Mul(qA, m_localYAxisA);
@@ -804,8 +804,8 @@ export class b2WheelJoint extends b2Joint {
                 b2Vec2.SubVV(
                     b2Vec2.AddVCrossSV(vB, wB, rB, b2Vec2.s_t0),
                     b2Vec2.AddVCrossSV(vA, wA, rA, b2Vec2.s_t1),
-                    b2Vec2.s_t0
-                )
+                    b2Vec2.s_t0,
+                ),
             );
         return speed;
     }

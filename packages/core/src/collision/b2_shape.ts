@@ -89,7 +89,7 @@ export abstract class b2Shape {
         output: b2RayCastOutput,
         input: b2RayCastInput,
         transform: b2Transform,
-        childIndex: number
+        childIndex: number,
     ): boolean;
 
     /// Given a transform, compute the associated axis aligned bounding box for a child shape.

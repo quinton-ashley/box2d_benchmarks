@@ -105,7 +105,7 @@ export class ParticleParameter {
         new ParticleParameterValue(
             b2ParticleFlag.b2_waterParticle,
             ParticleParameter.k_DefaultOptions | ParticleParameterOptions.OptionStrictContacts,
-            "water (strict)"
+            "water (strict)",
         ),
         new ParticleParameterValue(b2ParticleFlag.b2_springParticle, ParticleParameter.k_DefaultOptions, "spring"),
         new ParticleParameterValue(b2ParticleFlag.b2_elasticParticle, ParticleParameter.k_DefaultOptions, "elastic"),
@@ -115,23 +115,23 @@ export class ParticleParameter {
         new ParticleParameterValue(
             b2ParticleFlag.b2_colorMixingParticle,
             ParticleParameter.k_DefaultOptions,
-            "color mixing"
+            "color mixing",
         ),
         new ParticleParameterValue(b2ParticleFlag.b2_wallParticle, ParticleParameter.k_DefaultOptions, "wall"),
         new ParticleParameterValue(
             b2ParticleFlag.b2_barrierParticle | b2ParticleFlag.b2_wallParticle,
             ParticleParameter.k_DefaultOptions,
-            "barrier"
+            "barrier",
         ),
         new ParticleParameterValue(
             b2ParticleFlag.b2_staticPressureParticle,
             ParticleParameter.k_DefaultOptions,
-            "static pressure"
+            "static pressure",
         ),
         new ParticleParameterValue(
             b2ParticleFlag.b2_waterParticle,
             ParticleParameter.k_DefaultOptions | ParticleParameterOptions.OptionDrawAABBs,
-            "water (bounding boxes)"
+            "water (bounding boxes)",
         ),
     ];
 

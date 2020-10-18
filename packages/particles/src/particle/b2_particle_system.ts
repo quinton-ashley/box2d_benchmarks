@@ -77,7 +77,7 @@ function std_sort<T>(
     array: T[],
     first = 0,
     len: number = array.length - first,
-    cmp: (a: T, b: T) => boolean = default_compare
+    cmp: (a: T, b: T) => boolean = default_compare,
 ): T[] {
     let left = first;
     const stack: number[] = [];
@@ -113,7 +113,7 @@ function std_stable_sort<T>(
     array: T[],
     first = 0,
     len: number = array.length - first,
-    cmp: (a: T, b: T) => boolean = default_compare
+    cmp: (a: T, b: T) => boolean = default_compare,
 ): T[] {
     return std_sort(array, first, len, cmp);
 }
@@ -762,23 +762,23 @@ export class b2ParticleSystem {
     public m_stuckParticleBuffer: b2GrowableBuffer<number> = new b2GrowableBuffer<number>(() => 0);
 
     public m_proxyBuffer: b2GrowableBuffer<b2ParticleSystem_Proxy> = new b2GrowableBuffer<b2ParticleSystem_Proxy>(
-        () => new b2ParticleSystem_Proxy()
+        () => new b2ParticleSystem_Proxy(),
     );
 
     public m_contactBuffer: b2GrowableBuffer<b2ParticleContact> = new b2GrowableBuffer<b2ParticleContact>(
-        () => new b2ParticleContact()
+        () => new b2ParticleContact(),
     );
 
     public m_bodyContactBuffer: b2GrowableBuffer<b2ParticleBodyContact> = new b2GrowableBuffer<b2ParticleBodyContact>(
-        () => new b2ParticleBodyContact()
+        () => new b2ParticleBodyContact(),
     );
 
     public m_pairBuffer: b2GrowableBuffer<b2ParticlePair> = new b2GrowableBuffer<b2ParticlePair>(
-        () => new b2ParticlePair()
+        () => new b2ParticlePair(),
     );
 
     public m_triadBuffer: b2GrowableBuffer<b2ParticleTriad> = new b2GrowableBuffer<b2ParticleTriad>(
-        () => new b2ParticleTriad()
+        () => new b2ParticleTriad(),
     );
 
     /**
@@ -938,10 +938,10 @@ export class b2ParticleSystem {
             this.m_consecutiveContactStepsBuffer.data[index] = 0;
         }
         this.m_positionBuffer.data[index] = (this.m_positionBuffer.data[index] || new b2Vec2()).Copy(
-            def.position ?? b2Vec2.ZERO
+            def.position ?? b2Vec2.ZERO,
         );
         this.m_velocityBuffer.data[index] = (this.m_velocityBuffer.data[index] || new b2Vec2()).Copy(
-            def.velocity ?? b2Vec2.ZERO
+            def.velocity ?? b2Vec2.ZERO,
         );
         this.m_weightBuffer[index] = 0;
         this.m_forceBuffer[index] = (this.m_forceBuffer[index] || new b2Vec2()).SetZero();
@@ -973,7 +973,7 @@ export class b2ParticleSystem {
         if (this.m_expirationTimeBuffer.data || finiteLifetime) {
             this.SetParticleLifetime(
                 index,
-                finiteLifetime ? lifetime : this.ExpirationTimeToLifetime(-this.GetQuantizedTimeElapsed())
+                finiteLifetime ? lifetime : this.ExpirationTimeToLifetime(-this.GetQuantizedTimeElapsed()),
             );
             // Add a reference to the newly added particle to the end of the
             // queue.
@@ -1066,7 +1066,7 @@ export class b2ParticleSystem {
             this.m_expirationTimeBuffer.data[oldestFiniteLifetimeParticle] > 0.0
                 ? oldestFiniteLifetimeParticle
                 : oldestInfiniteLifetimeParticle,
-            callDestructionListener
+            callDestructionListener,
         );
     }
 
@@ -1124,7 +1124,7 @@ export class b2ParticleSystem {
                 groupDef.shapes,
                 groupDef.shapeCount ?? groupDef.shapes.length,
                 groupDef,
-                transform
+                transform,
             );
         }
         if (groupDef.positionData) {
@@ -1214,7 +1214,7 @@ export class b2ParticleSystem {
         // We create several linked lists. Each list represents a set of connected particles.
         const nodeBuffer: b2ParticleSystem_ParticleListNode[] = b2MakeArray(
             particleCount,
-            () => new b2ParticleSystem_ParticleListNode()
+            () => new b2ParticleSystem_ParticleListNode(),
         );
         b2ParticleSystem.InitializeParticleLists(group, nodeBuffer);
         this.MergeParticleListsInContact(group, nodeBuffer);
@@ -1935,9 +1935,9 @@ export class b2ParticleSystem {
             endProxy,
             b2ParticleSystem.computeTag(
                 this.m_inverseDiameter * aabb.lowerBound.x,
-                this.m_inverseDiameter * aabb.lowerBound.y
+                this.m_inverseDiameter * aabb.lowerBound.y,
             ),
-            b2ParticleSystem_Proxy.CompareProxyTag
+            b2ParticleSystem_Proxy.CompareProxyTag,
         );
         const lastProxy = std_upper_bound(
             this.m_proxyBuffer.data,
@@ -1945,9 +1945,9 @@ export class b2ParticleSystem {
             endProxy,
             b2ParticleSystem.computeTag(
                 this.m_inverseDiameter * aabb.upperBound.x,
-                this.m_inverseDiameter * aabb.upperBound.y
+                this.m_inverseDiameter * aabb.upperBound.y,
             ),
-            b2ParticleSystem_Proxy.CompareTagProxy
+            b2ParticleSystem_Proxy.CompareTagProxy,
         );
         const pos_data = this.m_positionBuffer.data;
         for (let k = firstProxy; k < lastProxy; ++k) {
@@ -2152,7 +2152,7 @@ export class b2ParticleSystem {
         userSuppliedCapacity: number,
         oldCapacity: number,
         newCapacity: number,
-        deferred: boolean
+        deferred: boolean,
     ): T[] {
         b2Assert(newCapacity > oldCapacity);
         // A 'deferred' buffer is reallocated only if it is not NULL.
@@ -2172,7 +2172,7 @@ export class b2ParticleSystem {
         buffer: b2ParticleSystem_UserOverridableBuffer<any>,
         oldCapacity: number,
         newCapacity: number,
-        deferred: boolean
+        deferred: boolean,
     ): T[] {
         // DEBUG: b2Assert(newCapacity > oldCapacity);
         return this.ReallocateBuffer5(buffer.data, buffer.userSuppliedCapacity, oldCapacity, newCapacity, deferred);
@@ -2202,7 +2202,7 @@ export class b2ParticleSystem {
             this.m_handleIndexBuffer,
             this.m_internalAllocatedCapacity,
             newCapacity,
-            true
+            true,
         );
         // Set the size of the next handle allocation.
         /// this.m_handleAllocator.SetItemsPerSlab(newCapacity - this.m_internalAllocatedCapacity);
@@ -2226,7 +2226,7 @@ export class b2ParticleSystem {
                 this.m_flagsBuffer,
                 this.m_internalAllocatedCapacity,
                 capacity,
-                false
+                false,
             );
 
             // Conditionally defer these as they are optional if the feature is
@@ -2236,104 +2236,104 @@ export class b2ParticleSystem {
                 this.m_lastBodyContactStepBuffer,
                 this.m_internalAllocatedCapacity,
                 capacity,
-                stuck
+                stuck,
             );
             this.m_bodyContactCountBuffer.data = this.ReallocateBuffer4(
                 this.m_bodyContactCountBuffer,
                 this.m_internalAllocatedCapacity,
                 capacity,
-                stuck
+                stuck,
             );
             this.m_consecutiveContactStepsBuffer.data = this.ReallocateBuffer4(
                 this.m_consecutiveContactStepsBuffer,
                 this.m_internalAllocatedCapacity,
                 capacity,
-                stuck
+                stuck,
             );
             this.m_positionBuffer.data = this.ReallocateBuffer4(
                 this.m_positionBuffer,
                 this.m_internalAllocatedCapacity,
                 capacity,
-                false
+                false,
             );
             this.m_velocityBuffer.data = this.ReallocateBuffer4(
                 this.m_velocityBuffer,
                 this.m_internalAllocatedCapacity,
                 capacity,
-                false
+                false,
             );
             this.m_forceBuffer = this.ReallocateBuffer5(
                 this.m_forceBuffer,
                 0,
                 this.m_internalAllocatedCapacity,
                 capacity,
-                false
+                false,
             );
             this.m_weightBuffer = this.ReallocateBuffer5(
                 this.m_weightBuffer,
                 0,
                 this.m_internalAllocatedCapacity,
                 capacity,
-                false
+                false,
             );
             this.m_staticPressureBuffer = this.ReallocateBuffer5(
                 this.m_staticPressureBuffer,
                 0,
                 this.m_internalAllocatedCapacity,
                 capacity,
-                true
+                true,
             );
             this.m_accumulationBuffer = this.ReallocateBuffer5(
                 this.m_accumulationBuffer,
                 0,
                 this.m_internalAllocatedCapacity,
                 capacity,
-                false
+                false,
             );
             this.m_accumulation2Buffer = this.ReallocateBuffer5(
                 this.m_accumulation2Buffer,
                 0,
                 this.m_internalAllocatedCapacity,
                 capacity,
-                true
+                true,
             );
             this.m_depthBuffer = this.ReallocateBuffer5(
                 this.m_depthBuffer,
                 0,
                 this.m_internalAllocatedCapacity,
                 capacity,
-                true
+                true,
             );
             this.m_colorBuffer.data = this.ReallocateBuffer4(
                 this.m_colorBuffer,
                 this.m_internalAllocatedCapacity,
                 capacity,
-                true
+                true,
             );
             this.m_groupBuffer = this.ReallocateBuffer5(
                 this.m_groupBuffer,
                 0,
                 this.m_internalAllocatedCapacity,
                 capacity,
-                false
+                false,
             );
             this.m_userDataBuffer.data = this.ReallocateBuffer4(
                 this.m_userDataBuffer,
                 this.m_internalAllocatedCapacity,
                 capacity,
-                true
+                true,
             );
             this.m_expirationTimeBuffer.data = this.ReallocateBuffer4(
                 this.m_expirationTimeBuffer,
                 this.m_internalAllocatedCapacity,
                 capacity,
-                true
+                true,
             );
             this.m_indexByExpirationTimeBuffer.data = this.ReallocateBuffer4(
                 this.m_indexByExpirationTimeBuffer,
                 this.m_internalAllocatedCapacity,
                 capacity,
-                false
+                false,
             );
             this.m_internalAllocatedCapacity = capacity;
         }
@@ -2353,9 +2353,9 @@ export class b2ParticleSystem {
             b2Vec2.CrossSV(
                 groupDef.angularVelocity ?? 0,
                 b2Vec2.SubVV(particleDef.position, groupDef.position ?? b2Vec2.ZERO, b2Vec2.s_t0),
-                b2Vec2.s_t0
+                b2Vec2.s_t0,
             ),
-            particleDef.velocity
+            particleDef.velocity,
         );
         particleDef.color.Copy(groupDef.color ?? b2Color.ZERO);
         particleDef.lifetime = groupDef.lifetime ?? 0;
@@ -2448,7 +2448,7 @@ export class b2ParticleSystem {
         shapes: b2Shape[],
         shapeCount: number,
         groupDef: b2IParticleGroupDef,
-        xf: b2Transform
+        xf: b2Transform,
     ): void {
         const compositeShape = new b2ParticleSystem_CompositeShape(shapes, shapeCount);
         this.CreateParticlesFillShapeForGroup(compositeShape, groupDef, xf);
@@ -2545,7 +2545,7 @@ export class b2ParticleSystem {
     public UpdatePairsAndTriads(
         firstIndex: number,
         lastIndex: number,
-        filter: b2ParticleSystem_ConnectionFilter
+        filter: b2ParticleSystem_ConnectionFilter,
     ): void {
         const s_dab = b2ParticleSystem.UpdatePairsAndTriads_s_dab;
         const s_dbc = b2ParticleSystem.UpdatePairsAndTriads_s_dbc;
@@ -2600,7 +2600,7 @@ export class b2ParticleSystem {
                     this.m_pairBuffer.data,
                     0,
                     this.m_pairBuffer.count,
-                    b2ParticleSystem.ComparePairIndices
+                    b2ParticleSystem.ComparePairIndices,
                 );
                 /// m_pairBuffer.Unique(MatchPairIndices);
                 this.m_pairBuffer.Unique(b2ParticleSystem.MatchPairIndices);
@@ -2660,7 +2660,7 @@ export class b2ParticleSystem {
                     triad.flags = af | bf | cf;
                     triad.strength = Math.min(
                         Math.min(groupA ? groupA.m_strength : 1, groupB ? groupB.m_strength : 1),
-                        groupC ? groupC.m_strength : 1
+                        groupC ? groupC.m_strength : 1,
                     );
                     /// let midPoint = b2Vec2.MulSV(1.0 / 3.0, b2Vec2.AddVV(pa, b2Vec2.AddVV(pb, pc, new b2Vec2()), new b2Vec2()), new b2Vec2());
                     const midPoint_x = (pa.x + pb.x + pc.x) / 3.0;
@@ -2734,7 +2734,7 @@ export class b2ParticleSystem {
 
     public static InitializeParticleLists(
         group: b2ParticleGroup,
-        nodeBuffer: b2ParticleSystem_ParticleListNode[]
+        nodeBuffer: b2ParticleSystem_ParticleListNode[],
     ): void {
         const bufferIndex = group.GetBufferIndex();
         const particleCount = group.GetParticleCount();
@@ -2776,7 +2776,7 @@ export class b2ParticleSystem {
 
     public static MergeParticleLists(
         listA: b2ParticleSystem_ParticleListNode,
-        listB: b2ParticleSystem_ParticleListNode
+        listB: b2ParticleSystem_ParticleListNode,
     ): void {
         // Insert listB between index 0 and 1 of listA
         // Example:
@@ -2802,7 +2802,7 @@ export class b2ParticleSystem {
 
     public static FindLongestParticleList(
         group: b2ParticleGroup,
-        nodeBuffer: b2ParticleSystem_ParticleListNode[]
+        nodeBuffer: b2ParticleSystem_ParticleListNode[],
     ): b2ParticleSystem_ParticleListNode {
         const particleCount = group.GetParticleCount();
         let result: b2ParticleSystem_ParticleListNode = nodeBuffer[0];
@@ -2818,7 +2818,7 @@ export class b2ParticleSystem {
     public MergeZombieParticleListNodes(
         group: b2ParticleGroup,
         nodeBuffer: b2ParticleSystem_ParticleListNode[],
-        survivingList: b2ParticleSystem_ParticleListNode
+        survivingList: b2ParticleSystem_ParticleListNode,
     ): void {
         const particleCount = group.GetParticleCount();
         for (let i = 0; i < particleCount; i++) {
@@ -2831,7 +2831,7 @@ export class b2ParticleSystem {
 
     public static MergeParticleListAndNode(
         list: b2ParticleSystem_ParticleListNode,
-        node: b2ParticleSystem_ParticleListNode
+        node: b2ParticleSystem_ParticleListNode,
     ): void {
         // Insert node between index 0 and 1 of list
         // Example:
@@ -2852,7 +2852,7 @@ export class b2ParticleSystem {
     public CreateParticleGroupsFromParticleList(
         group: b2ParticleGroup,
         nodeBuffer: b2ParticleSystem_ParticleListNode[],
-        survivingList: b2ParticleSystem_ParticleListNode
+        survivingList: b2ParticleSystem_ParticleListNode,
     ): void {
         const particleCount = group.GetParticleCount();
         const def = new b2ParticleGroupDef();
@@ -2878,7 +2878,7 @@ export class b2ParticleSystem {
 
     public UpdatePairsAndTriadsWithParticleList(
         group: b2ParticleGroup,
-        nodeBuffer: b2ParticleSystem_ParticleListNode[]
+        nodeBuffer: b2ParticleSystem_ParticleListNode[],
     ): void {
         const bufferIndex = group.GetBufferIndex();
         // Update indices in pairs and triads. If an index belongs to the group,
@@ -3007,11 +3007,11 @@ export class b2ParticleSystem {
     public GetInsideBoundsEnumerator(aabb: Readonly<b2AABB>): b2ParticleSystem_InsideBoundsEnumerator {
         const lowerTag = b2ParticleSystem.computeTag(
             this.m_inverseDiameter * aabb.lowerBound.x - 1,
-            this.m_inverseDiameter * aabb.lowerBound.y - 1
+            this.m_inverseDiameter * aabb.lowerBound.y - 1,
         );
         const upperTag = b2ParticleSystem.computeTag(
             this.m_inverseDiameter * aabb.upperBound.x + 1,
-            this.m_inverseDiameter * aabb.upperBound.y + 1
+            this.m_inverseDiameter * aabb.upperBound.y + 1,
         );
         /// const Proxy* beginProxy = m_proxyBuffer.Begin();
         const beginProxy = 0;
@@ -3023,7 +3023,7 @@ export class b2ParticleSystem {
             beginProxy,
             endProxy,
             lowerTag,
-            b2ParticleSystem_Proxy.CompareProxyTag
+            b2ParticleSystem_Proxy.CompareProxyTag,
         );
         /// const Proxy* lastProxy = std::upper_bound(firstProxy, endProxy, upperTag);
         const lastProxy = std_upper_bound(
@@ -3031,7 +3031,7 @@ export class b2ParticleSystem {
             beginProxy,
             endProxy,
             upperTag,
-            b2ParticleSystem_Proxy.CompareTagProxy
+            b2ParticleSystem_Proxy.CompareTagProxy,
         );
 
         // DEBUG: b2Assert(beginProxy <= firstProxy);
@@ -3910,7 +3910,7 @@ export class b2ParticleSystem {
                 const v = b2Vec2.SubVV(
                     b.GetLinearVelocityFromWorldPoint(p, s_t0),
                     aGroup.GetLinearVelocityFromWorldPoint(p, s_t1),
-                    s_v
+                    s_v,
                 );
                 const vn = b2Vec2.DotVV(v, n);
                 if (vn < 0) {
@@ -3925,7 +3925,7 @@ export class b2ParticleSystem {
                         aGroup,
                         a,
                         p,
-                        n
+                        n,
                     );
                     // Calculate b.m_I from public functions of b2Body.
                     /// this.InitDampingParameter(&invMassB, &invInertiaB, &tangentDistanceB, b.GetMass(), b.GetInertia() - b.GetMass() * b.GetLocalCenter().LengthSquared(), b.GetWorldCenter(), p, n);
@@ -3937,7 +3937,7 @@ export class b2ParticleSystem {
                         b.GetInertia() - b.GetMass() * b.GetLocalCenter().LengthSquared(),
                         b.GetWorldCenter(),
                         p,
-                        n
+                        n,
                     );
                     /// float32 f = damping * Math.min(w, 1.0) * this.ComputeDampingImpulse(invMassA, invInertiaA, tangentDistanceA, invMassB, invInertiaB, tangentDistanceB, vn);
                     const f =
@@ -3950,7 +3950,7 @@ export class b2ParticleSystem {
                             invMassB[0],
                             invInertiaB[0],
                             tangentDistanceB[0],
-                            vn
+                            vn,
                         );
                     /// this.ApplyDamping(invMassA, invInertiaA, tangentDistanceA, true, aGroup, a, f, n);
                     this.ApplyDamping(invMassA[0], invInertiaA[0], tangentDistanceA[0], true, aGroup, a, f, n);
@@ -3976,7 +3976,7 @@ export class b2ParticleSystem {
                 const v = b2Vec2.SubVV(
                     this.GetLinearVelocity(bGroup, b, p, s_t0),
                     this.GetLinearVelocity(aGroup, a, p, s_t1),
-                    s_v
+                    s_v,
                 );
                 const vn = b2Vec2.DotVV(v, n);
                 if (vn < 0) {
@@ -3989,7 +3989,7 @@ export class b2ParticleSystem {
                         aGroup,
                         a,
                         p,
-                        n
+                        n,
                     );
                     /// this.InitDampingParameterWithRigidGroupOrParticle(&invMassB, &invInertiaB, &tangentDistanceB, bRigid, bGroup, b, p, n);
                     this.InitDampingParameterWithRigidGroupOrParticle(
@@ -4000,7 +4000,7 @@ export class b2ParticleSystem {
                         bGroup,
                         b,
                         p,
-                        n
+                        n,
                     );
                     /// float32 f = damping * w * this.ComputeDampingImpulse(invMassA, invInertiaA, tangentDistanceA, invMassB, invInertiaB, tangentDistanceB, vn);
                     const f =
@@ -4013,7 +4013,7 @@ export class b2ParticleSystem {
                             invMassB[0],
                             invInertiaB[0],
                             tangentDistanceB[0],
-                            vn
+                            vn,
                         );
                     /// this.ApplyDamping(invMassA, invInertiaA, tangentDistanceA, aRigid, aGroup, a, f, n);
                     this.ApplyDamping(invMassA[0], invInertiaA[0], tangentDistanceA[0], aRigid, aGroup, a, f, n);
@@ -4097,9 +4097,9 @@ export class b2ParticleSystem {
                     b2Vec2.SubVV(
                         b2Vec2.MulSV(step.dt, group.m_linearVelocity, b2Vec2.s_t0),
                         b2Rot.MulRV(rotation, group.m_center, b2Vec2.s_t1),
-                        b2Vec2.s_t0
+                        b2Vec2.s_t0,
                     ),
-                    s_position
+                    s_position,
                 );
                 const transform = s_transform;
                 transform.SetPositionRotation(position, rotation);
@@ -4660,7 +4660,7 @@ export class b2ParticleSystem {
                     if (group.m_groupFlags & b2ParticleGroupFlag.b2_solidParticleGroup) {
                         this.SetGroupFlags(
                             group,
-                            group.m_groupFlags | b2ParticleGroupFlag.b2_particleGroupNeedsUpdateDepth
+                            group.m_groupFlags | b2ParticleGroupFlag.b2_particleGroupNeedsUpdateDepth,
                         );
                     }
                 }
@@ -5061,7 +5061,7 @@ export class b2ParticleSystem {
                         contact.fixture.GetBody().GetTransform(),
                         pos,
                         normal,
-                        childIndex
+                        childIndex,
                     );
                     if (distance < b2_linearSlop) {
                         return false;
@@ -5076,7 +5076,7 @@ export class b2ParticleSystem {
         this.m_bodyContactBuffer.count = std_remove_if(
             this.m_bodyContactBuffer.data,
             b2ParticleBodyContactRemovePredicate,
-            this.m_bodyContactBuffer.count
+            this.m_bodyContactBuffer.count,
         );
     }
 
@@ -5184,7 +5184,7 @@ export class b2ParticleSystem {
         inertia: number,
         center: b2Vec2,
         point: b2Vec2,
-        normal: b2Vec2
+        normal: b2Vec2,
     ): void {
         /// *invMass = mass > 0 ? 1 / mass : 0;
         invMass[0] = mass > 0 ? 1 / mass : 0;
@@ -5202,7 +5202,7 @@ export class b2ParticleSystem {
         group: b2ParticleGroup | null,
         particleIndex: number,
         point: b2Vec2,
-        normal: b2Vec2
+        normal: b2Vec2,
     ): void {
         if (group && isRigidGroup) {
             this.InitDampingParameter(
@@ -5213,7 +5213,7 @@ export class b2ParticleSystem {
                 group.GetInertia(),
                 group.GetCenter(),
                 point,
-                normal
+                normal,
             );
         } else {
             const flags = this.m_flagsBuffer.data[particleIndex];
@@ -5225,7 +5225,7 @@ export class b2ParticleSystem {
                 0,
                 point,
                 point,
-                normal
+                normal,
             );
         }
     }
@@ -5237,7 +5237,7 @@ export class b2ParticleSystem {
         invMassB: number,
         invInertiaB: number,
         tangentDistanceB: number,
-        normalVelocity: number
+        normalVelocity: number,
     ): number {
         const invMass =
             invMassA +
@@ -5255,7 +5255,7 @@ export class b2ParticleSystem {
         group: b2ParticleGroup | null,
         particleIndex: number,
         impulse: number,
-        normal: b2Vec2
+        normal: b2Vec2,
     ): void {
         if (group && isRigidGroup) {
             /// group.m_linearVelocity += impulse * invMass * normal;
@@ -5417,7 +5417,7 @@ export class b2ParticleSystem_FixtureParticleSet extends b2ParticleSystem_FixedS
 > {
     public Initialize(
         _bodyContactBuffer: b2GrowableBuffer<b2ParticleBodyContact>,
-        _flagsBuffer: b2ParticleSystem_UserOverridableBuffer<b2ParticleFlag>
+        _flagsBuffer: b2ParticleSystem_UserOverridableBuffer<b2ParticleFlag>,
     ): void {
         // TODO
     }
@@ -5442,7 +5442,7 @@ export class b2ParticleSystem_ParticlePair {
 export class b2ParticlePairSet extends b2ParticleSystem_FixedSetAllocator<b2ParticleSystem_ParticlePair> {
     public Initialize(
         _contactBuffer: b2GrowableBuffer<b2ParticleContact>,
-        _flagsBuffer: b2ParticleSystem_UserOverridableBuffer<b2ParticleFlag>
+        _flagsBuffer: b2ParticleSystem_UserOverridableBuffer<b2ParticleFlag>,
     ): void {
         // TODO
     }
@@ -5649,7 +5649,7 @@ export class b2ParticleSystem_UpdateBodyContactsCallback extends b2FixturePartic
     public ShouldCollideFixtureParticle(
         fixture: b2Fixture,
         _particleSystem: b2ParticleSystem,
-        particleIndex: number
+        particleIndex: number,
     ): boolean {
         // Call the contact filter if it's set, to determine whether to
         // filter this contact.  Returns true if contact calculations should

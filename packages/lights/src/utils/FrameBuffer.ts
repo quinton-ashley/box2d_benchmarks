@@ -66,7 +66,7 @@ export class FrameBuffer {
             this.gl.COLOR_ATTACHMENT0,
             this.gl.TEXTURE_2D,
             this.texture,
-            0
+            0,
         );
 
         this.gl.bindRenderbuffer(this.gl.RENDERBUFFER, null);

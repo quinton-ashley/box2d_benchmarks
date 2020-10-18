@@ -128,7 +128,7 @@ export class b2BuoyancyController extends b2Controller {
             // Angular drag
             // TODO: Something that makes more physical sense?
             body.ApplyTorque(
-                (-body.GetInertia() / body.GetMass()) * area * body.GetAngularVelocity() * this.angularDrag
+                (-body.GetInertia() / body.GetMass()) * area * body.GetAngularVelocity() * this.angularDrag,
             );
         }
     }

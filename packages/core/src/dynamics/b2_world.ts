@@ -538,7 +538,7 @@ export class b2World {
         shape: b2Shape,
         index: number,
         transform: b2Transform,
-        callback: b2QueryCallback | b2QueryCallbackFunction
+        callback: b2QueryCallback | b2QueryCallbackFunction,
     ): void {
         const aabb: b2AABB = b2World.QueryFixtureShape_s_aabb;
         shape.ComputeAABB(aabb, transform, index);
@@ -553,7 +553,7 @@ export class b2World {
                     fixture.GetShape(),
                     fixture_proxy.childIndex,
                     transform,
-                    fixture.GetBody().GetTransform()
+                    fixture.GetBody().GetTransform(),
                 )
             ) {
                 if (callback instanceof b2QueryCallback) {
@@ -569,7 +569,7 @@ export class b2World {
         shape: b2Shape,
         index: number,
         transform: b2Transform,
-        out: b2Fixture[] = []
+        out: b2Fixture[] = [],
     ): b2Fixture[] {
         this.QueryFixtureShape(shape, index, transform, (fixture: b2Fixture): boolean => {
             out.push(fixture);
@@ -632,7 +632,7 @@ export class b2World {
                     const point: b2Vec2 = b2World.RayCast_s_point;
                     point.Set(
                         (1 - fraction) * point1.x + fraction * point2.x,
-                        (1 - fraction) * point1.y + fraction * point2.y
+                        (1 - fraction) * point1.y + fraction * point2.y,
                     );
                     if (callback instanceof b2RayCastCallback) {
                         return callback.ReportFixture(fixture, point, output.normal, fraction);
@@ -640,7 +640,7 @@ export class b2World {
                     return callback(fixture, point, output.normal, fraction);
                 }
                 return input2.maxFraction;
-            }
+            },
         );
     }
 
@@ -656,7 +656,7 @@ export class b2World {
                     result = fixture;
                 }
                 return min_fraction;
-            }
+            },
         );
         return result;
     }
@@ -668,7 +668,7 @@ export class b2World {
             (fixture: b2Fixture, _point: b2Vec2, _normal: b2Vec2, _fraction: number): number => {
                 out.push(fixture);
                 return 1;
-            }
+            },
         );
         return out;
     }
@@ -902,7 +902,7 @@ export class b2World {
             this.m_bodyCount,
             this.m_contactManager.m_contactCount,
             this.m_jointCount,
-            this.m_contactManager.m_contactListener
+            this.m_contactManager.m_contactListener,
         );
 
         // Clear all the island flags.

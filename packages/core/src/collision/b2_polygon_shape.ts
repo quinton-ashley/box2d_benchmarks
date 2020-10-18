@@ -85,7 +85,7 @@ export class b2PolygonShape extends b2Shape {
             b2Assert(vertices.length % 2 === 0);
             return this.SetEx(
                 (index: number): XY => ({ x: vertices[index * 2], y: vertices[index * 2 + 1] }),
-                vertices.length / 2
+                vertices.length / 2,
             );
         }
         const vertices: XY[] = args[0];
@@ -107,7 +107,7 @@ export class b2PolygonShape extends b2Shape {
             const /* b2Vec2 */ v = vertices(i);
 
             const unique = ps.every(
-                (p) => b2Vec2.DistanceSquaredVV(v, p) >= 0.5 * b2_linearSlop * (0.5 * b2_linearSlop)
+                (p) => b2Vec2.DistanceSquaredVV(v, p) >= 0.5 * b2_linearSlop * (0.5 * b2_linearSlop),
             );
             if (unique) {
                 ps.push(v);
@@ -272,7 +272,7 @@ export class b2PolygonShape extends b2Shape {
             // dot(normal, p1 - v) + a * dot(normal, d) = 0
             const numerator: number = b2Vec2.DotVV(
                 this.m_normals[i],
-                b2Vec2.SubVV(this.m_vertices[i], p1, b2Vec2.s_t0)
+                b2Vec2.SubVV(this.m_vertices[i], p1, b2Vec2.s_t0),
             );
             const denominator: number = b2Vec2.DotVV(this.m_normals[i], d);
 
@@ -385,7 +385,7 @@ export class b2PolygonShape extends b2Shape {
             const e2: b2Vec2 = b2Vec2.SubVV(
                 this.m_vertices[(i + 1) % this.m_count],
                 s,
-                b2PolygonShape.ComputeMass_s_e2
+                b2PolygonShape.ComputeMass_s_e2,
             );
 
             const D: number = b2Vec2.CrossVV(e1, e2);
@@ -519,11 +519,11 @@ export class b2PolygonShape extends b2Shape {
 
         const intoVec: b2Vec2 = b2PolygonShape.ComputeSubmergedArea_s_intoVec.Set(
             this.m_vertices[intoIndex].x * (1 - intoLamdda) + this.m_vertices[intoIndex2].x * intoLamdda,
-            this.m_vertices[intoIndex].y * (1 - intoLamdda) + this.m_vertices[intoIndex2].y * intoLamdda
+            this.m_vertices[intoIndex].y * (1 - intoLamdda) + this.m_vertices[intoIndex2].y * intoLamdda,
         );
         const outoVec: b2Vec2 = b2PolygonShape.ComputeSubmergedArea_s_outoVec.Set(
             this.m_vertices[outoIndex].x * (1 - outoLamdda) + this.m_vertices[outoIndex2].x * outoLamdda,
-            this.m_vertices[outoIndex].y * (1 - outoLamdda) + this.m_vertices[outoIndex2].y * outoLamdda
+            this.m_vertices[outoIndex].y * (1 - outoLamdda) + this.m_vertices[outoIndex2].y * outoLamdda,
         );
 
         // Initialize accumulator

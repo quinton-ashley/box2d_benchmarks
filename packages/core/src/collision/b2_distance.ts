@@ -238,7 +238,7 @@ export class b2Simplex {
         proxyA: b2DistanceProxy,
         transformA: b2Transform,
         proxyB: b2DistanceProxy,
-        transformB: b2Transform
+        transformB: b2Transform,
     ): void {
         // DEBUG: b2Assert(0 <= cache.count && cache.count <= 3);
 
@@ -327,7 +327,7 @@ export class b2Simplex {
             case 2:
                 return out.Set(
                     this.m_v1.a * this.m_v1.w.x + this.m_v2.a * this.m_v2.w.x,
-                    this.m_v1.a * this.m_v1.w.y + this.m_v2.a * this.m_v2.w.y
+                    this.m_v1.a * this.m_v1.w.y + this.m_v2.a * this.m_v2.w.y,
                 );
 
             case 3:
@@ -385,7 +385,7 @@ export class b2Simplex {
             case 3:
                 return b2Vec2.CrossVV(
                     b2Vec2.SubVV(this.m_v2.w, this.m_v1.w, b2Vec2.s_t0),
-                    b2Vec2.SubVV(this.m_v3.w, this.m_v1.w, b2Vec2.s_t1)
+                    b2Vec2.SubVV(this.m_v3.w, this.m_v1.w, b2Vec2.s_t1),
                 );
 
             default:
@@ -614,7 +614,7 @@ export function b2Distance(output: b2DistanceOutput, cache: b2SimplexCache, inpu
         // Compute a tentative new simplex vertex using support points.
         const vertex: b2SimplexVertex = vertices[simplex.m_count];
         vertex.indexA = proxyA.GetSupport(
-            b2Rot.MulTRV(transformA.q, b2Vec2.NegV(d, b2Vec2.s_t0), b2Distance_s_supportA)
+            b2Rot.MulTRV(transformA.q, b2Vec2.NegV(d, b2Vec2.s_t0), b2Distance_s_supportA),
         );
         b2Transform.MulXV(transformA, proxyA.GetVertex(vertex.indexA), vertex.wA);
         vertex.indexB = proxyB.GetSupport(b2Rot.MulTRV(transformB.q, d, b2Distance_s_supportB));

@@ -27,7 +27,7 @@ export function b2CollideEdgeAndCircle(
     edgeA: b2EdgeShape,
     xfA: b2Transform,
     circleB: b2CircleShape,
-    xfB: b2Transform
+    xfB: b2Transform,
 ): void {
     manifold.pointCount = 0;
 
@@ -35,7 +35,7 @@ export function b2CollideEdgeAndCircle(
     const Q: b2Vec2 = b2Transform.MulTXV(
         xfA,
         b2Transform.MulXV(xfB, circleB.m_p, b2Vec2.s_t0),
-        b2CollideEdgeAndCircle_s_Q
+        b2CollideEdgeAndCircle_s_Q,
     );
 
     const A: b2Vec2 = edgeA.m_vertex1;
@@ -214,7 +214,7 @@ const b2ComputeEdgeSeparation_s_axes: [b2Vec2, b2Vec2] = [new b2Vec2(), new b2Ve
 function b2ComputeEdgeSeparation(
     polygonB: Readonly<b2TempPolygon>,
     v1: Readonly<b2Vec2>,
-    normal1: Readonly<b2Vec2>
+    normal1: Readonly<b2Vec2>,
 ): b2EPAxis {
     // b2EPAxis axis;
     const axis: b2EPAxis = b2ComputeEdgeSeparation_s_axis;
@@ -257,7 +257,7 @@ const b2ComputePolygonSeparation_s_n = new b2Vec2();
 function b2ComputePolygonSeparation(
     polygonB: Readonly<b2TempPolygon>,
     v1: Readonly<b2Vec2>,
-    v2: Readonly<b2Vec2>
+    v2: Readonly<b2Vec2>,
 ): b2EPAxis {
     const axis: b2EPAxis = b2ComputePolygonSeparation_s_axis;
     axis.type = b2EPAxisType.e_unknown;
@@ -305,7 +305,7 @@ export function b2CollideEdgeAndPolygon(
     edgeA: b2EdgeShape,
     xfA: b2Transform,
     polygonB: b2PolygonShape,
-    xfB: b2Transform
+    xfB: b2Transform,
 ): void {
     manifold.pointCount = 0;
 

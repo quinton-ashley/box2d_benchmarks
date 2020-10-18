@@ -231,7 +231,7 @@ export class b2MotorJoint extends b2Joint {
         const rA: b2Vec2 = b2Rot.MulRV(
             qA,
             b2Vec2.SubVV(this.m_linearOffset, this.m_localCenterA, b2Vec2.s_t0),
-            this.m_rA
+            this.m_rA,
         );
         // this.m_rB = b2Mul(qB, -this.m_localCenterB);
         const rB: b2Vec2 = b2Rot.MulRV(qB, b2Vec2.NegV(this.m_localCenterB, b2Vec2.s_t0), this.m_rB);
@@ -337,10 +337,10 @@ export class b2MotorJoint extends b2Joint {
                 b2Vec2.SubVV(
                     b2Vec2.AddVV(vB, b2Vec2.CrossSV(wB, rB, b2Vec2.s_t0), b2Vec2.s_t0),
                     b2Vec2.AddVV(vA, b2Vec2.CrossSV(wA, rA, b2Vec2.s_t1), b2Vec2.s_t1),
-                    b2Vec2.s_t2
+                    b2Vec2.s_t2,
                 ),
                 b2Vec2.MulSV(inv_h * this.m_correctionFactor, this.m_linearError, b2Vec2.s_t3),
-                b2MotorJoint.SolveVelocityConstraints_s_Cdot_v2
+                b2MotorJoint.SolveVelocityConstraints_s_Cdot_v2,
             );
 
             // b2Vec2 impulse = -b2Mul(this.m_linearMass, Cdot);

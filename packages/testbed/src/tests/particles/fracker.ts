@@ -451,12 +451,12 @@ export class Fracker extends Test {
             FrackerSettings.k_tileHalfWidth,
             FrackerSettings.k_tileHalfHeight,
             new b2Vec2(FrackerSettings.k_tileHalfWidth, FrackerSettings.k_tileHalfHeight),
-            0
+            0,
         );
         this.m_player.CreateFixture(shape, FrackerSettings.k_density);
         this.m_player.SetTransformVec(
             Fracker.TileToWorld(FrackerSettings.k_worldWidthTiles / 2, FrackerSettings.k_worldHeightTiles / 2),
-            0
+            0,
         );
     }
 
@@ -526,7 +526,7 @@ export class Fracker extends Test {
             FrackerSettings.k_tileHalfWidth,
             FrackerSettings.k_tileHalfHeight,
             Fracker.CenteredPosition(position),
-            0
+            0,
         );
         body.CreateFixture(shape, FrackerSettings.k_density);
         this.SetBody(x, y, body);
@@ -544,7 +544,7 @@ export class Fracker extends Test {
             FrackerSettings.k_tileHalfWidth,
             FrackerSettings.k_tileHalfHeight,
             Fracker.CenteredPosition(position),
-            0
+            0,
         );
         const pd = new b2ParticleGroupDef();
         pd.flags =
@@ -851,9 +851,9 @@ export class Fracker extends Test {
             Fracker.LerpColor(
                 FrackerSettings.k_playerColor,
                 FrackerSettings.k_playerFrackColor,
-                Math.max(this.m_frackingFluidChargeTime / FrackerSettings.k_frackingFluidChargeTime, 0.0)
+                Math.max(this.m_frackingFluidChargeTime / FrackerSettings.k_frackingFluidChargeTime, 0.0),
             ),
-            true
+            true,
         );
     }
 
@@ -915,7 +915,7 @@ export class Fracker extends Test {
     public static GetBottomLeft(bottomLeft: b2Vec2): void {
         bottomLeft.Set(
             FrackerSettings.k_worldCenterX - FrackerSettings.k_worldHalfWidth,
-            FrackerSettings.k_worldCenterY - FrackerSettings.k_worldHalfHeight
+            FrackerSettings.k_worldCenterY - FrackerSettings.k_worldHalfHeight,
         );
     }
 
@@ -926,7 +926,7 @@ export class Fracker extends Test {
         Fracker.GetBottomLeft(bottomLeft);
         topRight.Set(
             FrackerSettings.k_worldCenterX + FrackerSettings.k_worldHalfWidth,
-            FrackerSettings.k_worldCenterY + FrackerSettings.k_worldHalfHeight
+            FrackerSettings.k_worldCenterY + FrackerSettings.k_worldHalfHeight,
         );
     }
 
@@ -938,7 +938,7 @@ export class Fracker extends Test {
         Fracker.GetBottomLeft(bottomLeft);
         x[0] = Math.floor((position.x - bottomLeft.x) / FrackerSettings.k_tileWidth + FrackerSettings.k_tileHalfWidth);
         y[0] = Math.floor(
-            (position.y - bottomLeft.y) / FrackerSettings.k_tileHeight + FrackerSettings.k_tileHalfHeight
+            (position.y - bottomLeft.y) / FrackerSettings.k_tileHeight + FrackerSettings.k_tileHalfHeight,
         );
     }
 

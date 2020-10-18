@@ -241,7 +241,7 @@ export class b2FrictionJoint extends b2Joint {
             const Cdot_v2: b2Vec2 = b2Vec2.SubVV(
                 b2Vec2.AddVCrossSV(vB, wB, this.m_rB, b2Vec2.s_t0),
                 b2Vec2.AddVCrossSV(vA, wA, this.m_rA, b2Vec2.s_t1),
-                b2FrictionJoint.SolveVelocityConstraints_s_Cdot_v2
+                b2FrictionJoint.SolveVelocityConstraints_s_Cdot_v2,
             );
 
             // b2Vec2 impulse = -b2Mul(m_linearMass, Cdot);

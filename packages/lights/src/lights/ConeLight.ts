@@ -43,7 +43,7 @@ export class ConeLight extends PositionalLight {
         x: number,
         y: number,
         directionDegree: number,
-        coneDegree: number
+        coneDegree: number,
     ) {
         super(rayHandler, rays, color, distance, x, y, directionDegree);
         this.setConeDegree(coneDegree);

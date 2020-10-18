@@ -105,7 +105,7 @@ export class Camera {
         [world.x, world.y] = vec2Project(
             (2 * x) / this.width - 1,
             (2 * (this.height - y)) / this.height - 1,
-            this.inverse
+            this.inverse,
         );
 
         return world;

@@ -31,7 +31,7 @@ export class LiquidTimer extends Test {
         new ParticleParameterValue(
             b2ParticleFlag.b2_tensileParticle | b2ParticleFlag.b2_viscousParticle,
             ParticleParameter.k_DefaultOptions,
-            "tensile + viscous"
+            "tensile + viscous",
         ),
     ];
 

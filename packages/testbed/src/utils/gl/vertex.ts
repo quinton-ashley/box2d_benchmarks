@@ -37,7 +37,7 @@ export function setRotatedRect(
     rotation: number,
     centerX: number,
     centerY: number,
-    scale = 1
+    scale = 1,
 ) {
     const absCenterX = x + centerX;
     const absCenterY = y + centerY;

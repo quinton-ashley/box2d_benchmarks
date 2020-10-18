@@ -57,7 +57,7 @@ export class b2ChainShape extends b2Shape {
             b2Assert(vertices.length % 2 === 0);
             return this.CreateLoopEx(
                 (index: number): XY => ({ x: vertices[index * 2], y: vertices[index * 2 + 1] }),
-                vertices.length / 2
+                vertices.length / 2,
             );
         }
         const vertices: XY[] = args[0];
@@ -109,7 +109,7 @@ export class b2ChainShape extends b2Shape {
                 (index: number): XY => ({ x: vertices[index * 2], y: vertices[index * 2 + 1] }),
                 vertices.length / 2,
                 prevVertex,
-                nextVertex
+                nextVertex,
             );
         }
         const vertices: XY[] = args[0];
@@ -123,7 +123,7 @@ export class b2ChainShape extends b2Shape {
         vertices: (index: number) => XY,
         count: number,
         prevVertex: Readonly<XY>,
-        nextVertex: Readonly<XY>
+        nextVertex: Readonly<XY>,
     ): b2ChainShape {
         // DEBUG: b2Assert(count >= 2);
         // DEBUG: for (let i: number = 1; i < count; ++i) {
@@ -159,7 +159,7 @@ export class b2ChainShape extends b2Shape {
             (index: number): XY => other.m_vertices[index],
             other.m_count,
             other.m_prevVertex,
-            other.m_nextVertex
+            other.m_nextVertex,
         );
         this.m_prevVertex.Copy(other.m_prevVertex);
         this.m_nextVertex.Copy(other.m_nextVertex);

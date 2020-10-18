@@ -267,7 +267,7 @@ export class b2PrismaticJoint extends b2Joint {
         const d: b2Vec2 = b2Vec2.AddVV(
             b2Vec2.SubVV(cB, cA, b2Vec2.s_t0),
             b2Vec2.SubVV(rB, rA, b2Vec2.s_t1),
-            b2PrismaticJoint.InitVelocityConstraints_s_d
+            b2PrismaticJoint.InitVelocityConstraints_s_d,
         );
 
         const mA: number = this.m_invMassA;
@@ -337,7 +337,7 @@ export class b2PrismaticJoint extends b2Joint {
             const P: b2Vec2 = b2Vec2.AddVV(
                 b2Vec2.MulSV(this.m_impulse.x, this.m_perp, b2Vec2.s_t0),
                 b2Vec2.MulSV(axialImpulse, this.m_axis, b2Vec2.s_t1),
-                b2PrismaticJoint.InitVelocityConstraints_s_P
+                b2PrismaticJoint.InitVelocityConstraints_s_P,
             );
             // float LA = m_impulse.x * m_s1 + m_impulse.y + axialImpulse * m_a1;
             const LA = this.m_impulse.x * this.m_s1 + this.m_impulse.y + axialImpulse * this.m_a1;
@@ -529,7 +529,7 @@ export class b2PrismaticJoint extends b2Joint {
         const d: b2Vec2 = b2Vec2.SubVV(
             b2Vec2.AddVV(cB, rB, b2Vec2.s_t0),
             b2Vec2.AddVV(cA, rA, b2Vec2.s_t1),
-            b2PrismaticJoint.SolvePositionConstraints_s_d
+            b2PrismaticJoint.SolvePositionConstraints_s_d,
         );
 
         // b2Vec2 axis = b2Mul(qA, m_localXAxisA);
@@ -640,7 +640,7 @@ export class b2PrismaticJoint extends b2Joint {
         const P: b2Vec2 = b2Vec2.AddVV(
             b2Vec2.MulSV(impulse.x, perp, b2Vec2.s_t0),
             b2Vec2.MulSV(impulse.z, axis, b2Vec2.s_t1),
-            b2PrismaticJoint.SolvePositionConstraints_s_P
+            b2PrismaticJoint.SolvePositionConstraints_s_P,
         );
         // float32 LA = impulse.x * s1 + impulse.y + impulse.z * a1;
         const LA = impulse.x * s1 + impulse.y + impulse.z * a1;
@@ -758,8 +758,8 @@ export class b2PrismaticJoint extends b2Joint {
                 b2Vec2.SubVV(
                     b2Vec2.AddVCrossSV(vB, wB, rB, b2Vec2.s_t0),
                     b2Vec2.AddVCrossSV(vA, wA, rA, b2Vec2.s_t1),
-                    b2Vec2.s_t0
-                )
+                    b2Vec2.s_t0,
+                ),
             );
         return speed;
     }

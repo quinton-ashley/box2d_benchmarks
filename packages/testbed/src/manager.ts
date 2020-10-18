@@ -93,7 +93,7 @@ export class TestManager {
         wrapper: HTMLDivElement,
         activateTest: (label: string) => void,
         setLeftTables: TextTableSetter,
-        setRightTables: TextTableSetter
+        setRightTables: TextTableSetter,
     ) {
         this.setLeftTable = setLeftTables;
         this.setRightTable = setRightTables;
@@ -133,7 +133,7 @@ export class TestManager {
                     e.preventDefault();
                 }
             },
-            true
+            true,
         );
 
         window.addEventListener("keydown", (e: KeyboardEvent): void => this.HandleKey(e, true));
@@ -370,7 +370,7 @@ export class TestManager {
                 leftTable.push(
                     ["Description:", "-"],
                     ...this.m_test.m_textLines.map((t) => [t, ""] as [string, string]),
-                    ["", ""]
+                    ["", ""],
                 );
             }
             if (this.m_settings.m_drawInputHelp) {
@@ -379,12 +379,12 @@ export class TestManager {
                     ["Right Drag", "Move Camera"],
                     ["Left Drag", "Grab Objects"],
                     ["Wheel", "Zoom"],
-                    ["", ""]
+                    ["", ""],
                 );
                 leftTable.push(
                     ["Keyboard:", "-"],
                     ...this.allHotKeys.map((hk) => [hotKeyToText(hk), hk.description] as [string, string]),
-                    ["", ""]
+                    ["", ""],
                 );
             }
             if (this.m_test.m_debugLines.length) {

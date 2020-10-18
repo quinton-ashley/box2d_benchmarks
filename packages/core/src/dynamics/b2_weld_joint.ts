@@ -262,7 +262,7 @@ export class b2WeldJoint extends b2Joint {
             const Cdot1: b2Vec2 = b2Vec2.SubVV(
                 b2Vec2.AddVCrossSV(vB, wB, this.m_rB, b2Vec2.s_t0),
                 b2Vec2.AddVCrossSV(vA, wA, this.m_rA, b2Vec2.s_t1),
-                b2WeldJoint.SolveVelocityConstraints_s_Cdot1
+                b2WeldJoint.SolveVelocityConstraints_s_Cdot1,
             );
 
             // b2Vec2 impulse1 = -b2Mul22(m_mass, Cdot1);
@@ -289,7 +289,7 @@ export class b2WeldJoint extends b2Joint {
             const Cdot1: b2Vec2 = b2Vec2.SubVV(
                 b2Vec2.AddVCrossSV(vB, wB, this.m_rB, b2Vec2.s_t0),
                 b2Vec2.AddVCrossSV(vA, wA, this.m_rA, b2Vec2.s_t1),
-                b2WeldJoint.SolveVelocityConstraints_s_Cdot1
+                b2WeldJoint.SolveVelocityConstraints_s_Cdot1,
             );
             const Cdot2: number = wB - wA;
             // b2Vec3 const Cdot(Cdot1.x, Cdot1.y, Cdot2);
@@ -364,7 +364,7 @@ export class b2WeldJoint extends b2Joint {
             const C1 = b2Vec2.SubVV(
                 b2Vec2.AddVV(cB, rB, b2Vec2.s_t0),
                 b2Vec2.AddVV(cA, rA, b2Vec2.s_t1),
-                b2WeldJoint.SolvePositionConstraints_s_C1
+                b2WeldJoint.SolvePositionConstraints_s_C1,
             );
             positionError = C1.Length();
             angularError = 0;
@@ -384,7 +384,7 @@ export class b2WeldJoint extends b2Joint {
             const C1 = b2Vec2.SubVV(
                 b2Vec2.AddVV(cB, rB, b2Vec2.s_t0),
                 b2Vec2.AddVV(cA, rA, b2Vec2.s_t1),
-                b2WeldJoint.SolvePositionConstraints_s_C1
+                b2WeldJoint.SolvePositionConstraints_s_C1,
             );
             const C2: number = aB - aA - this.m_referenceAngle;
 

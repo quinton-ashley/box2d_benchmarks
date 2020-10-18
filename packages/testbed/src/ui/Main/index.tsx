@@ -38,7 +38,7 @@ const TextTable = ({ id, table }: TextTableProps) => (
                             <td>{label}</td>
                             <td>{value}</td>
                         </tr>
-                    )
+                    ),
                 )}
             </tbody>
         </table>

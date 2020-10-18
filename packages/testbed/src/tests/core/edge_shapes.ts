@@ -218,7 +218,7 @@ export class EdgeShapes extends Test {
             const head = b2Vec2.AddVV(
                 callback.m_point,
                 b2Vec2.MulSV(0.5, callback.m_normal, b2Vec2.s_t0),
-                new b2Vec2()
+                new b2Vec2(),
             );
             g_debugDraw.DrawSegment(callback.m_point, head, new b2Color(0.9, 0.9, 0.4));
         } else {

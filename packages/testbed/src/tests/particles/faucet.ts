@@ -47,7 +47,7 @@ export class ParticleLifetimeRandomizer extends EmittedParticleCallback {
     public ParticleCreated(system: b2ParticleSystem, particleIndex: number): void {
         system.SetParticleLifetime(
             particleIndex,
-            Math.random() * (this.m_maxLifetime - this.m_minLifetime) + this.m_minLifetime
+            Math.random() * (this.m_maxLifetime - this.m_minLifetime) + this.m_minLifetime,
         );
     }
 }
@@ -155,7 +155,7 @@ export class Faucet extends Test {
         new ParticleParameterValue(
             b2ParticleFlag.b2_waterParticle,
             ParticleParameter.k_DefaultOptions | ParticleParameterOptions.OptionStrictContacts,
-            "water (strict)"
+            "water (strict)",
         ),
         new ParticleParameterValue(b2ParticleFlag.b2_viscousParticle, ParticleParameter.k_DefaultOptions, "viscous"),
         new ParticleParameterValue(b2ParticleFlag.b2_powderParticle, ParticleParameter.k_DefaultOptions, "powder"),
@@ -163,12 +163,12 @@ export class Faucet extends Test {
         new ParticleParameterValue(
             b2ParticleFlag.b2_colorMixingParticle,
             ParticleParameter.k_DefaultOptions,
-            "color mixing"
+            "color mixing",
         ),
         new ParticleParameterValue(
             b2ParticleFlag.b2_staticPressureParticle,
             ParticleParameter.k_DefaultOptions,
-            "static pressure"
+            "static pressure",
         ),
     ];
 
@@ -184,7 +184,7 @@ export class Faucet extends Test {
         this.m_emitter = new RadialEmitter();
         this.m_lifetimeRandomizer = new ParticleLifetimeRandomizer(
             Faucet.k_particleLifetimeMin,
-            Faucet.k_particleLifetimeMax
+            Faucet.k_particleLifetimeMax,
         );
 
         // Configure particle system parameters.
@@ -206,21 +206,21 @@ export class Faucet extends Test {
                 Faucet.k_containerWidth - Faucet.k_containerThickness,
                 Faucet.k_containerThickness,
                 new b2Vec2(0.0, 0.0),
-                0.0
+                0.0,
             );
             ground.CreateFixture(shape, 0.0);
             shape.SetAsBox(
                 Faucet.k_containerThickness,
                 height,
                 new b2Vec2(-Faucet.k_containerWidth, Faucet.k_containerHeight),
-                0.0
+                0.0,
             );
             ground.CreateFixture(shape, 0.0);
             shape.SetAsBox(
                 Faucet.k_containerThickness,
                 height,
                 new b2Vec2(Faucet.k_containerWidth, Faucet.k_containerHeight),
-                0.0
+                0.0,
             );
             ground.CreateFixture(shape, 0.0);
         }
@@ -232,7 +232,7 @@ export class Faucet extends Test {
                 Faucet.k_containerWidth * 5.0,
                 Faucet.k_containerThickness,
                 new b2Vec2(0.0, Faucet.k_containerThickness * -2.0),
-                0.0
+                0.0,
             );
             ground.CreateFixture(shape, 0.0);
         }
@@ -256,7 +256,7 @@ export class Faucet extends Test {
                 width - particleDiameter,
                 particleDiameter,
                 new b2Vec2(0.0, height + length - particleDiameter),
-                0.0
+                0.0,
             );
             ground.CreateFixture(shape, 0.0);
         }
@@ -269,8 +269,8 @@ export class Faucet extends Test {
             this.m_emitter.SetPosition(
                 new b2Vec2(
                     Faucet.k_containerWidth * Faucet.k_faucetWidth,
-                    Faucet.k_containerHeight * Faucet.k_faucetHeight + faucetLength * 0.5
-                )
+                    Faucet.k_containerHeight * Faucet.k_faucetHeight + faucetLength * 0.5,
+                ),
             );
             this.m_emitter.SetVelocity(new b2Vec2(0.0, 0.0));
             this.m_emitter.SetSize(new b2Vec2(0.0, faucetLength));
@@ -307,7 +307,7 @@ export class Faucet extends Test {
         if (this.m_emitter.GetParticleFlags() & b2ParticleFlag.b2_colorMixingParticle) {
             // Each second, select a different color.
             this.m_emitter.SetColor(
-                Test.k_ParticleColors[Math.floor(this.m_particleColorOffset) % Test.k_ParticleColorsCount]
+                Test.k_ParticleColors[Math.floor(this.m_particleColorOffset) % Test.k_ParticleColorsCount],
             );
         } else {
             this.m_emitter.SetColor(new b2Color(1, 1, 1, 1));
@@ -322,26 +322,26 @@ export class Faucet extends Test {
             hotKeyPress([], "w", "Set Water", () => Test.SetParticleParameterValue(b2ParticleFlag.b2_waterParticle)),
             hotKeyPress([], "q", "Set Powder", () => Test.SetParticleParameterValue(b2ParticleFlag.b2_powderParticle)),
             hotKeyPress([], "t", "Set Tensile", () =>
-                Test.SetParticleParameterValue(b2ParticleFlag.b2_tensileParticle)
+                Test.SetParticleParameterValue(b2ParticleFlag.b2_tensileParticle),
             ),
             hotKeyPress([], "v", "Set Viscous", () =>
-                Test.SetParticleParameterValue(b2ParticleFlag.b2_viscousParticle)
+                Test.SetParticleParameterValue(b2ParticleFlag.b2_viscousParticle),
             ),
             hotKeyPress([], "c", "Set Color Mixing", () =>
-                Test.SetParticleParameterValue(b2ParticleFlag.b2_colorMixingParticle)
+                Test.SetParticleParameterValue(b2ParticleFlag.b2_colorMixingParticle),
             ),
             hotKeyPress([], "s", "Set Static Pressure", () =>
-                Test.SetParticleParameterValue(b2ParticleFlag.b2_staticPressureParticle)
+                Test.SetParticleParameterValue(b2ParticleFlag.b2_staticPressureParticle),
             ),
             hotKeyPress(["ctrl"], "+", "Increase Flow", () =>
                 this.SetEmitRate(
-                    Math.max(Faucet.k_emitRateMin, this.m_emitter.GetEmitRate() * Faucet.k_emitRateChangeFactor)
-                )
+                    Math.max(Faucet.k_emitRateMin, this.m_emitter.GetEmitRate() * Faucet.k_emitRateChangeFactor),
+                ),
             ),
             hotKeyPress(["ctrl"], "-", "Decrease Flow", () =>
                 this.SetEmitRate(
-                    Math.min(Faucet.k_emitRateMax, this.m_emitter.GetEmitRate() / Faucet.k_emitRateChangeFactor)
-                )
+                    Math.min(Faucet.k_emitRateMax, this.m_emitter.GetEmitRate() / Faucet.k_emitRateChangeFactor),
+                ),
             ),
         ];
     }

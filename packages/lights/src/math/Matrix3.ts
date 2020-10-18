@@ -81,7 +81,7 @@ export class Matrix3 {
         i5: number,
         i6: number,
         i7: number,
-        i8: number
+        i8: number,
     ) {
         this.data[0] = i0;
         this.data[1] = i1;
@@ -114,7 +114,7 @@ export class Matrix3 {
             inv_det * (val[2] * val[3] - val[0] * val[5]),
             inv_det * (val[3] * val[7] - val[4] * val[6]),
             inv_det * (val[1] * val[6] - val[0] * val[7]),
-            inv_det * (val[0] * val[4] - val[1] * val[3])
+            inv_det * (val[0] * val[4] - val[1] * val[3]),
         );
     }
 
@@ -151,7 +151,7 @@ export class Matrix3 {
             mata[2] * matb[3] + mata[5] * matb[4] + mata[8] * matb[5],
             mata[0] * matb[6] + mata[3] * matb[7] + mata[6] * matb[8],
             mata[1] * matb[6] + mata[4] * matb[7] + mata[7] * matb[8],
-            mata[2] * matb[6] + mata[5] * matb[7] + mata[8] * matb[8]
+            mata[2] * matb[6] + mata[5] * matb[7] + mata[8] * matb[8],
         );
     }
 }

@@ -123,7 +123,7 @@ export class LightMap {
                     this.rayHandler.viewportX,
                     this.rayHandler.viewportY,
                     this.rayHandler.viewportWidth,
-                    this.rayHandler.viewportHeight
+                    this.rayHandler.viewportHeight,
                 );
             } else {
                 this.frameBuffer.endSimple();

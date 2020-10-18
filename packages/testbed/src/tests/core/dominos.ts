@@ -198,7 +198,7 @@ export class Dominos extends Test {
         const d = b2Vec2.SubVV(
             djd.bodyB.GetWorldPoint(djd.localAnchorB, new b2Vec2()),
             djd.bodyA.GetWorldPoint(djd.localAnchorA, new b2Vec2()),
-            new b2Vec2()
+            new b2Vec2(),
         );
         djd.length = d.Length();
         this.m_world.CreateJoint(djd);

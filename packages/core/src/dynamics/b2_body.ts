@@ -712,7 +712,7 @@ export class b2Body {
             this.m_linearVelocity,
             this.m_angularVelocity,
             b2Vec2.SubVV(this.m_sweep.c, oldCenter, b2Vec2.s_t0),
-            this.m_linearVelocity
+            this.m_linearVelocity,
         );
     }
 
@@ -785,7 +785,7 @@ export class b2Body {
             this.m_linearVelocity,
             this.m_angularVelocity,
             b2Vec2.SubVV(this.m_sweep.c, oldCenter, b2Vec2.s_t0),
-            this.m_linearVelocity
+            this.m_linearVelocity,
         );
     }
 
@@ -825,7 +825,7 @@ export class b2Body {
             this.m_linearVelocity,
             this.m_angularVelocity,
             b2Vec2.SubVV(worldPoint, this.m_sweep.c, b2Vec2.s_t0),
-            out
+            out,
         );
     }
 

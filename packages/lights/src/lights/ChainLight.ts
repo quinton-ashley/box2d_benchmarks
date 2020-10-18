@@ -104,7 +104,7 @@ export class ChainLight extends Light {
         color: RGBA,
         distance: number,
         rayDirection: number,
-        chain?: number[]
+        chain?: number[],
     ) {
         super(rayHandler, rays, color, distance, 0);
         this.rayStartOffset = ChainLight.defaultRayStartOffset;
@@ -330,7 +330,7 @@ export class ChainLight extends Light {
         this.rotateAroundZero.setToRotationRad(this.bodyAngle + this.bodyAngleOffset);
         for (let i = 0; i < this.rayNum; i++) {
             this.restorePosition.mulVec2(
-                this.rotateAroundZero.mulVec2(this.tmpVec.set(this.startX[i], this.startY[i]))
+                this.rotateAroundZero.mulVec2(this.tmpVec.set(this.startX[i], this.startY[i])),
             );
             this.startX[i] = this.tmpVec.x;
             this.startY[i] = this.tmpVec.y;
@@ -368,14 +368,14 @@ export class ChainLight extends Light {
         for (let i = 0; i < this.rayNum; i++) {
             this.restorePosition.mulVec2(
                 this.rotateAroundZero.mulVec2(
-                    this.zeroPosition.mulVec2(this.tmpVec.set(this.startX[i], this.startY[i]))
-                )
+                    this.zeroPosition.mulVec2(this.tmpVec.set(this.startX[i], this.startY[i])),
+                ),
             );
             this.startX[i] = this.tmpVec.x;
             this.startY[i] = this.tmpVec.y;
 
             this.restorePosition.mulVec2(
-                this.rotateAroundZero.mulVec2(this.zeroPosition.mulVec2(this.tmpVec.set(this.endX[i], this.endY[i])))
+                this.rotateAroundZero.mulVec2(this.zeroPosition.mulVec2(this.tmpVec.set(this.endX[i], this.endY[i]))),
             );
             this.endX[i] = this.tmpVec.x;
             this.endY[i] = this.tmpVec.y;
@@ -466,7 +466,7 @@ export class ChainLight extends Light {
             this.rayHandler.x1,
             this.rayHandler.y1,
             this.rayHandler.x2 - this.rayHandler.x1,
-            this.rayHandler.y2 - this.rayHandler.y1
+            this.rayHandler.y2 - this.rayHandler.y1,
         );
     }
 }

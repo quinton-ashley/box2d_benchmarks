@@ -334,13 +334,13 @@ export class b2RevoluteJoint extends b2Joint {
             const Cdot_v2: b2Vec2 = b2Vec2.SubVV(
                 b2Vec2.AddVCrossSV(vB, wB, this.m_rB, b2Vec2.s_t0),
                 b2Vec2.AddVCrossSV(vA, wA, this.m_rA, b2Vec2.s_t1),
-                b2RevoluteJoint.SolveVelocityConstraints_s_Cdot_v2
+                b2RevoluteJoint.SolveVelocityConstraints_s_Cdot_v2,
             );
             // b2Vec2 impulse = m_K.Solve(-Cdot);
             const impulse_v2: b2Vec2 = this.m_K.Solve(
                 -Cdot_v2.x,
                 -Cdot_v2.y,
-                b2RevoluteJoint.SolveVelocityConstraints_s_impulse_v2
+                b2RevoluteJoint.SolveVelocityConstraints_s_impulse_v2,
             );
 
             this.m_impulse.x += impulse_v2.x;
@@ -418,7 +418,7 @@ export class b2RevoluteJoint extends b2Joint {
             const C_v2 = b2Vec2.SubVV(
                 b2Vec2.AddVV(cB, rB, b2Vec2.s_t0),
                 b2Vec2.AddVV(cA, rA, b2Vec2.s_t1),
-                b2RevoluteJoint.SolvePositionConstraints_s_C_v2
+                b2RevoluteJoint.SolvePositionConstraints_s_C_v2,
             );
             // positionError = C.Length();
             positionError = C_v2.Length();
@@ -438,7 +438,7 @@ export class b2RevoluteJoint extends b2Joint {
             const impulse: b2Vec2 = K.Solve(
                 C_v2.x,
                 C_v2.y,
-                b2RevoluteJoint.SolvePositionConstraints_s_impulse
+                b2RevoluteJoint.SolvePositionConstraints_s_impulse,
             ).SelfNeg();
 
             // cA -= mA * impulse;

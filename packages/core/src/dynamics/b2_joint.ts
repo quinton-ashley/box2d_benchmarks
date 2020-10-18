@@ -144,7 +144,7 @@ export function b2LinearStiffness(
     frequencyHertz: number,
     dampingRatio: number,
     bodyA: b2Body,
-    bodyB: b2Body
+    bodyB: b2Body,
 ): void {
     const massA: number = bodyA.GetMass();
     const massB: number = bodyB.GetMass();
@@ -171,7 +171,7 @@ export function b2AngularStiffness(
     frequencyHertz: number,
     dampingRatio: number,
     bodyA: b2Body,
-    bodyB: b2Body
+    bodyB: b2Body,
 ): void {
     const IA: number = bodyA.GetInertia();
     const IB: number = bodyB.GetInertia();

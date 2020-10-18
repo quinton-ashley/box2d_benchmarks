@@ -522,28 +522,28 @@ export class Test extends b2ContactListener {
             this.addDebug("Step [ave] (max)", formatValueAveMax(p.step, aveProfile.step, this.m_maxProfile.step));
             this.addDebug(
                 "Collide [ave] (max)",
-                formatValueAveMax(p.collide, aveProfile.collide, this.m_maxProfile.collide)
+                formatValueAveMax(p.collide, aveProfile.collide, this.m_maxProfile.collide),
             );
             this.addDebug("Solve [ave] (max)", formatValueAveMax(p.solve, aveProfile.solve, this.m_maxProfile.solve));
             this.addDebug(
                 "Solve Init [ave] (max)",
-                formatValueAveMax(p.solveInit, aveProfile.solveInit, this.m_maxProfile.solveInit)
+                formatValueAveMax(p.solveInit, aveProfile.solveInit, this.m_maxProfile.solveInit),
             );
             this.addDebug(
                 "Solve Velocity [ave] (max)",
-                formatValueAveMax(p.solveVelocity, aveProfile.solveVelocity, this.m_maxProfile.solveVelocity)
+                formatValueAveMax(p.solveVelocity, aveProfile.solveVelocity, this.m_maxProfile.solveVelocity),
             );
             this.addDebug(
                 "Solve Position [ave] (max)",
-                formatValueAveMax(p.solvePosition, aveProfile.solvePosition, this.m_maxProfile.solvePosition)
+                formatValueAveMax(p.solvePosition, aveProfile.solvePosition, this.m_maxProfile.solvePosition),
             );
             this.addDebug(
                 "Solve TOI [ave] (max)",
-                formatValueAveMax(p.solveTOI, aveProfile.solveTOI, this.m_maxProfile.solveTOI)
+                formatValueAveMax(p.solveTOI, aveProfile.solveTOI, this.m_maxProfile.solveTOI),
             );
             this.addDebug(
                 "Broad-Phase [ave] (max)",
-                formatValueAveMax(p.broadphase, aveProfile.broadphase, this.m_maxProfile.broadphase)
+                formatValueAveMax(p.broadphase, aveProfile.broadphase, this.m_maxProfile.broadphase),
             );
         }
 
@@ -601,7 +601,7 @@ export class Test extends b2ContactListener {
                     const p2: b2Vec2 = b2Vec2.AddVV(
                         p1,
                         b2Vec2.MulSV(k_axisScale, point.normal, b2Vec2.s_t0),
-                        new b2Vec2()
+                        new b2Vec2(),
                     );
                     g_debugDraw.DrawSegment(p1, p2, new b2Color(0.9, 0.9, 0.9));
                 } else if (settings.m_drawContactImpulse) {
@@ -610,7 +610,7 @@ export class Test extends b2ContactListener {
                         p1,
                         k_impulseScale * point.normalImpulse,
                         point.normal,
-                        new b2Vec2()
+                        new b2Vec2(),
                     );
                     g_debugDraw.DrawSegment(p1, p2, new b2Color(0.9, 0.9, 0.3));
                 }
@@ -622,7 +622,7 @@ export class Test extends b2ContactListener {
                         p1,
                         k_impulseScale * point.tangentImpulse,
                         tangent,
-                        new b2Vec2()
+                        new b2Vec2(),
                     );
                     g_debugDraw.DrawSegment(p1, p2, new b2Color(0.9, 0.9, 0.3));
                 }
@@ -751,7 +751,7 @@ export class Test extends b2ContactListener {
      */
     public static SetParticleParameters(
         particleParameterDef: ParticleParameterDefinition[],
-        particleParameterDefCount: number = particleParameterDef.length
+        particleParameterDefCount: number = particleParameterDef.length,
     ) {
         Test.particleParameter.SetDefinition(particleParameterDef, particleParameterDefCount);
     }

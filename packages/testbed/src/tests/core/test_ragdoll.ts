@@ -74,7 +74,7 @@ export class TestRagdoll extends Test {
             // {
             head.ApplyLinearImpulse(
                 new b2Vec2(Math.random() * 1000.0 - 500.0, Math.random() * 1000.0 - 500.0),
-                head.GetWorldCenter()
+                head.GetWorldCenter(),
             );
             // }
 
