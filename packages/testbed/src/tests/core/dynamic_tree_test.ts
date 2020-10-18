@@ -21,7 +21,6 @@ import {
     b2AABB,
     b2RayCastInput,
     b2RayCastOutput,
-    b2MakeArray,
     b2Color,
     b2Vec2,
     b2RandomRange,
@@ -52,8 +51,8 @@ export class DynamicTreeTest extends Test {
 
     public m_rayActor: DynamicTreeTest_Actor | null = null;
 
-    public m_actors: DynamicTreeTest_Actor[] = b2MakeArray(
-        DynamicTreeTest.e_actorCount,
+    public m_actors: DynamicTreeTest_Actor[] = Array.from(
+        { length: DynamicTreeTest.e_actorCount },
         () => new DynamicTreeTest_Actor(),
     );
 

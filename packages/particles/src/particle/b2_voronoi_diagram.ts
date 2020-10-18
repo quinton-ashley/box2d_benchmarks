@@ -16,7 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import { b2MakeArray, b2Vec2, b2_maxFloat } from "@box2d/core";
+import { b2Vec2, b2_maxFloat } from "@box2d/core";
 
 import { b2StackQueue } from "./b2_stack_queue";
 
@@ -37,7 +37,7 @@ export class b2VoronoiDiagram {
     public m_diagram: b2VoronoiDiagram_Generator[] = [];
 
     constructor(generatorCapacity: number) {
-        this.m_generatorBuffer = b2MakeArray(generatorCapacity, () => new b2VoronoiDiagram_Generator());
+        this.m_generatorBuffer = Array.from({ length: generatorCapacity }, () => new b2VoronoiDiagram_Generator());
         this.m_generatorCapacity = generatorCapacity;
     }
 
@@ -88,7 +88,7 @@ export class b2VoronoiDiagram {
         upper.y += margin;
         this.m_countX = 1 + Math.floor(inverseRadius * (upper.x - lower.x));
         this.m_countY = 1 + Math.floor(inverseRadius * (upper.y - lower.y));
-        this.m_diagram = []; // b2MakeArray(this.m_countX * this.m_countY, (index) => null);
+        this.m_diagram = [];
 
         // (4 * m_countX * m_countY) is the queue capacity that is experimentally
         // known to be necessary and sufficient for general particle distributions.

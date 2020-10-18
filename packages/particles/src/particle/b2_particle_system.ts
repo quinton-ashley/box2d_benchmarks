@@ -27,7 +27,6 @@ import {
     b2Shape,
     b2Transform,
     b2AABB,
-    b2MakeArray,
     XY,
     b2RayCastCallback,
     b2_maxFloat,
@@ -1212,8 +1211,8 @@ export class b2ParticleSystem {
         this.UpdateContacts(true);
         const particleCount = group.GetParticleCount();
         // We create several linked lists. Each list represents a set of connected particles.
-        const nodeBuffer: b2ParticleSystem_ParticleListNode[] = b2MakeArray(
-            particleCount,
+        const nodeBuffer: b2ParticleSystem_ParticleListNode[] = Array.from(
+            { length: particleCount },
             () => new b2ParticleSystem_ParticleListNode(),
         );
         b2ParticleSystem.InitializeParticleLists(group, nodeBuffer);

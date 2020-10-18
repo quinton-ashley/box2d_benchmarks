@@ -17,7 +17,7 @@
  */
 
 // DEBUG: import { b2Assert } from "./b2_common";
-import { b2_epsilon, b2MakeArray } from "./b2_common";
+import { b2_epsilon } from "./b2_common";
 
 export const b2_pi_over_180: number = Math.PI / 180;
 export const b2_180_over_pi: number = 180 / Math.PI;
@@ -270,7 +270,7 @@ export class b2Vec2 implements XY {
     }
 
     public static MakeArray(length: number): b2Vec2[] {
-        return b2MakeArray(length, (): b2Vec2 => new b2Vec2());
+        return Array.from({ length }, () => new b2Vec2());
     }
 
     public static AbsV<T extends XY>(v: XY, out: T): T {

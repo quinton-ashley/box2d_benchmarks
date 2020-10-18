@@ -11,7 +11,6 @@ import {
     b2World,
     b2Body,
     b2MouseJoint,
-    b2MakeArray,
     b2Profile,
     b2BodyDef,
     b2Contact,
@@ -156,7 +155,10 @@ export class Test extends b2ContactListener {
 
     public m_mouseJoint: b2MouseJoint | null = null;
 
-    public readonly m_points: ContactPoint[] = b2MakeArray(Test.k_maxContactPoints, () => new ContactPoint());
+    public readonly m_points: ContactPoint[] = Array.from(
+        { length: Test.k_maxContactPoints },
+        () => new ContactPoint(),
+    );
 
     public m_pointCount = 0;
 

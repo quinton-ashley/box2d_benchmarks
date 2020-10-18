@@ -23,7 +23,6 @@ import {
     b2_maxLinearCorrection,
     b2_baumgarte,
     b2_toiBaumgarte,
-    b2MakeArray,
 } from "../common/b2_common";
 import { b2Clamp, b2Vec2, b2Mat22, b2Rot, b2Transform } from "../common/b2_math";
 import { b2Manifold, b2ManifoldPoint, b2WorldManifold, b2ManifoldType } from "../collision/b2_collision";
@@ -54,7 +53,7 @@ export class b2VelocityConstraintPoint {
     public velocityBias = 0;
 
     public static MakeArray(length: number): b2VelocityConstraintPoint[] {
-        return b2MakeArray(length, (_i: number) => new b2VelocityConstraintPoint());
+        return Array.from({ length }, () => new b2VelocityConstraintPoint());
     }
 }
 
@@ -94,7 +93,7 @@ export class b2ContactVelocityConstraint {
     public contactIndex = 0;
 
     public static MakeArray(length: number): b2ContactVelocityConstraint[] {
-        return b2MakeArray(length, (_i: number) => new b2ContactVelocityConstraint());
+        return Array.from({ length }, () => new b2ContactVelocityConstraint());
     }
 }
 
@@ -130,7 +129,7 @@ export class b2ContactPositionConstraint {
     public pointCount = 0;
 
     public static MakeArray(length: number): b2ContactPositionConstraint[] {
-        return b2MakeArray(length, (_i: number) => new b2ContactPositionConstraint());
+        return Array.from({ length }, () => new b2ContactPositionConstraint());
     }
 }
 

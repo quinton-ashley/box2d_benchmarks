@@ -72,7 +72,7 @@ export class b2AreaJoint extends b2Joint {
 
         this.m_targetLengths = b2MakeNumberArray(def.bodies.length);
         this.m_normals = b2Vec2.MakeArray(def.bodies.length);
-        this.m_joints = []; // b2MakeNullArray(def.bodies.length);
+        this.m_joints = [];
         this.m_deltas = b2Vec2.MakeArray(def.bodies.length);
 
         const djd: b2DistanceJointDef = new b2DistanceJointDef();

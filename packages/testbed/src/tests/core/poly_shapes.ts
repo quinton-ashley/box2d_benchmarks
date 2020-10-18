@@ -24,7 +24,6 @@ import {
     b2TestOverlapShape,
     b2Color,
     b2Body,
-    b2MakeArray,
     b2PolygonShape,
     b2BodyDef,
     b2EdgeShape,
@@ -82,9 +81,9 @@ export class PolyShapes extends Test {
 
     public m_bodyIndex = 0;
 
-    public m_bodies: Array<b2Body | null> = b2MakeArray(PolyShapes.e_maxBodies, () => null);
+    public m_bodies: Array<b2Body | null> = Array.from({ length: PolyShapes.e_maxBodies }, () => null);
 
-    public m_polygons = b2MakeArray(4, () => new b2PolygonShape());
+    public m_polygons = Array.from({ length: 4 }, () => new b2PolygonShape());
 
     public m_circle = new b2CircleShape();
 

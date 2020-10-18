@@ -17,14 +17,7 @@
  */
 
 // DEBUG: import { b2Assert } from "../common/b2_common";
-import {
-    b2_maxFloat,
-    b2_epsilon,
-    b2_epsilon_sq,
-    b2_maxManifoldPoints,
-    b2MakeArray,
-    b2MakeNumberArray,
-} from "../common/b2_common";
+import { b2_maxFloat, b2_epsilon, b2_epsilon_sq, b2_maxManifoldPoints, b2MakeNumberArray } from "../common/b2_common";
 import { b2Vec2, b2Rot, b2Transform, XY } from "../common/b2_math";
 import type { b2Shape } from "./b2_shape";
 import { b2Distance, b2DistanceInput, b2DistanceOutput, b2SimplexCache } from "./b2_distance";
@@ -149,7 +142,7 @@ export class b2ManifoldPoint {
     public readonly id: b2ContactID = new b2ContactID(); /// < uniquely identifies a contact point between two shapes
 
     public static MakeArray(length: number): b2ManifoldPoint[] {
-        return b2MakeArray(length, (_i: number): b2ManifoldPoint => new b2ManifoldPoint());
+        return Array.from({ length }, () => new b2ManifoldPoint());
     }
 
     public Reset(): void {
@@ -404,7 +397,7 @@ export class b2ClipVertex {
     public readonly id: b2ContactID = new b2ContactID();
 
     public static MakeArray(length: number): b2ClipVertex[] {
-        return b2MakeArray(length, (_i: number): b2ClipVertex => new b2ClipVertex());
+        return Array.from({ length }, () => new b2ClipVertex());
     }
 
     public Copy(other: b2ClipVertex): b2ClipVertex {

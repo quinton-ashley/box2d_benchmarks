@@ -68,15 +68,15 @@ export const b2_maxSubSteps = 8;
 export const b2_maxTOIContacts = 32;
 
 /// The maximum linear position correction used when solving constraints. This helps to
-/// prevent overshoot.
+/// prevent overshoot. Meters.
 export const b2_maxLinearCorrection = 0.2 * b2_lengthUnitsPerMeter;
 
 /// The maximum angular position correction used when solving constraints. This helps to
 /// prevent overshoot.
 export const b2_maxAngularCorrection: number = (8 / 180) * Math.PI;
 
-/// The maximum linear velocity of a body. This limit is very large and is used
-/// to prevent numerical problems. You shouldn't need to adjust this.
+/// The maximum linear translation of a body per step. This limit is very large and is used
+/// to prevent numerical problems. You shouldn't need to adjust this. Meters.
 export const b2_maxTranslation = 2 * b2_lengthUnitsPerMeter;
 export const b2_maxTranslationSquared: number = b2_maxTranslation * b2_maxTranslation;
 
@@ -102,57 +102,14 @@ export const b2_linearSleepTolerance = 0.01 * b2_lengthUnitsPerMeter;
 /// A body cannot sleep if its angular velocity is above this tolerance.
 export const b2_angularSleepTolerance: number = (2 / 180) * Math.PI;
 
-/// Version numbering scheme.
-/// See http://en.wikipedia.org/wiki/Software_versioning
-export class b2Version {
-    public major = 0; /// < significant changes
-
-    public minor = 0; /// < incremental changes
-
-    public revision = 0; /// < bug fixes
-
-    constructor(major = 0, minor = 0, revision = 0) {
-        this.major = major;
-        this.minor = minor;
-        this.revision = revision;
-    }
-
-    public toString(): string {
-        return `${this.major}.${this.minor}.${this.revision}`;
-    }
-}
-
 /// Current version.
-export const b2_version: b2Version = new b2Version(2, 4, 0);
-
-export function b2ParseInt(v: string): number {
-    return parseInt(v, 10);
-}
-
-export function b2ParseUInt(v: string): number {
-    return Math.abs(parseInt(v, 10));
-}
-
-export function b2MakeArray<T>(length: number, init: (i: number) => T): T[] {
-    const a: T[] = new Array<T>(length);
-    for (let i = 0; i < length; ++i) {
-        a[i] = init(i);
-    }
-    return a;
-}
-
-export function b2MakeNullArray<T>(length: number): Array<T | null> {
-    const a: Array<T | null> = new Array<T | null>(length);
-    for (let i = 0; i < length; ++i) {
-        a[i] = null;
-    }
-    return a;
-}
+/// See http://en.wikipedia.org/wiki/Software_versioning
+export const b2_version = {
+    major: 2,
+    minor: 4,
+    patch: 0,
+};
 
 export function b2MakeNumberArray(length: number, init = 0): number[] {
-    const a: number[] = new Array<number>(length);
-    for (let i = 0; i < length; ++i) {
-        a[i] = init;
-    }
-    return a;
+    return Array.from({ length }, () => init);
 }
