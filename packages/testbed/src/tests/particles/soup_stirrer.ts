@@ -16,16 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import {
-    b2Body,
-    b2Joint,
-    b2CircleShape,
-    b2BodyDef,
-    b2BodyType,
-    b2Transform,
-    b2PrismaticJointDef,
-    b2Vec2,
-} from "@box2d/core";
+import { b2Body, b2Joint, b2CircleShape, b2BodyType, b2Transform, b2PrismaticJointDef, b2Vec2 } from "@box2d/core";
 
 import { Soup } from "./soup";
 import { Settings } from "../../settings";
@@ -49,9 +40,9 @@ export class SoupStirrer extends Soup {
         shape.m_radius = 0.4;
 
         // Create the stirrer.
-        const bd = new b2BodyDef();
-        bd.type = b2BodyType.b2_dynamicBody;
-        this.m_stirrer = this.m_world.CreateBody(bd);
+        this.m_stirrer = this.m_world.CreateBody({
+            type: b2BodyType.b2_dynamicBody,
+        });
         this.m_stirrer.CreateFixture(shape, 1.0);
 
         // Destroy all particles under the stirrer.

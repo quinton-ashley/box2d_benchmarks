@@ -21,7 +21,6 @@
 import {
     b2Body,
     b2World,
-    b2BodyDef,
     b2BodyType,
     b2PolygonShape,
     b2Vec2,
@@ -108,9 +107,9 @@ export class TDTire {
     public m_maxLateralImpulse = 0;
 
     constructor(world: b2World) {
-        const bodyDef = new b2BodyDef();
-        bodyDef.type = b2BodyType.b2_dynamicBody;
-        this.m_body = world.CreateBody(bodyDef);
+        this.m_body = world.CreateBody({
+            type: b2BodyType.b2_dynamicBody,
+        });
 
         const polygonShape = new b2PolygonShape();
         polygonShape.SetAsBox(0.5, 1.25);
@@ -251,9 +250,9 @@ export class TDCar {
         this.m_tires = [];
 
         // create car body
-        const bodyDef = new b2BodyDef();
-        bodyDef.type = b2BodyType.b2_dynamicBody;
-        this.m_body = world.CreateBody(bodyDef);
+        this.m_body = world.CreateBody({
+            type: b2BodyType.b2_dynamicBody,
+        });
         this.m_body.SetAngularDamping(3);
 
         const vertices = [];
@@ -377,8 +376,7 @@ export class TopdownCar extends Test {
 
         // set up ground areas
         {
-            const bodyDef = new b2BodyDef();
-            this.m_groundBody = this.m_world.CreateBody(bodyDef);
+            this.m_groundBody = this.m_world.CreateBody();
 
             const polygonShape = new b2PolygonShape();
             const fixtureDef = new b2FixtureDef();

@@ -36,8 +36,7 @@ export class TestRagdoll extends Test {
         super();
 
         {
-            const bd = new b2BodyDef();
-            const ground = this.m_world.CreateBody(bd);
+            const ground = this.m_world.CreateBody();
 
             const shape = new b2ChainShape();
             shape.CreateLoop([
@@ -49,7 +48,10 @@ export class TestRagdoll extends Test {
             ground.CreateFixture(shape, 0.0);
         }
 
-        const bd = new b2BodyDef();
+        const position = new b2Vec2();
+        const bd: b2BodyDef = {
+            position,
+        };
         const fd = new b2FixtureDef();
         const jd = new b2RevoluteJointDef();
 
@@ -67,7 +69,7 @@ export class TestRagdoll extends Test {
             fd.density = 1.0;
             fd.friction = 0.4;
             fd.restitution = 0.3;
-            bd.position.Set(startX, startY);
+            position.Set(startX, startY);
             const head = this.m_world.CreateBody(bd);
             head.CreateFixture(fd);
             // if (i === 0)
@@ -85,17 +87,17 @@ export class TestRagdoll extends Test {
             fd.density = 1.0;
             fd.friction = 0.4;
             fd.restitution = 0.1;
-            bd.position.Set(startX, startY - 2.8);
+            position.Set(startX, startY - 2.8);
             const torso1 = this.m_world.CreateBody(bd);
             torso1.CreateFixture(fd);
             // Torso2
             shape.SetAsBox(1.5, 1.0);
-            bd.position.Set(startX, startY - 4.3);
+            position.Set(startX, startY - 4.3);
             const torso2 = this.m_world.CreateBody(bd);
             torso2.CreateFixture(fd);
             // Torso3
             shape.SetAsBox(1.5, 1.0);
-            bd.position.Set(startX, startY - 5.8);
+            position.Set(startX, startY - 5.8);
             const torso3 = this.m_world.CreateBody(bd);
             torso3.CreateFixture(fd);
 
@@ -105,12 +107,12 @@ export class TestRagdoll extends Test {
             fd.restitution = 0.1;
             // L
             shape.SetAsBox(1.8, 0.65);
-            bd.position.Set(startX - 3.0, startY - 2.0);
+            position.Set(startX - 3.0, startY - 2.0);
             const upperArmL = this.m_world.CreateBody(bd);
             upperArmL.CreateFixture(fd);
             // R
             shape.SetAsBox(1.8, 0.65);
-            bd.position.Set(startX + 3.0, startY - 2.0);
+            position.Set(startX + 3.0, startY - 2.0);
             const upperArmR = this.m_world.CreateBody(bd);
             upperArmR.CreateFixture(fd);
 
@@ -120,12 +122,12 @@ export class TestRagdoll extends Test {
             fd.restitution = 0.1;
             // L
             shape.SetAsBox(1.7, 0.6);
-            bd.position.Set(startX - 5.7, startY - 2.0);
+            position.Set(startX - 5.7, startY - 2.0);
             const lowerArmL = this.m_world.CreateBody(bd);
             lowerArmL.CreateFixture(fd);
             // R
             shape.SetAsBox(1.7, 0.6);
-            bd.position.Set(startX + 5.7, startY - 2.0);
+            position.Set(startX + 5.7, startY - 2.0);
             const lowerArmR = this.m_world.CreateBody(bd);
             lowerArmR.CreateFixture(fd);
 
@@ -135,12 +137,12 @@ export class TestRagdoll extends Test {
             fd.restitution = 0.1;
             // L
             shape.SetAsBox(0.75, 2.2);
-            bd.position.Set(startX - 0.8, startY - 8.5);
+            position.Set(startX - 0.8, startY - 8.5);
             const upperLegL = this.m_world.CreateBody(bd);
             upperLegL.CreateFixture(fd);
             // R
             shape.SetAsBox(0.75, 2.2);
-            bd.position.Set(startX + 0.8, startY - 8.5);
+            position.Set(startX + 0.8, startY - 8.5);
             const upperLegR = this.m_world.CreateBody(bd);
             upperLegR.CreateFixture(fd);
 
@@ -150,12 +152,12 @@ export class TestRagdoll extends Test {
             fd.restitution = 0.1;
             // L
             shape.SetAsBox(0.6, 2.0);
-            bd.position.Set(startX - 0.8, startY - 12.0);
+            position.Set(startX - 0.8, startY - 12.0);
             const lowerLegL = this.m_world.CreateBody(bd);
             lowerLegL.CreateFixture(fd);
             // R
             shape.SetAsBox(0.6, 2.0);
-            bd.position.Set(startX + 0.8, startY - 12.0);
+            position.Set(startX + 0.8, startY - 12.0);
             const lowerLegR = this.m_world.CreateBody(bd);
             lowerLegR.CreateFixture(fd);
 
@@ -237,19 +239,19 @@ export class TestRagdoll extends Test {
         // Add stairs on the left
         for (let j = 1; j <= 10; ++j) {
             shape.SetAsBox(1.0 * j, 1.0);
-            bd.position.Set(1.0 * j - 30.0, 21.0 - 2.0 * j);
+            position.Set(1.0 * j - 30.0, 21.0 - 2.0 * j);
             this.m_world.CreateBody(bd).CreateFixture(fd);
         }
 
         // Add stairs on the right
         for (let k = 1; k <= 10; ++k) {
             shape.SetAsBox(1.0 * k, 1.0);
-            bd.position.Set(30.0 - 1.0 * k, 21.0 - 2.0 * k);
+            position.Set(30.0 - 1.0 * k, 21.0 - 2.0 * k);
             this.m_world.CreateBody(bd).CreateFixture(fd);
         }
 
         shape.SetAsBox(3.0, 4.0);
-        bd.position.Set(0.0, 4.0);
+        position.Set(0.0, 4.0);
         this.m_world.CreateBody(bd).CreateFixture(fd);
     }
 

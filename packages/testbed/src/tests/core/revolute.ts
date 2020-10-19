@@ -19,7 +19,6 @@
 import {
     b2Body,
     b2RevoluteJoint,
-    b2BodyDef,
     b2EdgeShape,
     b2Vec2,
     b2FixtureDef,
@@ -45,8 +44,7 @@ export class Revolute extends Test {
         let ground = null;
 
         {
-            const bd = new b2BodyDef();
-            ground = this.m_world.CreateBody(bd);
+            ground = this.m_world.CreateBody();
 
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(-40.0, 0.0), new b2Vec2(40.0, 0.0));
@@ -63,13 +61,13 @@ export class Revolute extends Test {
             const shape = new b2CircleShape();
             shape.m_radius = 0.5;
 
-            const bd = new b2BodyDef();
-            bd.type = b2BodyType.b2_dynamicBody;
-
             const rjd = new b2RevoluteJointDef();
 
-            bd.position.Set(-10.0, 20.0);
-            const body = this.m_world.CreateBody(bd);
+            const body = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+
+                position: { x: -10.0, y: 20.0 },
+            });
             body.CreateFixture(shape, 5.0);
 
             const w = 100.0;
@@ -93,29 +91,28 @@ export class Revolute extends Test {
             const circle_shape = new b2CircleShape();
             circle_shape.m_radius = 3.0;
 
-            const circle_bd = new b2BodyDef();
-            circle_bd.type = b2BodyType.b2_dynamicBody;
-            circle_bd.position.Set(5.0, 30.0);
-
             /* b2FixtureDef */
             const fd = new b2FixtureDef();
             fd.density = 5.0;
             fd.filter.maskBits = 1;
             fd.shape = circle_shape;
 
-            this.m_ball = this.m_world.CreateBody(circle_bd);
+            this.m_ball = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+                position: { x: 5.0, y: 30.0 },
+            });
             this.m_ball.CreateFixture(fd);
 
             /* b2PolygonShape */
             const polygon_shape = new b2PolygonShape();
             polygon_shape.SetAsBox(10.0, 0.2, new b2Vec2(-10.0, 0.0), 0.0);
 
-            const polygon_bd = new b2BodyDef();
-            polygon_bd.position.Set(20.0, 10.0);
-            polygon_bd.type = b2BodyType.b2_dynamicBody;
-            polygon_bd.bullet = true;
             /* b2Body */
-            const polygon_body = this.m_world.CreateBody(polygon_bd);
+            const polygon_body = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+                position: { x: 20.0, y: 10.0 },
+                bullet: true,
+            });
             polygon_body.CreateFixture(polygon_shape, 2.0);
 
             const rjd = new b2RevoluteJointDef();
@@ -128,10 +125,10 @@ export class Revolute extends Test {
 
         // Tests mass computation of a small object far from the origin
         {
-            const bodyDef = new b2BodyDef();
-            bodyDef.type = b2BodyType.b2_dynamicBody;
             /* b2Body */
-            const body = this.m_world.CreateBody(bodyDef);
+            const body = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+            });
 
             /* b2PolygonShape */
             const polyShape = new b2PolygonShape();

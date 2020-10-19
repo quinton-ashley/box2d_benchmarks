@@ -18,7 +18,6 @@
 
 import {
     b2Body,
-    b2BodyDef,
     b2EdgeShape,
     b2Vec2,
     b2FixtureDef,
@@ -38,8 +37,7 @@ export class MotorJoint2 extends Test {
 
         let ground: b2Body;
         {
-            const bd = new b2BodyDef();
-            ground = this.m_world.CreateBody(bd);
+            ground = this.m_world.CreateBody();
 
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(-20.0, 0.0), new b2Vec2(20.0, 0.0));
@@ -53,10 +51,10 @@ export class MotorJoint2 extends Test {
         // b2Body * body1 = NULL;
         let body1: b2Body;
         {
-            const bd = new b2BodyDef();
-            bd.type = b2BodyType.b2_dynamicBody;
-            bd.position.Set(0.0, 4.0);
-            body1 = this.m_world.CreateBody(bd);
+            body1 = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+                position: { x: 0.0, y: 4.0 },
+            });
 
             const shape = new b2CircleShape();
             shape.m_radius = 1.0;
@@ -71,10 +69,10 @@ export class MotorJoint2 extends Test {
         // b2Body * body2 = NULL;
         let body2: b2Body;
         {
-            const bd = new b2BodyDef();
-            bd.type = b2BodyType.b2_dynamicBody;
-            bd.position.Set(4.0, 8.0);
-            body2 = this.m_world.CreateBody(bd);
+            body2 = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+                position: { x: 4.0, y: 8.0 },
+            });
 
             const shape = new b2CircleShape();
             shape.m_radius = 1.0;

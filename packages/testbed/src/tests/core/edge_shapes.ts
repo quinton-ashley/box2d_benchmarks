@@ -23,7 +23,6 @@ import {
     b2Body,
     b2PolygonShape,
     b2CircleShape,
-    b2BodyDef,
     b2EdgeShape,
     b2RandomRange,
     b2BodyType,
@@ -79,8 +78,7 @@ export class EdgeShapes extends Test {
 
         // Ground body
         {
-            const bd = new b2BodyDef();
-            const ground = this.m_world.CreateBody(bd);
+            const ground = this.m_world.CreateBody();
 
             let x1 = -20.0;
             let y1 = 2.0 * Math.cos((x1 / 10.0) * Math.PI);
@@ -146,19 +144,12 @@ export class EdgeShapes extends Test {
             this.m_bodies[this.m_bodyIndex] = null;
         }
 
-        const bd = new b2BodyDef();
-
-        const x = b2RandomRange(-10.0, 10.0);
-        const y = b2RandomRange(10.0, 20.0);
-        bd.position.Set(x, y);
-        bd.angle = b2RandomRange(-Math.PI, Math.PI);
-        bd.type = b2BodyType.b2_dynamicBody;
-
-        if (index === 4) {
-            bd.angularDamping = 0.02;
-        }
-
-        const new_body = (this.m_bodies[this.m_bodyIndex] = this.m_world.CreateBody(bd));
+        const new_body = (this.m_bodies[this.m_bodyIndex] = this.m_world.CreateBody({
+            position: { x: b2RandomRange(-10.0, 10.0), y: b2RandomRange(10.0, 20.0) },
+            angle: b2RandomRange(-Math.PI, Math.PI),
+            type: b2BodyType.b2_dynamicBody,
+            angularDamping: index === 4 ? 0.02 : 0,
+        }));
 
         if (index < 4) {
             const fd = new b2FixtureDef();

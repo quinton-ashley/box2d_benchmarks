@@ -16,16 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import {
-    b2PulleyJoint,
-    b2BodyDef,
-    b2CircleShape,
-    b2PolygonShape,
-    b2BodyType,
-    b2PulleyJointDef,
-    b2Vec2,
-    XY,
-} from "@box2d/core";
+import { b2PulleyJoint, b2CircleShape, b2PolygonShape, b2BodyType, b2PulleyJointDef, b2Vec2, XY } from "@box2d/core";
 
 import { Test } from "../../test";
 import { Settings } from "../../settings";
@@ -43,8 +34,7 @@ export class Pulleys extends Test {
 
         let ground = null;
         {
-            const bd = new b2BodyDef();
-            ground = this.m_world.CreateBody(bd);
+            ground = this.m_world.CreateBody();
 
             /* b2CircleShape */
             const circle = new b2CircleShape();
@@ -61,16 +51,18 @@ export class Pulleys extends Test {
             const shape = new b2PolygonShape();
             shape.SetAsBox(a, b);
 
-            const bd = new b2BodyDef();
-            bd.type = b2BodyType.b2_dynamicBody;
-
-            // bd.fixedRotation = true;
-            bd.position.Set(-10.0, y);
-            const body1 = this.m_world.CreateBody(bd);
+            const body1 = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+                // fixedRotation: true,
+                position: { x: -10.0, y },
+            });
             body1.CreateFixture(shape, 5.0);
 
-            bd.position.Set(10.0, y);
-            const body2 = this.m_world.CreateBody(bd);
+            const body2 = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+                // fixedRotation: true,
+                position: { x: 10.0, y },
+            });
             body2.CreateFixture(shape, 5.0);
 
             const pulleyDef = new b2PulleyJointDef();

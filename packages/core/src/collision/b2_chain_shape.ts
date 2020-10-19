@@ -268,15 +268,4 @@ export class b2ChainShape extends b2Shape {
         c.SetZero();
         return 0;
     }
-
-    public Dump(log: (format: string, ...args: any[]) => void): void {
-        log("    const shape: b2ChainShape = new b2ChainShape();\n");
-        log("    const vs: b2Vec2[] = [];\n");
-        for (let i = 0; i < this.m_count; ++i) {
-            log("    vs[%d] = new bVec2(%.15f, %.15f);\n", i, this.m_vertices[i].x, this.m_vertices[i].y);
-        }
-        log("    shape.CreateChain(vs, %d);\n", this.m_count);
-        log("    shape.m_prevVertex.Set(%.15f, %.15f);\n", this.m_prevVertex.x, this.m_prevVertex.y);
-        log("    shape.m_nextVertex.Set(%.15f, %.15f);\n", this.m_nextVertex.x, this.m_nextVertex.y);
-    }
 }

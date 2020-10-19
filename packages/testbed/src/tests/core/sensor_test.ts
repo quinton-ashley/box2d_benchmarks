@@ -19,7 +19,6 @@
 import {
     b2Fixture,
     b2Body,
-    b2BodyDef,
     b2EdgeShape,
     b2Vec2,
     b2CircleShape,
@@ -51,8 +50,7 @@ export class SensorTest extends Test {
             this.m_touching[i] = new Array(1);
         }
 
-        const bd = new b2BodyDef();
-        const ground = this.m_world.CreateBody(bd);
+        const ground = this.m_world.CreateBody();
 
         {
             const shape = new b2EdgeShape();
@@ -84,13 +82,12 @@ export class SensorTest extends Test {
             shape.m_radius = 1.0;
 
             for (let i = 0; i < SensorTest.e_count; ++i) {
-                // const bd = new b2BodyDef();
-                bd.type = b2BodyType.b2_dynamicBody;
-                bd.position.Set(-10.0 + 3.0 * i, 20.0);
-                bd.userData = this.m_touching[i];
-
                 this.m_touching[i][0] = false;
-                this.m_bodies[i] = this.m_world.CreateBody(bd);
+                this.m_bodies[i] = this.m_world.CreateBody({
+                    type: b2BodyType.b2_dynamicBody,
+                    position: { x: -10.0 + 3.0 * i, y: 20.0 },
+                    userData: this.m_touching[i],
+                });
 
                 this.m_bodies[i].CreateFixture(shape, 1.0);
             }

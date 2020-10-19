@@ -21,7 +21,6 @@ import {
     b2Vec2,
     b2PolygonShape,
     b2Fixture,
-    b2BodyDef,
     b2EdgeShape,
     b2BodyType,
     b2Contact,
@@ -57,10 +56,8 @@ export class Breakable extends Test {
 
         // Ground body
         {
-            /* b2BodyDef */
-            const bd = new b2BodyDef();
             /* b2Body */
-            const ground = this.m_world.CreateBody(bd);
+            const ground = this.m_world.CreateBody();
 
             /* b2EdgeShape */
             const shape = new b2EdgeShape();
@@ -69,22 +66,22 @@ export class Breakable extends Test {
         }
 
         // Breakable dynamic body
-        {
-            /* b2BodyDef */
-            const bd = new b2BodyDef();
-            bd.type = b2BodyType.b2_dynamicBody;
-            bd.position.Set(0.0, 40.0);
-            bd.angle = 0.25 * Math.PI;
-            this.m_body1 = this.m_world.CreateBody(bd);
+        this.m_body1 = this.m_world.CreateBody({
+            type: b2BodyType.b2_dynamicBody,
+            position: {
+                x: 0.0,
+                y: 40.0,
+            },
+            angle: 0.25 * Math.PI,
+        });
 
-            this.m_shape1 = new b2PolygonShape();
-            this.m_shape1.SetAsBox(0.5, 0.5, new b2Vec2(-0.5, 0.0), 0.0);
-            this.m_piece1 = this.m_body1.CreateFixture(this.m_shape1, 1.0);
+        this.m_shape1 = new b2PolygonShape();
+        this.m_shape1.SetAsBox(0.5, 0.5, new b2Vec2(-0.5, 0.0), 0.0);
+        this.m_piece1 = this.m_body1.CreateFixture(this.m_shape1, 1.0);
 
-            this.m_shape2 = new b2PolygonShape();
-            this.m_shape2.SetAsBox(0.5, 0.5, new b2Vec2(0.5, 0.0), 0.0);
-            this.m_piece2 = this.m_body1.CreateFixture(this.m_shape2, 1.0);
-        }
+        this.m_shape2 = new b2PolygonShape();
+        this.m_shape2.SetAsBox(0.5, 0.5, new b2Vec2(0.5, 0.0), 0.0);
+        this.m_piece2 = this.m_body1.CreateFixture(this.m_shape2, 1.0);
     }
 
     public PostSolve(contact: b2Contact, impulse: b2ContactImpulse) {
@@ -118,14 +115,12 @@ export class Breakable extends Test {
 
         body1.DestroyFixture(this.m_piece2);
 
-        /* b2BodyDef */
-        const bd = new b2BodyDef();
-        bd.type = b2BodyType.b2_dynamicBody;
-        bd.position.Copy(body1.GetPosition());
-        bd.angle = body1.GetAngle();
-
         /* b2Body */
-        const body2 = this.m_world.CreateBody(bd);
+        const body2 = this.m_world.CreateBody({
+            type: b2BodyType.b2_dynamicBody,
+            position: body1.GetPosition(),
+            angle: body1.GetAngle(),
+        });
         this.m_piece2 = body2.CreateFixture(this.m_shape2, 1.0);
 
         // Compute consistent velocities for new bodies based on

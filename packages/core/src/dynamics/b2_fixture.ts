@@ -372,26 +372,6 @@ export class b2Fixture {
         return this.m_proxies[childIndex].aabb;
     }
 
-    /// Dump this fixture to the log file.
-    public Dump(log: (format: string, ...args: any[]) => void, bodyIndex: number): void {
-        log("    const fd: b2FixtureDef = new b2FixtureDef();\n");
-        log("    fd.friction = %.15f;\n", this.m_friction);
-        log("    fd.restitution = %.15f;\n", this.m_restitution);
-        log("    fd.m_restitutionThreshold = %.15f;\n", this.m_restitutionThreshold);
-        log("    fd.density = %.15f;\n", this.m_density);
-        log("    fd.isSensor = %s;\n", this.m_isSensor ? "true" : "false");
-        log("    fd.filter.categoryBits = %d;\n", this.m_filter.categoryBits);
-        log("    fd.filter.maskBits = %d;\n", this.m_filter.maskBits);
-        log("    fd.filter.groupIndex = %d;\n", this.m_filter.groupIndex);
-
-        this.m_shape.Dump(log);
-
-        log("\n");
-        log("    fd.shape = shape;\n");
-        log("\n");
-        log("    bodies[%d].CreateFixture(fd);\n", bodyIndex);
-    }
-
     // These support body activation/deactivation.
     public CreateProxies(): void {
         b2Assert(this.m_proxies.length === 0);

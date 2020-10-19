@@ -16,7 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import { b2BodyDef, b2EdgeShape, b2Vec2, b2CircleShape, b2FixtureDef, b2BodyType } from "@box2d/core";
+import { b2EdgeShape, b2Vec2, b2CircleShape, b2FixtureDef, b2BodyType } from "@box2d/core";
 
 import { Test } from "../../test";
 
@@ -28,8 +28,7 @@ export class VaryingRestitution extends Test {
         super();
 
         {
-            const bd = new b2BodyDef();
-            const ground = this.m_world.CreateBody(bd);
+            const ground = this.m_world.CreateBody();
 
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(-40.0, 0.0), new b2Vec2(40.0, 0.0));
@@ -47,11 +46,10 @@ export class VaryingRestitution extends Test {
             const restitution = [0.0, 0.1, 0.3, 0.5, 0.75, 0.9, 1.0];
 
             for (let i = 0; i < 7; ++i) {
-                const bd = new b2BodyDef();
-                bd.type = b2BodyType.b2_dynamicBody;
-                bd.position.Set(-10.0 + 3.0 * i, 20.0);
-
-                const body = this.m_world.CreateBody(bd);
+                const body = this.m_world.CreateBody({
+                    type: b2BodyType.b2_dynamicBody,
+                    position: { x: -10.0 + 3.0 * i, y: 20.0 },
+                });
 
                 fd.restitution = restitution[i];
                 body.CreateFixture(fd);

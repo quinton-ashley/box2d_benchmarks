@@ -16,7 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import { b2BodyDef, b2ChainShape, b2Vec2, b2PolygonShape, b2EdgeShape, XY } from "@box2d/core";
+import { b2ChainShape, b2Vec2, b2PolygonShape, b2EdgeShape, XY } from "@box2d/core";
 import { b2ParticleGroupDef, b2ParticleFlag } from "@box2d/particles";
 
 import { Test } from "../../test";
@@ -49,8 +49,7 @@ export class LiquidTimer extends Test {
         Test.SetParticleParameters(LiquidTimer.k_paramDef, LiquidTimer.k_paramDefCount);
 
         {
-            const bd = new b2BodyDef();
-            const ground = this.m_world.CreateBody(bd);
+            const ground = this.m_world.CreateBody();
 
             const shape = new b2ChainShape();
             const vertices = [new b2Vec2(-2, 0), new b2Vec2(2, 0), new b2Vec2(2, 4), new b2Vec2(-2, 4)];
@@ -72,80 +71,70 @@ export class LiquidTimer extends Test {
         }
 
         {
-            const bd = new b2BodyDef();
-            const body = this.m_world.CreateBody(bd);
+            const body = this.m_world.CreateBody();
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(-2, 3.2), new b2Vec2(-1.2, 3.2));
             body.CreateFixture(shape, 0.1);
         }
 
         {
-            const bd = new b2BodyDef();
-            const body = this.m_world.CreateBody(bd);
+            const body = this.m_world.CreateBody();
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(-1.1, 3.2), new b2Vec2(2, 3.2));
             body.CreateFixture(shape, 0.1);
         }
 
         {
-            const bd = new b2BodyDef();
-            const body = this.m_world.CreateBody(bd);
+            const body = this.m_world.CreateBody();
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(-1.2, 3.2), new b2Vec2(-1.2, 2.8));
             body.CreateFixture(shape, 0.1);
         }
 
         {
-            const bd = new b2BodyDef();
-            const body = this.m_world.CreateBody(bd);
+            const body = this.m_world.CreateBody();
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(-1.1, 3.2), new b2Vec2(-1.1, 2.8));
             body.CreateFixture(shape, 0.1);
         }
 
         {
-            const bd = new b2BodyDef();
-            const body = this.m_world.CreateBody(bd);
+            const body = this.m_world.CreateBody();
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(-1.6, 2.4), new b2Vec2(0.8, 2));
             body.CreateFixture(shape, 0.1);
         }
 
         {
-            const bd = new b2BodyDef();
-            const body = this.m_world.CreateBody(bd);
+            const body = this.m_world.CreateBody();
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(1.6, 1.6), new b2Vec2(-0.8, 1.2));
             body.CreateFixture(shape, 0.1);
         }
 
         {
-            const bd = new b2BodyDef();
-            const body = this.m_world.CreateBody(bd);
+            const body = this.m_world.CreateBody();
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(-1.2, 0.8), new b2Vec2(-1.2, 0));
             body.CreateFixture(shape, 0.1);
         }
 
         {
-            const bd = new b2BodyDef();
-            const body = this.m_world.CreateBody(bd);
+            const body = this.m_world.CreateBody();
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(-0.4, 0.8), new b2Vec2(-0.4, 0));
             body.CreateFixture(shape, 0.1);
         }
 
         {
-            const bd = new b2BodyDef();
-            const body = this.m_world.CreateBody(bd);
+            const body = this.m_world.CreateBody();
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(0.4, 0.8), new b2Vec2(0.4, 0));
             body.CreateFixture(shape, 0.1);
         }
 
         {
-            const bd = new b2BodyDef();
-            const body = this.m_world.CreateBody(bd);
+            const body = this.m_world.CreateBody();
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(1.2, 0.8), new b2Vec2(1.2, 0));
             body.CreateFixture(shape, 0.1);

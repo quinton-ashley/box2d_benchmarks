@@ -1,4 +1,4 @@
-import { b2World, b2Vec2, b2BodyDef, b2BodyType, b2PolygonShape, b2FixtureDef, b2EdgeShape, XY } from "@box2d/core";
+import { b2World, b2Vec2, b2BodyType, b2PolygonShape, b2FixtureDef, b2EdgeShape, XY } from "@box2d/core";
 
 import { Test } from "../../test";
 
@@ -12,10 +12,10 @@ export class PyramidTopple extends Test {
         const add_domino = (world: b2World, pos: b2Vec2, flipped: boolean) => {
             const mass = 1;
 
-            const bd = new b2BodyDef();
-            bd.type = b2BodyType.b2_dynamicBody;
-            bd.position.Copy(pos);
-            const body = world.CreateBody(bd);
+            const body = world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+                position: pos,
+            });
 
             const shape = new b2PolygonShape();
             if (flipped) {
@@ -39,8 +39,7 @@ export class PyramidTopple extends Test {
         /// b2_linearSlop = 0.5; // cpSpaceSetCollisionSlop(space, 0.5f);
 
         // Add a floor.
-        const bd = new b2BodyDef();
-        const body = world.CreateBody(bd);
+        const body = world.CreateBody();
         const shape = new b2EdgeShape();
         shape.SetTwoSided(new b2Vec2(-600, -240), new b2Vec2(600, -240));
         const fd = new b2FixtureDef();

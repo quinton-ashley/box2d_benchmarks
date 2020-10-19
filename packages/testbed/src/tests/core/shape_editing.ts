@@ -16,16 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import {
-    b2Body,
-    b2Fixture,
-    b2BodyDef,
-    b2EdgeShape,
-    b2Vec2,
-    b2BodyType,
-    b2PolygonShape,
-    b2CircleShape,
-} from "@box2d/core";
+import { b2Body, b2Fixture, b2EdgeShape, b2Vec2, b2BodyType, b2PolygonShape, b2CircleShape } from "@box2d/core";
 
 import { Test } from "../../test";
 import { Settings } from "../../settings";
@@ -44,18 +35,17 @@ export class ShapeEditing extends Test {
         super();
 
         {
-            const bd = new b2BodyDef();
-            const ground = this.m_world.CreateBody(bd);
+            const ground = this.m_world.CreateBody();
 
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(-40.0, 0.0), new b2Vec2(40.0, 0.0));
             ground.CreateFixture(shape, 0.0);
         }
 
-        const bd = new b2BodyDef();
-        bd.type = b2BodyType.b2_dynamicBody;
-        bd.position.Set(0.0, 10.0);
-        this.m_body = this.m_world.CreateBody(bd);
+        this.m_body = this.m_world.CreateBody({
+            type: b2BodyType.b2_dynamicBody,
+            position: { x: 0.0, y: 10.0 },
+        });
 
         const shape = new b2PolygonShape();
         shape.SetAsBox(4.0, 4.0, new b2Vec2(0.0, 0.0), 0.0);

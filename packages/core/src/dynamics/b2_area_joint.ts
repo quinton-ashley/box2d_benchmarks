@@ -139,10 +139,6 @@ export class b2AreaJoint extends b2Joint {
         return this.m_damping;
     }
 
-    public Dump(log: (format: string, ...args: any[]) => void) {
-        log("Area joint dumping is not supported.\n");
-    }
-
     public InitVelocityConstraints(data: b2SolverData): void {
         for (let i = 0; i < this.m_bodies.length; ++i) {
             const prev: b2Body = this.m_bodies[(i + this.m_bodies.length - 1) % this.m_bodies.length];

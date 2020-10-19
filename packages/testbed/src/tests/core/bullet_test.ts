@@ -18,7 +18,6 @@
 
 import {
     b2Body,
-    b2BodyDef,
     b2EdgeShape,
     b2Vec2,
     b2PolygonShape,
@@ -46,11 +45,8 @@ export class BulletTest extends Test {
         super();
 
         {
-            /* b2BodyDef */
-            const bd = new b2BodyDef();
-            bd.position.Set(0.0, 0.0);
             /* b2Body */
-            const body = this.m_world.CreateBody(bd);
+            const body = this.m_world.CreateBody();
 
             /* b2EdgeShape */
             const edge = new b2EdgeShape();
@@ -65,26 +61,32 @@ export class BulletTest extends Test {
         }
 
         {
-            /* b2BodyDef */
-            const bd = new b2BodyDef();
-            bd.type = b2BodyType.b2_dynamicBody;
-            bd.position.Set(0.0, 4.0);
-
             /* b2PolygonShape */
             const box = new b2PolygonShape();
             box.SetAsBox(2.0, 0.1);
 
-            this.m_body = this.m_world.CreateBody(bd);
+            this.m_body = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+                position: {
+                    x: 0.0,
+                    y: 4.0,
+                },
+            });
             this.m_body.CreateFixture(box, 1.0);
 
             box.SetAsBox(0.25, 0.25);
 
             // this.m_x = b2RandomRange(-1.0, 1.0);
             this.m_x = 0.20352793;
-            bd.position.Set(this.m_x, 10.0);
-            bd.bullet = true;
 
-            this.m_bullet = this.m_world.CreateBody(bd);
+            this.m_bullet = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+                bullet: true,
+                position: {
+                    x: this.m_x,
+                    y: 10.0,
+                },
+            });
             this.m_bullet.CreateFixture(box, 100.0);
 
             this.m_bullet.SetLinearVelocity(new b2Vec2(0.0, -50.0));

@@ -18,7 +18,6 @@
 
 import {
     b2Vec2,
-    b2BodyDef,
     b2BodyType,
     b2FixtureDef,
     b2EdgeShape,
@@ -40,229 +39,207 @@ export class DumpShell extends Test {
         const bodies = new Array(4);
         /* b2Joint */
         const joints = new Array(2);
+        bodies[0] = this.m_world.CreateBody({
+            type: b2BodyType.b2_staticBody,
+            angle: 0.0,
+            angularVelocity: 0.0,
+            linearDamping: 0.0,
+            angularDamping: 0.0,
+            allowSleep: true,
+            awake: true,
+            fixedRotation: false,
+            bullet: false,
+            enabled: true,
+            gravityScale: 1.0,
+        });
+
         {
-            /* b2BodyDef */
-            const bd = new b2BodyDef();
-            bd.type = b2BodyType.b2_staticBody;
-            bd.position.Set(0.0, 0.0);
-            bd.angle = 0.0;
-            bd.linearVelocity.Set(0.0, 0.0);
-            bd.angularVelocity = 0.0;
-            bd.linearDamping = 0.0;
-            bd.angularDamping = 0.0;
-            bd.allowSleep = true;
-            bd.awake = true;
-            bd.fixedRotation = false;
-            bd.bullet = false;
-            bd.enabled = true;
-            bd.gravityScale = 1.0;
+            /* b2FixtureDef */
+            const fd = new b2FixtureDef();
+            fd.friction = 10.0;
+            fd.restitution = 0.0;
+            fd.density = 0.0;
+            fd.isSensor = false;
+            fd.filter.categoryBits = 1;
+            fd.filter.maskBits = 65535;
+            fd.filter.groupIndex = 0;
+            /* b2EdgeShape */
+            const shape = new b2EdgeShape();
+            shape.m_radius = 0.009999999776483;
+            shape.m_vertex0.Set(0.0, 0.0);
+            shape.m_vertex1.Set(0.0, 0.0);
+            shape.m_vertex2.Set(44.521739959716797, 0.0);
+            shape.m_vertex3.Set(0.0, 0.0);
+            // shape.m_hasVertex0 = false;
+            // shape.m_hasVertex3 = false;
 
-            bodies[0] = this.m_world.CreateBody(bd);
+            fd.shape = shape;
 
-            {
-                /* b2FixtureDef */
-                const fd = new b2FixtureDef();
-                fd.friction = 10.0;
-                fd.restitution = 0.0;
-                fd.density = 0.0;
-                fd.isSensor = false;
-                fd.filter.categoryBits = 1;
-                fd.filter.maskBits = 65535;
-                fd.filter.groupIndex = 0;
-                /* b2EdgeShape */
-                const shape = new b2EdgeShape();
-                shape.m_radius = 0.009999999776483;
-                shape.m_vertex0.Set(0.0, 0.0);
-                shape.m_vertex1.Set(0.0, 0.0);
-                shape.m_vertex2.Set(44.521739959716797, 0.0);
-                shape.m_vertex3.Set(0.0, 0.0);
-                // shape.m_hasVertex0 = false;
-                // shape.m_hasVertex3 = false;
-
-                fd.shape = shape;
-
-                bodies[0].CreateFixture(fd);
-            }
-            {
-                /* b2FixtureDef */
-                const fd = new b2FixtureDef();
-                fd.friction = 10.0;
-                fd.restitution = 0.0;
-                fd.density = 0.0;
-                fd.isSensor = false;
-                fd.filter.categoryBits = 1;
-                fd.filter.maskBits = 65535;
-                fd.filter.groupIndex = 0;
-                /* b2EdgeShape */
-                const shape = new b2EdgeShape();
-                shape.m_radius = 0.009999999776483;
-                shape.m_vertex0.Set(0.0, 0.0);
-                shape.m_vertex1.Set(0.0, 16.695652008056641);
-                shape.m_vertex2.Set(44.521739959716797, 16.695652008056641);
-                shape.m_vertex3.Set(0.0, 0.0);
-                // shape.m_hasVertex0 = false;
-                // shape.m_hasVertex3 = false;
-
-                fd.shape = shape;
-
-                bodies[0].CreateFixture(fd);
-            }
-            {
-                /* b2FixtureDef */
-                const fd = new b2FixtureDef();
-                fd.friction = 10.0;
-                fd.restitution = 0.0;
-                fd.density = 0.0;
-                fd.isSensor = false;
-                fd.filter.categoryBits = 1;
-                fd.filter.maskBits = 65535;
-                fd.filter.groupIndex = 0;
-                /* b2EdgeShape */
-                const shape = new b2EdgeShape();
-                shape.m_radius = 0.009999999776483;
-                shape.m_vertex0.Set(0.0, 0.0);
-                shape.m_vertex1.Set(0.0, 16.695652008056641);
-                shape.m_vertex2.Set(0.0, 0.0);
-                shape.m_vertex3.Set(0.0, 0.0);
-                // shape.m_hasVertex0 = false;
-                // shape.m_hasVertex3 = false;
-
-                fd.shape = shape;
-
-                bodies[0].CreateFixture(fd);
-            }
-            {
-                /* b2FixtureDef */
-                const fd = new b2FixtureDef();
-                fd.friction = 10.0;
-                fd.restitution = 0.0;
-                fd.density = 0.0;
-                fd.isSensor = false;
-                fd.filter.categoryBits = 1;
-                fd.filter.maskBits = 65535;
-                fd.filter.groupIndex = 0;
-                /* b2EdgeShape */
-                const shape = new b2EdgeShape();
-                shape.m_radius = 0.009999999776483;
-                shape.m_vertex0.Set(0.0, 0.0);
-                shape.m_vertex1.Set(44.521739959716797, 16.695652008056641);
-                shape.m_vertex2.Set(44.521739959716797, 0.0);
-                shape.m_vertex3.Set(0.0, 0.0);
-                // shape.m_hasVertex0 = false;
-                // shape.m_hasVertex3 = false;
-
-                fd.shape = shape;
-
-                bodies[0].CreateFixture(fd);
-            }
+            bodies[0].CreateFixture(fd);
         }
         {
-            /* b2BodyDef */
-            const bd = new b2BodyDef();
-            bd.type = b2BodyType.b2_dynamicBody;
-            bd.position.Set(0.847826063632965, 2.5);
-            bd.angle = 0.0;
-            bd.linearVelocity.Set(0.0, 0.0);
-            bd.angularVelocity = 0.0;
-            bd.linearDamping = 0.5;
-            bd.angularDamping = 0.5;
-            bd.allowSleep = true;
-            bd.awake = true;
-            bd.fixedRotation = false;
-            bd.bullet = false;
-            bd.enabled = true;
-            bd.gravityScale = 1.0;
+            /* b2FixtureDef */
+            const fd = new b2FixtureDef();
+            fd.friction = 10.0;
+            fd.restitution = 0.0;
+            fd.density = 0.0;
+            fd.isSensor = false;
+            fd.filter.categoryBits = 1;
+            fd.filter.maskBits = 65535;
+            fd.filter.groupIndex = 0;
+            /* b2EdgeShape */
+            const shape = new b2EdgeShape();
+            shape.m_radius = 0.009999999776483;
+            shape.m_vertex0.Set(0.0, 0.0);
+            shape.m_vertex1.Set(0.0, 16.695652008056641);
+            shape.m_vertex2.Set(44.521739959716797, 16.695652008056641);
+            shape.m_vertex3.Set(0.0, 0.0);
+            // shape.m_hasVertex0 = false;
+            // shape.m_hasVertex3 = false;
 
-            bodies[1] = this.m_world.CreateBody(bd);
+            fd.shape = shape;
 
-            {
-                /* b2FixtureDef */
-                const fd = new b2FixtureDef();
-                fd.friction = 1.0;
-                fd.restitution = 0.5;
-                fd.density = 10.0;
-                fd.isSensor = false;
-                fd.filter.categoryBits = 1;
-                fd.filter.maskBits = 65535;
-                fd.filter.groupIndex = 0;
-                /* b2PolygonShape */
-                const shape = new b2PolygonShape();
-                /* b2Vec2[] */
-                const vs = b2Vec2.MakeArray(8);
-                vs[0].Set(6.907599925994873, 0.327199995517731);
-                vs[1].Set(-0.322800010442734, 0.282599985599518);
-                vs[2].Set(-0.322800010442734, -0.295700013637543);
-                vs[3].Set(6.885900020599365, -0.364100009202957);
-                shape.Set(vs, 4);
-
-                fd.shape = shape;
-
-                bodies[1].CreateFixture(fd);
-            }
+            bodies[0].CreateFixture(fd);
         }
         {
-            /* b2BodyDef */
-            const bd = new b2BodyDef();
-            bd.type = b2BodyType.b2_dynamicBody;
-            bd.position.Set(13.043478012084959, 2.5);
-            bd.angle = 0.0;
-            bd.linearVelocity.Set(0.0, 0.0);
-            bd.angularVelocity = 0.0;
-            bd.linearDamping = 0.5;
-            bd.angularDamping = 0.5;
-            bd.allowSleep = true;
-            bd.awake = true;
-            bd.fixedRotation = false;
-            bd.bullet = false;
-            bd.enabled = true;
-            bd.gravityScale = 1.0;
+            /* b2FixtureDef */
+            const fd = new b2FixtureDef();
+            fd.friction = 10.0;
+            fd.restitution = 0.0;
+            fd.density = 0.0;
+            fd.isSensor = false;
+            fd.filter.categoryBits = 1;
+            fd.filter.maskBits = 65535;
+            fd.filter.groupIndex = 0;
+            /* b2EdgeShape */
+            const shape = new b2EdgeShape();
+            shape.m_radius = 0.009999999776483;
+            shape.m_vertex0.Set(0.0, 0.0);
+            shape.m_vertex1.Set(0.0, 16.695652008056641);
+            shape.m_vertex2.Set(0.0, 0.0);
+            shape.m_vertex3.Set(0.0, 0.0);
+            // shape.m_hasVertex0 = false;
+            // shape.m_hasVertex3 = false;
 
-            bodies[2] = this.m_world.CreateBody(bd);
+            fd.shape = shape;
 
-            {
-                /* b2FixtureDef */
-                const fd = new b2FixtureDef();
-                fd.friction = 1.0;
-                fd.restitution = 0.5;
-                fd.density = 10.0;
-                fd.isSensor = false;
-                fd.filter.categoryBits = 1;
-                fd.filter.maskBits = 65535;
-                fd.filter.groupIndex = 0;
-                /* b2PolygonShape */
-                const shape = new b2PolygonShape();
-                /* b2Vec2[] */
-                const vs = b2Vec2.MakeArray(8);
-                vs[0].Set(0.200000002980232, -0.300000011920929);
-                vs[1].Set(0.200000002980232, 0.200000002980232);
-                vs[2].Set(-6.900000095367432, 0.200000002980232);
-                vs[3].Set(-6.900000095367432, -0.300000011920929);
-                shape.Set(vs, 4);
-
-                fd.shape = shape;
-
-                bodies[2].CreateFixture(fd);
-            }
+            bodies[0].CreateFixture(fd);
         }
         {
-            /* b2BodyDef */
-            const bd = new b2BodyDef();
-            bd.type = b2BodyType.b2_staticBody;
-            bd.position.Set(0.0, 0.0);
-            bd.angle = 0.0;
-            bd.linearVelocity.Set(0.0, 0.0);
-            bd.angularVelocity = 0.0;
-            bd.linearDamping = 0.0;
-            bd.angularDamping = 0.0;
-            bd.allowSleep = true;
-            bd.awake = true;
-            bd.fixedRotation = false;
-            bd.bullet = false;
-            bd.enabled = true;
-            bd.gravityScale = 1.0;
+            /* b2FixtureDef */
+            const fd = new b2FixtureDef();
+            fd.friction = 10.0;
+            fd.restitution = 0.0;
+            fd.density = 0.0;
+            fd.isSensor = false;
+            fd.filter.categoryBits = 1;
+            fd.filter.maskBits = 65535;
+            fd.filter.groupIndex = 0;
+            /* b2EdgeShape */
+            const shape = new b2EdgeShape();
+            shape.m_radius = 0.009999999776483;
+            shape.m_vertex0.Set(0.0, 0.0);
+            shape.m_vertex1.Set(44.521739959716797, 16.695652008056641);
+            shape.m_vertex2.Set(44.521739959716797, 0.0);
+            shape.m_vertex3.Set(0.0, 0.0);
+            // shape.m_hasVertex0 = false;
+            // shape.m_hasVertex3 = false;
 
-            bodies[3] = this.m_world.CreateBody(bd);
+            fd.shape = shape;
+
+            bodies[0].CreateFixture(fd);
         }
+        bodies[1] = this.m_world.CreateBody({
+            type: b2BodyType.b2_dynamicBody,
+            position: { x: 0.847826063632965, y: 2.5 },
+            angle: 0.0,
+            angularVelocity: 0.0,
+            linearDamping: 0.5,
+            angularDamping: 0.5,
+            allowSleep: true,
+            awake: true,
+            fixedRotation: false,
+            bullet: false,
+            enabled: true,
+            gravityScale: 1.0,
+        });
+
+        {
+            /* b2FixtureDef */
+            const fd = new b2FixtureDef();
+            fd.friction = 1.0;
+            fd.restitution = 0.5;
+            fd.density = 10.0;
+            fd.isSensor = false;
+            fd.filter.categoryBits = 1;
+            fd.filter.maskBits = 65535;
+            fd.filter.groupIndex = 0;
+            /* b2PolygonShape */
+            const shape = new b2PolygonShape();
+            /* b2Vec2[] */
+            const vs = b2Vec2.MakeArray(8);
+            vs[0].Set(6.907599925994873, 0.327199995517731);
+            vs[1].Set(-0.322800010442734, 0.282599985599518);
+            vs[2].Set(-0.322800010442734, -0.295700013637543);
+            vs[3].Set(6.885900020599365, -0.364100009202957);
+            shape.Set(vs, 4);
+
+            fd.shape = shape;
+
+            bodies[1].CreateFixture(fd);
+        }
+        bodies[2] = this.m_world.CreateBody({
+            type: b2BodyType.b2_dynamicBody,
+            position: { x: 13.043478012084959, y: 2.5 },
+            angle: 0.0,
+            angularVelocity: 0.0,
+            linearDamping: 0.5,
+            angularDamping: 0.5,
+            allowSleep: true,
+            awake: true,
+            fixedRotation: false,
+            bullet: false,
+            enabled: true,
+            gravityScale: 1.0,
+        });
+
+        {
+            /* b2FixtureDef */
+            const fd = new b2FixtureDef();
+            fd.friction = 1.0;
+            fd.restitution = 0.5;
+            fd.density = 10.0;
+            fd.isSensor = false;
+            fd.filter.categoryBits = 1;
+            fd.filter.maskBits = 65535;
+            fd.filter.groupIndex = 0;
+            /* b2PolygonShape */
+            const shape = new b2PolygonShape();
+            /* b2Vec2[] */
+            const vs = b2Vec2.MakeArray(8);
+            vs[0].Set(0.200000002980232, -0.300000011920929);
+            vs[1].Set(0.200000002980232, 0.200000002980232);
+            vs[2].Set(-6.900000095367432, 0.200000002980232);
+            vs[3].Set(-6.900000095367432, -0.300000011920929);
+            shape.Set(vs, 4);
+
+            fd.shape = shape;
+
+            bodies[2].CreateFixture(fd);
+        }
+        bodies[3] = this.m_world.CreateBody({
+            type: b2BodyType.b2_staticBody,
+            angle: 0.0,
+            angularVelocity: 0.0,
+            linearDamping: 0.0,
+            angularDamping: 0.0,
+            allowSleep: true,
+            awake: true,
+            fixedRotation: false,
+            bullet: false,
+            enabled: true,
+            gravityScale: 1.0,
+        });
         {
             /* b2RevoluteJointDef */
             const jd = new b2RevoluteJointDef();

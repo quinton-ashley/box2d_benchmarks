@@ -16,17 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import {
-    b2BodyDef,
-    b2Vec2,
-    b2ChainShape,
-    b2FixtureDef,
-    b2BodyType,
-    b2CircleShape,
-    b2Body,
-    b2RadToDeg,
-    XY,
-} from "@box2d/core";
+import { b2Vec2, b2ChainShape, b2FixtureDef, b2BodyType, b2CircleShape, b2Body, b2RadToDeg, XY } from "@box2d/core";
 import {
     BlendFunc,
     ChainLight,
@@ -143,15 +133,17 @@ export class OfficialDemo extends Test {
         def.friction = 0.01;
         def.shape = ballShape;
         def.density = 1;
-        const boxBodyDef = new b2BodyDef();
-        boxBodyDef.type = b2BodyType.b2_dynamicBody;
 
         const createMarble = () => {
             // Create the BodyDef, set a random position above the
             // ground and create a new body
-            boxBodyDef.position.x = 4 + Math.random() * 40;
-            boxBodyDef.position.y = 4 + Math.random() * 25;
-            const boxBody = this.m_world.CreateBody(boxBodyDef);
+            const boxBody = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+                position: {
+                    x: 4 + Math.random() * 40,
+                    y: 4 + Math.random() * 25,
+                },
+            });
             const fixture = boxBody.CreateFixture(def);
             fixture.m_filter.categoryBits = Category.MARBLE;
             fixture.m_filter.maskBits = Mask.MARBLE;
@@ -309,9 +301,9 @@ export class OfficialDemo extends Test {
             new b2Vec2(viewportWidth, viewportHeight),
             new b2Vec2(viewportWidth, 0),
         ]);
-        const chainBodyDef = new b2BodyDef();
-        chainBodyDef.type = b2BodyType.b2_staticBody;
-        this.groundBody = this.m_world.CreateBody(chainBodyDef);
+        this.groundBody = this.m_world.CreateBody({
+            type: b2BodyType.b2_staticBody,
+        });
         const fixture = this.groundBody.CreateFixture(chainShape, 0);
         fixture.m_filter.categoryBits = Category.WORLD;
         fixture.m_filter.maskBits = Mask.WORLD;

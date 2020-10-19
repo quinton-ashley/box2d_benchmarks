@@ -2,7 +2,7 @@
 Test case for collision/jerking issue.
 */
 
-import { b2Body, b2Vec2, b2ChainShape, b2FixtureDef, b2BodyDef, b2BodyType, b2PolygonShape } from "@box2d/core";
+import { b2Body, b2Vec2, b2ChainShape, b2FixtureDef, b2BodyType, b2PolygonShape } from "@box2d/core";
 
 import { Test } from "../../test";
 import { Settings } from "../../settings";
@@ -81,13 +81,11 @@ export class Skier extends Test {
             const SkiFriction = 0.0;
             const SkiRestitution = 0.15;
 
-            const bd = new b2BodyDef();
-            bd.type = b2BodyType.b2_dynamicBody;
-
             const initial_y = BodyHeight / 2 + SkiThickness;
-            bd.position.Set(-this.m_platform_width / 2, initial_y);
-
-            const skier = this.m_world.CreateBody(bd);
+            const skier = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+                position: { x: -this.m_platform_width / 2, y: initial_y },
+            });
 
             const ski = new b2PolygonShape();
             const verts: b2Vec2[] = [];

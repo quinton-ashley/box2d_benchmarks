@@ -16,15 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import {
-    b2BodyDef,
-    b2PolygonShape,
-    b2BodyType,
-    b2RevoluteJointDef,
-    b2Vec2,
-    b2PrismaticJointDef,
-    XY,
-} from "@box2d/core";
+import { b2PolygonShape, b2BodyType, b2RevoluteJointDef, b2Vec2, b2PrismaticJointDef, XY } from "@box2d/core";
 
 import { Test } from "../../test";
 
@@ -33,13 +25,12 @@ export class BasicSliderCrank extends Test {
         super();
 
         /* b2Body */
-        let ground = null;
-        {
-            /* b2BodyDef */
-            const bd = new b2BodyDef();
-            bd.position.Set(0.0, 17.0);
-            ground = this.m_world.CreateBody(bd);
-        }
+        const ground = this.m_world.CreateBody({
+            position: {
+                x: 0,
+                y: 17,
+            },
+        });
 
         {
             /* b2Body */
@@ -51,12 +42,14 @@ export class BasicSliderCrank extends Test {
                 const shape = new b2PolygonShape();
                 shape.SetAsBox(4.0, 1.0);
 
-                /* b2BodyDef */
-                const bd = new b2BodyDef();
-                bd.type = b2BodyType.b2_dynamicBody;
-                bd.position.Set(-8.0, 20.0);
                 /* b2Body */
-                const body = this.m_world.CreateBody(bd);
+                const body = this.m_world.CreateBody({
+                    type: b2BodyType.b2_dynamicBody,
+                    position: {
+                        x: -8,
+                        y: 20,
+                    },
+                });
                 body.CreateFixture(shape, 2.0);
 
                 /* b2RevoluteJointDef */
@@ -73,12 +66,14 @@ export class BasicSliderCrank extends Test {
                 const shape = new b2PolygonShape();
                 shape.SetAsBox(8.0, 1.0);
 
-                /* b2BodyDef */
-                const bd = new b2BodyDef();
-                bd.type = b2BodyType.b2_dynamicBody;
-                bd.position.Set(4.0, 20.0);
                 /* b2Body */
-                const body = this.m_world.CreateBody(bd);
+                const body = this.m_world.CreateBody({
+                    type: b2BodyType.b2_dynamicBody,
+                    position: {
+                        x: 4.0,
+                        y: 20.0,
+                    },
+                });
                 body.CreateFixture(shape, 2.0);
 
                 /* b2RevoluteJointDef */
@@ -95,13 +90,15 @@ export class BasicSliderCrank extends Test {
                 const shape = new b2PolygonShape();
                 shape.SetAsBox(3.0, 3.0);
 
-                /* b2BodyDef */
-                const bd = new b2BodyDef();
-                bd.type = b2BodyType.b2_dynamicBody;
-                bd.fixedRotation = true;
-                bd.position.Set(12.0, 20.0);
                 /* b2Body */
-                const body = this.m_world.CreateBody(bd);
+                const body = this.m_world.CreateBody({
+                    type: b2BodyType.b2_dynamicBody,
+                    fixedRotation: true,
+                    position: {
+                        x: 12,
+                        y: 20,
+                    },
+                });
                 body.CreateFixture(shape, 2.0);
 
                 /* b2RevoluteJointDef */

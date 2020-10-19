@@ -23,7 +23,6 @@ import {
     b2FixtureDef,
     b2PolygonShape,
     b2Vec2_zero,
-    b2BodyDef,
     b2BodyType,
     b2DistanceJointDef,
     b2LinearStiffness,
@@ -60,8 +59,7 @@ export class TheoJansen extends Test {
 
         // Ground
         {
-            const bd = new b2BodyDef();
-            const ground = this.m_world.CreateBody(bd);
+            const ground = this.m_world.CreateBody();
 
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(-50.0, 0.0), new b2Vec2(50.0, 0.0));
@@ -79,11 +77,10 @@ export class TheoJansen extends Test {
             const shape = new b2CircleShape();
             shape.m_radius = 0.25;
 
-            const bd = new b2BodyDef();
-            bd.type = b2BodyType.b2_dynamicBody;
-            bd.position.Set(-40.0 + 2.0 * i, 0.5);
-
-            const body = this.m_world.CreateBody(bd);
+            const body = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+                position: { x: -40.0 + 2.0 * i, y: 0.5 },
+            });
             body.CreateFixture(shape, 1.0);
         }
 
@@ -96,10 +93,13 @@ export class TheoJansen extends Test {
             sd.density = 1.0;
             sd.shape = shape;
             sd.filter.groupIndex = -1;
-            const bd = new b2BodyDef();
-            bd.type = b2BodyType.b2_dynamicBody;
-            bd.position.Copy(pivot).SelfAdd(this.m_offset);
-            this.m_chassis = this.m_world.CreateBody(bd);
+            this.m_chassis = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+                position: {
+                    x: pivot.x + this.m_offset.x,
+                    y: pivot.y + this.m_offset.y,
+                },
+            });
             this.m_chassis.CreateFixture(sd);
         }
 
@@ -111,10 +111,13 @@ export class TheoJansen extends Test {
             sd.density = 1.0;
             sd.shape = shape;
             sd.filter.groupIndex = -1;
-            const bd = new b2BodyDef();
-            bd.type = b2BodyType.b2_dynamicBody;
-            bd.position.Copy(pivot).SelfAdd(this.m_offset);
-            this.m_wheel = this.m_world.CreateBody(bd);
+            this.m_wheel = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+                position: {
+                    x: pivot.x + this.m_offset.x,
+                    y: pivot.y + this.m_offset.y,
+                },
+            });
             this.m_wheel.CreateFixture(sd);
         }
 
@@ -189,18 +192,16 @@ export class TheoJansen extends Test {
         fd1.shape = poly1;
         fd2.shape = poly2;
 
-        const bd1 = new b2BodyDef();
-        const bd2 = new b2BodyDef();
-        bd1.type = b2BodyType.b2_dynamicBody;
-        bd2.type = b2BodyType.b2_dynamicBody;
-        bd1.position.Copy(this.m_offset);
-        bd2.position.Copy(b2Vec2.AddVV(p4, this.m_offset, new b2Vec2()));
-
-        bd1.angularDamping = 10.0;
-        bd2.angularDamping = 10.0;
-
-        const body1 = this.m_world.CreateBody(bd1);
-        const body2 = this.m_world.CreateBody(bd2);
+        const body1 = this.m_world.CreateBody({
+            type: b2BodyType.b2_dynamicBody,
+            position: this.m_offset,
+            angularDamping: 10.0,
+        });
+        const body2 = this.m_world.CreateBody({
+            type: b2BodyType.b2_dynamicBody,
+            position: b2Vec2.AddVV(p4, this.m_offset, new b2Vec2()),
+            angularDamping: 10.0,
+        });
 
         body1.CreateFixture(fd1);
         body2.CreateFixture(fd2);

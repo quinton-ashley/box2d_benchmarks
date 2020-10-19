@@ -56,8 +56,7 @@ export class Car extends Test {
 
         let ground: b2Body;
         {
-            const bd: b2BodyDef = new b2BodyDef();
-            ground = this.m_world.CreateBody(bd);
+            ground = this.m_world.CreateBody();
 
             const shape: b2EdgeShape = new b2EdgeShape();
 
@@ -113,10 +112,10 @@ export class Car extends Test {
 
         // Teeter
         {
-            const bd: b2BodyDef = new b2BodyDef();
-            bd.position.Set(140.0, 1.0);
-            bd.type = b2BodyType.b2_dynamicBody;
-            const body: b2Body = this.m_world.CreateBody(bd);
+            const body: b2Body = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+                position: { x: 140.0, y: 1.0 },
+            });
 
             const box: b2PolygonShape = new b2PolygonShape();
             box.SetAsBox(10.0, 0.25);
@@ -147,10 +146,10 @@ export class Car extends Test {
 
             let prevBody: b2Body = ground;
             for (let i = 0; i < N; ++i) {
-                const bd: b2BodyDef = new b2BodyDef();
-                bd.type = b2BodyType.b2_dynamicBody;
-                bd.position.Set(161.0 + 2.0 * i, -0.125);
-                const body: b2Body = this.m_world.CreateBody(bd);
+                const body: b2Body = this.m_world.CreateBody({
+                    type: b2BodyType.b2_dynamicBody,
+                    position: { x: 161.0 + 2.0 * i, y: -0.125 },
+                });
                 body.CreateFixture(fd);
 
                 const anchor: b2Vec2 = new b2Vec2(160.0 + 2.0 * i, -0.125);
@@ -171,26 +170,29 @@ export class Car extends Test {
             box.SetAsBox(0.5, 0.5);
 
             let body: b2Body;
-            const bd: b2BodyDef = new b2BodyDef();
-            bd.type = b2BodyType.b2_dynamicBody;
+            const position = new b2Vec2();
+            const bd: b2BodyDef = {
+                type: b2BodyType.b2_dynamicBody,
+                position,
+            };
 
-            bd.position.Set(230.0, 0.5);
+            position.Set(230.0, 0.5);
             body = this.m_world.CreateBody(bd);
             body.CreateFixture(box, 0.5);
 
-            bd.position.Set(230.0, 1.5);
+            position.Set(230.0, 1.5);
             body = this.m_world.CreateBody(bd);
             body.CreateFixture(box, 0.5);
 
-            bd.position.Set(230.0, 2.5);
+            position.Set(230.0, 2.5);
             body = this.m_world.CreateBody(bd);
             body.CreateFixture(box, 0.5);
 
-            bd.position.Set(230.0, 3.5);
+            position.Set(230.0, 3.5);
             body = this.m_world.CreateBody(bd);
             body.CreateFixture(box, 0.5);
 
-            bd.position.Set(230.0, 4.5);
+            position.Set(230.0, 4.5);
             body = this.m_world.CreateBody(bd);
             body.CreateFixture(box, 0.5);
         }
@@ -210,9 +212,9 @@ export class Car extends Test {
             const circle: b2CircleShape = new b2CircleShape();
             circle.m_radius = 0.4;
 
-            const bd: b2BodyDef = new b2BodyDef();
-            bd.type = b2BodyType.b2_dynamicBody;
-            bd.position.Set(0.0, 1.0);
+            const position = new b2Vec2();
+            const bd: b2BodyDef = { type: b2BodyType.b2_dynamicBody, position };
+            position.Set(0.0, 1.0);
             this.m_car = this.m_world.CreateBody(bd);
             this.m_car.CreateFixture(chassis, 1.0);
 
@@ -221,11 +223,11 @@ export class Car extends Test {
             fd.density = 1.0;
             fd.friction = 0.9;
 
-            bd.position.Set(-1.0, 0.35);
+            position.Set(-1.0, 0.35);
             this.m_wheel1 = this.m_world.CreateBody(bd);
             this.m_wheel1.CreateFixture(fd);
 
-            bd.position.Set(1.0, 0.4);
+            position.Set(1.0, 0.4);
             this.m_wheel2 = this.m_world.CreateBody(bd);
             this.m_wheel2.CreateFixture(fd);
 

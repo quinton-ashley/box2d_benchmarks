@@ -49,7 +49,7 @@ export * from "./collision/b2_edge_shape";
 export * from "./collision/b2_chain_shape";
 
 export * from "./dynamics/b2_fixture";
-export { b2Body, b2BodyType, b2IBodyDef, b2BodyDef } from "./dynamics/b2_body";
+export { b2Body, b2BodyType, b2BodyDef } from "./dynamics/b2_body";
 export { b2World } from "./dynamics/b2_world";
 export * from "./dynamics/b2_world_callbacks";
 export * from "./dynamics/b2_island";

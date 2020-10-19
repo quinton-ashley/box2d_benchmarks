@@ -16,7 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import { b2Timer, b2BodyDef, b2Vec2, b2PolygonShape, b2BodyType } from "@box2d/core";
+import { b2Timer, b2Vec2, b2PolygonShape, b2BodyType } from "@box2d/core";
 
 import { Test } from "../../test";
 import { Settings } from "../../settings";
@@ -44,11 +44,10 @@ export class Tiles extends Test {
         {
             /* float32 */
             const a = 0.5;
-            /* b2BodyDef */
-            const bd = new b2BodyDef();
-            bd.position.y = -a;
             /* b2Body */
-            const ground = this.m_world.CreateBody(bd);
+            const ground = this.m_world.CreateBody({
+                position: { x: 0, y: -a },
+            });
 
             {
                 /* int32 */
@@ -112,22 +111,12 @@ export class Tiles extends Test {
                 y.Copy(x);
 
                 for (/* int32 */ let j = i; j < Tiles.e_count; ++j) {
-                    /* b2BodyDef */
-                    const bd = new b2BodyDef();
-                    bd.type = b2BodyType.b2_dynamicBody;
-                    bd.position.Copy(y);
-
-                    // if (i === 0 && j === 0)
-                    // {
-                    //  bd.allowSleep = false;
-                    // }
-                    // else
-                    // {
-                    //  bd.allowSleep = true;
-                    // }
-
                     /* b2Body */
-                    const body = this.m_world.CreateBody(bd);
+                    const body = this.m_world.CreateBody({
+                        type: b2BodyType.b2_dynamicBody,
+                        position: y,
+                        // allowSleep: i !== 0 || j !== 0,
+                    });
                     body.CreateFixture(shape, 5.0);
                     ++this.m_fixtureCount;
                     y.SelfAdd(deltaY);

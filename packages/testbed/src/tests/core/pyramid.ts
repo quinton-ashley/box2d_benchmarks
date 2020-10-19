@@ -16,7 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import { b2BodyDef, b2EdgeShape, b2Vec2, b2PolygonShape, b2BodyType } from "@box2d/core";
+import { b2EdgeShape, b2Vec2, b2PolygonShape, b2BodyType } from "@box2d/core";
 
 import { Test } from "../../test";
 import { Settings } from "../../settings";
@@ -28,8 +28,7 @@ export class Pyramid extends Test {
         super();
 
         {
-            const bd = new b2BodyDef();
-            const ground = this.m_world.CreateBody(bd);
+            const ground = this.m_world.CreateBody();
 
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(-40.0, 0.0), new b2Vec2(40.0, 0.0));
@@ -50,10 +49,10 @@ export class Pyramid extends Test {
                 y.Copy(x);
 
                 for (let j = i; j < Pyramid.e_count; ++j) {
-                    const bd = new b2BodyDef();
-                    bd.type = b2BodyType.b2_dynamicBody;
-                    bd.position.Copy(y);
-                    const body = this.m_world.CreateBody(bd);
+                    const body = this.m_world.CreateBody({
+                        type: b2BodyType.b2_dynamicBody,
+                        position: y,
+                    });
                     body.CreateFixture(shape, 5.0);
 
                     y.SelfAdd(deltaY);

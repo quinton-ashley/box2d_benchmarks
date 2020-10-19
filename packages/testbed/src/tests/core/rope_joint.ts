@@ -43,9 +43,7 @@ export class RopeJoint extends Test {
         /* b2Body */
         let ground = null;
         {
-            /* b2BodyDef */
-            const bd = new b2BodyDef();
-            ground = this.m_world.CreateBody(bd);
+            ground = this.m_world.CreateBody();
 
             /* b2EdgeShape */
             const shape = new b2EdgeShape();
@@ -79,15 +77,15 @@ export class RopeJoint extends Test {
             /* b2Body */
             let prevBody = ground;
             for (/* int32 */ let i = 0; i < N; ++i) {
-                /* b2BodyDef */
-                const bd = new b2BodyDef();
-                bd.type = b2BodyType.b2_dynamicBody;
-                bd.position.Set(0.5 + 1.0 * i, y);
+                const bd: b2BodyDef = {
+                    type: b2BodyType.b2_dynamicBody,
+                    position: { x: 0.5 + 1.0 * i, y },
+                };
                 if (i === N - 1) {
                     shape.SetAsBox(1.5, 1.5);
                     fd.density = 100.0;
                     fd.filter.categoryBits = 0x0002;
-                    bd.position.Set(1.0 * i, y);
+                    bd.position = { x: 1.0 * i, y };
                     bd.angularDamping = 0.4;
                 }
 

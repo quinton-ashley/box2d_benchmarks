@@ -16,16 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import {
-    b2ContactFilter,
-    b2Vec2,
-    b2BodyDef,
-    b2ChainShape,
-    b2FixtureDef,
-    b2PolygonShape,
-    b2Vec2_zero,
-    XY,
-} from "@box2d/core";
+import { b2ContactFilter, b2Vec2, b2ChainShape, b2FixtureDef, b2PolygonShape, b2Vec2_zero, XY } from "@box2d/core";
 import { b2ParticleGroupDef, b2ParticleFlag, b2ParticleGroup } from "@box2d/particles";
 
 import { Test, RandomFloat } from "../../test";
@@ -59,8 +50,7 @@ export class ParticleCollisionFilter extends Test {
 
         // Create the container.
         {
-            const bd = new b2BodyDef();
-            const ground = this.m_world.CreateBody(bd);
+            const ground = this.m_world.CreateBody();
             const shape = new b2ChainShape();
             const vertices: b2Vec2[] = [
                 new b2Vec2(

@@ -12,7 +12,6 @@ import {
     b2Body,
     b2MouseJoint,
     b2Profile,
-    b2BodyDef,
     b2Contact,
     b2WorldManifold,
     b2Manifold,
@@ -204,8 +203,7 @@ export class Test extends b2ContactListener {
         this.m_particleSystem.SetGravityScale(0.4);
         this.m_particleSystem.SetDensity(1.2);
 
-        const bodyDef: b2BodyDef = new b2BodyDef();
-        this.m_groundBody = this.m_world.CreateBody(bodyDef);
+        this.m_groundBody = this.m_world.CreateBody();
     }
 
     getBaseHotkeys(): HotKey[] {
@@ -370,11 +368,11 @@ export class Test extends b2ContactListener {
             this.m_bomb = null;
         }
 
-        const bd: b2BodyDef = new b2BodyDef();
-        bd.type = b2BodyType.b2_dynamicBody;
-        bd.position.Copy(position);
-        bd.bullet = true;
-        this.m_bomb = this.m_world.CreateBody(bd);
+        this.m_bomb = this.m_world.CreateBody({
+            type: b2BodyType.b2_dynamicBody,
+            position,
+            bullet: true,
+        });
         this.m_bomb.SetLinearVelocity(velocity);
 
         const circle: b2CircleShape = new b2CircleShape();

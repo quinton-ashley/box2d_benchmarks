@@ -38,7 +38,7 @@ import { b2RevoluteJoint, b2IRevoluteJointDef } from "./b2_revolute_joint";
 import { b2RopeJoint, b2IRopeJointDef } from "./b2_rope_joint";
 import { b2WeldJoint, b2IWeldJointDef } from "./b2_weld_joint";
 import { b2WheelJoint, b2IWheelJointDef } from "./b2_wheel_joint";
-import { b2Body, b2IBodyDef, b2BodyType } from "./b2_body";
+import { b2Body, b2BodyDef, b2BodyType } from "./b2_body";
 import { b2ContactManager } from "./b2_contact_manager";
 import { b2Fixture, b2FixtureProxy } from "./b2_fixture";
 import { b2Island } from "./b2_island";
@@ -130,7 +130,7 @@ export class b2World {
     /// Create a rigid body given a definition. No reference to the definition
     /// is retained.
     /// @warning This function is locked during callbacks.
-    public CreateBody(def: b2IBodyDef = {}): b2Body {
+    public CreateBody(def: b2BodyDef = {}): b2Body {
         b2Assert(!this.IsLocked());
 
         const b: b2Body = new b2Body(def, this);
@@ -837,58 +837,6 @@ export class b2World {
     /// Get the current profile.
     public GetProfile(): b2Profile {
         return this.m_profile;
-    }
-
-    /// Dump the world into the log file.
-    /// @warning this should be called outside of a time step.
-    public Dump(log: (format: string, ...args: any[]) => void): void {
-        if (this.m_locked) {
-            return;
-        }
-
-        // b2OpenDump("box2d_dump.inl");
-
-        log("const g: b2Vec2 = new b2Vec2(%.15f, %.15f);\n", this.m_gravity.x, this.m_gravity.y);
-        log("this.m_world.SetGravity(g);\n");
-
-        log("const bodies: b2Body[] = [];\n");
-        log("const joints: b2Joint[] = [];\n");
-        let i = 0;
-        for (let b: b2Body | null = this.m_bodyList; b; b = b.m_next) {
-            b.m_islandIndex = i;
-            b.Dump(log);
-            ++i;
-        }
-
-        i = 0;
-        for (let j: b2Joint | null = this.m_jointList; j; j = j.m_next) {
-            j.m_index = i;
-            ++i;
-        }
-
-        // First pass on joints, skip gear joints.
-        for (let j: b2Joint | null = this.m_jointList; j; j = j.m_next) {
-            if (j.m_type === b2JointType.e_gearJoint) {
-                continue;
-            }
-
-            log("{\n");
-            j.Dump(log);
-            log("}\n");
-        }
-
-        // Second pass on joints, only gear joints.
-        for (let j: b2Joint | null = this.m_jointList; j; j = j.m_next) {
-            if (j.m_type !== b2JointType.e_gearJoint) {
-                continue;
-            }
-
-            log("{\n");
-            j.Dump(log);
-            log("}\n");
-        }
-
-        // b2CloseDump();
     }
 
     public Solve(step: b2TimeStep): void {

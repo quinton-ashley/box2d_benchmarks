@@ -18,7 +18,6 @@
 
 import {
     b2Body,
-    b2BodyDef,
     b2EdgeShape,
     b2Vec2,
     b2FixtureDef,
@@ -42,9 +41,7 @@ export class BodyTypes extends Test {
     constructor() {
         super();
 
-        /* b2BodyDef */
-        const gbd = new b2BodyDef();
-        const ground = this.m_world.CreateBody(gbd);
+        const ground = this.m_world.CreateBody();
 
         /* b2EdgeShape */
         const gshape = new b2EdgeShape();
@@ -58,11 +55,13 @@ export class BodyTypes extends Test {
 
         // Define attachment
         {
-            /* b2BodyDef */
-            const bd = new b2BodyDef();
-            bd.type = b2BodyType.b2_dynamicBody;
-            bd.position.Set(0.0, 3.0);
-            this.m_attachment = this.m_world.CreateBody(bd);
+            this.m_attachment = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+                position: {
+                    x: 0.0,
+                    y: 3.0,
+                },
+            });
 
             /* b2PolygonShape */
             const shape = new b2PolygonShape();
@@ -72,11 +71,10 @@ export class BodyTypes extends Test {
 
         // Define platform
         {
-            /* b2BodyDef */
-            const bd = new b2BodyDef();
-            bd.type = b2BodyType.b2_dynamicBody;
-            bd.position.Set(-4.0, 5.0);
-            this.m_platform = this.m_world.CreateBody(bd);
+            this.m_platform = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+                position: { x: -4.0, y: 5.0 },
+            });
 
             /* b2PolygonShape */
             const shape = new b2PolygonShape();
@@ -113,12 +111,11 @@ export class BodyTypes extends Test {
 
         // Create a payload
         {
-            /* b2BodyDef */
-            const bd = new b2BodyDef();
-            bd.type = b2BodyType.b2_dynamicBody;
-            bd.position.Set(0.0, 8.0);
             /* b2Body */
-            const body = this.m_world.CreateBody(bd);
+            const body = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+                position: { x: 0.0, y: 8.0 },
+            });
 
             /* b2PolygonShape */
             const shape = new b2PolygonShape();

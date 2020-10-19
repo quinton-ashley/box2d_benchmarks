@@ -16,17 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import {
-    b2Body,
-    b2BodyDef,
-    b2EdgeShape,
-    b2Vec2,
-    b2PolygonShape,
-    b2BodyType,
-    b2RandomRange,
-    b2Gjk,
-    b2Toi,
-} from "@box2d/core";
+import { b2Body, b2EdgeShape, b2Vec2, b2PolygonShape, b2BodyType, b2RandomRange, b2Gjk, b2Toi } from "@box2d/core";
 
 import { Test } from "../../test";
 import { Settings } from "../../settings";
@@ -40,9 +30,7 @@ export class ContinuousTest extends Test {
         super();
 
         {
-            const bd = new b2BodyDef();
-            bd.position.Set(0.0, 0.0);
-            const body = this.m_world.CreateBody(bd);
+            const body = this.m_world.CreateBody();
 
             const edge = new b2EdgeShape();
 
@@ -55,15 +43,14 @@ export class ContinuousTest extends Test {
         }
 
         {
-            const bd = new b2BodyDef();
-            bd.type = b2BodyType.b2_dynamicBody;
-            bd.position.Set(0.0, 20.0);
-            // bd.angle = 0.1;
-
             const shape = new b2PolygonShape();
             shape.SetAsBox(2.0, 0.1);
 
-            this.m_body = this.m_world.CreateBody(bd);
+            this.m_body = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+                position: { x: 0.0, y: 20.0 },
+                // angle: 0.1,
+            });
             this.m_body.CreateFixture(shape, 1.0);
 
             this.m_angularVelocity = b2RandomRange(-50.0, 50.0);
@@ -74,17 +61,19 @@ export class ContinuousTest extends Test {
         /*
     else
     {
-      const bd = new b2BodyDef();
-      bd.type = b2BodyType.b2_dynamicBody;
-      bd.position.Set(0.0, 2.0);
-      const body = this.m_world.CreateBody(bd);
+      const body = this.m_world.CreateBody({
+        type: b2BodyType.b2_dynamicBody,
+        position: { y: 0.0, y:2.0}
+      });
       const shape = new b2CircleShape();
       shape.m_p.SetZero();
       shape.m_radius = 0.5;
       body.CreateFixture(shape, 1.0);
-      bd.bullet = true;
-      bd.position.Set(0.0, 10.0);
-      body = this.m_world.CreateBody(bd);
+      body = this.m_world.CreateBody({
+        type: b2BodyType.b2_dynamicBody,
+        bullet: true,
+        position: { y: 0.0, y:10.0}
+      });
       body.CreateFixture(shape, 1.0);
       body.SetLinearVelocity(new b2Vec2(0.0, -100.0));
     }

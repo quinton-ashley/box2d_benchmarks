@@ -16,17 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import {
-    b2Body,
-    b2BodyDef,
-    b2EdgeShape,
-    b2Vec2,
-    b2BodyType,
-    b2FixtureDef,
-    b2PolygonShape,
-    b2CircleShape,
-    XY,
-} from "@box2d/core";
+import { b2Body, b2EdgeShape, b2Vec2, b2BodyType, b2FixtureDef, b2PolygonShape, b2CircleShape, XY } from "@box2d/core";
 import { b2BuoyancyController } from "@box2d/controllers";
 
 import { Test } from "../../test";
@@ -50,7 +40,7 @@ export class BuoyancyTest extends Test {
         bc.linearDrag = 5.0;
         bc.angularDrag = 2.0;
 
-        const ground = this.m_world.CreateBody(new b2BodyDef());
+        const ground = this.m_world.CreateBody();
 
         {
             const shape = new b2EdgeShape();
@@ -64,12 +54,15 @@ export class BuoyancyTest extends Test {
 
         // Spawn in a bunch of crap
         for (let i = 0; i < 5; i++) {
-            const bd = new b2BodyDef();
-            bd.type = b2BodyType.b2_dynamicBody;
-            // bd.isBullet = true;
-            bd.position.Set(Math.random() * 40.0 - 20.0, Math.random() * 15.0 + 5.0);
-            bd.angle = Math.random() * Math.PI;
-            const body = this.m_world.CreateBody(bd);
+            const body = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+                // isBullet: true,
+                position: {
+                    x: Math.random() * 40.0 - 20.0,
+                    y: Math.random() * 15.0 + 5.0,
+                },
+                angle: Math.random() * Math.PI,
+            });
 
             const fd = new b2FixtureDef();
             fd.density = 1.0;
@@ -85,12 +78,15 @@ export class BuoyancyTest extends Test {
         }
 
         for (let i = 0; i < 5; i++) {
-            const bd = new b2BodyDef();
-            bd.type = b2BodyType.b2_dynamicBody;
-            // bd.isBullet = true;
-            bd.position.Set(Math.random() * 40.0 - 20.0, Math.random() * 15.0 + 5.0);
-            bd.angle = Math.random() * Math.PI;
-            const body = this.m_world.CreateBody(bd);
+            const body = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+                // isBullet: true,
+                position: {
+                    x: Math.random() * 40.0 - 20.0,
+                    y: Math.random() * 15.0 + 5.0,
+                },
+                angle: Math.random() * Math.PI,
+            });
 
             const fd = new b2FixtureDef();
             fd.density = 1.0;
@@ -104,12 +100,15 @@ export class BuoyancyTest extends Test {
         }
 
         for (let i = 0; i < 15; i++) {
-            const bd = new b2BodyDef();
-            bd.type = b2BodyType.b2_dynamicBody;
-            // bd.isBullet = true;
-            bd.position.Set(Math.random() * 40.0 - 20.0, Math.random() * 15.0 + 5.0);
-            bd.angle = Math.random() * Math.PI;
-            const body = this.m_world.CreateBody(bd);
+            const body = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+                // isBullet: true,
+                position: {
+                    x: Math.random() * 40.0 - 20.0,
+                    y: Math.random() * 15.0 + 5.0,
+                },
+                angle: Math.random() * Math.PI,
+            });
 
             const fd = new b2FixtureDef();
             fd.density = 1.0;
@@ -148,11 +147,11 @@ export class BuoyancyTest extends Test {
 
         // Add some exciting bath toys
         {
-            const bd = new b2BodyDef();
-            bd.type = b2BodyType.b2_dynamicBody;
-            bd.position.Set(0.0, 40.0);
-            bd.angle = 0;
-            const body = this.m_world.CreateBody(bd);
+            const body = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+                position: { x: 0.0, y: 40.0 },
+                angle: 0,
+            });
 
             const fd = new b2FixtureDef();
             fd.density = 3.0;
@@ -165,10 +164,13 @@ export class BuoyancyTest extends Test {
         }
 
         {
-            const bd = new b2BodyDef();
-            bd.type = b2BodyType.b2_dynamicBody;
-            bd.position.Set(0.0, 30.0);
-            const body = this.m_world.CreateBody(bd);
+            const body = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+                position: {
+                    x: 0.0,
+                    y: 30.0,
+                },
+            });
 
             const fd = new b2FixtureDef();
             fd.density = 2.0;

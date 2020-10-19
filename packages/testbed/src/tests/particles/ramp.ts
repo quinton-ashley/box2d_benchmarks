@@ -16,7 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import { b2BodyDef, b2PolygonShape, b2Vec2, b2CircleShape, XY } from "@box2d/core";
+import { b2PolygonShape, b2Vec2, b2CircleShape, XY } from "@box2d/core";
 import { b2ParticleFlag, b2ParticleGroupDef } from "@box2d/particles";
 
 import { Test } from "../../test";
@@ -26,8 +26,7 @@ export class Ramp extends Test {
         super();
 
         {
-            const bd = new b2BodyDef();
-            const ground = this.m_world.CreateBody(bd);
+            const ground = this.m_world.CreateBody();
 
             // Construct a ramp out of many polygons to ensure there's no
             // issue with particles moving across vertices

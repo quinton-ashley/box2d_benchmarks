@@ -18,7 +18,6 @@
 
 import {
     b2MotorJoint,
-    b2BodyDef,
     b2EdgeShape,
     b2Vec2,
     b2FixtureDef,
@@ -46,8 +45,7 @@ export class MotorJoint extends Test {
         let ground = null;
 
         {
-            const bd = new b2BodyDef();
-            ground = this.m_world.CreateBody(bd);
+            ground = this.m_world.CreateBody();
 
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(-20.0, 0.0), new b2Vec2(20.0, 0.0));
@@ -60,11 +58,11 @@ export class MotorJoint extends Test {
 
         // Define motorized body
         {
-            const bd = new b2BodyDef();
-            bd.type = b2BodyType.b2_dynamicBody;
-            bd.position.Set(0.0, 8.0);
             /* b2Body */
-            const body = this.m_world.CreateBody(bd);
+            const body = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+                position: { x: 0.0, y: 8.0 },
+            });
 
             const shape = new b2PolygonShape();
             shape.SetAsBox(2.0, 0.5);

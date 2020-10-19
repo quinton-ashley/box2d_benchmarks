@@ -282,11 +282,6 @@ export abstract class b2Joint {
         return this.m_collideConnected;
     }
 
-    /// Dump this joint to the log file.
-    public Dump(log: (format: string, ...args: any[]) => void): void {
-        log("// Dump is not supported for this joint type.\n");
-    }
-
     /// Shift the origin for any points stored in world coordinates.
     public ShiftOrigin(_newOrigin: XY): void {}
 

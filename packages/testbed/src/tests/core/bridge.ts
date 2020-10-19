@@ -18,7 +18,6 @@
 
 import {
     b2Body,
-    b2BodyDef,
     b2EdgeShape,
     b2Vec2,
     b2PolygonShape,
@@ -41,8 +40,7 @@ export class Bridge extends Test {
         let ground = null;
 
         {
-            const bd = new b2BodyDef();
-            ground = this.m_world.CreateBody(bd);
+            ground = this.m_world.CreateBody();
 
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(-40.0, 0.0), new b2Vec2(40.0, 0.0));
@@ -62,10 +60,10 @@ export class Bridge extends Test {
 
             let prevBody = ground;
             for (let i = 0; i < Bridge.e_count; ++i) {
-                const bd = new b2BodyDef();
-                bd.type = b2BodyType.b2_dynamicBody;
-                bd.position.Set(-14.5 + 1.0 * i, 5.0);
-                const body = this.m_world.CreateBody(bd);
+                const body = this.m_world.CreateBody({
+                    type: b2BodyType.b2_dynamicBody,
+                    position: { x: -14.5 + 1.0 * i, y: 5.0 },
+                });
                 body.CreateFixture(fd);
 
                 const anchor = new b2Vec2(-15.0 + 1.0 * i, 5.0);
@@ -96,10 +94,10 @@ export class Bridge extends Test {
             fd.shape = shape;
             fd.density = 1.0;
 
-            const bd = new b2BodyDef();
-            bd.type = b2BodyType.b2_dynamicBody;
-            bd.position.Set(-8.0 + 8.0 * i, 12.0);
-            const body = this.m_world.CreateBody(bd);
+            const body = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+                position: { x: -8.0 + 8.0 * i, y: 12.0 },
+            });
             body.CreateFixture(fd);
         }
 
@@ -111,10 +109,10 @@ export class Bridge extends Test {
             fd.shape = shape;
             fd.density = 1.0;
 
-            const bd = new b2BodyDef();
-            bd.type = b2BodyType.b2_dynamicBody;
-            bd.position.Set(-6.0 + 6.0 * i, 10.0);
-            const body = this.m_world.CreateBody(bd);
+            const body = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+                position: { x: -6.0 + 6.0 * i, y: 10.0 },
+            });
             body.CreateFixture(fd);
         }
     }

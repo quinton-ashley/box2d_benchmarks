@@ -75,7 +75,7 @@ export class b2PrismaticJointDef extends b2JointDef implements b2IPrismaticJoint
         super(b2JointType.e_prismaticJoint);
     }
 
-    public Initialize(bA: b2Body, bB: b2Body, anchor: b2Vec2, axis: b2Vec2): void {
+    public Initialize(bA: b2Body, bB: b2Body, anchor: XY, axis: XY): void {
         this.bodyA = bA;
         this.bodyB = bB;
         this.bodyA.GetLocalPoint(anchor, this.localAnchorA);
@@ -835,26 +835,5 @@ export class b2PrismaticJoint extends b2Joint {
 
     public GetMotorForce(inv_dt: number): number {
         return inv_dt * this.m_motorImpulse;
-    }
-
-    public Dump(log: (format: string, ...args: any[]) => void) {
-        const indexA = this.m_bodyA.m_islandIndex;
-        const indexB = this.m_bodyB.m_islandIndex;
-
-        log("  const jd: b2PrismaticJointDef = new b2PrismaticJointDef();\n");
-        log("  jd.bodyA = bodies[%d];\n", indexA);
-        log("  jd.bodyB = bodies[%d];\n", indexB);
-        log("  jd.collideConnected = %s;\n", this.m_collideConnected ? "true" : "false");
-        log("  jd.localAnchorA.Set(%.15f, %.15f);\n", this.m_localAnchorA.x, this.m_localAnchorA.y);
-        log("  jd.localAnchorB.Set(%.15f, %.15f);\n", this.m_localAnchorB.x, this.m_localAnchorB.y);
-        log("  jd.localAxisA.Set(%.15f, %.15f);\n", this.m_localXAxisA.x, this.m_localXAxisA.y);
-        log("  jd.referenceAngle = %.15f;\n", this.m_referenceAngle);
-        log("  jd.enableLimit = %s;\n", this.m_enableLimit ? "true" : "false");
-        log("  jd.lowerTranslation = %.15f;\n", this.m_lowerTranslation);
-        log("  jd.upperTranslation = %.15f;\n", this.m_upperTranslation);
-        log("  jd.enableMotor = %s;\n", this.m_enableMotor ? "true" : "false");
-        log("  jd.motorSpeed = %.15f;\n", this.m_motorSpeed);
-        log("  jd.maxMotorForce = %.15f;\n", this.m_maxMotorForce);
-        log("  joints[%d] = this.m_world.CreateJoint(jd);\n", this.m_index);
     }
 }

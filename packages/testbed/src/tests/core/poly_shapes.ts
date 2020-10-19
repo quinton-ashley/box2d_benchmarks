@@ -25,7 +25,6 @@ import {
     b2Color,
     b2Body,
     b2PolygonShape,
-    b2BodyDef,
     b2EdgeShape,
     b2Vec2,
     b2BodyType,
@@ -92,8 +91,7 @@ export class PolyShapes extends Test {
 
         // Ground body
         {
-            const bd = new b2BodyDef();
-            const ground = this.m_world.CreateBody(bd);
+            const ground = this.m_world.CreateBody();
 
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(-40.0, 0.0), new b2Vec2(40.0, 0.0));
@@ -149,18 +147,12 @@ export class PolyShapes extends Test {
             this.m_bodies[this.m_bodyIndex] = null;
         }
 
-        const bd = new b2BodyDef();
-        bd.type = b2BodyType.b2_dynamicBody;
-
-        const x = b2RandomRange(-2.0, 2.0);
-        bd.position.Set(x, 10.0);
-        bd.angle = b2RandomRange(-Math.PI, Math.PI);
-
-        if (index === 4) {
-            bd.angularDamping = 0.02;
-        }
-
-        body = this.m_bodies[this.m_bodyIndex] = this.m_world.CreateBody(bd);
+        body = this.m_bodies[this.m_bodyIndex] = this.m_world.CreateBody({
+            type: b2BodyType.b2_dynamicBody,
+            position: { x: b2RandomRange(-2.0, 2.0), y: 10.0 },
+            angle: b2RandomRange(-Math.PI, Math.PI),
+            angularDamping: index === 4 ? 0.02 : 0,
+        });
 
         if (index < 4) {
             const fd = new b2FixtureDef();

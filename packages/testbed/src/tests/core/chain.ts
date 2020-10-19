@@ -16,15 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import {
-    b2BodyDef,
-    b2EdgeShape,
-    b2Vec2,
-    b2PolygonShape,
-    b2FixtureDef,
-    b2RevoluteJointDef,
-    b2BodyType,
-} from "@box2d/core";
+import { b2EdgeShape, b2Vec2, b2PolygonShape, b2FixtureDef, b2RevoluteJointDef, b2BodyType } from "@box2d/core";
 
 import { Test } from "../../test";
 
@@ -39,8 +31,7 @@ export class Chain extends Test {
         let ground = null;
 
         {
-            const bd = new b2BodyDef();
-            ground = this.m_world.CreateBody(bd);
+            ground = this.m_world.CreateBody();
 
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(-40.0, 0.0), new b2Vec2(40.0, 0.0));
@@ -62,10 +53,10 @@ export class Chain extends Test {
             const y = 25.0;
             let prevBody = ground;
             for (let i = 0; i < Chain.e_count; ++i) {
-                const bd = new b2BodyDef();
-                bd.type = b2BodyType.b2_dynamicBody;
-                bd.position.Set(0.5 + i, y);
-                const body = this.m_world.CreateBody(bd);
+                const body = this.m_world.CreateBody({
+                    type: b2BodyType.b2_dynamicBody,
+                    position: { x: 0.5 + i, y },
+                });
 
                 if (TEST_BAD_BODY) {
                     if (i === 10) {

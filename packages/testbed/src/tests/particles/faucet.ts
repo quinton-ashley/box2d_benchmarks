@@ -16,7 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import { b2Body, b2BodyDef, b2PolygonShape, b2Vec2, b2Color, XY } from "@box2d/core";
+import { b2PolygonShape, b2Vec2, b2Color, XY } from "@box2d/core";
 import { b2ParticleSystem, b2ParticleFlag } from "@box2d/particles";
 
 import { Test } from "../../test";
@@ -192,11 +192,7 @@ export class Faucet extends Test {
         this.m_particleSystem.SetMaxParticleCount(Faucet.k_maxParticleCount);
         this.m_particleSystem.SetDestructionByAge(true);
 
-        let ground: b2Body;
-        {
-            const bd = new b2BodyDef();
-            ground = this.m_world.CreateBody(bd);
-        }
+        const ground = this.m_world.CreateBody();
 
         // Create the container / trough style sink.
         {

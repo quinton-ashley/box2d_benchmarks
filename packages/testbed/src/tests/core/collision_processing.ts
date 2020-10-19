@@ -20,7 +20,6 @@ import {
     b2EdgeShape,
     b2Vec2,
     b2FixtureDef,
-    b2BodyDef,
     b2PolygonShape,
     b2BodyType,
     b2RandomRange,
@@ -42,8 +41,7 @@ export class CollisionProcessing extends Test {
             const sd = new b2FixtureDef();
             sd.shape = shape;
 
-            const bd = new b2BodyDef();
-            const ground = this.m_world.CreateBody(bd);
+            const ground = this.m_world.CreateBody();
             ground.CreateFixture(sd);
         }
 
@@ -65,11 +63,10 @@ export class CollisionProcessing extends Test {
         triangleShapeDef.shape = polygon;
         triangleShapeDef.density = 1.0;
 
-        const triangleBodyDef = new b2BodyDef();
-        triangleBodyDef.type = b2BodyType.b2_dynamicBody;
-        triangleBodyDef.position.Set(b2RandomRange(xLo, xHi), b2RandomRange(yLo, yHi));
-
-        const body1 = this.m_world.CreateBody(triangleBodyDef);
+        const body1 = this.m_world.CreateBody({
+            type: b2BodyType.b2_dynamicBody,
+            position: { x: b2RandomRange(xLo, xHi), y: b2RandomRange(yLo, yHi) },
+        });
         body1.CreateFixture(triangleShapeDef);
 
         // Large triangle (recycle definitions)
@@ -78,9 +75,10 @@ export class CollisionProcessing extends Test {
         vertices[2].SelfMul(2.0);
         polygon.Set(vertices, 3);
 
-        triangleBodyDef.position.Set(b2RandomRange(xLo, xHi), b2RandomRange(yLo, yHi));
-
-        const body2 = this.m_world.CreateBody(triangleBodyDef);
+        const body2 = this.m_world.CreateBody({
+            type: b2BodyType.b2_dynamicBody,
+            position: { x: b2RandomRange(xLo, xHi), y: b2RandomRange(yLo, yHi) },
+        });
         body2.CreateFixture(triangleShapeDef);
 
         // Small box
@@ -90,18 +88,19 @@ export class CollisionProcessing extends Test {
         boxShapeDef.shape = polygon;
         boxShapeDef.density = 1.0;
 
-        const boxBodyDef = new b2BodyDef();
-        boxBodyDef.type = b2BodyType.b2_dynamicBody;
-        boxBodyDef.position.Set(b2RandomRange(xLo, xHi), b2RandomRange(yLo, yHi));
-
-        const body3 = this.m_world.CreateBody(boxBodyDef);
+        const body3 = this.m_world.CreateBody({
+            type: b2BodyType.b2_dynamicBody,
+            position: { x: b2RandomRange(xLo, xHi), y: b2RandomRange(yLo, yHi) },
+        });
         body3.CreateFixture(boxShapeDef);
 
         // Large box (recycle definitions)
         polygon.SetAsBox(2.0, 1.0);
-        boxBodyDef.position.Set(b2RandomRange(xLo, xHi), b2RandomRange(yLo, yHi));
 
-        const body4 = this.m_world.CreateBody(boxBodyDef);
+        const body4 = this.m_world.CreateBody({
+            type: b2BodyType.b2_dynamicBody,
+            position: { x: b2RandomRange(xLo, xHi), y: b2RandomRange(yLo, yHi) },
+        });
         body4.CreateFixture(boxShapeDef);
 
         // Small circle
@@ -112,18 +111,19 @@ export class CollisionProcessing extends Test {
         circleShapeDef.shape = circle;
         circleShapeDef.density = 1.0;
 
-        const circleBodyDef = new b2BodyDef();
-        circleBodyDef.type = b2BodyType.b2_dynamicBody;
-        circleBodyDef.position.Set(b2RandomRange(xLo, xHi), b2RandomRange(yLo, yHi));
-
-        const body5 = this.m_world.CreateBody(circleBodyDef);
+        const body5 = this.m_world.CreateBody({
+            type: b2BodyType.b2_dynamicBody,
+            position: { x: b2RandomRange(xLo, xHi), y: b2RandomRange(yLo, yHi) },
+        });
         body5.CreateFixture(circleShapeDef);
 
         // Large circle
         circle.m_radius *= 2.0;
-        circleBodyDef.position.Set(b2RandomRange(xLo, xHi), b2RandomRange(yLo, yHi));
 
-        const body6 = this.m_world.CreateBody(circleBodyDef);
+        const body6 = this.m_world.CreateBody({
+            type: b2BodyType.b2_dynamicBody,
+            position: { x: b2RandomRange(xLo, xHi), y: b2RandomRange(yLo, yHi) },
+        });
         body6.CreateFixture(circleShapeDef);
     }
 

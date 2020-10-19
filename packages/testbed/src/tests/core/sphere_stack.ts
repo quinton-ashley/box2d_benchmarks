@@ -16,7 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import { b2Body, b2BodyDef, b2EdgeShape, b2Vec2, b2CircleShape, b2BodyType } from "@box2d/core";
+import { b2Body, b2EdgeShape, b2Vec2, b2CircleShape, b2BodyType } from "@box2d/core";
 
 import { Test } from "../../test";
 
@@ -29,8 +29,7 @@ export class SphereStack extends Test {
         super();
 
         {
-            const bd: b2BodyDef = new b2BodyDef();
-            const ground: b2Body = this.m_world.CreateBody(bd);
+            const ground: b2Body = this.m_world.CreateBody();
 
             const shape: b2EdgeShape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(-40.0, 0.0), new b2Vec2(40.0, 0.0));
@@ -42,11 +41,10 @@ export class SphereStack extends Test {
             shape.m_radius = 1.0;
 
             for (let i = 0; i < SphereStack.e_count; ++i) {
-                const bd: b2BodyDef = new b2BodyDef();
-                bd.type = b2BodyType.b2_dynamicBody;
-                bd.position.Set(0.0, 4.0 + 3.0 * i);
-
-                this.m_bodies[i] = this.m_world.CreateBody(bd);
+                this.m_bodies[i] = this.m_world.CreateBody({
+                    type: b2BodyType.b2_dynamicBody,
+                    position: { x: 0.0, y: 4.0 + 3.0 * i },
+                });
 
                 this.m_bodies[i].CreateFixture(shape, 1.0);
 

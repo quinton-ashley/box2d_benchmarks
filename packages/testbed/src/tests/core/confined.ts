@@ -16,17 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import {
-    b2BodyDef,
-    b2EdgeShape,
-    b2Vec2,
-    b2CircleShape,
-    b2FixtureDef,
-    b2BodyType,
-    b2Random,
-    b2Vec2_zero,
-    XY,
-} from "@box2d/core";
+import { b2EdgeShape, b2Vec2, b2CircleShape, b2FixtureDef, b2BodyType, b2Random, b2Vec2_zero, XY } from "@box2d/core";
 
 import { Test } from "../../test";
 import { Settings } from "../../settings";
@@ -41,8 +31,7 @@ export class Confined extends Test {
         super(b2Vec2_zero);
 
         {
-            const bd = new b2BodyDef();
-            const ground = this.m_world.CreateBody(bd);
+            const ground = this.m_world.CreateBody();
 
             const shape = new b2EdgeShape();
 
@@ -75,10 +64,10 @@ export class Confined extends Test {
 
         for (let j = 0; j < Confined.e_columnCount; ++j) {
             for (let i = 0; i < Confined.e_rowCount; ++i) {
-                const bd = new b2BodyDef();
-                bd.type = b2BodyType.b2_dynamicBody;
-                bd.position.Set(-10.0 + (2.1 * j + 1.0 + 0.01 * i) * radius, (2.0 * i + 1.0) * radius);
-                const body = this.m_world.CreateBody(bd);
+                const body = this.m_world.CreateBody({
+                    type: b2BodyType.b2_dynamicBody,
+                    position: { x: -10.0 + (2.1 * j + 1.0 + 0.01 * i) * radius, y: (2.0 * i + 1.0) * radius },
+                });
 
                 body.CreateFixture(fd);
             }
@@ -107,12 +96,14 @@ export class Confined extends Test {
         fd.density = 1.0;
         fd.friction = 0.0;
 
-        const p = new b2Vec2(b2Random(), 3.0 + b2Random());
-        const bd = new b2BodyDef();
-        bd.type = b2BodyType.b2_dynamicBody;
-        bd.position.Copy(p);
         // bd.allowSleep = false;
-        const body = this.m_world.CreateBody(bd);
+        const body = this.m_world.CreateBody({
+            type: b2BodyType.b2_dynamicBody,
+            position: {
+                x: b2Random(),
+                y: 3.0 + b2Random(),
+            },
+        });
 
         body.CreateFixture(fd);
     }

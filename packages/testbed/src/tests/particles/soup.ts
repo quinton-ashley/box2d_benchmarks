@@ -16,17 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import {
-    b2Body,
-    b2BodyDef,
-    b2PolygonShape,
-    b2Vec2,
-    b2BodyType,
-    b2CircleShape,
-    b2EdgeShape,
-    b2MassData,
-    XY,
-} from "@box2d/core";
+import { b2Body, b2PolygonShape, b2Vec2, b2BodyType, b2CircleShape, b2EdgeShape, b2MassData, XY } from "@box2d/core";
 import { b2ParticleFlag, b2ParticleGroupDef } from "@box2d/particles";
 
 import { Test } from "../../test";
@@ -40,30 +30,27 @@ export class Soup extends Test {
         // Disable the selection of wall and barrier particles for this test.
         this.InitializeParticleParameters(b2ParticleFlag.b2_wallParticle | b2ParticleFlag.b2_barrierParticle);
 
+        this.m_ground = this.m_world.CreateBody();
+
         {
-            const bd = new b2BodyDef();
-            this.m_ground = this.m_world.CreateBody(bd);
+            const shape = new b2PolygonShape();
+            const vertices = [new b2Vec2(-4, -1), new b2Vec2(4, -1), new b2Vec2(4, 0), new b2Vec2(-4, 0)];
+            shape.Set(vertices, 4);
+            this.m_ground.CreateFixture(shape, 0.0);
+        }
 
-            {
-                const shape = new b2PolygonShape();
-                const vertices = [new b2Vec2(-4, -1), new b2Vec2(4, -1), new b2Vec2(4, 0), new b2Vec2(-4, 0)];
-                shape.Set(vertices, 4);
-                this.m_ground.CreateFixture(shape, 0.0);
-            }
+        {
+            const shape = new b2PolygonShape();
+            const vertices = [new b2Vec2(-4, -0.1), new b2Vec2(-2, -0.1), new b2Vec2(-2, 2), new b2Vec2(-4, 3)];
+            shape.Set(vertices, 4);
+            this.m_ground.CreateFixture(shape, 0.0);
+        }
 
-            {
-                const shape = new b2PolygonShape();
-                const vertices = [new b2Vec2(-4, -0.1), new b2Vec2(-2, -0.1), new b2Vec2(-2, 2), new b2Vec2(-4, 3)];
-                shape.Set(vertices, 4);
-                this.m_ground.CreateFixture(shape, 0.0);
-            }
-
-            {
-                const shape = new b2PolygonShape();
-                const vertices = [new b2Vec2(2, -0.1), new b2Vec2(4, -0.1), new b2Vec2(4, 3), new b2Vec2(2, 2)];
-                shape.Set(vertices, 4);
-                this.m_ground.CreateFixture(shape, 0.0);
-            }
+        {
+            const shape = new b2PolygonShape();
+            const vertices = [new b2Vec2(2, -0.1), new b2Vec2(4, -0.1), new b2Vec2(4, 3), new b2Vec2(2, 2)];
+            shape.Set(vertices, 4);
+            this.m_ground.CreateFixture(shape, 0.0);
         }
 
         this.m_particleSystem.SetRadius(0.035 * 2); // HACK: increase particle radius
@@ -80,9 +67,9 @@ export class Soup extends Test {
         }
 
         {
-            const bd = new b2BodyDef();
-            bd.type = b2BodyType.b2_dynamicBody;
-            const body = this.m_world.CreateBody(bd);
+            const body = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+            });
             const shape = new b2CircleShape();
             shape.m_p.Set(0, 0.5);
             shape.m_radius = 0.1;
@@ -91,9 +78,9 @@ export class Soup extends Test {
         }
 
         {
-            const bd = new b2BodyDef();
-            bd.type = b2BodyType.b2_dynamicBody;
-            const body = this.m_world.CreateBody(bd);
+            const body = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+            });
             const shape = new b2PolygonShape();
             shape.SetAsBox(0.1, 0.1, new b2Vec2(-1, 0.5), 0);
             body.CreateFixture(shape, 0.1);
@@ -101,9 +88,9 @@ export class Soup extends Test {
         }
 
         {
-            const bd = new b2BodyDef();
-            bd.type = b2BodyType.b2_dynamicBody;
-            const body = this.m_world.CreateBody(bd);
+            const body = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+            });
             const shape = new b2PolygonShape();
             shape.SetAsBox(0.1, 0.1, new b2Vec2(1, 0.5), 0.5);
             body.CreateFixture(shape, 0.1);
@@ -111,9 +98,9 @@ export class Soup extends Test {
         }
 
         {
-            const bd = new b2BodyDef();
-            bd.type = b2BodyType.b2_dynamicBody;
-            const body = this.m_world.CreateBody(bd);
+            const body = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+            });
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(0, 2), new b2Vec2(0.1, 2.1));
             body.CreateFixture(shape, 1);
@@ -127,9 +114,9 @@ export class Soup extends Test {
         }
 
         {
-            const bd = new b2BodyDef();
-            bd.type = b2BodyType.b2_dynamicBody;
-            const body = this.m_world.CreateBody(bd);
+            const body = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+            });
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(0.3, 2.0), new b2Vec2(0.4, 2.1));
             body.CreateFixture(shape, 1);
@@ -143,9 +130,9 @@ export class Soup extends Test {
         }
 
         {
-            const bd = new b2BodyDef();
-            bd.type = b2BodyType.b2_dynamicBody;
-            const body = this.m_world.CreateBody(bd);
+            const body = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+            });
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(-0.3, 2.1), new b2Vec2(-0.2, 2.0));
             body.CreateFixture(shape, 1);

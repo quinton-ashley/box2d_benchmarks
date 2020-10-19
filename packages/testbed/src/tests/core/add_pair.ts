@@ -16,16 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import {
-    b2Vec2,
-    b2CircleShape,
-    b2BodyDef,
-    b2BodyType,
-    b2RandomRange,
-    b2PolygonShape,
-    b2Vec2_zero,
-    XY,
-} from "@box2d/core";
+import { b2Vec2, b2CircleShape, b2BodyType, b2RandomRange, b2PolygonShape, b2Vec2_zero, XY } from "@box2d/core";
 
 import { Test } from "../../test";
 
@@ -46,10 +37,13 @@ export class AddPair extends Test {
             const maxY = 6.0;
 
             for (let i = 0; i < 400; ++i) {
-                const bd = new b2BodyDef();
-                bd.type = b2BodyType.b2_dynamicBody;
-                bd.position.Set(b2RandomRange(minX, maxX), b2RandomRange(minY, maxY));
-                const body = this.m_world.CreateBody(bd);
+                const body = this.m_world.CreateBody({
+                    type: b2BodyType.b2_dynamicBody,
+                    position: {
+                        x: b2RandomRange(minX, maxX),
+                        y: b2RandomRange(minY, maxY),
+                    },
+                });
                 body.CreateFixture(shape, 0.01);
             }
         }
@@ -57,11 +51,14 @@ export class AddPair extends Test {
         {
             const shape = new b2PolygonShape();
             shape.SetAsBox(1.5, 1.5);
-            const bd = new b2BodyDef();
-            bd.type = b2BodyType.b2_dynamicBody;
-            bd.position.Set(-40.0, 5.0);
-            bd.bullet = true;
-            const body = this.m_world.CreateBody(bd);
+            const body = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+                position: {
+                    x: -40.0,
+                    y: 5.0,
+                },
+                bullet: true,
+            });
             body.CreateFixture(shape, 1.0);
             body.SetLinearVelocity(new b2Vec2(10.0, 0.0));
         }

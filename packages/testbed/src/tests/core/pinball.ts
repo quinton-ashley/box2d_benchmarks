@@ -19,7 +19,6 @@
 import {
     b2RevoluteJoint,
     b2Body,
-    b2BodyDef,
     b2Vec2,
     b2ChainShape,
     b2FixtureDef,
@@ -55,9 +54,7 @@ export class Pinball extends Test {
         /* b2Body */
         let ground = null;
         {
-            /* b2BodyDef */
-            const bd = new b2BodyDef();
-            ground = this.m_world.CreateBody(bd);
+            ground = this.m_world.CreateBody();
 
             /* b2Vec2 */
             const vs = b2Vec2.MakeArray(5);
@@ -83,17 +80,17 @@ export class Pinball extends Test {
             const p1 = new b2Vec2(-2.0, 0.0);
             const p2 = new b2Vec2(2.0, 0.0);
 
-            /* b2BodyDef */
-            const bd = new b2BodyDef();
-            bd.type = b2BodyType.b2_dynamicBody;
-
-            bd.position.Copy(p1);
             /* b2Body */
-            const leftFlipper = this.m_world.CreateBody(bd);
+            const leftFlipper = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+                position: p1,
+            });
 
-            bd.position.Copy(p2);
             /* b2Body */
-            const rightFlipper = this.m_world.CreateBody(bd);
+            const rightFlipper = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+                position: p2,
+            });
 
             /* b2PolygonShape */
             const box = new b2PolygonShape();
@@ -132,13 +129,11 @@ export class Pinball extends Test {
 
         // Circle character
         {
-            /* b2BodyDef */
-            const bd = new b2BodyDef();
-            bd.position.Set(1.0, 15.0);
-            bd.type = b2BodyType.b2_dynamicBody;
-            bd.bullet = true;
-
-            this.m_ball = this.m_world.CreateBody(bd);
+            this.m_ball = this.m_world.CreateBody({
+                position: { x: 1.0, y: 15.0 },
+                type: b2BodyType.b2_dynamicBody,
+                bullet: true,
+            });
 
             /* b2CircleShape */
             const shape = new b2CircleShape();

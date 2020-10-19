@@ -17,7 +17,7 @@
  */
 
 import { BlendFunc, Light, lightSettings, PointLight, RayHandler, RECOMMENDED_GAMMA_CORRECTION } from "@box2d/lights";
-import { b2Vec2, b2EdgeShape, b2FixtureDef, b2BodyDef, b2Body, b2Fixture } from "@box2d/core";
+import { b2Vec2, b2EdgeShape, b2FixtureDef, b2Body, b2Fixture } from "@box2d/core";
 
 import { g_camera } from "../../utils/camera";
 import { g_debugDraw } from "../../utils/draw";
@@ -81,7 +81,7 @@ export class DrawWorld extends Test {
         this.mouseLight.setColor(1, 0, 0, 1);
         this.setBlending("overburn");
 
-        const heartBody = this.m_world.CreateBody(new b2BodyDef());
+        const heartBody = this.m_world.CreateBody();
         const heartFixtureDef = new b2FixtureDef();
         heartFixtureDef.density = 0.0;
         heartFixtureDef.restitution = 0;
@@ -157,10 +157,10 @@ export class DrawWorld extends Test {
         super.MouseMove(p, leftDrag);
         if (leftDrag) {
             if (!this.currentEdgeBody) {
-                const bd = new b2BodyDef();
                 const dist = 1 / g_camera.getZoom();
-                bd.position.Set(-dist, dist);
-                this.currentEdgeBody = this.m_world.CreateBody(bd);
+                this.currentEdgeBody = this.m_world.CreateBody({
+                    position: { x: -dist, y: dist },
+                });
             }
             if (this.currentEdgeFixture) this.currentEdgeBody.DestroyFixture(this.currentEdgeFixture);
             const shape = new b2EdgeShape();

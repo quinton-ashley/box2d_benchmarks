@@ -18,7 +18,6 @@
 
 import {
     b2Fixture,
-    b2BodyDef,
     b2EdgeShape,
     b2Vec2,
     b2PolygonShape,
@@ -38,9 +37,8 @@ export class ConveyorBelt extends Test {
 
         // Ground
         {
-            const bd = new b2BodyDef();
             /* b2Body */
-            const ground = this.m_world.CreateBody(bd);
+            const ground = this.m_world.CreateBody();
 
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(-20.0, 0.0), new b2Vec2(20.0, 0.0));
@@ -49,10 +47,10 @@ export class ConveyorBelt extends Test {
 
         // Platform
         {
-            const bd = new b2BodyDef();
-            bd.position.Set(-5.0, 5.0);
             /* b2Body */
-            const body = this.m_world.CreateBody(bd);
+            const body = this.m_world.CreateBody({
+                position: { x: -5.0, y: 5.0 },
+            });
 
             const shape = new b2PolygonShape();
             shape.SetAsBox(10.0, 0.5);
@@ -65,11 +63,11 @@ export class ConveyorBelt extends Test {
 
         // Boxes
         for (/* int */ let i = 0; i < 5; ++i) {
-            const bd = new b2BodyDef();
-            bd.type = b2BodyType.b2_dynamicBody;
-            bd.position.Set(-10.0 + 2.0 * i, 7.0);
             /* b2Body */
-            const body = this.m_world.CreateBody(bd);
+            const body = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+                position: { x: -10.0 + 2.0 * i, y: 7.0 },
+            });
 
             const shape = new b2PolygonShape();
             shape.SetAsBox(0.5, 0.5);

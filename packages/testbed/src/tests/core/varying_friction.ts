@@ -16,7 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import { b2BodyDef, b2EdgeShape, b2Vec2, b2PolygonShape, b2FixtureDef, b2BodyType, XY } from "@box2d/core";
+import { b2EdgeShape, b2Vec2, b2PolygonShape, b2FixtureDef, b2BodyType, XY } from "@box2d/core";
 
 import { Test } from "../../test";
 
@@ -25,8 +25,7 @@ export class VaryingFriction extends Test {
         super();
 
         {
-            const bd = new b2BodyDef();
-            const ground = this.m_world.CreateBody(bd);
+            const ground = this.m_world.CreateBody();
 
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(-40.0, 0.0), new b2Vec2(40.0, 0.0));
@@ -37,11 +36,10 @@ export class VaryingFriction extends Test {
             const shape = new b2PolygonShape();
             shape.SetAsBox(13.0, 0.25);
 
-            const bd = new b2BodyDef();
-            bd.position.Set(-4.0, 22.0);
-            bd.angle = -0.25;
-
-            const ground = this.m_world.CreateBody(bd);
+            const ground = this.m_world.CreateBody({
+                position: { x: -4.0, y: 22.0 },
+                angle: -0.25,
+            });
             ground.CreateFixture(shape, 0.0);
         }
 
@@ -49,22 +47,19 @@ export class VaryingFriction extends Test {
             const shape = new b2PolygonShape();
             shape.SetAsBox(0.25, 1.0);
 
-            const bd = new b2BodyDef();
-            bd.position.Set(10.5, 19.0);
-
-            const ground = this.m_world.CreateBody(bd);
+            const ground = this.m_world.CreateBody({
+                position: { x: 10.5, y: 19.0 },
+            });
             ground.CreateFixture(shape, 0.0);
         }
 
         {
             const shape = new b2PolygonShape();
             shape.SetAsBox(13.0, 0.25);
-
-            const bd = new b2BodyDef();
-            bd.position.Set(4.0, 14.0);
-            bd.angle = 0.25;
-
-            const ground = this.m_world.CreateBody(bd);
+            const ground = this.m_world.CreateBody({
+                position: { x: 4.0, y: 14.0 },
+                angle: 0.25,
+            });
             ground.CreateFixture(shape, 0.0);
         }
 
@@ -72,22 +67,19 @@ export class VaryingFriction extends Test {
             const shape = new b2PolygonShape();
             shape.SetAsBox(0.25, 1.0);
 
-            const bd = new b2BodyDef();
-            bd.position.Set(-10.5, 11.0);
-
-            const ground = this.m_world.CreateBody(bd);
+            const ground = this.m_world.CreateBody({
+                position: { x: -10.5, y: 11.0 },
+            });
             ground.CreateFixture(shape, 0.0);
         }
 
         {
             const shape = new b2PolygonShape();
             shape.SetAsBox(13.0, 0.25);
-
-            const bd = new b2BodyDef();
-            bd.position.Set(-4.0, 6.0);
-            bd.angle = -0.25;
-
-            const ground = this.m_world.CreateBody(bd);
+            const ground = this.m_world.CreateBody({
+                position: { x: -4.0, y: 6.0 },
+                angle: -0.25,
+            });
             ground.CreateFixture(shape, 0.0);
         }
 
@@ -102,10 +94,10 @@ export class VaryingFriction extends Test {
             const friction = [0.75, 0.5, 0.35, 0.1, 0.0];
 
             for (let i = 0; i < 5; ++i) {
-                const bd = new b2BodyDef();
-                bd.type = b2BodyType.b2_dynamicBody;
-                bd.position.Set(-15.0 + 4.0 * i, 28.0);
-                const body = this.m_world.CreateBody(bd);
+                const body = this.m_world.CreateBody({
+                    type: b2BodyType.b2_dynamicBody,
+                    position: { x: -15.0 + 4.0 * i, y: 28.0 },
+                });
 
                 fd.friction = friction[i];
                 body.CreateFixture(fd);

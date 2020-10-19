@@ -107,6 +107,4 @@ export abstract class b2Shape {
     public abstract SetupDistanceProxy(proxy: b2DistanceProxy, index: number): void;
 
     public abstract ComputeSubmergedArea(normal: b2Vec2, offset: number, xf: b2Transform, c: b2Vec2): number;
-
-    public abstract Dump(log: (format: string, ...args: any[]) => void): void;
 }

@@ -16,16 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import {
-    b2BodyDef,
-    b2Vec2,
-    b2Vec2_zero,
-    b2RevoluteJointDef,
-    b2Body,
-    b2BodyType,
-    b2PolygonShape,
-    XY,
-} from "@box2d/core";
+import { b2Vec2, b2Vec2_zero, b2RevoluteJointDef, b2Body, b2BodyType, b2PolygonShape, XY } from "@box2d/core";
 
 import { Test } from "../../test";
 
@@ -36,9 +27,9 @@ export class MobileBalanced extends Test {
         super();
 
         // Create ground body.
-        const /* b2BodyDef */ bodyDef = new b2BodyDef();
-        bodyDef.position.Set(0.0, 20.0);
-        const ground = this.m_world.CreateBody(bodyDef);
+        const ground = this.m_world.CreateBody({
+            position: { x: 0, y: 20 },
+        });
 
         const /* float32 */ a = 0.5;
         const /* b2Vec2 */ h = new b2Vec2(0.0, a);
@@ -71,10 +62,10 @@ export class MobileBalanced extends Test {
         //  b2Vec2 p = parent->GetPosition() + localAnchor - h;
         const /* b2Vec2 */ p = parent.GetPosition().Clone().SelfAdd(localAnchor).SelfSub(h);
 
-        const /* b2BodyDef */ bodyDef = new b2BodyDef();
-        bodyDef.type = b2BodyType.b2_dynamicBody;
-        bodyDef.position.Copy(p);
-        const /* b2Body */ body = this.m_world.CreateBody(bodyDef);
+        const /* b2Body */ body = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+                position: p,
+            });
 
         const /* b2PolygonShape */ shape = new b2PolygonShape();
         shape.SetAsBox(0.25 * a, a);

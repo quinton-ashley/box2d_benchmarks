@@ -451,24 +451,6 @@ export class b2PulleyJoint extends b2Joint {
         return b2Vec2.DistanceVV(p, s);
     }
 
-    public Dump(log: (format: string, ...args: any[]) => void) {
-        const indexA = this.m_bodyA.m_islandIndex;
-        const indexB = this.m_bodyB.m_islandIndex;
-
-        log("  const jd: b2PulleyJointDef = new b2PulleyJointDef();\n");
-        log("  jd.bodyA = bodies[%d];\n", indexA);
-        log("  jd.bodyB = bodies[%d];\n", indexB);
-        log("  jd.collideConnected = %s;\n", this.m_collideConnected ? "true" : "false");
-        log("  jd.groundAnchorA.Set(%.15f, %.15f);\n", this.m_groundAnchorA.x, this.m_groundAnchorA.y);
-        log("  jd.groundAnchorB.Set(%.15f, %.15f);\n", this.m_groundAnchorB.x, this.m_groundAnchorB.y);
-        log("  jd.localAnchorA.Set(%.15f, %.15f);\n", this.m_localAnchorA.x, this.m_localAnchorA.y);
-        log("  jd.localAnchorB.Set(%.15f, %.15f);\n", this.m_localAnchorB.x, this.m_localAnchorB.y);
-        log("  jd.lengthA = %.15f;\n", this.m_lengthA);
-        log("  jd.lengthB = %.15f;\n", this.m_lengthB);
-        log("  jd.ratio = %.15f;\n", this.m_ratio);
-        log("  joints[%d] = this.m_world.CreateJoint(jd);\n", this.m_index);
-    }
-
     public ShiftOrigin(newOrigin: b2Vec2) {
         this.m_groundAnchorA.SelfSub(newOrigin);
         this.m_groundAnchorB.SelfSub(newOrigin);

@@ -19,7 +19,6 @@
 import {
     b2Body,
     b2Joint,
-    b2BodyDef,
     b2EdgeShape,
     b2Vec2,
     b2PolygonShape,
@@ -45,8 +44,7 @@ export class Web extends Test {
 
         let ground = null;
         {
-            const bd = new b2BodyDef();
-            ground = this.m_world.CreateBody(bd);
+            ground = this.m_world.CreateBody();
 
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(-40.0, 0.0), new b2Vec2(40.0, 0.0));
@@ -57,23 +55,28 @@ export class Web extends Test {
             const shape = new b2PolygonShape();
             shape.SetAsBox(0.5, 0.5);
 
-            const bd = new b2BodyDef();
-            bd.type = b2BodyType.b2_dynamicBody;
-
-            bd.position.Set(-5.0, 5.0);
-            const body0 = (this.m_bodies[0] = this.m_world.CreateBody(bd));
+            const body0 = (this.m_bodies[0] = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+                position: { x: -5.0, y: 5.0 },
+            }));
             body0.CreateFixture(shape, 5.0);
 
-            bd.position.Set(5.0, 5.0);
-            const body1 = (this.m_bodies[1] = this.m_world.CreateBody(bd));
+            const body1 = (this.m_bodies[1] = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+                position: { x: 5.0, y: 5.0 },
+            }));
             body1.CreateFixture(shape, 5.0);
 
-            bd.position.Set(5.0, 15.0);
-            const body2 = (this.m_bodies[2] = this.m_world.CreateBody(bd));
+            const body2 = (this.m_bodies[2] = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+                position: { x: 5.0, y: 15.0 },
+            }));
             body2.CreateFixture(shape, 5.0);
 
-            bd.position.Set(-5.0, 15.0);
-            const body3 = (this.m_bodies[3] = this.m_world.CreateBody(bd));
+            const body3 = (this.m_bodies[3] = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+                position: { x: -5.0, y: 15.0 },
+            }));
             body3.CreateFixture(shape, 5.0);
 
             const jd = new b2DistanceJointDef();

@@ -282,10 +282,6 @@ export class b2MouseJoint extends b2Joint {
         return 0;
     }
 
-    public Dump(log: (format: string, ...args: any[]) => void) {
-        log("Mouse joint dumping is not supported.\n");
-    }
-
     public ShiftOrigin(newOrigin: b2Vec2) {
         this.m_targetA.SelfSub(newOrigin);
     }

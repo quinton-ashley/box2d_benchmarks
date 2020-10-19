@@ -17,7 +17,6 @@
  */
 
 import {
-    b2BodyDef,
     b2EdgeShape,
     b2Vec2,
     b2CircleShape,
@@ -36,8 +35,7 @@ export class CompoundShapes extends Test {
         super();
 
         {
-            const bd = new b2BodyDef();
-            const body = this.m_world.CreateBody(bd);
+            const body = this.m_world.CreateBody();
 
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(50.0, 0.0), new b2Vec2(-50.0, 0.0));
@@ -56,11 +54,14 @@ export class CompoundShapes extends Test {
 
             for (let i = 0; i < 10; ++i) {
                 const x = b2RandomRange(-0.1, 0.1);
-                const bd = new b2BodyDef();
-                bd.type = b2BodyType.b2_dynamicBody;
-                bd.position.Set(x + 5.0, 1.05 + 2.5 * i);
-                bd.angle = b2RandomRange(-Math.PI, Math.PI);
-                const body = this.m_world.CreateBody(bd);
+                const body = this.m_world.CreateBody({
+                    type: b2BodyType.b2_dynamicBody,
+                    angle: b2RandomRange(-Math.PI, Math.PI),
+                    position: {
+                        x: x + 5.0,
+                        y: 1.05 + 2.5 * i,
+                    },
+                });
                 body.CreateFixture(circle1, 2.0);
                 body.CreateFixture(circle2, 0.0);
             }
@@ -75,11 +76,11 @@ export class CompoundShapes extends Test {
 
             for (let i = 0; i < 10; ++i) {
                 const x = b2RandomRange(-0.1, 0.1);
-                const bd = new b2BodyDef();
-                bd.type = b2BodyType.b2_dynamicBody;
-                bd.position.Set(x - 5.0, 1.05 + 2.5 * i);
-                bd.angle = b2RandomRange(-Math.PI, Math.PI);
-                const body = this.m_world.CreateBody(bd);
+                const body = this.m_world.CreateBody({
+                    type: b2BodyType.b2_dynamicBody,
+                    angle: b2RandomRange(-Math.PI, Math.PI),
+                    position: { x: x - 5.0, y: 1.05 + 2.5 * i },
+                });
                 body.CreateFixture(polygon1, 2.0);
                 body.CreateFixture(polygon2, 2.0);
             }
@@ -109,12 +110,11 @@ export class CompoundShapes extends Test {
             triangle2.Set(vertices, 3);
 
             for (let i = 0; i < 10; ++i) {
-                const x = b2RandomRange(-0.1, 0.1);
-                const bd = new b2BodyDef();
-                bd.type = b2BodyType.b2_dynamicBody;
-                bd.position.Set(x, 2.05 + 2.5 * i);
-                bd.angle = 0;
-                const body = this.m_world.CreateBody(bd);
+                const body = this.m_world.CreateBody({
+                    type: b2BodyType.b2_dynamicBody,
+                    position: { x: b2RandomRange(-0.1, 0.1), y: 2.05 + 2.5 * i },
+                    angle: 0,
+                });
                 body.CreateFixture(triangle1, 2.0);
                 body.CreateFixture(triangle2, 2.0);
             }
@@ -130,10 +130,10 @@ export class CompoundShapes extends Test {
             const right = new b2PolygonShape();
             right.SetAsBox(0.15, 2.7, new b2Vec2(1.45, 2.35), -0.2);
 
-            const bd = new b2BodyDef();
-            bd.type = b2BodyType.b2_dynamicBody;
-            bd.position.Set(0.0, 2.0);
-            const body = this.m_world.CreateBody(bd);
+            const body = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+                position: { x: 0.0, y: 2.0 },
+            });
             body.CreateFixture(bottom, 4.0);
             body.CreateFixture(left, 4.0);
             body.CreateFixture(right, 4.0);

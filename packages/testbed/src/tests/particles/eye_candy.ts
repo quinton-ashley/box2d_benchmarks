@@ -1,12 +1,4 @@
-import {
-    b2Body,
-    b2RevoluteJoint,
-    b2BodyDef,
-    b2BodyType,
-    b2PolygonShape,
-    b2Vec2,
-    b2RevoluteJointDef,
-} from "@box2d/core";
+import { b2Body, b2RevoluteJoint, b2BodyType, b2PolygonShape, b2Vec2, b2RevoluteJointDef } from "@box2d/core";
 import { b2ParticleGroupDef, b2ParticleFlag } from "@box2d/particles";
 
 import { Test } from "../../test";
@@ -25,14 +17,12 @@ export class EyeCandy extends Test {
         this.m_particleSystem.SetGravityScale(0.4);
         this.m_particleSystem.SetDensity(1.2);
 
-        const bdg = new b2BodyDef();
-        const ground = this.m_world.CreateBody(bdg);
+        const ground = this.m_world.CreateBody();
 
-        const bd = new b2BodyDef();
-        bd.type = b2BodyType.b2_staticBody; // b2BodyType.b2_dynamicBody;
-        bd.allowSleep = false;
-        bd.position.Set(0.0, 0.0);
-        const body = this.m_world.CreateBody(bd);
+        const body = this.m_world.CreateBody({
+            type: b2BodyType.b2_staticBody, // b2BodyType.b2_dynamicBody
+            allowSleep: false,
+        });
 
         const shape = new b2PolygonShape();
         shape.SetAsBox(0.5, 10.0, new b2Vec2(20.0, 0.0), 0.0);
@@ -44,9 +34,9 @@ export class EyeCandy extends Test {
         shape.SetAsBox(0.5, 20.0, new b2Vec2(0.0, -10.0), Math.PI / 2.0);
         body.CreateFixture(shape, 5.0);
 
-        bd.type = b2BodyType.b2_dynamicBody;
-        bd.position.Set(0.0, 0.0);
-        this.m_mover = this.m_world.CreateBody(bd);
+        this.m_mover = this.m_world.CreateBody({
+            type: b2BodyType.b2_dynamicBody,
+        });
         shape.SetAsBox(1.0, 5.0, new b2Vec2(0.0, 2.0), 0.0);
         this.m_mover.CreateFixture(shape, 5.0);
 

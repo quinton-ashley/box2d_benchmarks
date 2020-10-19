@@ -21,7 +21,6 @@ import {
     b2Vec2,
     b2CircleShape,
     RGBA,
-    b2BodyDef,
     b2BodyType,
     b2Contact,
     b2WorldManifold,
@@ -192,9 +191,9 @@ export class Sparky extends Test {
 
         // Create a list of circles that will spark.
         for (let i = 0; i < Sparky.c_maxCircles; i++) {
-            const bd = new b2BodyDef();
-            bd.type = b2BodyType.b2_dynamicBody;
-            const body = this.m_world.CreateBody(bd);
+            const body = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+            });
             const shape = new b2CircleShape();
             shape.m_p.Set(3.0 * RandomFloat(), Sparky.SHAPE_HEIGHT_OFFSET + Sparky.SHAPE_OFFSET * i);
             shape.m_radius = 2;
@@ -287,8 +286,7 @@ export class Sparky extends Test {
 
     public CreateWalls() {
         // Create the walls of the world.
-        const bd = new b2BodyDef();
-        const ground = this.m_world.CreateBody(bd);
+        const ground = this.m_world.CreateBody();
 
         {
             const shape = new b2PolygonShape();

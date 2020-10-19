@@ -16,7 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import { b2PolygonShape, b2Transform, b2BodyDef, b2Vec2, XY } from "@box2d/core";
+import { b2PolygonShape, b2Transform, b2Vec2, XY } from "@box2d/core";
 import { b2ParticleFlag, b2ParticleDef } from "@box2d/particles";
 
 import { Test } from "../../test";
@@ -36,8 +36,7 @@ export class Pointy extends Test {
         super();
 
         {
-            const bd = new b2BodyDef();
-            const ground = this.m_world.CreateBody(bd);
+            const ground = this.m_world.CreateBody();
 
             // Construct a triangle out of many polygons to ensure there's no
             // issue with particles falling directly on an ambiguous corner

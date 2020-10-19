@@ -17,7 +17,6 @@
  */
 
 import {
-    b2BodyDef,
     b2EdgeShape,
     b2Vec2,
     b2AreaJointDef,
@@ -34,7 +33,7 @@ export class BlobTest extends Test {
     constructor() {
         super();
 
-        const ground = this.m_world.CreateBody(new b2BodyDef());
+        const ground = this.m_world.CreateBody();
 
         {
             const shape = new b2EdgeShape();
@@ -57,15 +56,13 @@ export class BlobTest extends Test {
             const bodyRadius = 0.5;
             for (let i = 0; i < nBodies; ++i) {
                 const angle = (i * 2.0 * Math.PI) / nBodies;
-                const bd = new b2BodyDef();
-                // bd.isBullet = true;
-                bd.fixedRotation = true;
 
-                const x = cx + rx * Math.cos(angle);
-                const y = cy + ry * Math.sin(angle);
-                bd.position.Set(x, y);
-                bd.type = b2BodyType.b2_dynamicBody;
-                const body = this.m_world.CreateBody(bd);
+                const body = this.m_world.CreateBody({
+                    type: b2BodyType.b2_dynamicBody,
+                    // isBullet: true,
+                    fixedRotation: true,
+                    position: { x: cx + rx * Math.cos(angle), y: cy + ry * Math.sin(angle) },
+                });
 
                 const fd = new b2FixtureDef();
                 fd.shape = new b2CircleShape(bodyRadius);

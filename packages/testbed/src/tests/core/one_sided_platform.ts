@@ -18,7 +18,6 @@
 
 import {
     b2Fixture,
-    b2BodyDef,
     b2EdgeShape,
     b2Vec2,
     b2PolygonShape,
@@ -56,8 +55,7 @@ export class OneSidedPlatform extends Test {
 
         // Ground
         {
-            const bd = new b2BodyDef();
-            const ground = this.m_world.CreateBody(bd);
+            const ground = this.m_world.CreateBody();
 
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(-40.0, 0.0), new b2Vec2(40.0, 0.0));
@@ -66,9 +64,9 @@ export class OneSidedPlatform extends Test {
 
         // Platform
         {
-            const bd = new b2BodyDef();
-            bd.position.Set(0.0, 10.0);
-            const body = this.m_world.CreateBody(bd);
+            const body = this.m_world.CreateBody({
+                position: { x: 0.0, y: 10.0 },
+            });
 
             const shape = new b2PolygonShape();
             shape.SetAsBox(3.0, 0.5);
@@ -80,10 +78,10 @@ export class OneSidedPlatform extends Test {
 
         // Actor
         {
-            const bd = new b2BodyDef();
-            bd.type = b2BodyType.b2_dynamicBody;
-            bd.position.Set(0.0, 12.0);
-            const body = this.m_world.CreateBody(bd);
+            const body = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+                position: { x: 0.0, y: 12.0 },
+            });
 
             this.m_radius = 0.5;
             const shape = new b2CircleShape();

@@ -16,7 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import { b2RevoluteJoint, b2BodyDef, b2BodyType, b2PolygonShape, b2Vec2, b2RevoluteJointDef, XY } from "@box2d/core";
+import { b2RevoluteJoint, b2BodyType, b2PolygonShape, b2Vec2, b2RevoluteJointDef, XY } from "@box2d/core";
 
 import { Test } from "../../test";
 import { Settings } from "../../settings";
@@ -31,14 +31,14 @@ export class Tumbler extends Test {
     constructor() {
         super();
 
-        const ground = this.m_world.CreateBody(new b2BodyDef());
+        const ground = this.m_world.CreateBody();
 
         {
-            const bd = new b2BodyDef();
-            bd.type = b2BodyType.b2_dynamicBody;
-            bd.allowSleep = false;
-            bd.position.Set(0.0, 10.0);
-            const body = this.m_world.CreateBody(bd);
+            const body = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+                allowSleep: false,
+                position: { x: 0.0, y: 10.0 },
+            });
 
             const shape = new b2PolygonShape();
             shape.SetAsBox(0.5, 10.0, new b2Vec2(10.0, 0.0), 0.0);
@@ -76,10 +76,10 @@ export class Tumbler extends Test {
         super.Step(settings, timeStep);
 
         if (this.m_count < Tumbler.e_count) {
-            const bd = new b2BodyDef();
-            bd.type = b2BodyType.b2_dynamicBody;
-            bd.position.Set(0.0, 10.0);
-            const body = this.m_world.CreateBody(bd);
+            const body = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+                position: { x: 0.0, y: 10.0 },
+            });
 
             const shape = new b2PolygonShape();
             shape.SetAsBox(0.125, 0.125);

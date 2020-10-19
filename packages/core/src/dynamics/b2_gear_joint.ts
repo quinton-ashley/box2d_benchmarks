@@ -603,21 +603,4 @@ export class b2GearJoint extends b2Joint {
         // DEBUG: b2Assert(Number.isFinite(ratio));
         this.m_ratio = ratio;
     }
-
-    public Dump(log: (format: string, ...args: any[]) => void) {
-        const indexA = this.m_bodyA.m_islandIndex;
-        const indexB = this.m_bodyB.m_islandIndex;
-
-        const index1 = this.m_joint1.m_index;
-        const index2 = this.m_joint2.m_index;
-
-        log("  const jd: b2GearJointDef = new b2GearJointDef();\n");
-        log("  jd.bodyA = bodies[%d];\n", indexA);
-        log("  jd.bodyB = bodies[%d];\n", indexB);
-        log("  jd.collideConnected = %s;\n", this.m_collideConnected ? "true" : "false");
-        log("  jd.joint1 = joints[%d];\n", index1);
-        log("  jd.joint2 = joints[%d];\n", index2);
-        log("  jd.ratio = %.15f;\n", this.m_ratio);
-        log("  joints[%d] = this.m_world.CreateJoint(jd);\n", this.m_index);
-    }
 }

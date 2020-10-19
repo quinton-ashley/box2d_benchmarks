@@ -19,7 +19,6 @@
 import {
     b2RevoluteJoint,
     b2PrismaticJoint,
-    b2BodyDef,
     b2EdgeShape,
     b2Vec2,
     b2PolygonShape,
@@ -44,8 +43,7 @@ export class SliderCrank extends Test {
 
         let ground = null;
         {
-            const bd = new b2BodyDef();
-            ground = this.m_world.CreateBody(bd);
+            ground = this.m_world.CreateBody();
 
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(-40.0, 0.0), new b2Vec2(40.0, 0.0));
@@ -60,10 +58,10 @@ export class SliderCrank extends Test {
                 const shape = new b2PolygonShape();
                 shape.SetAsBox(0.5, 2.0);
 
-                const bd = new b2BodyDef();
-                bd.type = b2BodyType.b2_dynamicBody;
-                bd.position.Set(0.0, 7.0);
-                const body = this.m_world.CreateBody(bd);
+                const body = this.m_world.CreateBody({
+                    type: b2BodyType.b2_dynamicBody,
+                    position: { x: 0.0, y: 7.0 },
+                });
                 body.CreateFixture(shape, 2.0);
 
                 const rjd = new b2RevoluteJointDef();
@@ -81,10 +79,10 @@ export class SliderCrank extends Test {
                 const shape = new b2PolygonShape();
                 shape.SetAsBox(0.5, 4.0);
 
-                const bd = new b2BodyDef();
-                bd.type = b2BodyType.b2_dynamicBody;
-                bd.position.Set(0.0, 13.0);
-                const body = this.m_world.CreateBody(bd);
+                const body = this.m_world.CreateBody({
+                    type: b2BodyType.b2_dynamicBody,
+                    position: { x: 0.0, y: 13.0 },
+                });
                 body.CreateFixture(shape, 2.0);
 
                 const rjd = new b2RevoluteJointDef();
@@ -100,11 +98,11 @@ export class SliderCrank extends Test {
                 const shape = new b2PolygonShape();
                 shape.SetAsBox(1.5, 1.5);
 
-                const bd = new b2BodyDef();
-                bd.type = b2BodyType.b2_dynamicBody;
-                bd.fixedRotation = true;
-                bd.position.Set(0.0, 17.0);
-                const body = this.m_world.CreateBody(bd);
+                const body = this.m_world.CreateBody({
+                    type: b2BodyType.b2_dynamicBody,
+                    fixedRotation: true,
+                    position: { x: 0.0, y: 17.0 },
+                });
                 body.CreateFixture(shape, 2.0);
 
                 const rjd = new b2RevoluteJointDef();
@@ -125,10 +123,10 @@ export class SliderCrank extends Test {
                 const shape = new b2PolygonShape();
                 shape.SetAsBox(1.5, 1.5);
 
-                const bd = new b2BodyDef();
-                bd.type = b2BodyType.b2_dynamicBody;
-                bd.position.Set(0.0, 23.0);
-                const body = this.m_world.CreateBody(bd);
+                const body = this.m_world.CreateBody({
+                    type: b2BodyType.b2_dynamicBody,
+                    position: { x: 0.0, y: 23.0 },
+                });
                 body.CreateFixture(shape, 2.0);
             }
         }

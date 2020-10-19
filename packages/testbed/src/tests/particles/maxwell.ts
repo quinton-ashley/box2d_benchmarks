@@ -16,17 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import {
-    b2Body,
-    b2Vec2,
-    b2BodyDef,
-    b2ChainShape,
-    b2FixtureDef,
-    b2PolygonShape,
-    b2Clamp,
-    b2Vec2_zero,
-    XY,
-} from "@box2d/core";
+import { b2Body, b2Vec2, b2ChainShape, b2FixtureDef, b2PolygonShape, b2Clamp, b2Vec2_zero, XY } from "@box2d/core";
 import { b2ParticleGroup, b2ParticleGroupDef, b2ParticleFlag } from "@box2d/particles";
 
 import { Test, RandomFloat } from "../../test";
@@ -89,8 +79,7 @@ export class Maxwell extends Test {
 
         // Create the container.
         {
-            const bd = new b2BodyDef();
-            const ground = this.m_world.CreateBody(bd);
+            const ground = this.m_world.CreateBody();
             const shape = new b2ChainShape();
             const vertices = [
                 new b2Vec2(-Maxwell.k_containerHalfWidth, 0),
@@ -127,8 +116,7 @@ export class Maxwell extends Test {
      */
     public EnableBarrier() {
         if (!this.m_barrierBody) {
-            const bd = new b2BodyDef();
-            this.m_barrierBody = this.m_world.CreateBody(bd);
+            this.m_barrierBody = this.m_world.CreateBody();
             const barrierShape = new b2PolygonShape();
             barrierShape.SetAsBox(
                 Maxwell.k_containerHalfWidth,

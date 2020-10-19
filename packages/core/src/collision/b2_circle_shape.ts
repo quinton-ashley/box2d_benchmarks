@@ -166,10 +166,4 @@ export class b2CircleShape extends b2Shape {
 
         return area;
     }
-
-    public Dump(log: (format: string, ...args: any[]) => void): void {
-        log("    const shape: b2CircleShape = new b2CircleShape();\n");
-        log("    shape.m_radius = %.15f;\n", this.m_radius);
-        log("    shape.m_p.Set(%.15f, %.15f);\n", this.m_p.x, this.m_p.y);
-    }
 }

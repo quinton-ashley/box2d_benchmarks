@@ -16,7 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import { b2BodyDef, b2PolygonShape, b2Vec2, b2CircleShape, b2BodyType, XY } from "@box2d/core";
+import { b2PolygonShape, b2Vec2, b2CircleShape, b2BodyType, XY } from "@box2d/core";
 import { b2ParticleGroupDef, b2ParticleFlag, b2ParticleGroupFlag } from "@box2d/particles";
 
 import { Test } from "../../test";
@@ -25,8 +25,7 @@ export class ElasticParticles extends Test {
     constructor() {
         super();
         {
-            const bd = new b2BodyDef();
-            const ground = this.m_world.CreateBody(bd);
+            const ground = this.m_world.CreateBody();
 
             {
                 const shape = new b2PolygonShape();
@@ -91,9 +90,9 @@ export class ElasticParticles extends Test {
         }
 
         {
-            const bd = new b2BodyDef();
-            bd.type = b2BodyType.b2_dynamicBody;
-            const body = this.m_world.CreateBody(bd);
+            const body = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+            });
             const shape = new b2CircleShape();
             shape.m_p.Set(0, 8);
             shape.m_radius = 0.5;

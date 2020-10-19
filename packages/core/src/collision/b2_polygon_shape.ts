@@ -559,15 +559,6 @@ export class b2PolygonShape extends b2Shape {
         return area;
     }
 
-    public Dump(log: (format: string, ...args: any[]) => void): void {
-        log("    const shape: b2PolygonShape = new b2PolygonShape();\n");
-        log("    const vs: b2Vec2[] = [];\n");
-        for (let i = 0; i < this.m_count; ++i) {
-            log("    vs[%d] = new b2Vec2(%.15f, %.15f);\n", i, this.m_vertices[i].x, this.m_vertices[i].y);
-        }
-        log("    shape.Set(vs, %d);\n", this.m_count);
-    }
-
     private static ComputeCentroid_s_s = new b2Vec2();
 
     private static ComputeCentroid_s_p1 = new b2Vec2();

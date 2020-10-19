@@ -20,7 +20,6 @@ import {
     b2RevoluteJoint,
     b2PrismaticJoint,
     b2GearJoint,
-    b2BodyDef,
     b2EdgeShape,
     b2Vec2,
     b2CircleShape,
@@ -49,8 +48,7 @@ export class Gears extends Test {
 
         let ground = null;
         {
-            const bd = new b2BodyDef();
-            ground = this.m_world.CreateBody(bd);
+            ground = this.m_world.CreateBody();
 
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(-50.0, 0.0), new b2Vec2(50.0, 0.0));
@@ -67,30 +65,35 @@ export class Gears extends Test {
             const circle2 = new b2CircleShape();
             circle2.m_radius = 2.0;
 
-            const bd1 = new b2BodyDef();
-            bd1.type = b2BodyType.b2_staticBody;
-            bd1.position.Set(10.0, 9.0);
-            const body1 = this.m_world.CreateBody(bd1);
+            const bdPosition1 = {
+                x: 10.0,
+                y: 9.0,
+            };
+            const body1 = this.m_world.CreateBody({
+                type: b2BodyType.b2_staticBody,
+                position: bdPosition1,
+            });
             body1.CreateFixture(circle1, 5.0);
 
-            const bd2 = new b2BodyDef();
-            bd2.type = b2BodyType.b2_dynamicBody;
-            bd2.position.Set(10.0, 8.0);
-            const body2 = this.m_world.CreateBody(bd2);
+            const body2 = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+                position: { x: 10.0, y: 8.0 },
+            });
             body2.CreateFixture(box, 5.0);
 
-            const bd3 = new b2BodyDef();
-            bd3.type = b2BodyType.b2_dynamicBody;
-            bd3.position.Set(10.0, 6.0);
-            const body3 = this.m_world.CreateBody(bd3);
+            const bdPosition3 = { x: 10.0, y: 6.0 };
+            const body3 = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+                position: bdPosition3,
+            });
             body3.CreateFixture(circle2, 5.0);
 
             const jd1 = new b2RevoluteJointDef();
-            jd1.Initialize(body2, body1, bd1.position);
+            jd1.Initialize(body2, body1, bdPosition1);
             const joint1: b2RevoluteJoint = this.m_world.CreateJoint(jd1);
 
             const jd2 = new b2RevoluteJointDef();
-            jd2.Initialize(body2, body3, bd3.position);
+            jd2.Initialize(body2, body3, bdPosition3);
             const joint2: b2RevoluteJoint = this.m_world.CreateJoint(jd2);
 
             const jd4 = new b2GearJointDef();
@@ -112,38 +115,41 @@ export class Gears extends Test {
             const box = new b2PolygonShape();
             box.SetAsBox(0.5, 5.0);
 
-            const bd1 = new b2BodyDef();
-            bd1.type = b2BodyType.b2_dynamicBody;
-            bd1.position.Set(-3.0, 12.0);
-            const body1 = this.m_world.CreateBody(bd1);
+            const bdPosition1 = { x: -3.0, y: 12.0 };
+            const body1 = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+                position: bdPosition1,
+            });
             body1.CreateFixture(circle1, 5.0);
 
             const jd1 = new b2RevoluteJointDef();
             jd1.bodyA = ground;
             jd1.bodyB = body1;
-            ground.GetLocalPoint(bd1.position, jd1.localAnchorA);
-            body1.GetLocalPoint(bd1.position, jd1.localAnchorB);
+            ground.GetLocalPoint(bdPosition1, jd1.localAnchorA);
+            body1.GetLocalPoint(bdPosition1, jd1.localAnchorB);
             jd1.referenceAngle = body1.GetAngle() - ground.GetAngle();
             this.m_joint1 = this.m_world.CreateJoint(jd1);
 
-            const bd2 = new b2BodyDef();
-            bd2.type = b2BodyType.b2_dynamicBody;
-            bd2.position.Set(0.0, 12.0);
-            const body2 = this.m_world.CreateBody(bd2);
+            const bdPosition2 = { x: 0.0, y: 12.0 };
+            const body2 = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+                position: bdPosition2,
+            });
             body2.CreateFixture(circle2, 5.0);
 
             const jd2 = new b2RevoluteJointDef();
-            jd2.Initialize(ground, body2, bd2.position);
+            jd2.Initialize(ground, body2, bdPosition2);
             this.m_joint2 = this.m_world.CreateJoint(jd2);
 
-            const bd3 = new b2BodyDef();
-            bd3.type = b2BodyType.b2_dynamicBody;
-            bd3.position.Set(2.5, 12.0);
-            const body3 = this.m_world.CreateBody(bd3);
+            const bdPosition3 = { x: 2.5, y: 12.0 };
+            const body3 = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+                position: bdPosition3,
+            });
             body3.CreateFixture(box, 5.0);
 
             const jd3 = new b2PrismaticJointDef();
-            jd3.Initialize(ground, body3, bd3.position, new b2Vec2(0.0, 1.0));
+            jd3.Initialize(ground, body3, bdPosition3, new b2Vec2(0.0, 1.0));
             jd3.lowerTranslation = -5.0;
             jd3.upperTranslation = 5.0;
             jd3.enableLimit = true;

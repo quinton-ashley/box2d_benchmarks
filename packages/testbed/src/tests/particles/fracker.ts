@@ -20,7 +20,6 @@ import {
     b2DestructionListener,
     b2Color,
     b2Body,
-    b2BodyDef,
     b2BodyType,
     b2PolygonShape,
     b2Vec2,
@@ -443,9 +442,9 @@ export class Fracker extends Test {
      * Create the player.
      */
     public CreatePlayer(): void {
-        const bd = new b2BodyDef();
-        bd.type = b2BodyType.b2_kinematicBody;
-        this.m_player = this.m_world.CreateBody(bd);
+        this.m_player = this.m_world.CreateBody({
+            type: b2BodyType.b2_kinematicBody,
+        });
         const shape = new b2PolygonShape();
         shape.SetAsBox(
             FrackerSettings.k_tileHalfWidth,
@@ -498,8 +497,7 @@ export class Fracker extends Test {
      * Create the boundary of the world.
      */
     public CreateGround(): void {
-        const bd = new b2BodyDef();
-        const ground = this.m_world.CreateBody(bd);
+        const ground = this.m_world.CreateBody();
         const shape = new b2ChainShape();
         const bottomLeft = new b2Vec2();
         const topRight = new b2Vec2();
@@ -519,8 +517,7 @@ export class Fracker extends Test {
      */
     public CreateDirtBlock(x: number, y: number): void {
         const position = Fracker.TileToWorld(x, y);
-        const bd = new b2BodyDef();
-        const body = this.m_world.CreateBody(bd);
+        const body = this.m_world.CreateBody();
         const shape = new b2PolygonShape();
         shape.SetAsBox(
             FrackerSettings.k_tileHalfWidth,

@@ -24,7 +24,6 @@ import {
     b2PolygonShape,
     b2CircleShape,
     b2EdgeShape,
-    b2BodyDef,
     b2RandomRange,
     b2FixtureDef,
     b2Color,
@@ -169,8 +168,7 @@ export class RayCast extends Test {
 
         // Ground body
         {
-            const bd = new b2BodyDef();
-            const ground = this.m_world.CreateBody(bd);
+            const ground = this.m_world.CreateBody();
 
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(-40.0, 0.0), new b2Vec2(40.0, 0.0));
@@ -238,21 +236,12 @@ export class RayCast extends Test {
             this.m_bodies[this.m_bodyIndex] = null;
         }
 
-        const bd: b2BodyDef = new b2BodyDef();
-
-        const x: number = b2RandomRange(-10.0, 10.0);
-        const y: number = b2RandomRange(0.0, 20.0);
-        bd.position.Set(x, y);
-        bd.angle = b2RandomRange(-Math.PI, Math.PI);
-
-        bd.userData = {};
-        bd.userData.index = index;
-
-        if (index === 4) {
-            bd.angularDamping = 0.02;
-        }
-
-        const new_body = (this.m_bodies[this.m_bodyIndex] = this.m_world.CreateBody(bd));
+        const new_body = (this.m_bodies[this.m_bodyIndex] = this.m_world.CreateBody({
+            position: { x: b2RandomRange(-10.0, 10.0), y: b2RandomRange(0.0, 20.0) },
+            angle: b2RandomRange(-Math.PI, Math.PI),
+            userData: { index },
+            angularDamping: index === 4 ? 0.02 : 0,
+        }));
 
         if (index < 4) {
             const fd: b2FixtureDef = new b2FixtureDef();

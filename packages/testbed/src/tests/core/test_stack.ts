@@ -34,8 +34,7 @@ export class TestStack extends Test {
         super();
 
         {
-            const bd = new b2BodyDef();
-            const ground = this.m_world.CreateBody(bd);
+            const ground = this.m_world.CreateBody();
 
             const shape = new b2ChainShape();
             shape.CreateLoop([
@@ -48,10 +47,13 @@ export class TestStack extends Test {
         }
 
         // Add bodies
-        const bd = new b2BodyDef();
+        const position = new b2Vec2();
+        const bd: b2BodyDef = {
+            type: b2BodyType.b2_dynamicBody,
+            position,
+            // isBullet: true,
+        };
         const fd = new b2FixtureDef();
-        bd.type = b2BodyType.b2_dynamicBody;
-        // bd.isBullet = true;
         const polygon = new b2PolygonShape();
         fd.shape = polygon;
         fd.density = 1.0;
@@ -60,20 +62,20 @@ export class TestStack extends Test {
         polygon.SetAsBox(1.0, 1.0);
         // Create 3 stacks
         for (let i = 0; i < 10; ++i) {
-            bd.position.Set(0.0 + Math.random() * 0.2 - 0.1, 30.0 - i * 2.5);
+            position.Set(0.0 + Math.random() * 0.2 - 0.1, 30.0 - i * 2.5);
             this.m_world.CreateBody(bd).CreateFixture(fd);
         }
         for (let i = 0; i < 10; ++i) {
-            bd.position.Set(10.0 + Math.random() * 0.2 - 0.1, 30.0 - i * 2.5);
+            position.Set(10.0 + Math.random() * 0.2 - 0.1, 30.0 - i * 2.5);
             this.m_world.CreateBody(bd).CreateFixture(fd);
         }
         for (let i = 0; i < 10; ++i) {
-            bd.position.Set(20.0 + Math.random() * 0.2 - 0.1, 30.0 - i * 2.5);
+            position.Set(20.0 + Math.random() * 0.2 - 0.1, 30.0 - i * 2.5);
             this.m_world.CreateBody(bd).CreateFixture(fd);
         }
         // Create ramp
         bd.type = b2BodyType.b2_staticBody;
-        bd.position.Set(0.0, 0.0);
+        position.Set(0.0, 0.0);
         const vxs = [new b2Vec2(-30.0, 0.0), new b2Vec2(-10.0, 0.0), new b2Vec2(-30.0, 10.0)];
         polygon.Set(vxs, vxs.length);
         fd.density = 0;
@@ -81,7 +83,7 @@ export class TestStack extends Test {
 
         // Create ball
         bd.type = b2BodyType.b2_dynamicBody;
-        bd.position.Set(-25.0, 20.0);
+        position.Set(-25.0, 20.0);
         fd.shape = new b2CircleShape(4.0);
         fd.density = 2;
         fd.restitution = 0.2;

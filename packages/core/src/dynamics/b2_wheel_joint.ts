@@ -893,23 +893,4 @@ export class b2WheelJoint extends b2Joint {
             this.m_upperImpulse = 0.0;
         }
     }
-
-    public Dump(log: (format: string, ...args: any[]) => void): void {
-        const indexA = this.m_bodyA.m_islandIndex;
-        const indexB = this.m_bodyB.m_islandIndex;
-
-        log("  const jd: b2WheelJointDef = new b2WheelJointDef();\n");
-        log("  jd.bodyA = bodies[%d];\n", indexA);
-        log("  jd.bodyB = bodies[%d];\n", indexB);
-        log("  jd.collideConnected = %s;\n", this.m_collideConnected ? "true" : "false");
-        log("  jd.localAnchorA.Set(%.15f, %.15f);\n", this.m_localAnchorA.x, this.m_localAnchorA.y);
-        log("  jd.localAnchorB.Set(%.15f, %.15f);\n", this.m_localAnchorB.x, this.m_localAnchorB.y);
-        log("  jd.localAxisA.Set(%.15f, %.15f);\n", this.m_localXAxisA.x, this.m_localXAxisA.y);
-        log("  jd.enableMotor = %s;\n", this.m_enableMotor ? "true" : "false");
-        log("  jd.motorSpeed = %.15f;\n", this.m_motorSpeed);
-        log("  jd.maxMotorTorque = %.15f;\n", this.m_maxMotorTorque);
-        log("  jd.stiffness = %.15f;\n", this.m_stiffness);
-        log("  jd.damping = %.15f;\n", this.m_damping);
-        log("  joints[%d] = this.m_world.CreateJoint(jd);\n", this.m_index);
-    }
 }

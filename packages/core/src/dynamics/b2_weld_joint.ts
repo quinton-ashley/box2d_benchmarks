@@ -463,20 +463,4 @@ export class b2WeldJoint extends b2Joint {
     public GetDamping() {
         return this.m_damping;
     }
-
-    public Dump(log: (format: string, ...args: any[]) => void) {
-        const indexA = this.m_bodyA.m_islandIndex;
-        const indexB = this.m_bodyB.m_islandIndex;
-
-        log("  const jd: b2WeldJointDef = new b2WeldJointDef();\n");
-        log("  jd.bodyA = bodies[%d];\n", indexA);
-        log("  jd.bodyB = bodies[%d];\n", indexB);
-        log("  jd.collideConnected = %s;\n", this.m_collideConnected ? "true" : "false");
-        log("  jd.localAnchorA.Set(%.15f, %.15f);\n", this.m_localAnchorA.x, this.m_localAnchorA.y);
-        log("  jd.localAnchorB.Set(%.15f, %.15f);\n", this.m_localAnchorB.x, this.m_localAnchorB.y);
-        log("  jd.referenceAngle = %.15f;\n", this.m_referenceAngle);
-        log("  jd.stiffness = %.15f;\n", this.m_stiffness);
-        log("  jd.damping = %.15f;\n", this.m_damping);
-        log("  joints[%d] = this.m_world.CreateJoint(jd);\n", this.m_index);
-    }
 }

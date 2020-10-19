@@ -26,7 +26,6 @@ import {
     b2PolygonShape,
     b2Transform,
     b2Body,
-    b2BodyDef,
     b2CircleShape,
     b2BodyType,
     b2Shape,
@@ -337,8 +336,7 @@ export class Sandbox extends Test {
         super({ x: 0, y: -20 });
 
         // We need some ground for the pumps to slide against
-        const bd = new b2BodyDef();
-        const ground = this.m_world.CreateBody(bd);
+        const ground = this.m_world.CreateBody();
 
         // Reset our pointers
         for (let i = 0; i < SandboxParams.k_maxEmitters; i++) {
@@ -524,10 +522,10 @@ export class Sandbox extends Test {
     }
 
     public CreateBody(center: b2Vec2, shape: b2Shape, type: b2BodyType) {
-        const def = new b2BodyDef();
-        def.position.Copy(center);
-        def.type = type;
-        const body = this.m_world.CreateBody(def);
+        const body = this.m_world.CreateBody({
+            type,
+            position: center,
+        });
         body.CreateFixture(shape, 10.0);
     }
 
@@ -539,11 +537,11 @@ export class Sandbox extends Test {
         const shape = new b2PolygonShape();
         shape.SetAsBox(SandboxParams.k_pumpRadius, SandboxParams.k_pumpRadius);
 
-        const def = new b2BodyDef();
-        def.position.Copy(center);
-        def.type = b2BodyType.b2_dynamicBody;
-        def.angle = 0;
-        const body = this.m_world.CreateBody(def);
+        const body = this.m_world.CreateBody({
+            position: center,
+            type: b2BodyType.b2_dynamicBody,
+            angle: 0,
+        });
         body.CreateFixture(shape, 5.0);
 
         // Create a prismatic joint and connect to the ground, and have it

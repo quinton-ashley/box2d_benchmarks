@@ -16,7 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import { b2RevoluteJoint, b2BodyDef, b2BodyType, b2PolygonShape, b2Vec2, b2RevoluteJointDef, XY } from "@box2d/core";
+import { b2RevoluteJoint, b2BodyType, b2PolygonShape, b2Vec2, b2RevoluteJointDef, XY } from "@box2d/core";
 import { b2ParticleGroupDef, b2ParticleFlag } from "@box2d/particles";
 
 import { Test } from "../../test";
@@ -30,18 +30,14 @@ export class WaveMachine extends Test {
     constructor() {
         super();
 
-        let ground = null;
-        {
-            const bd = new b2BodyDef();
-            ground = this.m_world.CreateBody(bd);
-        }
+        const ground = this.m_world.CreateBody();
 
         {
-            const bd = new b2BodyDef();
-            bd.type = b2BodyType.b2_dynamicBody;
-            bd.allowSleep = false;
-            bd.position.Set(0.0, 1.0);
-            const body = this.m_world.CreateBody(bd);
+            const body = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+                allowSleep: false,
+                position: { x: 0.0, y: 1.0 },
+            });
 
             const shape = new b2PolygonShape();
             shape.SetAsBox(0.05, 1.0, new b2Vec2(2.0, 0.0), 0.0);

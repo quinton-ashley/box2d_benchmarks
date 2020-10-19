@@ -383,22 +383,4 @@ export class b2MotorJoint extends b2Joint {
     public SolvePositionConstraints(_data: b2SolverData): boolean {
         return true;
     }
-
-    public Dump(log: (format: string, ...args: any[]) => void) {
-        const indexA = this.m_bodyA.m_islandIndex;
-        const indexB = this.m_bodyB.m_islandIndex;
-
-        log("  const jd: b2MotorJointDef = new b2MotorJointDef();\n");
-
-        log("  jd.bodyA = bodies[%d];\n", indexA);
-        log("  jd.bodyB = bodies[%d];\n", indexB);
-        log("  jd.collideConnected = %s;\n", this.m_collideConnected ? "true" : "false");
-
-        log("  jd.linearOffset.Set(%.15f, %.15f);\n", this.m_linearOffset.x, this.m_linearOffset.y);
-        log("  jd.angularOffset = %.15f;\n", this.m_angularOffset);
-        log("  jd.maxForce = %.15f;\n", this.m_maxForce);
-        log("  jd.maxTorque = %.15f;\n", this.m_maxTorque);
-        log("  jd.correctionFactor = %.15f;\n", this.m_correctionFactor);
-        log("  joints[%d] = this.m_world.CreateJoint(jd);\n", this.m_index);
-    }
 }

@@ -201,14 +201,4 @@ export class b2EdgeShape extends b2Shape {
         c.SetZero();
         return 0;
     }
-
-    public Dump(log: (format: string, ...args: any[]) => void): void {
-        log("    const shape: b2EdgeShape = new b2EdgeShape();\n");
-        log("    shape.m_radius = %.15f;\n", this.m_radius);
-        log("    shape.m_vertex0.Set(%.15f, %.15f);\n", this.m_vertex0.x, this.m_vertex0.y);
-        log("    shape.m_vertex1.Set(%.15f, %.15f);\n", this.m_vertex1.x, this.m_vertex1.y);
-        log("    shape.m_vertex2.Set(%.15f, %.15f);\n", this.m_vertex2.x, this.m_vertex2.y);
-        log("    shape.m_vertex3.Set(%.15f, %.15f);\n", this.m_vertex3.x, this.m_vertex3.y);
-        log("    shape.m_oneSided = %s;\n", this.m_oneSided);
-    }
 }

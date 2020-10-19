@@ -16,7 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import { b2Vec2, b2Color, b2BodyDef, b2PolygonShape, b2BodyType, b2MassData, XY } from "@box2d/core";
+import { b2Vec2, b2Color, b2PolygonShape, b2BodyType, b2MassData, XY } from "@box2d/core";
 import { b2ParticleSystem, b2ParticleSystemDef } from "@box2d/particles";
 
 import { Test } from "../../test";
@@ -98,8 +98,7 @@ export class MultipleParticleSystems extends Test {
 
         // Create the ground.
         {
-            const bd = new b2BodyDef();
-            const ground = this.m_world.CreateBody(bd);
+            const ground = this.m_world.CreateBody();
             const shape = new b2PolygonShape();
             shape.SetAsBox(5.0, 0.1);
             ground.CreateFixture(shape, 0.0);
@@ -107,9 +106,9 @@ export class MultipleParticleSystems extends Test {
 
         // Create a dynamic body to push around.
         {
-            const bd = new b2BodyDef();
-            bd.type = b2BodyType.b2_dynamicBody;
-            const body = this.m_world.CreateBody(bd);
+            const body = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+            });
             const shape = new b2PolygonShape();
             const center = new b2Vec2(0.0, 1.2);
             shape.SetAsBox(

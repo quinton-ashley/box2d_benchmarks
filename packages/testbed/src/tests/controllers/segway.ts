@@ -19,7 +19,6 @@
 import {
     b2Body,
     b2RevoluteJoint,
-    b2BodyDef,
     b2FixtureDef,
     b2BodyType,
     b2PolygonShape,
@@ -29,6 +28,7 @@ import {
     b2Clamp,
     b2DegToRad,
     XY,
+    b2Vec2,
 } from "@box2d/core";
 
 import { Test } from "../../test";
@@ -93,7 +93,6 @@ export class Segway extends Test {
         this.positionController.gainI = 0;
         this.positionController.gainD = 1.5;
 
-        const bd: b2BodyDef = new b2BodyDef();
         const fd: b2FixtureDef = new b2FixtureDef();
 
         // pendulumBody = new p2.Body({
@@ -102,10 +101,13 @@ export class Segway extends Test {
         // });
         // pendulumBody.addShape(new p2.Box({ width: 1, height: PENDULUM_LENGTH }));
         // world.addBody(pendulumBody);
-        bd.type = b2BodyType.b2_dynamicBody;
-        bd.position.x = 0;
-        bd.position.y = 2 + 0.5 * Segway.PENDULUM_LENGTH;
-        this.pendulumBody = this.m_world.CreateBody(bd);
+        this.pendulumBody = this.m_world.CreateBody({
+            type: b2BodyType.b2_dynamicBody,
+            position: {
+                x: 0,
+                y: 2 + 0.5 * Segway.PENDULUM_LENGTH,
+            },
+        });
         const pendulumShape: b2PolygonShape = new b2PolygonShape();
         pendulumShape.SetAsBox(0.5, 0.5 * Segway.PENDULUM_LENGTH);
         fd.shape = pendulumShape;
@@ -119,10 +121,10 @@ export class Segway extends Test {
         // });
         // wheelBody.addShape(new p2.Circle({ radius: 0.6 }));
         // world.addBody(wheelBody);
-        bd.type = b2BodyType.b2_dynamicBody;
-        bd.position.x = 0;
-        bd.position.y = 1;
-        this.wheelBody = this.m_world.CreateBody(bd);
+        this.wheelBody = this.m_world.CreateBody({
+            type: b2BodyType.b2_dynamicBody,
+            position: b2Vec2.UNITY,
+        });
         const wheelShape: b2CircleShape = new b2CircleShape();
         wheelShape.m_radius = 0.6;
         fd.shape = wheelShape;
@@ -157,10 +159,10 @@ export class Segway extends Test {
         // });
         // groundBody.addShape(groundShape);
         // world.addBody(groundBody);
-        bd.type = b2BodyType.b2_staticBody;
-        bd.position.x = 0;
-        bd.position.y = 0;
-        this.groundBody = this.m_world.CreateBody(bd);
+        this.groundBody = this.m_world.CreateBody({
+            type: b2BodyType.b2_staticBody,
+            position: b2Vec2.ZERO,
+        });
         const groundShape: b2EdgeShape = new b2EdgeShape();
         groundShape.SetTwoSided({ x: -100, y: 0 }, { x: 100, y: 0 });
         fd.shape = groundShape;

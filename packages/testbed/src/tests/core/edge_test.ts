@@ -16,7 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import { b2Vec2, b2Body, b2BodyDef, b2EdgeShape, b2BodyType, b2PolygonShape } from "@box2d/core";
+import { b2Vec2, b2Body, b2EdgeShape, b2BodyType, b2PolygonShape } from "@box2d/core";
 
 import { Test } from "../../test";
 import { Settings } from "../../settings";
@@ -64,8 +64,7 @@ export class EdgeTest extends Test {
             const v9: b2Vec2 = vertices[8].Clone().SelfAdd(this.m_offset1);
             const v10: b2Vec2 = vertices[9].Clone().SelfAdd(this.m_offset1);
 
-            const bd: b2BodyDef = new b2BodyDef();
-            const ground: b2Body = this.m_world.CreateBody(bd);
+            const ground: b2Body = this.m_world.CreateBody();
 
             const shape: b2EdgeShape = new b2EdgeShape();
 
@@ -112,8 +111,7 @@ export class EdgeTest extends Test {
             const v9: b2Vec2 = vertices[8].Clone().SelfAdd(this.m_offset2);
             const v10: b2Vec2 = vertices[9].Clone().SelfAdd(this.m_offset2);
 
-            const bd: b2BodyDef = new b2BodyDef();
-            const ground: b2Body = this.m_world.CreateBody(bd);
+            const ground: b2Body = this.m_world.CreateBody();
 
             const shape: b2EdgeShape = new b2EdgeShape();
 
@@ -166,13 +164,14 @@ export class EdgeTest extends Test {
         }
 
         {
-            const bd = new b2BodyDef();
-            bd.type = b2BodyType.b2_dynamicBody;
-            // bd.position = b2Vec2(8.0, 2.6) + this.m_offset1;
-            bd.position.x = 8.0 + this.m_offset1.x;
-            bd.position.y = 2.6 + this.m_offset1.y;
-            bd.allowSleep = false;
-            this.m_body1 = this.m_world.CreateBody(bd);
+            this.m_body1 = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+                position: {
+                    x: 8.0 + this.m_offset1.x,
+                    y: 2.6 + this.m_offset1.y,
+                },
+                allowSleep: false,
+            });
 
             const shape = new b2PolygonShape();
             shape.SetAsBox(0.5, 1.0);
@@ -181,13 +180,11 @@ export class EdgeTest extends Test {
         }
 
         {
-            const bd = new b2BodyDef();
-            bd.type = b2BodyType.b2_dynamicBody;
-            // bd.position = b2Vec2(8.0, 2.6f) + this.m_offset2;
-            bd.position.x = 8.0 + this.m_offset2.x;
-            bd.position.y = 2.6 + this.m_offset2.y;
-            bd.allowSleep = false;
-            this.m_body2 = this.m_world.CreateBody(bd);
+            this.m_body2 = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+                position: { x: 8.0 + this.m_offset2.x, y: 2.6 + this.m_offset2.y },
+                allowSleep: false,
+            });
 
             const shape = new b2PolygonShape();
             shape.SetAsBox(0.5, 1.0);
@@ -208,29 +205,29 @@ export class EdgeTest extends Test {
         }
 
         // {
-        // 	b2BodyDef bd;
-        // 	bd.type = b2_dynamicBody;
-        // 	bd.position = b2Vec2(-0.5f, 0.6f) + this.m_offset1;
-        // 	bd.allowSleep = false;
-        // 	this.m_body1 = this.m_world.CreateBody(bd);
+        //     this.m_body1 = this.m_world.CreateBody({
+        //         type: b2BodyType.b2_dynamicBody,
+        //         position: { x: this.m_offset1.x - 0.5, y: this.m_offset1.y + 0.6 },
+        //         allowSleep: false,
+        //     });
 
-        // 	b2CircleShape shape;
-        // 	shape.this.m_radius = 0.5f;
+        //     b2CircleShape shape;
+        //     shape.this.m_radius = 0.5f;
 
-        // 	this.m_body1.CreateFixture(shape, 1.0);
+        //     this.m_body1.CreateFixture(shape, 1.0);
         // }
 
         // {
-        // 	b2BodyDef bd;
-        // 	bd.type = b2_dynamicBody;
-        // 	bd.position = b2Vec2(-0.5f, 0.6f) + this.m_offset2;
-        // 	bd.allowSleep = false;
-        // 	this.m_body2 = this.m_world.CreateBody(bd);
+        //     this.m_body2 = this.m_world.CreateBody({
+        //         type: b2BodyType.b2_dynamicBody,
+        //         position: { x: this.m_offset2.x - 0.5, y: this.m_offset2.y + 0.6 },
+        //         allowSleep: false,
+        //     });
 
-        // 	b2CircleShape shape;
-        // 	shape.this.m_radius = 0.5f;
+        //     b2CircleShape shape;
+        //     shape.this.m_radius = 0.5f;
 
-        // 	this.m_body2.CreateFixture(shape, 1.0);
+        //     this.m_body2.CreateFixture(shape, 1.0);
         // }
     }
 

@@ -16,7 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import { b2Body, b2BodyDef, b2EdgeShape, b2Vec2, b2BodyType, b2CircleShape } from "@box2d/core";
+import { b2Body, b2EdgeShape, b2Vec2, b2BodyType, b2CircleShape } from "@box2d/core";
 
 import { HotKey, hotKeyPress } from "../../utils/hotkeys";
 import { Test } from "../../test";
@@ -28,10 +28,8 @@ export class HeavyOnLightTwo extends Test {
         super();
 
         {
-            /* b2BodyDef */
-            const bd = new b2BodyDef();
             /* b2Body */
-            const ground = this.m_world.CreateBody(bd);
+            const ground = this.m_world.CreateBody();
 
             /* b2EdgeShape */
             const shape = new b2EdgeShape();
@@ -39,20 +37,21 @@ export class HeavyOnLightTwo extends Test {
             ground.CreateFixture(shape, 0.0);
         }
 
-        /* b2BodyDef */
-        const bd = new b2BodyDef();
-        bd.type = b2BodyType.b2_dynamicBody;
-        bd.position.Set(0.0, 2.5);
         /* b2Body */
-        let body = this.m_world.CreateBody(bd);
+        let body = this.m_world.CreateBody({
+            type: b2BodyType.b2_dynamicBody,
+            position: { x: 0.0, y: 2.5 },
+        });
 
         /* b2CircleShape */
         const shape = new b2CircleShape();
         shape.m_radius = 0.5;
         body.CreateFixture(shape, 10.0);
 
-        bd.position.Set(0.0, 3.5);
-        body = this.m_world.CreateBody(bd);
+        body = this.m_world.CreateBody({
+            type: b2BodyType.b2_dynamicBody,
+            position: { x: 0.0, y: 3.5 },
+        });
         body.CreateFixture(shape, 10.0);
     }
 
@@ -61,11 +60,10 @@ export class HeavyOnLightTwo extends Test {
             this.m_world.DestroyBody(this.m_heavy);
             this.m_heavy = null;
         } else {
-            /* b2BodyDef */
-            const bd = new b2BodyDef();
-            bd.type = b2BodyType.b2_dynamicBody;
-            bd.position.Set(0.0, 9.0);
-            this.m_heavy = this.m_world.CreateBody(bd);
+            this.m_heavy = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+                position: { x: 0.0, y: 9.0 },
+            });
 
             /* b2CircleShape */
             const shape = new b2CircleShape();

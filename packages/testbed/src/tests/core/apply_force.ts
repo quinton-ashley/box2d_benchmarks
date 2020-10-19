@@ -19,7 +19,6 @@
 import {
     b2Body,
     b2Vec2,
-    b2BodyDef,
     b2EdgeShape,
     b2FixtureDef,
     b2Transform,
@@ -46,10 +45,12 @@ export class ApplyForce extends Test {
         /* b2Body */
         let ground = null;
         {
-            /* b2BodyDef */
-            const bd = new b2BodyDef();
-            bd.position.Set(0.0, 20.0);
-            ground = this.m_world.CreateBody(bd);
+            ground = this.m_world.CreateBody({
+                position: {
+                    x: 0,
+                    y: 20,
+                },
+            });
 
             /* b2EdgeShape */
             const shape = new b2EdgeShape();
@@ -116,14 +117,12 @@ export class ApplyForce extends Test {
             sd2.shape = poly2;
             sd2.density = 2.0;
 
-            /* b2BodyDef */
-            const bd = new b2BodyDef();
-            bd.type = b2BodyType.b2_dynamicBody;
-
-            bd.position.Set(0.0, 3.0);
-            bd.angle = Math.PI;
-            bd.allowSleep = false;
-            this.m_body = this.m_world.CreateBody(bd);
+            this.m_body = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+                position: { x: 0.0, y: 3.0 },
+                angle: Math.PI,
+                allowSleep: false,
+            });
             this.m_body.CreateFixture(sd1);
             this.m_body.CreateFixture(sd2);
 
@@ -161,13 +160,15 @@ export class ApplyForce extends Test {
             fd.friction = 0.3;
 
             for (/* int */ let i = 0; i < 10; ++i) {
-                /* b2BodyDef */
-                const bd = new b2BodyDef();
-                bd.type = b2BodyType.b2_dynamicBody;
-
-                bd.position.Set(0.0, 7.0 + 1.54 * i);
                 /* b2Body */
-                const body = this.m_world.CreateBody(bd);
+                const body = this.m_world.CreateBody({
+                    type: b2BodyType.b2_dynamicBody,
+
+                    position: {
+                        x: 0.0,
+                        y: 7.0 + 1.54 * i,
+                    },
+                });
 
                 body.CreateFixture(fd);
 

@@ -35,7 +35,7 @@ export enum b2BodyType {
     b2_dynamicBody,
 }
 
-export interface b2IBodyDef {
+export interface b2BodyDef {
     /// The body type: static, kinematic, or dynamic.
     /// Note: if a dynamic body would have zero mass, the mass is set to one.
     type?: b2BodyType;
@@ -89,62 +89,6 @@ export interface b2IBodyDef {
 
     /// Scale the gravity applied to this body.
     gravityScale?: number;
-}
-
-/// A body definition holds all the data needed to construct a rigid body.
-/// You can safely re-use body definitions. Shapes are added to a body after construction.
-export class b2BodyDef implements b2IBodyDef {
-    /// The body type: static, kinematic, or dynamic.
-    /// Note: if a dynamic body would have zero mass, the mass is set to one.
-    public type: b2BodyType = b2BodyType.b2_staticBody;
-
-    /// The world position of the body. Avoid creating bodies at the origin
-    /// since this can lead to many overlapping shapes.
-    public readonly position: b2Vec2 = new b2Vec2(0, 0);
-
-    /// The world angle of the body in radians.
-    public angle = 0;
-
-    /// The linear velocity of the body's origin in world co-ordinates.
-    public readonly linearVelocity: b2Vec2 = new b2Vec2(0, 0);
-
-    /// The angular velocity of the body.
-    public angularVelocity = 0;
-
-    /// Linear damping is use to reduce the linear velocity. The damping parameter
-    /// can be larger than 1.0f but the damping effect becomes sensitive to the
-    /// time step when the damping parameter is large.
-    public linearDamping = 0;
-
-    /// Angular damping is use to reduce the angular velocity. The damping parameter
-    /// can be larger than 1.0f but the damping effect becomes sensitive to the
-    /// time step when the damping parameter is large.
-    public angularDamping = 0;
-
-    /// Set this flag to false if this body should never fall asleep. Note that
-    /// this increases CPU usage.
-    public allowSleep = true;
-
-    /// Is this body initially awake or sleeping?
-    public awake = true;
-
-    /// Should this body be prevented from rotating? Useful for characters.
-    public fixedRotation = false;
-
-    /// Is this a fast moving body that should be prevented from tunneling through
-    /// other moving bodies? Note that all bodies are prevented from tunneling through
-    /// kinematic and static bodies. This setting is only considered on dynamic bodies.
-    /// @warning You should use this flag sparingly since it increases processing time.
-    public bullet = false;
-
-    /// Does this body start out enabled?
-    public enabled = true;
-
-    /// Use this to store application specific body data.
-    public userData: any = null;
-
-    /// Scale the gravity applied to this body.
-    public gravityScale = 1;
 }
 
 /// A rigid body. These are created via b2World::CreateBody.
@@ -212,12 +156,11 @@ export class b2Body {
 
     public m_userData: any = null;
 
-    constructor(bd: b2IBodyDef, world: b2World) {
+    constructor(bd: b2BodyDef, world: b2World) {
         this.m_bulletFlag = bd.bullet ?? false;
         this.m_fixedRotationFlag = bd.fixedRotation ?? false;
         this.m_autoSleepFlag = bd.allowSleep ?? true;
-        // this.m_awakeFlag = bd.awake ?? true;
-        if ((bd.awake ?? false) && (bd.type ?? b2BodyType.b2_staticBody) !== b2BodyType.b2_staticBody) {
+        if ((bd.awake ?? true) && (bd.type ?? b2BodyType.b2_staticBody) !== b2BodyType.b2_staticBody) {
             this.m_awakeFlag = true;
         }
         this.m_enabledFlag = bd.enabled ?? true;
@@ -506,21 +449,22 @@ export class b2Body {
         return this.m_angularVelocity;
     }
 
-    public GetDefinition(bd: b2BodyDef): b2BodyDef {
-        bd.type = this.GetType();
-        bd.allowSleep = this.m_autoSleepFlag;
-        bd.angle = this.GetAngle();
-        bd.angularDamping = this.m_angularDamping;
-        bd.gravityScale = this.m_gravityScale;
-        bd.angularVelocity = this.m_angularVelocity;
-        bd.fixedRotation = this.m_fixedRotationFlag;
-        bd.bullet = this.m_bulletFlag;
-        bd.awake = this.m_awakeFlag;
-        bd.linearDamping = this.m_linearDamping;
-        bd.linearVelocity.Copy(this.GetLinearVelocity());
-        bd.position.Copy(this.GetPosition());
-        bd.userData = this.GetUserData();
-        return bd;
+    public GetDefinition(): b2BodyDef {
+        return {
+            type: this.GetType(),
+            allowSleep: this.m_autoSleepFlag,
+            angle: this.GetAngle(),
+            angularDamping: this.m_angularDamping,
+            gravityScale: this.m_gravityScale,
+            angularVelocity: this.m_angularVelocity,
+            fixedRotation: this.m_fixedRotationFlag,
+            bullet: this.m_bulletFlag,
+            awake: this.m_awakeFlag,
+            linearDamping: this.m_linearDamping,
+            linearVelocity: this.GetLinearVelocity().Clone(),
+            position: this.GetPosition().Clone(),
+            userData: this.GetUserData(),
+        };
     }
 
     /// Apply a force at a world point. If the force is not
@@ -1061,51 +1005,6 @@ export class b2Body {
     /// Get the parent world of this body.
     public GetWorld(): b2World {
         return this.m_world;
-    }
-
-    /// Dump this body to a file
-    public Dump(log: (format: string, ...args: any[]) => void): void {
-        const bodyIndex: number = this.m_islandIndex;
-
-        log("{\n");
-        log("  const bd: b2BodyDef = new b2BodyDef();\n");
-        let type_str = "";
-        switch (this.m_type) {
-            case b2BodyType.b2_staticBody:
-                type_str = "b2BodyType.b2_staticBody";
-                break;
-            case b2BodyType.b2_kinematicBody:
-                type_str = "b2BodyType.b2_kinematicBody";
-                break;
-            case b2BodyType.b2_dynamicBody:
-                type_str = "b2BodyType.b2_dynamicBody";
-                break;
-            default:
-                // DEBUG: b2Assert(false);
-                break;
-        }
-        log("  bd.type = %s;\n", type_str);
-        log("  bd.position.Set(%.15f, %.15f);\n", this.m_xf.p.x, this.m_xf.p.y);
-        log("  bd.angle = %.15f;\n", this.m_sweep.a);
-        log("  bd.linearVelocity.Set(%.15f, %.15f);\n", this.m_linearVelocity.x, this.m_linearVelocity.y);
-        log("  bd.angularVelocity = %.15f;\n", this.m_angularVelocity);
-        log("  bd.linearDamping = %.15f;\n", this.m_linearDamping);
-        log("  bd.angularDamping = %.15f;\n", this.m_angularDamping);
-        log("  bd.allowSleep = %s;\n", this.m_autoSleepFlag ? "true" : "false");
-        log("  bd.awake = %s;\n", this.m_awakeFlag ? "true" : "false");
-        log("  bd.fixedRotation = %s;\n", this.m_fixedRotationFlag ? "true" : "false");
-        log("  bd.bullet = %s;\n", this.m_bulletFlag ? "true" : "false");
-        log("  bd.active = %s;\n", this.m_enabledFlag ? "true" : "false");
-        log("  bd.gravityScale = %.15f;\n", this.m_gravityScale);
-        log("\n");
-        log("  bodies[%d] = this.m_world.CreateBody(bd);\n", this.m_islandIndex);
-        log("\n");
-        for (let f: b2Fixture | null = this.m_fixtureList; f; f = f.m_next) {
-            log("  {\n");
-            f.Dump(log, bodyIndex);
-            log("  }\n");
-        }
-        log("}\n");
     }
 
     private static SynchronizeFixtures_s_xf1: b2Transform = new b2Transform();

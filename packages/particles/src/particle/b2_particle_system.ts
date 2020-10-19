@@ -5618,10 +5618,6 @@ export class b2ParticleSystem_CompositeShape extends b2Shape {
         // DEBUG: b2Assert(false);
         return 0;
     }
-
-    public Dump(_log: (format: string, ...args: any[]) => void): void {
-        // DEBUG: b2Assert(false);
-    }
 }
 
 export class b2ParticleSystem_ReactiveFilter extends b2ParticleSystem_ConnectionFilter {

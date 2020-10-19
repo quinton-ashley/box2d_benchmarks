@@ -16,16 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import {
-    b2Body,
-    b2BodyDef,
-    b2EdgeShape,
-    b2Vec2,
-    b2PolygonShape,
-    b2FixtureDef,
-    b2BodyType,
-    b2CircleShape,
-} from "@box2d/core";
+import { b2Body, b2EdgeShape, b2Vec2, b2PolygonShape, b2FixtureDef, b2BodyType, b2CircleShape } from "@box2d/core";
 
 import { Test } from "../../test";
 import { Settings } from "../../settings";
@@ -49,8 +40,7 @@ export class VerticalStack extends Test {
         this.m_indices = new Array(VerticalStack.e_rowCount * VerticalStack.e_columnCount);
 
         {
-            const bd = new b2BodyDef();
-            const ground = this.m_world.CreateBody(bd);
+            const ground = this.m_world.CreateBody();
 
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(-40.0, 0.0), new b2Vec2(40.0, 0.0));
@@ -72,19 +62,18 @@ export class VerticalStack extends Test {
             fd.friction = 0.3;
 
             for (let i = 0; i < VerticalStack.e_rowCount; ++i) {
-                const bd = new b2BodyDef();
-                bd.type = b2BodyType.b2_dynamicBody;
-
                 const n = j * VerticalStack.e_rowCount + i;
                 // DEBUG: b2Assert(n < VerticalStack.e_rowCount * VerticalStack.e_columnCount);
                 this.m_indices[n] = n;
-                bd.userData = this.m_indices[n];
 
                 const x = 0.0;
                 // const x = b2RandomRange(-0.02, 0.02);
                 // const x = i % 2 === 0 ? -0.01 : 0.01;
-                bd.position.Set(xs[j] + x, 0.55 + 1.1 * i);
-                const body = this.m_world.CreateBody(bd);
+                const body = this.m_world.CreateBody({
+                    type: b2BodyType.b2_dynamicBody,
+                    position: { x: xs[j] + x, y: 0.55 + 1.1 * i },
+                    userData: this.m_indices[n],
+                });
 
                 this.m_bodies[n] = body;
 
@@ -112,12 +101,11 @@ export class VerticalStack extends Test {
             fd.density = 20.0;
             fd.restitution = 0.05;
 
-            const bd = new b2BodyDef();
-            bd.type = b2BodyType.b2_dynamicBody;
-            bd.bullet = true;
-            bd.position.Set(-31.0, 5.0);
-
-            this.m_bullet = this.m_world.CreateBody(bd);
+            this.m_bullet = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+                bullet: true,
+                position: { x: -31.0, y: 5.0 },
+            });
             this.m_bullet.CreateFixture(fd);
 
             this.m_bullet.SetLinearVelocity(new b2Vec2(400.0, 0.0));
@@ -127,33 +115,30 @@ export class VerticalStack extends Test {
     public Step(settings: Settings, timeStep: number): void {
         super.Step(settings, timeStep);
         // this.addDebug("Blocksolve", g_blockSolve);
-        // if (this.m_stepCount === 300)
-        // {
-        //  if (this.m_bullet !== null)
-        //  {
-        //    this.m_world.DestroyBody(this.m_bullet);
-        //    this.m_bullet = null;
-        //  }
+        // if (this.m_stepCount === 300) {
+        //     if (this.m_bullet !== null) {
+        //         this.m_world.DestroyBody(this.m_bullet);
+        //         this.m_bullet = null;
+        //     }
 
-        //  {
-        //    const shape = new b2CircleShape();
-        //    shape.m_radius = 0.25;
+        //     {
+        //         const shape = new b2CircleShape();
+        //         shape.m_radius = 0.25;
 
-        //    const fd = new b2FixtureDef();
-        //    fd.shape = shape;
-        //    fd.density = 20.0;
-        //    fd.restitution = 0.05;
+        //         const fd = new b2FixtureDef();
+        //         fd.shape = shape;
+        //         fd.density = 20.0;
+        //         fd.restitution = 0.05;
 
-        //    const bd = new b2BodyDef();
-        //    bd.type = b2BodyType.b2_dynamicBody;
-        //    bd.bullet = true;
-        //    bd.position.Set(-31.0, 5.0);
+        //         this.m_bullet = this.m_world.CreateBody({
+        //             type: b2BodyType.b2_dynamicBody,
+        //             bullet: true,
+        //             position: { x: -31.0, y: 5.0 },
+        //         });
+        //         this.m_bullet.CreateFixture(fd);
 
-        //    this.m_bullet = this.m_world.CreateBody(bd);
-        //    this.m_bullet.CreateFixture(fd);
-
-        //    this.m_bullet.SetLinearVelocity(new b2Vec2(400.0, 0.0));
-        //  }
+        //         this.m_bullet.SetLinearVelocity(new b2Vec2(400.0, 0.0));
+        //     }
         // }
     }
 }

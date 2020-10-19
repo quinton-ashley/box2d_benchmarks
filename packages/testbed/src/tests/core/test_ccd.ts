@@ -16,16 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import {
-    b2BodyDef,
-    b2Vec2,
-    b2ChainShape,
-    b2FixtureDef,
-    b2BodyType,
-    b2PolygonShape,
-    b2CircleShape,
-    XY,
-} from "@box2d/core";
+import { b2Vec2, b2ChainShape, b2FixtureDef, b2BodyType, b2PolygonShape, b2CircleShape, XY } from "@box2d/core";
 
 import { Test } from "../../test";
 
@@ -34,8 +25,7 @@ export class TestCCD extends Test {
         super();
 
         {
-            const bd = new b2BodyDef();
-            const ground = this.m_world.CreateBody(bd);
+            const ground = this.m_world.CreateBody();
 
             const shape = new b2ChainShape();
             shape.CreateLoop([
@@ -57,11 +47,11 @@ export class TestCCD extends Test {
 
         // Create 'basket'
         {
-            const bd = new b2BodyDef();
-            bd.type = b2BodyType.b2_dynamicBody;
-            bd.bullet = true;
-            bd.position.Set(15.0, 5.0);
-            const body = this.m_world.CreateBody(bd);
+            const body = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+                bullet: true,
+                position: { x: 15.0, y: 5.0 },
+            });
 
             const sd_bottom = new b2PolygonShape();
             sd_bottom.SetAsBox(4.5, 0.45);
@@ -86,11 +76,14 @@ export class TestCCD extends Test {
             fd.friction = 0.3;
             fd.density = 1.0;
             fd.restitution = 1.1;
-            const bd = new b2BodyDef();
-            bd.type = b2BodyType.b2_dynamicBody;
-            bd.bullet = true;
-            bd.position.Set(Math.random() * 30.0 - 25.0, Math.random() * 32.0 + 2.0);
-            const body = this.m_world.CreateBody(bd);
+            const body = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+                bullet: true,
+                position: {
+                    x: Math.random() * 30.0 - 25.0,
+                    y: Math.random() * 32.0 + 2.0,
+                },
+            });
             body.CreateFixture(fd);
         }
     }

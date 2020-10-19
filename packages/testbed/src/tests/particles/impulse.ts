@@ -16,7 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import { b2BodyDef, b2Vec2, b2ChainShape, b2PolygonShape, XY, b2Assert } from "@box2d/core";
+import { b2Vec2, b2ChainShape, b2PolygonShape, XY, b2Assert } from "@box2d/core";
 import { b2ParticleGroupDef, b2ParticleFlag } from "@box2d/particles";
 
 import { HotKey, hotKeyPress } from "../../utils/hotkeys";
@@ -38,8 +38,7 @@ export class Impulse extends Test {
 
         // Create the containing box.
         {
-            const bd = new b2BodyDef();
-            const ground = this.m_world.CreateBody(bd);
+            const ground = this.m_world.CreateBody();
 
             const box = [
                 new b2Vec2(Impulse.kBoxLeft, Impulse.kBoxBottom),

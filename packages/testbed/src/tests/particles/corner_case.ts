@@ -16,7 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import { b2BodyDef, b2PolygonShape, b2Vec2, b2CircleShape, XY } from "@box2d/core";
+import { b2PolygonShape, b2Vec2, b2CircleShape, XY } from "@box2d/core";
 import { b2ParticleGroupDef, b2ParticleFlag } from "@box2d/particles";
 
 import { Test } from "../../test";
@@ -26,8 +26,7 @@ export class CornerCase extends Test {
         super();
 
         {
-            const bd = new b2BodyDef();
-            const ground = this.m_world.CreateBody(bd);
+            const ground = this.m_world.CreateBody();
 
             // Construct a pathological corner intersection out of many
             // polygons to ensure there's no issue with particle oscillation

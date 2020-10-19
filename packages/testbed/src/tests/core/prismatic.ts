@@ -16,15 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import {
-    b2PrismaticJoint,
-    b2BodyDef,
-    b2EdgeShape,
-    b2Vec2,
-    b2PolygonShape,
-    b2BodyType,
-    b2PrismaticJointDef,
-} from "@box2d/core";
+import { b2PrismaticJoint, b2EdgeShape, b2Vec2, b2PolygonShape, b2BodyType, b2PrismaticJointDef } from "@box2d/core";
 
 import { Test } from "../../test";
 import { Settings } from "../../settings";
@@ -39,8 +31,7 @@ export class Prismatic extends Test {
         let ground = null;
 
         {
-            const bd = new b2BodyDef();
-            ground = this.m_world.CreateBody(bd);
+            ground = this.m_world.CreateBody();
 
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(-40.0, 0.0), new b2Vec2(40.0, 0.0));
@@ -51,12 +42,12 @@ export class Prismatic extends Test {
             const shape = new b2PolygonShape();
             shape.SetAsBox(2.0, 0.5);
 
-            const bd = new b2BodyDef();
-            bd.type = b2BodyType.b2_dynamicBody;
-            bd.position.Set(-10.0, 10.0);
-            bd.angle = 0.5 * Math.PI;
-            bd.allowSleep = false;
-            const body = this.m_world.CreateBody(bd);
+            const body = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+                position: { x: -10.0, y: 10.0 },
+                angle: 0.5 * Math.PI,
+                allowSleep: false,
+            });
             body.CreateFixture(shape, 5.0);
 
             const pjd = new b2PrismaticJointDef();
