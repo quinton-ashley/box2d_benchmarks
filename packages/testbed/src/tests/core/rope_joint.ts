@@ -56,13 +56,16 @@ export class RopeJoint extends Test {
             const shape = new b2PolygonShape();
             shape.SetAsBox(0.5, 0.125);
 
-            /* b2FixtureDef */
-            const fd = new b2FixtureDef();
-            fd.shape = shape;
-            fd.density = 20.0;
-            fd.friction = 0.2;
-            fd.filter.categoryBits = 0x0001;
-            fd.filter.maskBits = 0xffff & ~0x0002;
+            const filter = {
+                categoryBits: 0x0001,
+                maskBits: 0xffff & ~0x0002,
+            };
+            const fd: b2FixtureDef = {
+                shape,
+                density: 20.0,
+                friction: 0.2,
+                filter,
+            };
 
             /* b2RevoluteJointDef */
             const jd = new b2RevoluteJointDef();
@@ -84,7 +87,7 @@ export class RopeJoint extends Test {
                 if (i === N - 1) {
                     shape.SetAsBox(1.5, 1.5);
                     fd.density = 100.0;
-                    fd.filter.categoryBits = 0x0002;
+                    filter.categoryBits = 0x0002;
                     bd.position = { x: 1.0 * i, y };
                     bd.angularDamping = 0.4;
                 }

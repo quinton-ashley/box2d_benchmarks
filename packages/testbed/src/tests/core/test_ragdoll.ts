@@ -52,7 +52,6 @@ export class TestRagdoll extends Test {
         const bd: b2BodyDef = {
             position,
         };
-        const fd = new b2FixtureDef();
         const jd = new b2RevoluteJointDef();
 
         // Add 2 ragdolls along the top
@@ -65,10 +64,12 @@ export class TestRagdoll extends Test {
             bd.type = b2BodyType.b2_dynamicBody;
 
             // Head
-            fd.shape = new b2CircleShape(1.25);
-            fd.density = 1.0;
-            fd.friction = 0.4;
-            fd.restitution = 0.3;
+            const fd: b2FixtureDef = {
+                shape: new b2CircleShape(1.25),
+                density: 1.0,
+                friction: 0.4,
+                restitution: 0.3,
+            };
             position.Set(startX, startY);
             const head = this.m_world.CreateBody(bd);
             head.CreateFixture(fd);
@@ -231,10 +232,12 @@ export class TestRagdoll extends Test {
         // these are static bodies so set the type accordingly
         bd.type = b2BodyType.b2_staticBody;
         const shape = new b2PolygonShape();
-        fd.shape = shape;
-        fd.density = 0.0;
-        fd.friction = 0.4;
-        fd.restitution = 0.3;
+        const fd: b2FixtureDef = {
+            shape,
+            density: 0.0,
+            friction: 0.4,
+            restitution: 0.3,
+        };
 
         // Add stairs on the left
         for (let j = 1; j <= 10; ++j) {

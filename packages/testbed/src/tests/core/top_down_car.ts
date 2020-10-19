@@ -379,9 +379,10 @@ export class TopdownCar extends Test {
             this.m_groundBody = this.m_world.CreateBody();
 
             const polygonShape = new b2PolygonShape();
-            const fixtureDef = new b2FixtureDef();
-            fixtureDef.shape = polygonShape;
-            fixtureDef.isSensor = true;
+            const fixtureDef: b2FixtureDef = {
+                shape: polygonShape,
+                isSensor: true,
+            };
 
             polygonShape.SetAsBox(9, 7, new b2Vec2(-10, 15), 20 * DEGTORAD);
             let groundAreaFixture = this.m_groundBody.CreateFixture(fixtureDef);

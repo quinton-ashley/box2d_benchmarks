@@ -25,7 +25,6 @@ import {
     b2CircleShape,
     b2EdgeShape,
     b2RandomRange,
-    b2FixtureDef,
     b2Color,
 } from "@box2d/core";
 
@@ -244,20 +243,20 @@ export class RayCast extends Test {
         }));
 
         if (index < 4) {
-            const fd: b2FixtureDef = new b2FixtureDef();
-            fd.shape = this.m_polygons[index];
-            fd.friction = 0.3;
-            new_body.CreateFixture(fd);
+            new_body.CreateFixture({
+                shape: this.m_polygons[index],
+                friction: 0.3,
+            });
         } else if (index < 5) {
-            const fd: b2FixtureDef = new b2FixtureDef();
-            fd.shape = this.m_circle;
-            fd.friction = 0.3;
-            new_body.CreateFixture(fd);
+            new_body.CreateFixture({
+                shape: this.m_circle,
+                friction: 0.3,
+            });
         } else {
-            const fd: b2FixtureDef = new b2FixtureDef();
-            fd.shape = this.m_edge;
-            fd.friction = 0.3;
-            new_body.CreateFixture(fd);
+            new_body.CreateFixture({
+                shape: this.m_edge,
+                friction: 0.3,
+            });
         }
 
         this.m_bodyIndex = (this.m_bodyIndex + 1) % RayCast.e_maxBodies;

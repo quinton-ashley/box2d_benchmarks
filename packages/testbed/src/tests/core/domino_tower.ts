@@ -21,17 +21,17 @@ export class DominoTower extends Test {
         function makeDomino(x: number, y: number, horizontal: boolean) {
             const sd = new b2PolygonShape();
             sd.SetAsBox(0.5 * DOMINO_WIDTH, 0.5 * DOMINO_HEIGHT);
-            const fd = new b2FixtureDef();
-            fd.shape = sd;
-            fd.density = dominoDensity;
-            fd.friction = DOMINO_FRICTION;
-            fd.restitution = 0.65;
             const myBody = world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
                 position: { x, y },
                 angle: horizontal ? Math.PI / 2.0 : 0,
             });
-            myBody.CreateFixture(fd);
+            myBody.CreateFixture({
+                shape: sd,
+                density: dominoDensity,
+                friction: DOMINO_FRICTION,
+                restitution: 0.65,
+            });
         }
 
         // Create the floor
@@ -50,11 +50,12 @@ export class DominoTower extends Test {
             // Make bullet
             const sd = new b2PolygonShape();
             sd.SetAsBox(0.7, 0.7);
-            const fd = new b2FixtureDef();
-            fd.density = 35.0;
-            fd.shape = sd;
-            fd.friction = 0.0;
-            fd.restitution = 0.85;
+            const fd: b2FixtureDef = {
+                density: 35.0,
+                shape: sd,
+                friction: 0.0,
+                restitution: 0.85,
+            };
             let b = world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
                 bullet: true,

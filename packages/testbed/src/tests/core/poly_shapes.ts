@@ -29,7 +29,6 @@ import {
     b2Vec2,
     b2BodyType,
     b2RandomRange,
-    b2FixtureDef,
     b2AABB,
 } from "@box2d/core";
 
@@ -155,18 +154,17 @@ export class PolyShapes extends Test {
         });
 
         if (index < 4) {
-            const fd = new b2FixtureDef();
-            fd.shape = this.m_polygons[index];
-            fd.density = 1.0;
-            fd.friction = 0.3;
-            body.CreateFixture(fd);
+            body.CreateFixture({
+                shape: this.m_polygons[index],
+                density: 1.0,
+                friction: 0.3,
+            });
         } else {
-            const fd = new b2FixtureDef();
-            fd.shape = this.m_circle;
-            fd.density = 1.0;
-            fd.friction = 0.3;
-
-            body.CreateFixture(fd);
+            body.CreateFixture({
+                shape: this.m_circle,
+                density: 1.0,
+                friction: 0.3,
+            });
         }
 
         this.m_bodyIndex = (this.m_bodyIndex + 1) % PolyShapes.e_maxBodies;

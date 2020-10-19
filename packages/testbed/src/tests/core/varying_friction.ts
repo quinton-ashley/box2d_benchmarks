@@ -87,9 +87,10 @@ export class VaryingFriction extends Test {
             const shape = new b2PolygonShape();
             shape.SetAsBox(0.5, 0.5);
 
-            const fd = new b2FixtureDef();
-            fd.shape = shape;
-            fd.density = 25.0;
+            const fd: b2FixtureDef = {
+                shape,
+                density: 25.0,
+            };
 
             const friction = [0.75, 0.5, 0.35, 0.1, 0.0];
 

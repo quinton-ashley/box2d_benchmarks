@@ -19,7 +19,6 @@
 import {
     b2Vec2,
     b2BodyType,
-    b2FixtureDef,
     b2EdgeShape,
     b2PolygonShape,
     b2RevoluteJointDef,
@@ -54,15 +53,6 @@ export class DumpShell extends Test {
         });
 
         {
-            /* b2FixtureDef */
-            const fd = new b2FixtureDef();
-            fd.friction = 10.0;
-            fd.restitution = 0.0;
-            fd.density = 0.0;
-            fd.isSensor = false;
-            fd.filter.categoryBits = 1;
-            fd.filter.maskBits = 65535;
-            fd.filter.groupIndex = 0;
             /* b2EdgeShape */
             const shape = new b2EdgeShape();
             shape.m_radius = 0.009999999776483;
@@ -72,21 +62,20 @@ export class DumpShell extends Test {
             shape.m_vertex3.Set(0.0, 0.0);
             // shape.m_hasVertex0 = false;
             // shape.m_hasVertex3 = false;
-
-            fd.shape = shape;
-
-            bodies[0].CreateFixture(fd);
+            bodies[0].CreateFixture({
+                friction: 10.0,
+                restitution: 0.0,
+                density: 0.0,
+                isSensor: false,
+                filter: {
+                    categoryBits: 1,
+                    maskBits: 65535,
+                    groupIndex: 0,
+                },
+                shape,
+            });
         }
         {
-            /* b2FixtureDef */
-            const fd = new b2FixtureDef();
-            fd.friction = 10.0;
-            fd.restitution = 0.0;
-            fd.density = 0.0;
-            fd.isSensor = false;
-            fd.filter.categoryBits = 1;
-            fd.filter.maskBits = 65535;
-            fd.filter.groupIndex = 0;
             /* b2EdgeShape */
             const shape = new b2EdgeShape();
             shape.m_radius = 0.009999999776483;
@@ -97,20 +86,20 @@ export class DumpShell extends Test {
             // shape.m_hasVertex0 = false;
             // shape.m_hasVertex3 = false;
 
-            fd.shape = shape;
-
-            bodies[0].CreateFixture(fd);
+            bodies[0].CreateFixture({
+                friction: 10.0,
+                restitution: 0.0,
+                density: 0.0,
+                isSensor: false,
+                filter: {
+                    categoryBits: 1,
+                    maskBits: 65535,
+                    groupIndex: 0,
+                },
+                shape,
+            });
         }
         {
-            /* b2FixtureDef */
-            const fd = new b2FixtureDef();
-            fd.friction = 10.0;
-            fd.restitution = 0.0;
-            fd.density = 0.0;
-            fd.isSensor = false;
-            fd.filter.categoryBits = 1;
-            fd.filter.maskBits = 65535;
-            fd.filter.groupIndex = 0;
             /* b2EdgeShape */
             const shape = new b2EdgeShape();
             shape.m_radius = 0.009999999776483;
@@ -121,20 +110,20 @@ export class DumpShell extends Test {
             // shape.m_hasVertex0 = false;
             // shape.m_hasVertex3 = false;
 
-            fd.shape = shape;
-
-            bodies[0].CreateFixture(fd);
+            bodies[0].CreateFixture({
+                friction: 10.0,
+                restitution: 0.0,
+                density: 0.0,
+                isSensor: false,
+                filter: {
+                    categoryBits: 1,
+                    maskBits: 65535,
+                    groupIndex: 0,
+                },
+                shape,
+            });
         }
         {
-            /* b2FixtureDef */
-            const fd = new b2FixtureDef();
-            fd.friction = 10.0;
-            fd.restitution = 0.0;
-            fd.density = 0.0;
-            fd.isSensor = false;
-            fd.filter.categoryBits = 1;
-            fd.filter.maskBits = 65535;
-            fd.filter.groupIndex = 0;
             /* b2EdgeShape */
             const shape = new b2EdgeShape();
             shape.m_radius = 0.009999999776483;
@@ -145,9 +134,18 @@ export class DumpShell extends Test {
             // shape.m_hasVertex0 = false;
             // shape.m_hasVertex3 = false;
 
-            fd.shape = shape;
-
-            bodies[0].CreateFixture(fd);
+            bodies[0].CreateFixture({
+                friction: 10.0,
+                restitution: 0.0,
+                density: 0.0,
+                isSensor: false,
+                filter: {
+                    categoryBits: 1,
+                    maskBits: 65535,
+                    groupIndex: 0,
+                },
+                shape,
+            });
         }
         bodies[1] = this.m_world.CreateBody({
             type: b2BodyType.b2_dynamicBody,
@@ -165,15 +163,6 @@ export class DumpShell extends Test {
         });
 
         {
-            /* b2FixtureDef */
-            const fd = new b2FixtureDef();
-            fd.friction = 1.0;
-            fd.restitution = 0.5;
-            fd.density = 10.0;
-            fd.isSensor = false;
-            fd.filter.categoryBits = 1;
-            fd.filter.maskBits = 65535;
-            fd.filter.groupIndex = 0;
             /* b2PolygonShape */
             const shape = new b2PolygonShape();
             /* b2Vec2[] */
@@ -183,10 +172,18 @@ export class DumpShell extends Test {
             vs[2].Set(-0.322800010442734, -0.295700013637543);
             vs[3].Set(6.885900020599365, -0.364100009202957);
             shape.Set(vs, 4);
-
-            fd.shape = shape;
-
-            bodies[1].CreateFixture(fd);
+            bodies[1].CreateFixture({
+                friction: 1.0,
+                restitution: 0.5,
+                density: 10.0,
+                isSensor: false,
+                filter: {
+                    categoryBits: 1,
+                    maskBits: 65535,
+                    groupIndex: 0,
+                },
+                shape,
+            });
         }
         bodies[2] = this.m_world.CreateBody({
             type: b2BodyType.b2_dynamicBody,
@@ -204,15 +201,6 @@ export class DumpShell extends Test {
         });
 
         {
-            /* b2FixtureDef */
-            const fd = new b2FixtureDef();
-            fd.friction = 1.0;
-            fd.restitution = 0.5;
-            fd.density = 10.0;
-            fd.isSensor = false;
-            fd.filter.categoryBits = 1;
-            fd.filter.maskBits = 65535;
-            fd.filter.groupIndex = 0;
             /* b2PolygonShape */
             const shape = new b2PolygonShape();
             /* b2Vec2[] */
@@ -222,10 +210,18 @@ export class DumpShell extends Test {
             vs[2].Set(-6.900000095367432, 0.200000002980232);
             vs[3].Set(-6.900000095367432, -0.300000011920929);
             shape.Set(vs, 4);
-
-            fd.shape = shape;
-
-            bodies[2].CreateFixture(fd);
+            bodies[2].CreateFixture({
+                friction: 1.0,
+                restitution: 0.5,
+                density: 10.0,
+                isSensor: false,
+                filter: {
+                    categoryBits: 1,
+                    maskBits: 65535,
+                    groupIndex: 0,
+                },
+                shape,
+            });
         }
         bodies[3] = this.m_world.CreateBody({
             type: b2BodyType.b2_staticBody,

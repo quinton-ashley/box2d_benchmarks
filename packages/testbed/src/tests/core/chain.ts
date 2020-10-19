@@ -42,10 +42,11 @@ export class Chain extends Test {
             const shape = new b2PolygonShape();
             shape.SetAsBox(0.6, 0.125);
 
-            const fd = new b2FixtureDef();
-            fd.shape = shape;
-            fd.density = 20.0;
-            fd.friction = 0.2;
+            const fd: b2FixtureDef = {
+                shape,
+                density: 20.0,
+                friction: 0.2,
+            };
 
             const jd = new b2RevoluteJointDef();
             jd.collideConnected = false;

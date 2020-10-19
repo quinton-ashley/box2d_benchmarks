@@ -67,11 +67,10 @@ export class Pinball extends Test {
             /* b2ChainShape */
             const loop = new b2ChainShape();
             loop.CreateLoop(vs, 5);
-            /* b2FixtureDef */
-            const fd = new b2FixtureDef();
-            fd.shape = loop;
-            fd.density = 0.0;
-            ground.CreateFixture(fd);
+            ground.CreateFixture({
+                shape: loop,
+                density: 0.0,
+            });
         }
 
         // Flippers
@@ -96,11 +95,10 @@ export class Pinball extends Test {
             const box = new b2PolygonShape();
             box.SetAsBox(1.75, 0.1);
 
-            /* b2FixtureDef */
-            const fd = new b2FixtureDef();
-            fd.shape = box;
-            fd.density = 1.0;
-
+            const fd: b2FixtureDef = {
+                shape: box,
+                density: 1.0,
+            };
             leftFlipper.CreateFixture(fd);
             rightFlipper.CreateFixture(fd);
 
@@ -139,10 +137,10 @@ export class Pinball extends Test {
             const shape = new b2CircleShape();
             shape.m_radius = 0.2;
 
-            /* b2FixtureDef */
-            const fd = new b2FixtureDef();
-            fd.shape = shape;
-            fd.density = 1.0;
+            const fd: b2FixtureDef = {
+                shape,
+                density: 1.0,
+            };
             this.m_ball.CreateFixture(fd);
         }
 

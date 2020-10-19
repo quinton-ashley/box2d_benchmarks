@@ -26,7 +26,6 @@ import {
     b2EdgeShape,
     b2RandomRange,
     b2BodyType,
-    b2FixtureDef,
     b2Color,
 } from "@box2d/core";
 
@@ -152,18 +151,17 @@ export class EdgeShapes extends Test {
         }));
 
         if (index < 4) {
-            const fd = new b2FixtureDef();
-            fd.shape = this.m_polygons[index];
-            fd.friction = 0.3;
-            fd.density = 20.0;
-            new_body.CreateFixture(fd);
+            new_body.CreateFixture({
+                shape: this.m_polygons[index],
+                friction: 0.3,
+                density: 20.0,
+            });
         } else {
-            const fd = new b2FixtureDef();
-            fd.shape = this.m_circle;
-            fd.friction = 0.3;
-            fd.density = 20.0;
-
-            new_body.CreateFixture(fd);
+            new_body.CreateFixture({
+                shape: this.m_circle,
+                friction: 0.3,
+                density: 20.0,
+            });
         }
 
         this.m_bodyIndex = (this.m_bodyIndex + 1) % EdgeShapes.e_maxBodies;

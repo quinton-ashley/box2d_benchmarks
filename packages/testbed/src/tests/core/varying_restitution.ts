@@ -39,9 +39,10 @@ export class VaryingRestitution extends Test {
             const shape = new b2CircleShape();
             shape.m_radius = 1.0;
 
-            const fd = new b2FixtureDef();
-            fd.shape = shape;
-            fd.density = 1.0;
+            const fd: b2FixtureDef = {
+                shape,
+                density: 1.0,
+            };
 
             const restitution = [0.0, 0.1, 0.3, 0.5, 0.75, 0.9, 1.0];
 

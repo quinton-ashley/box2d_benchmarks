@@ -51,10 +51,11 @@ export class Bridge extends Test {
             const shape = new b2PolygonShape();
             shape.SetAsBox(0.5, 0.125);
 
-            const fd = new b2FixtureDef();
-            fd.shape = shape;
-            fd.density = 20.0;
-            fd.friction = 0.2;
+            const fd: b2FixtureDef = {
+                shape,
+                density: 20.0,
+                friction: 0.2,
+            };
 
             const jd = new b2RevoluteJointDef();
 
@@ -90,30 +91,28 @@ export class Bridge extends Test {
             const shape = new b2PolygonShape();
             shape.Set(vertices);
 
-            const fd = new b2FixtureDef();
-            fd.shape = shape;
-            fd.density = 1.0;
-
             const body = this.m_world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
                 position: { x: -8.0 + 8.0 * i, y: 12.0 },
             });
-            body.CreateFixture(fd);
+            body.CreateFixture({
+                shape,
+                density: 1.0,
+            });
         }
 
         for (let i = 0; i < 3; ++i) {
             const shape = new b2CircleShape();
             shape.m_radius = 0.5;
 
-            const fd = new b2FixtureDef();
-            fd.shape = shape;
-            fd.density = 1.0;
-
             const body = this.m_world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
                 position: { x: -6.0 + 6.0 * i, y: 10.0 },
             });
-            body.CreateFixture(fd);
+            body.CreateFixture({
+                shape,
+                density: 1.0,
+            });
         }
     }
 }

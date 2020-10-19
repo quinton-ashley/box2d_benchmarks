@@ -64,15 +64,15 @@ export class BuoyancyTest extends Test {
                 angle: Math.random() * Math.PI,
             });
 
-            const fd = new b2FixtureDef();
-            fd.density = 1.0;
-            // Override the default friction.
-            fd.friction = 0.3;
-            fd.restitution = 0.1;
             const polygon = new b2PolygonShape();
-            fd.shape = polygon;
             polygon.SetAsBox(Math.random() * 0.5 + 1.0, Math.random() * 0.5 + 1.0);
-            body.CreateFixture(fd);
+            body.CreateFixture({
+                density: 1.0,
+                // Override the default friction.
+                friction: 0.3,
+                restitution: 0.1,
+                shape: polygon,
+            });
 
             this.m_bodies.push(body);
         }
@@ -88,13 +88,13 @@ export class BuoyancyTest extends Test {
                 angle: Math.random() * Math.PI,
             });
 
-            const fd = new b2FixtureDef();
-            fd.density = 1.0;
-            // Override the default friction.
-            fd.friction = 0.3;
-            fd.restitution = 0.1;
-            fd.shape = new b2CircleShape(Math.random() * 0.5 + 1.0);
-            body.CreateFixture(fd);
+            body.CreateFixture({
+                density: 1.0,
+                // Override the default friction.
+                friction: 0.3,
+                restitution: 0.1,
+                shape: new b2CircleShape(Math.random() * 0.5 + 1.0),
+            });
 
             this.m_bodies.push(body);
         }
@@ -110,12 +110,7 @@ export class BuoyancyTest extends Test {
                 angle: Math.random() * Math.PI,
             });
 
-            const fd = new b2FixtureDef();
-            fd.density = 1.0;
-            fd.friction = 0.3;
-            fd.restitution = 0.1;
             const polygon = new b2PolygonShape();
-            fd.shape = polygon;
             if (Math.random() > 0.66) {
                 polygon.Set([
                     new b2Vec2(-1.0 - Math.random() * 1.0, 1.0 + Math.random() * 1.0),
@@ -140,7 +135,12 @@ export class BuoyancyTest extends Test {
                     new b2Vec2(0.5 + Math.random() * 1.0, -1.0 - Math.random() * 1.0),
                 ]);
             }
-            body.CreateFixture(fd);
+            body.CreateFixture({
+                density: 1.0,
+                friction: 0.3,
+                restitution: 0.1,
+                shape: polygon,
+            });
 
             this.m_bodies.push(body);
         }
@@ -153,12 +153,12 @@ export class BuoyancyTest extends Test {
                 angle: 0,
             });
 
-            const fd = new b2FixtureDef();
-            fd.density = 3.0;
             const polygon = new b2PolygonShape();
-            fd.shape = polygon;
             polygon.SetAsBox(4.0, 1.0);
-            body.CreateFixture(fd);
+            body.CreateFixture({
+                density: 3.0,
+                shape: polygon,
+            });
 
             this.m_bodies.push(body);
         }
@@ -172,10 +172,11 @@ export class BuoyancyTest extends Test {
                 },
             });
 
-            const fd = new b2FixtureDef();
-            fd.density = 2.0;
             const circle = new b2CircleShape(0.7);
-            fd.shape = circle;
+            const fd: b2FixtureDef = {
+                density: 2.0,
+                shape: circle,
+            };
             circle.m_p.Set(3.0, 0.0);
             body.CreateFixture(fd);
             circle.m_p.Set(-3.0, 0.0);

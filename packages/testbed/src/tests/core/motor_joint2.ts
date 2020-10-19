@@ -16,16 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import {
-    b2Body,
-    b2EdgeShape,
-    b2Vec2,
-    b2FixtureDef,
-    b2BodyType,
-    b2CircleShape,
-    b2MotorJointDef,
-    b2MotorJoint,
-} from "@box2d/core";
+import { b2Body, b2EdgeShape, b2Vec2, b2BodyType, b2CircleShape, b2MotorJointDef, b2MotorJoint } from "@box2d/core";
 
 import { Test } from "../../test";
 
@@ -42,10 +33,7 @@ export class MotorJoint2 extends Test {
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(-20.0, 0.0), new b2Vec2(20.0, 0.0));
 
-            const fd = new b2FixtureDef();
-            fd.shape = shape;
-
-            ground.CreateFixture(fd);
+            ground.CreateFixture({ shape });
         }
 
         // b2Body * body1 = NULL;
@@ -59,11 +47,11 @@ export class MotorJoint2 extends Test {
             const shape = new b2CircleShape();
             shape.m_radius = 1.0;
 
-            const fd = new b2FixtureDef();
-            fd.shape = shape;
-            fd.friction = 0.6;
-            fd.density = 2.0;
-            body1.CreateFixture(fd);
+            body1.CreateFixture({
+                shape,
+                friction: 0.6,
+                density: 2.0,
+            });
         }
 
         // b2Body * body2 = NULL;
@@ -77,11 +65,11 @@ export class MotorJoint2 extends Test {
             const shape = new b2CircleShape();
             shape.m_radius = 1.0;
 
-            const fd = new b2FixtureDef();
-            fd.shape = shape;
-            fd.friction = 0.6;
-            fd.density = 2.0;
-            body2.CreateFixture(fd);
+            body2.CreateFixture({
+                shape,
+                friction: 0.6,
+                density: 2.0,
+            });
         }
 
         {

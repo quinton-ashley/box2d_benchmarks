@@ -2,7 +2,7 @@
 Test case for collision/jerking issue.
 */
 
-import { b2Body, b2Vec2, b2ChainShape, b2FixtureDef, b2BodyType, b2PolygonShape } from "@box2d/core";
+import { b2Body, b2Vec2, b2ChainShape, b2BodyType, b2PolygonShape } from "@box2d/core";
 
 import { Test } from "../../test";
 import { Settings } from "../../settings";
@@ -61,12 +61,11 @@ export class Skier extends Test {
 
         const shape = new b2ChainShape();
         shape.CreateLoop(vertices);
-        const fd = new b2FixtureDef();
-        fd.shape = shape;
-        fd.density = 0.0;
-        fd.friction = SurfaceFriction;
-
-        ground.CreateFixture(fd);
+        ground.CreateFixture({
+            shape,
+            density: 0.0,
+            friction: SurfaceFriction,
+        });
 
         {
             // const BodyWidth = 1.0;
@@ -95,14 +94,12 @@ export class Skier extends Test {
             verts.push(new b2Vec2(SkiLength / 2 + SkiThickness, -BodyHeight / 2));
             ski.Set(verts);
 
-            const fd2 = new b2FixtureDef();
-            fd2.density = 1.0;
-
-            fd2.friction = SkiFriction;
-            fd2.restitution = SkiRestitution;
-
-            fd2.shape = ski;
-            skier.CreateFixture(fd2);
+            skier.CreateFixture({
+                density: 1.0,
+                friction: SkiFriction,
+                restitution: SkiRestitution,
+                shape: ski,
+            });
 
             skier.SetLinearVelocity(new b2Vec2(0.5, 0.0));
 

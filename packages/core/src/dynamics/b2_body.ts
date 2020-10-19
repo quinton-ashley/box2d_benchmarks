@@ -21,7 +21,7 @@ import { b2Vec2, b2Rot, b2Transform, b2Sweep, XY } from "../common/b2_math";
 import { b2Shape, b2MassData } from "../collision/b2_shape";
 import type { b2ContactEdge } from "./b2_contact";
 import { b2JointEdge } from "./b2_joint";
-import { b2Fixture, b2FixtureDef, b2IFixtureDef } from "./b2_fixture";
+import { b2Fixture, b2FixtureDef } from "./b2_fixture";
 import type { b2World } from "./b2_world";
 import { b2Assert } from "../common/b2_common";
 
@@ -209,13 +209,13 @@ export class b2Body {
         this.m_fixtureCount = 0;
     }
 
-    public CreateFixture(def: b2IFixtureDef): b2Fixture;
+    public CreateFixture(def: b2FixtureDef): b2Fixture;
 
     public CreateFixture(shape: b2Shape): b2Fixture;
 
     public CreateFixture(shape: b2Shape, density: number): b2Fixture;
 
-    public CreateFixture(a: b2IFixtureDef | b2Shape, b = 0): b2Fixture {
+    public CreateFixture(a: b2FixtureDef | b2Shape, b = 0): b2Fixture {
         if (a instanceof b2Shape) {
             return this.CreateFixtureShapeDensity(a, b);
         }
@@ -229,7 +229,7 @@ export class b2Body {
     /// Contacts are not created until the next time step.
     /// @param def the fixture definition.
     /// @warning This function is locked during callbacks.
-    public CreateFixtureDef(def: b2IFixtureDef): b2Fixture {
+    public CreateFixtureDef(def: b2FixtureDef): b2Fixture {
         b2Assert(!this.m_world.IsLocked());
 
         const fixture: b2Fixture = new b2Fixture(this, def);
@@ -263,13 +263,8 @@ export class b2Body {
     /// @param shape the shape to be cloned.
     /// @param density the shape density (set to zero for static bodies).
     /// @warning This function is locked during callbacks.
-    private static CreateFixtureShapeDensity_s_def: b2FixtureDef = new b2FixtureDef();
-
     public CreateFixtureShapeDensity(shape: b2Shape, density = 0): b2Fixture {
-        const def: b2FixtureDef = b2Body.CreateFixtureShapeDensity_s_def;
-        def.shape = shape;
-        def.density = density;
-        return this.CreateFixtureDef(def);
+        return this.CreateFixtureDef({ shape, density });
     }
 
     /// Destroy a fixture. This removes the fixture from the broad-phase and

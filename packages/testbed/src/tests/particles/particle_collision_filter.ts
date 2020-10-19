@@ -16,7 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import { b2ContactFilter, b2Vec2, b2ChainShape, b2FixtureDef, b2PolygonShape, b2Vec2_zero, XY } from "@box2d/core";
+import { b2ContactFilter, b2Vec2, b2ChainShape, b2PolygonShape, b2Vec2_zero, XY } from "@box2d/core";
 import { b2ParticleGroupDef, b2ParticleFlag, b2ParticleGroup } from "@box2d/particles";
 
 import { Test, RandomFloat } from "../../test";
@@ -71,12 +71,11 @@ export class ParticleCollisionFilter extends Test {
                 ),
             ];
             shape.CreateLoop(vertices);
-            const def = new b2FixtureDef();
-            def.shape = shape;
-            def.density = 0;
-            def.density = 0;
-            def.restitution = 1.0;
-            ground.CreateFixture(def);
+            ground.CreateFixture({
+                shape,
+                density: 0,
+                restitution: 1.0,
+            });
         }
 
         // create the particles

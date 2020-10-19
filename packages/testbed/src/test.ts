@@ -21,7 +21,6 @@ import {
     b2MouseJointDef,
     b2RandomRange,
     b2CircleShape,
-    b2FixtureDef,
     b2AABB,
     b2Color,
     DrawShapes,
@@ -378,11 +377,6 @@ export class Test extends b2ContactListener {
         const circle: b2CircleShape = new b2CircleShape();
         circle.m_radius = 25 / this.GetDefaultViewZoom();
 
-        const fd: b2FixtureDef = new b2FixtureDef();
-        fd.shape = circle;
-        fd.density = 20;
-        fd.restitution = 0;
-
         // b2Vec2 minV = position - b2Vec2(0.3f,0.3f);
         // b2Vec2 maxV = position + b2Vec2(0.3f,0.3f);
 
@@ -390,7 +384,11 @@ export class Test extends b2ContactListener {
         // aabb.lowerBound = minV;
         // aabb.upperBound = maxV;
 
-        this.m_bomb.CreateFixture(fd);
+        this.m_bomb.CreateFixture({
+            shape: circle,
+            density: 20,
+            restitution: 0,
+        });
     }
 
     public Resize(_width: number, _height: number) {}

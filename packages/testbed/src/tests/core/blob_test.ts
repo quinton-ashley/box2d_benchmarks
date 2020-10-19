@@ -16,16 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import {
-    b2EdgeShape,
-    b2Vec2,
-    b2AreaJointDef,
-    b2BodyType,
-    b2FixtureDef,
-    b2CircleShape,
-    b2LinearStiffness,
-    XY,
-} from "@box2d/core";
+import { b2EdgeShape, b2Vec2, b2AreaJointDef, b2BodyType, b2CircleShape, b2LinearStiffness, XY } from "@box2d/core";
 
 import { Test } from "../../test";
 
@@ -64,10 +55,10 @@ export class BlobTest extends Test {
                     position: { x: cx + rx * Math.cos(angle), y: cy + ry * Math.sin(angle) },
                 });
 
-                const fd = new b2FixtureDef();
-                fd.shape = new b2CircleShape(bodyRadius);
-                fd.density = 1.0;
-                body.CreateFixture(fd);
+                body.CreateFixture({
+                    shape: new b2CircleShape(bodyRadius),
+                    density: 1.0,
+                });
 
                 ajd.AddBody(body);
             }

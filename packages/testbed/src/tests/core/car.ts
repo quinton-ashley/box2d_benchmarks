@@ -60,10 +60,11 @@ export class Car extends Test {
 
             const shape: b2EdgeShape = new b2EdgeShape();
 
-            const fd: b2FixtureDef = new b2FixtureDef();
-            fd.shape = shape;
-            fd.density = 0.0;
-            fd.friction = 0.6;
+            const fd: b2FixtureDef = {
+                shape,
+                density: 0.0,
+                friction: 0.6,
+            };
 
             shape.SetTwoSided(new b2Vec2(-20.0, 0.0), new b2Vec2(20.0, 0.0));
             ground.CreateFixture(fd);
@@ -137,11 +138,11 @@ export class Car extends Test {
             const shape: b2PolygonShape = new b2PolygonShape();
             shape.SetAsBox(1.0, 0.125);
 
-            const fd: b2FixtureDef = new b2FixtureDef();
-            fd.shape = shape;
-            fd.density = 1.0;
-            fd.friction = 0.6;
-
+            const fd: b2FixtureDef = {
+                shape,
+                density: 1.0,
+                friction: 0.6,
+            };
             const jd: b2RevoluteJointDef = new b2RevoluteJointDef();
 
             let prevBody: b2Body = ground;
@@ -218,10 +219,11 @@ export class Car extends Test {
             this.m_car = this.m_world.CreateBody(bd);
             this.m_car.CreateFixture(chassis, 1.0);
 
-            const fd: b2FixtureDef = new b2FixtureDef();
-            fd.shape = circle;
-            fd.density = 1.0;
-            fd.friction = 0.9;
+            const fd: b2FixtureDef = {
+                shape: circle,
+                density: 1.0,
+                friction: 0.9,
+            };
 
             position.Set(-1.0, 0.35);
             this.m_wheel1 = this.m_world.CreateBody(bd);

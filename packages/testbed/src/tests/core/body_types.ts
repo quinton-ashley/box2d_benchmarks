@@ -20,7 +20,6 @@ import {
     b2Body,
     b2EdgeShape,
     b2Vec2,
-    b2FixtureDef,
     b2BodyType,
     b2PolygonShape,
     b2RevoluteJointDef,
@@ -47,11 +46,7 @@ export class BodyTypes extends Test {
         const gshape = new b2EdgeShape();
         gshape.SetTwoSided(new b2Vec2(-20.0, 0.0), new b2Vec2(20.0, 0.0));
 
-        /* b2FixtureDef */
-        const gfd = new b2FixtureDef();
-        gfd.shape = gshape;
-
-        ground.CreateFixture(gfd);
+        ground.CreateFixture({ shape: gshape });
 
         // Define attachment
         {
@@ -80,12 +75,11 @@ export class BodyTypes extends Test {
             const shape = new b2PolygonShape();
             shape.SetAsBox(0.5, 4.0, new b2Vec2(4.0, 0.0), 0.5 * Math.PI);
 
-            /* b2FixtureDef */
-            const fd = new b2FixtureDef();
-            fd.shape = shape;
-            fd.friction = 0.6;
-            fd.density = 2.0;
-            this.m_platform.CreateFixture(fd);
+            this.m_platform.CreateFixture({
+                shape,
+                friction: 0.6,
+                density: 2.0,
+            });
 
             /* b2RevoluteJointDef */
             const rjd = new b2RevoluteJointDef();
@@ -121,13 +115,11 @@ export class BodyTypes extends Test {
             const shape = new b2PolygonShape();
             shape.SetAsBox(0.75, 0.75);
 
-            /* b2FixtureDef */
-            const fd = new b2FixtureDef();
-            fd.shape = shape;
-            fd.friction = 0.6;
-            fd.density = 2.0;
-
-            body.CreateFixture(fd);
+            body.CreateFixture({
+                shape,
+                friction: 0.6,
+                density: 2.0,
+            });
         }
     }
 

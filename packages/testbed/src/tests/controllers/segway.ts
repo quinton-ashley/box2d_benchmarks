@@ -93,8 +93,6 @@ export class Segway extends Test {
         this.positionController.gainI = 0;
         this.positionController.gainD = 1.5;
 
-        const fd: b2FixtureDef = new b2FixtureDef();
-
         // pendulumBody = new p2.Body({
         //     mass: 1,
         //     position: [0, 2 + 0.5 * PENDULUM_LENGTH]
@@ -110,9 +108,11 @@ export class Segway extends Test {
         });
         const pendulumShape: b2PolygonShape = new b2PolygonShape();
         pendulumShape.SetAsBox(0.5, 0.5 * Segway.PENDULUM_LENGTH);
-        fd.shape = pendulumShape;
-        fd.density = 1 / (1 * Segway.PENDULUM_LENGTH); // TODO: specify mass
-        // fd.mass = 1;
+        const fd: b2FixtureDef = {
+            shape: pendulumShape,
+            density: 1 / (1 * Segway.PENDULUM_LENGTH), // TODO: specify mass
+            // mass: 1,
+        };
         this.pendulumBody.CreateFixture(fd);
 
         // wheelBody = new p2.Body({

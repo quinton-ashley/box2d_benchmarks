@@ -16,7 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import { b2Body, b2Vec2, b2ChainShape, b2FixtureDef, b2PolygonShape, b2Clamp, b2Vec2_zero, XY } from "@box2d/core";
+import { b2Body, b2Vec2, b2ChainShape, b2PolygonShape, b2Clamp, b2Vec2_zero, XY } from "@box2d/core";
 import { b2ParticleGroup, b2ParticleGroupDef, b2ParticleFlag } from "@box2d/particles";
 
 import { Test, RandomFloat } from "../../test";
@@ -88,11 +88,11 @@ export class Maxwell extends Test {
                 new b2Vec2(-Maxwell.k_containerHalfWidth, Maxwell.k_containerHeight),
             ];
             shape.CreateLoop(vertices, 4);
-            const def = new b2FixtureDef();
-            def.shape = shape;
-            def.density = 0;
-            def.restitution = 1.0;
-            ground.CreateFixture(def);
+            ground.CreateFixture({
+                shape,
+                density: 0,
+                restitution: 1.0,
+            });
         }
 
         // Enable the barrier.
@@ -124,11 +124,11 @@ export class Maxwell extends Test {
                 new b2Vec2(0, this.m_position),
                 0,
             );
-            const def = new b2FixtureDef();
-            def.shape = barrierShape;
-            def.density = 0;
-            def.restitution = 1.0;
-            this.m_barrierBody.CreateFixture(def);
+            this.m_barrierBody.CreateFixture({
+                shape: barrierShape,
+                density: 0,
+                restitution: 1.0,
+            });
         }
     }
 

@@ -40,11 +40,6 @@ export class TestCCD extends Test {
         // Always on, even if default is off
         this.m_world.SetContinuousPhysics(true);
 
-        const fd = new b2FixtureDef();
-        // These values are used for all the parts of the 'basket'
-        fd.density = 4.0;
-        fd.restitution = 1.4;
-
         // Create 'basket'
         {
             const body = this.m_world.CreateBody({
@@ -55,7 +50,13 @@ export class TestCCD extends Test {
 
             const sd_bottom = new b2PolygonShape();
             sd_bottom.SetAsBox(4.5, 0.45);
-            fd.shape = sd_bottom;
+            // These values are used for all the parts of the 'basket'
+            const fd: b2FixtureDef = {
+                density: 4.0,
+                restitution: 1.4,
+                shape: sd_bottom,
+            };
+
             body.CreateFixture(fd);
 
             const sd_left = new b2PolygonShape();
@@ -72,10 +73,6 @@ export class TestCCD extends Test {
         // add some small circles for effect
         for (let i = 0; i < 5; i++) {
             const cd = new b2CircleShape(Math.random() * 1.0 + 0.5);
-            fd.shape = cd;
-            fd.friction = 0.3;
-            fd.density = 1.0;
-            fd.restitution = 1.1;
             const body = this.m_world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
                 bullet: true,
@@ -84,7 +81,12 @@ export class TestCCD extends Test {
                     y: Math.random() * 32.0 + 2.0,
                 },
             });
-            body.CreateFixture(fd);
+            body.CreateFixture({
+                shape: cd,
+                friction: 0.3,
+                density: 1.0,
+                restitution: 1.1,
+            });
         }
     }
 

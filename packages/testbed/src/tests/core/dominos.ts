@@ -58,10 +58,11 @@ export class Dominos extends Test {
             const shape = new b2PolygonShape();
             shape.SetAsBox(0.1, 1.0);
 
-            const fd = new b2FixtureDef();
-            fd.shape = shape;
-            fd.density = 20.0;
-            fd.friction = 0.1;
+            const fd: b2FixtureDef = {
+                shape,
+                density: 20.0,
+                friction: 0.1,
+            };
 
             for (let i = 0; i < 10; ++i) {
                 const body = this.m_world.CreateBody({
@@ -138,11 +139,11 @@ export class Dominos extends Test {
             });
 
             const shape = new b2PolygonShape();
-            const fd = new b2FixtureDef();
-
-            fd.shape = shape;
-            fd.density = 10.0;
-            fd.friction = 0.1;
+            const fd: b2FixtureDef = {
+                shape,
+                density: 10.0,
+                friction: 0.1,
+            };
 
             shape.SetAsBox(1.0, 0.1, new b2Vec2(0.0, -0.9), 0.0);
             b5.CreateFixture(fd);

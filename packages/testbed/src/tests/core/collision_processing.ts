@@ -38,11 +38,8 @@ export class CollisionProcessing extends Test {
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(-40.0, 0.0), new b2Vec2(40.0, 0.0));
 
-            const sd = new b2FixtureDef();
-            sd.shape = shape;
-
             const ground = this.m_world.CreateBody();
-            ground.CreateFixture(sd);
+            ground.CreateFixture({ shape });
         }
 
         const xLo = -5.0;
@@ -59,9 +56,10 @@ export class CollisionProcessing extends Test {
         const polygon = new b2PolygonShape();
         polygon.Set(vertices, 3);
 
-        const triangleShapeDef = new b2FixtureDef();
-        triangleShapeDef.shape = polygon;
-        triangleShapeDef.density = 1.0;
+        const triangleShapeDef: b2FixtureDef = {
+            shape: polygon,
+            density: 1.0,
+        };
 
         const body1 = this.m_world.CreateBody({
             type: b2BodyType.b2_dynamicBody,
@@ -84,9 +82,10 @@ export class CollisionProcessing extends Test {
         // Small box
         polygon.SetAsBox(1.0, 0.5);
 
-        const boxShapeDef = new b2FixtureDef();
-        boxShapeDef.shape = polygon;
-        boxShapeDef.density = 1.0;
+        const boxShapeDef: b2FixtureDef = {
+            shape: polygon,
+            density: 1.0,
+        };
 
         const body3 = this.m_world.CreateBody({
             type: b2BodyType.b2_dynamicBody,
@@ -107,9 +106,10 @@ export class CollisionProcessing extends Test {
         const circle = new b2CircleShape();
         circle.m_radius = 1.0;
 
-        const circleShapeDef = new b2FixtureDef();
-        circleShapeDef.shape = circle;
-        circleShapeDef.density = 1.0;
+        const circleShapeDef: b2FixtureDef = {
+            shape: circle,
+            density: 1.0,
+        };
 
         const body5 = this.m_world.CreateBody({
             type: b2BodyType.b2_dynamicBody,

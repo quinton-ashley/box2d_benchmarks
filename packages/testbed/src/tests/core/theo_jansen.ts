@@ -20,7 +20,6 @@ import {
     b2Vec2,
     b2Body,
     b2RevoluteJoint,
-    b2FixtureDef,
     b2PolygonShape,
     b2Vec2_zero,
     b2BodyType,
@@ -89,10 +88,6 @@ export class TheoJansen extends Test {
             const shape = new b2PolygonShape();
             shape.SetAsBox(2.5, 1.0);
 
-            const sd = new b2FixtureDef();
-            sd.density = 1.0;
-            sd.shape = shape;
-            sd.filter.groupIndex = -1;
             this.m_chassis = this.m_world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
                 position: {
@@ -100,17 +95,19 @@ export class TheoJansen extends Test {
                     y: pivot.y + this.m_offset.y,
                 },
             });
-            this.m_chassis.CreateFixture(sd);
+            this.m_chassis.CreateFixture({
+                density: 1.0,
+                shape,
+                filter: {
+                    groupIndex: -1,
+                },
+            });
         }
 
         {
             const shape = new b2CircleShape();
             shape.m_radius = 1.6;
 
-            const sd = new b2FixtureDef();
-            sd.density = 1.0;
-            sd.shape = shape;
-            sd.filter.groupIndex = -1;
             this.m_wheel = this.m_world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
                 position: {
@@ -118,7 +115,13 @@ export class TheoJansen extends Test {
                     y: pivot.y + this.m_offset.y,
                 },
             });
-            this.m_wheel.CreateFixture(sd);
+            this.m_wheel.CreateFixture({
+                density: 1.0,
+                shape,
+                filter: {
+                    groupIndex: -1,
+                },
+            });
         }
 
         {
@@ -153,13 +156,6 @@ export class TheoJansen extends Test {
         const p5 = new b2Vec2(6.0 * s, 1.5);
         const p6 = new b2Vec2(2.5 * s, 3.7);
 
-        const fd1 = new b2FixtureDef();
-        const fd2 = new b2FixtureDef();
-        fd1.filter.groupIndex = -1;
-        fd2.filter.groupIndex = -1;
-        fd1.density = 1.0;
-        fd2.density = 1.0;
-
         const poly1 = new b2PolygonShape();
         const poly2 = new b2PolygonShape();
 
@@ -189,9 +185,6 @@ export class TheoJansen extends Test {
             poly2.Set(vertices);
         }
 
-        fd1.shape = poly1;
-        fd2.shape = poly2;
-
         const body1 = this.m_world.CreateBody({
             type: b2BodyType.b2_dynamicBody,
             position: this.m_offset,
@@ -203,8 +196,16 @@ export class TheoJansen extends Test {
             angularDamping: 10.0,
         });
 
-        body1.CreateFixture(fd1);
-        body2.CreateFixture(fd2);
+        body1.CreateFixture({
+            filter: { groupIndex: -1 },
+            shape: poly1,
+            density: 1.0,
+        });
+        body2.CreateFixture({
+            filter: { groupIndex: -1 },
+            density: 1.0,
+            shape: poly2,
+        });
 
         {
             const jd = new b2DistanceJointDef();

@@ -17,7 +17,7 @@
  */
 
 import { BlendFunc, Light, lightSettings, PointLight, RayHandler, RECOMMENDED_GAMMA_CORRECTION } from "@box2d/lights";
-import { b2Vec2, b2EdgeShape, b2FixtureDef, b2Body, b2Fixture } from "@box2d/core";
+import { b2Vec2, b2EdgeShape, b2Body, b2Fixture } from "@box2d/core";
 
 import { g_camera } from "../../utils/camera";
 import { g_debugDraw } from "../../utils/draw";
@@ -82,14 +82,14 @@ export class DrawWorld extends Test {
         this.setBlending("overburn");
 
         const heartBody = this.m_world.CreateBody();
-        const heartFixtureDef = new b2FixtureDef();
-        heartFixtureDef.density = 0.0;
-        heartFixtureDef.restitution = 0;
         for (const line of heart) {
             const shape = new b2EdgeShape();
             shape.SetTwoSided({ x: line.x1, y: line.y1 }, { x: line.x2, y: line.y2 });
-            heartFixtureDef.shape = shape;
-            heartBody.CreateFixture(heartFixtureDef);
+            heartBody.CreateFixture({
+                shape,
+                density: 0.0,
+                restitution: 0,
+            });
         }
     }
 
@@ -165,11 +165,11 @@ export class DrawWorld extends Test {
             if (this.currentEdgeFixture) this.currentEdgeBody.DestroyFixture(this.currentEdgeFixture);
             const shape = new b2EdgeShape();
             shape.SetTwoSided(this.dragStart, p);
-            const fd = new b2FixtureDef();
-            fd.shape = shape;
-            fd.density = 0.0;
-            fd.restitution = 0;
-            this.currentEdgeFixture = this.currentEdgeBody.CreateFixture(fd);
+            this.currentEdgeFixture = this.currentEdgeBody.CreateFixture({
+                shape,
+                density: 0.0,
+                restitution: 0,
+            });
         }
     }
 

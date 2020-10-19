@@ -55,27 +55,27 @@ export class ApplyForce extends Test {
             /* b2EdgeShape */
             const shape = new b2EdgeShape();
 
-            /* b2FixtureDef */
-            const sd = new b2FixtureDef();
-            sd.shape = shape;
-            sd.density = 0.0;
-            sd.restitution = k_restitution;
+            const fd: b2FixtureDef = {
+                shape,
+                density: 0.0,
+                restitution: k_restitution,
+            };
 
             // Left vertical
             shape.SetTwoSided(new b2Vec2(-20.0, -20.0), new b2Vec2(-20.0, 20.0));
-            ground.CreateFixture(sd);
+            ground.CreateFixture(fd);
 
             // Right vertical
             shape.SetTwoSided(new b2Vec2(20.0, -20.0), new b2Vec2(20.0, 20.0));
-            ground.CreateFixture(sd);
+            ground.CreateFixture(fd);
 
             // Top horizontal
             shape.SetTwoSided(new b2Vec2(-20.0, 20.0), new b2Vec2(20.0, 20.0));
-            ground.CreateFixture(sd);
+            ground.CreateFixture(fd);
 
             // Bottom horizontal
             shape.SetTwoSided(new b2Vec2(-20.0, -20.0), new b2Vec2(20.0, -20.0));
-            ground.CreateFixture(sd);
+            ground.CreateFixture(fd);
         }
 
         {
@@ -94,11 +94,6 @@ export class ApplyForce extends Test {
             const poly1 = new b2PolygonShape();
             poly1.Set(vertices, 3);
 
-            /* b2FixtureDef */
-            const sd1 = new b2FixtureDef();
-            sd1.shape = poly1;
-            sd1.density = 2.0;
-
             /* b2Transform */
             const xf2 = new b2Transform();
             xf2.q.SetAngle(-0.3524 * Math.PI);
@@ -112,19 +107,20 @@ export class ApplyForce extends Test {
             const poly2 = new b2PolygonShape();
             poly2.Set(vertices, 3);
 
-            /* b2FixtureDef */
-            const sd2 = new b2FixtureDef();
-            sd2.shape = poly2;
-            sd2.density = 2.0;
-
             this.m_body = this.m_world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
                 position: { x: 0.0, y: 3.0 },
                 angle: Math.PI,
                 allowSleep: false,
             });
-            this.m_body.CreateFixture(sd1);
-            this.m_body.CreateFixture(sd2);
+            this.m_body.CreateFixture({
+                shape: poly1,
+                density: 2.0,
+            });
+            this.m_body.CreateFixture({
+                shape: poly2,
+                density: 2.0,
+            });
 
             const gravity = 10.0;
             const I: number = this.m_body.GetInertia();
@@ -153,11 +149,11 @@ export class ApplyForce extends Test {
             const shape = new b2PolygonShape();
             shape.SetAsBox(0.5, 0.5);
 
-            /* b2FixtureDef */
-            const fd = new b2FixtureDef();
-            fd.shape = shape;
-            fd.density = 1.0;
-            fd.friction = 0.3;
+            const fd: b2FixtureDef = {
+                shape,
+                density: 1.0,
+                friction: 0.3,
+            };
 
             for (/* int */ let i = 0; i < 10; ++i) {
                 /* b2Body */

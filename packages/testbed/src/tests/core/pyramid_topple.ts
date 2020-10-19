@@ -1,4 +1,4 @@
-import { b2World, b2Vec2, b2BodyType, b2PolygonShape, b2FixtureDef, b2EdgeShape, XY } from "@box2d/core";
+import { b2World, b2Vec2, b2BodyType, b2PolygonShape, b2EdgeShape, XY } from "@box2d/core";
 
 import { Test } from "../../test";
 
@@ -24,12 +24,12 @@ export class PyramidTopple extends Test {
                 shape.SetAsBox(0.5 * WIDTH, 0.5 * HEIGHT);
             }
 
-            const fd = new b2FixtureDef();
-            fd.shape = shape;
-            fd.density = mass / (WIDTH * HEIGHT);
-            fd.friction = 0.6;
-            fd.restitution = 0.0;
-            body.CreateFixture(fd);
+            body.CreateFixture({
+                shape,
+                density: mass / (WIDTH * HEIGHT),
+                friction: 0.6,
+                restitution: 0.0,
+            });
         };
 
         const world = this.m_world;
@@ -42,11 +42,11 @@ export class PyramidTopple extends Test {
         const body = world.CreateBody();
         const shape = new b2EdgeShape();
         shape.SetTwoSided(new b2Vec2(-600, -240), new b2Vec2(600, -240));
-        const fd = new b2FixtureDef();
-        fd.shape = shape;
-        fd.friction = 1.0;
-        fd.restitution = 1.0;
-        body.CreateFixture(fd);
+        body.CreateFixture({
+            shape,
+            friction: 1.0,
+            restitution: 1.0,
+        });
 
         // Add the dominoes.
         const n = 12;

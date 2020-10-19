@@ -56,10 +56,11 @@ export class VerticalStack extends Test {
             const shape = new b2PolygonShape();
             shape.SetAsBox(0.5, 0.5);
 
-            const fd = new b2FixtureDef();
-            fd.shape = shape;
-            fd.density = 1.0;
-            fd.friction = 0.3;
+            const fd: b2FixtureDef = {
+                shape,
+                density: 1.0,
+                friction: 0.3,
+            };
 
             for (let i = 0; i < VerticalStack.e_rowCount; ++i) {
                 const n = j * VerticalStack.e_rowCount + i;
@@ -96,10 +97,11 @@ export class VerticalStack extends Test {
             const shape = new b2CircleShape();
             shape.m_radius = 0.25;
 
-            const fd = new b2FixtureDef();
-            fd.shape = shape;
-            fd.density = 20.0;
-            fd.restitution = 0.05;
+            const fd: b2FixtureDef = {
+                shape,
+                density: 20.0,
+                restitution: 0.05,
+            };
 
             this.m_bullet = this.m_world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
@@ -125,17 +127,16 @@ export class VerticalStack extends Test {
         //         const shape = new b2CircleShape();
         //         shape.m_radius = 0.25;
 
-        //         const fd = new b2FixtureDef();
-        //         fd.shape = shape;
-        //         fd.density = 20.0;
-        //         fd.restitution = 0.05;
-
         //         this.m_bullet = this.m_world.CreateBody({
         //             type: b2BodyType.b2_dynamicBody,
         //             bullet: true,
         //             position: { x: -31.0, y: 5.0 },
         //         });
-        //         this.m_bullet.CreateFixture(fd);
+        //         this.m_bullet.CreateFixture({
+        //             shape,
+        //             density: 20.0,
+        //             restitution: 0.05,
+        //         });
 
         //         this.m_bullet.SetLinearVelocity(new b2Vec2(400.0, 0.0));
         //     }

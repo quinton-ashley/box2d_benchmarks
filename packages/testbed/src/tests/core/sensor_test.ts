@@ -22,7 +22,6 @@ import {
     b2EdgeShape,
     b2Vec2,
     b2CircleShape,
-    b2FixtureDef,
     b2BodyType,
     b2Contact,
     b2_epsilon_sq,
@@ -71,10 +70,10 @@ export class SensorTest extends Test {
             shape.m_radius = 5.0;
             shape.m_p.Set(0.0, 10.0);
 
-            const fd = new b2FixtureDef();
-            fd.shape = shape;
-            fd.isSensor = true;
-            this.m_sensor = ground.CreateFixture(fd);
+            this.m_sensor = ground.CreateFixture({
+                shape,
+                isSensor: true,
+            });
         }
 
         {

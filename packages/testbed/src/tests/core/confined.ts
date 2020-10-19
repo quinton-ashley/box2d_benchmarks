@@ -57,10 +57,11 @@ export class Confined extends Test {
         shape.m_p.SetZero();
         shape.m_radius = radius;
 
-        const fd = new b2FixtureDef();
-        fd.shape = shape;
-        fd.density = 1.0;
-        fd.friction = 0.1;
+        const fd: b2FixtureDef = {
+            shape,
+            density: 1.0,
+            friction: 0.1,
+        };
 
         for (let j = 0; j < Confined.e_columnCount; ++j) {
             for (let i = 0; i < Confined.e_rowCount; ++i) {
@@ -91,11 +92,6 @@ export class Confined extends Test {
         shape.m_p.SetZero();
         shape.m_radius = radius;
 
-        const fd = new b2FixtureDef();
-        fd.shape = shape;
-        fd.density = 1.0;
-        fd.friction = 0.0;
-
         // bd.allowSleep = false;
         const body = this.m_world.CreateBody({
             type: b2BodyType.b2_dynamicBody,
@@ -105,7 +101,11 @@ export class Confined extends Test {
             },
         });
 
-        body.CreateFixture(fd);
+        body.CreateFixture({
+            shape,
+            density: 1.0,
+            friction: 0.0,
+        });
     }
 
     getHotkeys(): HotKey[] {

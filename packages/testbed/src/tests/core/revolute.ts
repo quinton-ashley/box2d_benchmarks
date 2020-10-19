@@ -21,7 +21,6 @@ import {
     b2RevoluteJoint,
     b2EdgeShape,
     b2Vec2,
-    b2FixtureDef,
     b2CircleShape,
     b2BodyType,
     b2RevoluteJointDef,
@@ -49,12 +48,10 @@ export class Revolute extends Test {
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(-40.0, 0.0), new b2Vec2(40.0, 0.0));
 
-            /* b2FixtureDef */
-            const fd = new b2FixtureDef();
-            fd.shape = shape;
-            // fd.filter.categoryBits = 2;
-
-            ground.CreateFixture(fd);
+            ground.CreateFixture({
+                shape,
+                // filter.categoryBits = 2;
+            });
         }
 
         {
@@ -91,17 +88,17 @@ export class Revolute extends Test {
             const circle_shape = new b2CircleShape();
             circle_shape.m_radius = 3.0;
 
-            /* b2FixtureDef */
-            const fd = new b2FixtureDef();
-            fd.density = 5.0;
-            fd.filter.maskBits = 1;
-            fd.shape = circle_shape;
-
             this.m_ball = this.m_world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
                 position: { x: 5.0, y: 30.0 },
             });
-            this.m_ball.CreateFixture(fd);
+            this.m_ball.CreateFixture({
+                density: 5.0,
+                filter: {
+                    maskBits: 1,
+                },
+                shape: circle_shape,
+            });
 
             /* b2PolygonShape */
             const polygon_shape = new b2PolygonShape();
@@ -139,12 +136,10 @@ export class Revolute extends Test {
             verts[2].Set(17.19, 36.36);
             polyShape.Set(verts, 3);
 
-            /* b2FixtureDef */
-            const polyFixtureDef = new b2FixtureDef();
-            polyFixtureDef.shape = polyShape;
-            polyFixtureDef.density = 1;
-
-            body.CreateFixture(polyFixtureDef); // assertion hits inside here
+            body.CreateFixture({
+                shape: polyShape,
+                density: 1,
+            }); // assertion hits inside here
         }
     }
 

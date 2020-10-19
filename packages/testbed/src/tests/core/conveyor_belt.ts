@@ -16,16 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import {
-    b2Fixture,
-    b2EdgeShape,
-    b2Vec2,
-    b2PolygonShape,
-    b2FixtureDef,
-    b2BodyType,
-    b2Contact,
-    b2Manifold,
-} from "@box2d/core";
+import { b2Fixture, b2EdgeShape, b2Vec2, b2PolygonShape, b2BodyType, b2Contact, b2Manifold } from "@box2d/core";
 
 import { Test } from "../../test";
 
@@ -55,10 +46,10 @@ export class ConveyorBelt extends Test {
             const shape = new b2PolygonShape();
             shape.SetAsBox(10.0, 0.5);
 
-            const fd = new b2FixtureDef();
-            fd.shape = shape;
-            fd.friction = 0.8;
-            this.m_platform = body.CreateFixture(fd);
+            this.m_platform = body.CreateFixture({
+                shape,
+                friction: 0.8,
+            });
         }
 
         // Boxes

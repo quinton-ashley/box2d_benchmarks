@@ -28,11 +28,11 @@ import { b2_lengthUnitsPerMeter } from "../common/b2_settings";
 /// This holds contact filtering data.
 export interface b2IFilter {
     /// The collision category bits. Normally you would just set one bit.
-    categoryBits: number;
+    categoryBits?: number;
 
     /// The collision mask bits. This states the categories that this
     /// shape would accept for collision.
-    maskBits: number;
+    maskBits?: number;
 
     /// Collision groups allow a certain group of objects to never collide (negative)
     /// or always collide (positive). Zero means no collision group. Non-zero group
@@ -42,19 +42,23 @@ export interface b2IFilter {
 
 /// This holds contact filtering data.
 export class b2Filter implements b2IFilter {
-    public static readonly DEFAULT: Readonly<b2Filter> = new b2Filter();
+    public static readonly DEFAULT: Readonly<Required<b2IFilter>> = {
+        categoryBits: 0x0001,
+        maskBits: 0xffff,
+        groupIndex: 0,
+    };
 
     /// The collision category bits. Normally you would just set one bit.
-    public categoryBits = 0x0001;
+    public categoryBits = b2Filter.DEFAULT.categoryBits;
 
     /// The collision mask bits. This states the categories that this
     /// shape would accept for collision.
-    public maskBits = 0xffff;
+    public maskBits = b2Filter.DEFAULT.maskBits;
 
     /// Collision groups allow a certain group of objects to never collide (negative)
     /// or always collide (positive). Zero means no collision group. Non-zero group
     /// filtering always wins against the mask bits.
-    public groupIndex = 0;
+    public groupIndex = b2Filter.DEFAULT.groupIndex;
 
     public Clone(): b2Filter {
         return new b2Filter().Copy(this);
@@ -62,16 +66,16 @@ export class b2Filter implements b2IFilter {
 
     public Copy(other: b2IFilter): this {
         // DEBUG: b2Assert(this !== other);
-        this.categoryBits = other.categoryBits;
-        this.maskBits = other.maskBits;
-        this.groupIndex = other.groupIndex ?? 0;
+        this.categoryBits = other.categoryBits ?? b2Filter.DEFAULT.categoryBits;
+        this.maskBits = other.maskBits ?? b2Filter.DEFAULT.maskBits;
+        this.groupIndex = other.groupIndex ?? b2Filter.DEFAULT.groupIndex;
         return this;
     }
 }
 
 /// A fixture definition is used to create a fixture. This class defines an
 /// abstract fixture definition. You can reuse fixture definitions safely.
-export interface b2IFixtureDef {
+export interface b2FixtureDef {
     /// The shape, this must be set. The shape will be cloned, so you
     /// can create the shape on the stack.
     shape: b2Shape;
@@ -98,33 +102,6 @@ export interface b2IFixtureDef {
 
     /// Contact filtering data.
     filter?: b2IFilter;
-}
-
-/// A fixture definition is used to create a fixture. This class defines an
-/// abstract fixture definition. You can reuse fixture definitions safely.
-export class b2FixtureDef implements b2IFixtureDef {
-    /// The shape, this must be set. The shape will be cloned, so you
-    /// can create the shape on the stack.
-    public shape!: b2Shape;
-
-    /// Use this to store application specific fixture data.
-    public userData: any = null;
-
-    /// The friction coefficient, usually in the range [0,1].
-    public friction = 0.2;
-
-    /// The restitution (elasticity) usually in the range [0,1].
-    public restitution = 0;
-
-    /// The density, usually in kg/m^2.
-    public density = 0;
-
-    /// A sensor shape collects contact information but never generates a collision
-    /// response.
-    public isSensor = false;
-
-    /// Contact filtering data.
-    public readonly filter: b2Filter = new b2Filter();
 }
 
 /// This proxy is used internally to connect fixtures to the broad-phase.
@@ -208,7 +185,7 @@ export class b2Fixture {
 
     public m_userData: any = null;
 
-    constructor(body: b2Body, def: b2IFixtureDef) {
+    constructor(body: b2Body, def: b2FixtureDef) {
         this.m_body = body;
         this.m_shape = def.shape.Clone();
         this.m_userData = def.userData ?? null;

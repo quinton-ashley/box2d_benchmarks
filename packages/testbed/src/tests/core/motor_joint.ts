@@ -16,16 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import {
-    b2MotorJoint,
-    b2EdgeShape,
-    b2Vec2,
-    b2FixtureDef,
-    b2BodyType,
-    b2PolygonShape,
-    b2MotorJointDef,
-    b2Color,
-} from "@box2d/core";
+import { b2MotorJoint, b2EdgeShape, b2Vec2, b2BodyType, b2PolygonShape, b2MotorJointDef, b2Color } from "@box2d/core";
 
 import { Test } from "../../test";
 import { Settings } from "../../settings";
@@ -50,10 +41,7 @@ export class MotorJoint extends Test {
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(-20.0, 0.0), new b2Vec2(20.0, 0.0));
 
-            const fd = new b2FixtureDef();
-            fd.shape = shape;
-
-            ground.CreateFixture(fd);
+            ground.CreateFixture({ shape });
         }
 
         // Define motorized body
@@ -67,11 +55,11 @@ export class MotorJoint extends Test {
             const shape = new b2PolygonShape();
             shape.SetAsBox(2.0, 0.5);
 
-            const fd = new b2FixtureDef();
-            fd.shape = shape;
-            fd.friction = 0.6;
-            fd.density = 2.0;
-            body.CreateFixture(fd);
+            body.CreateFixture({
+                shape,
+                friction: 0.6,
+                density: 2.0,
+            });
 
             const mjd = new b2MotorJointDef();
             mjd.Initialize(ground, body);

@@ -128,11 +128,12 @@ export class OfficialDemo extends Test {
         this.createBoundary();
 
         const ballShape = new b2CircleShape(RADIUS);
-        const def = new b2FixtureDef();
-        def.restitution = 0.9;
-        def.friction = 0.01;
-        def.shape = ballShape;
-        def.density = 1;
+        const def: b2FixtureDef = {
+            restitution: 0.9,
+            friction: 0.01,
+            shape: ballShape,
+            density: 1,
+        };
 
         const createMarble = () => {
             // Create the BodyDef, set a random position above the

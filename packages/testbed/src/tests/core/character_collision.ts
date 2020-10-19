@@ -16,17 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import {
-    b2Body,
-    b2EdgeShape,
-    b2Vec2,
-    b2ChainShape,
-    b2PolygonShape,
-    b2BodyType,
-    b2FixtureDef,
-    b2CircleShape,
-    XY,
-} from "@box2d/core";
+import { b2Body, b2EdgeShape, b2Vec2, b2ChainShape, b2PolygonShape, b2BodyType, b2CircleShape, XY } from "@box2d/core";
 
 import { Test } from "../../test";
 import { Settings } from "../../settings";
@@ -146,10 +136,10 @@ export class CharacterCollision extends Test {
             const shape = new b2PolygonShape();
             shape.SetAsBox(0.5, 0.5);
 
-            const fd = new b2FixtureDef();
-            fd.shape = shape;
-            fd.density = 20.0;
-            body.CreateFixture(fd);
+            body.CreateFixture({
+                shape,
+                density: 20.0,
+            });
         }
 
         // Square character 2
@@ -164,10 +154,10 @@ export class CharacterCollision extends Test {
             const shape = new b2PolygonShape();
             shape.SetAsBox(0.25, 0.25);
 
-            const fd = new b2FixtureDef();
-            fd.shape = shape;
-            fd.density = 20.0;
-            body.CreateFixture(fd);
+            body.CreateFixture({
+                shape,
+                density: 20.0,
+            });
         }
 
         // Hexagon character
@@ -190,10 +180,10 @@ export class CharacterCollision extends Test {
             const shape = new b2PolygonShape();
             shape.Set(vertices, 6);
 
-            const fd = new b2FixtureDef();
-            fd.shape = shape;
-            fd.density = 20.0;
-            body.CreateFixture(fd);
+            body.CreateFixture({
+                shape,
+                density: 20.0,
+            });
         }
 
         // Circle character
@@ -208,10 +198,10 @@ export class CharacterCollision extends Test {
             const shape = new b2CircleShape();
             shape.m_radius = 0.5;
 
-            const fd = new b2FixtureDef();
-            fd.shape = shape;
-            fd.density = 20.0;
-            body.CreateFixture(fd);
+            body.CreateFixture({
+                shape,
+                density: 20.0,
+            });
         }
 
         // Circle character
@@ -225,11 +215,11 @@ export class CharacterCollision extends Test {
             const shape = new b2CircleShape();
             shape.m_radius = 0.25;
 
-            const fd = new b2FixtureDef();
-            fd.shape = shape;
-            fd.density = 20.0;
-            fd.friction = 1.0;
-            this.m_character.CreateFixture(fd);
+            this.m_character.CreateFixture({
+                shape,
+                density: 20.0,
+                friction: 1.0,
+            });
         }
     }
 

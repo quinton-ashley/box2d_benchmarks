@@ -53,12 +53,13 @@ export class TestStack extends Test {
             position,
             // isBullet: true,
         };
-        const fd = new b2FixtureDef();
         const polygon = new b2PolygonShape();
-        fd.shape = polygon;
-        fd.density = 1.0;
-        fd.friction = 0.5;
-        fd.restitution = 0.1;
+        const fd: b2FixtureDef = {
+            shape: polygon,
+            density: 1.0,
+            friction: 0.5,
+            restitution: 0.1,
+        };
         polygon.SetAsBox(1.0, 1.0);
         // Create 3 stacks
         for (let i = 0; i < 10; ++i) {
