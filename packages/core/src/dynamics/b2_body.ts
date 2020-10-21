@@ -168,9 +168,7 @@ export class b2Body {
         this.m_world = world;
 
         this.m_xf.p.Copy(bd.position ?? b2Vec2.ZERO);
-        // DEBUG: b2Assert(this.m_xf.p.IsValid());
         this.m_xf.q.SetAngle(bd.angle ?? 0);
-        // DEBUG: b2Assert(Number.isFinite(this.m_xf.q.GetAngle()));
 
         this.m_sweep.localCenter.SetZero();
         this.m_sweep.c0.Copy(this.m_xf.p);
@@ -179,16 +177,11 @@ export class b2Body {
         this.m_sweep.alpha0 = 0;
 
         this.m_linearVelocity.Copy(bd.linearVelocity ?? b2Vec2.ZERO);
-        // DEBUG: b2Assert(this.m_linearVelocity.IsValid());
         this.m_angularVelocity = bd.angularVelocity ?? 0;
-        // DEBUG: b2Assert(Number.isFinite(this.m_angularVelocity));
 
         this.m_linearDamping = bd.linearDamping ?? 0;
         this.m_angularDamping = bd.angularDamping ?? 0;
         this.m_gravityScale = bd.gravityScale ?? 1;
-        // DEBUG: b2Assert(Number.isFinite(this.m_gravityScale) && this.m_gravityScale >= 0);
-        // DEBUG: b2Assert(Number.isFinite(this.m_angularDamping) && this.m_angularDamping >= 0);
-        // DEBUG: b2Assert(Number.isFinite(this.m_linearDamping) && this.m_linearDamping >= 0);
 
         this.m_force.SetZero();
         this.m_torque = 0;
@@ -217,7 +210,8 @@ export class b2Body {
 
     public CreateFixture(a: b2FixtureDef | b2Shape, b = 0): b2Fixture {
         if (a instanceof b2Shape) {
-            return this.CreateFixtureShapeDensity(a, b);
+            // fixme: call directly to avoid overload check
+            return this.CreateShapeFixture(a, b);
         }
         return this.CreateFixtureDef(a);
     }
@@ -235,14 +229,13 @@ export class b2Body {
         const fixture: b2Fixture = new b2Fixture(this, def);
 
         if (this.m_enabledFlag) {
-            fixture.CreateProxies();
+            const broadPhase = this.m_world.m_contactManager.m_broadPhase;
+            fixture.CreateProxies(broadPhase, this.m_xf);
         }
 
         fixture.m_next = this.m_fixtureList;
         this.m_fixtureList = fixture;
         ++this.m_fixtureCount;
-
-        // fixture.m_body = this;
 
         // Adjust mass properties if needed.
         if (fixture.m_density > 0) {
@@ -263,7 +256,7 @@ export class b2Body {
     /// @param shape the shape to be cloned.
     /// @param density the shape density (set to zero for static bodies).
     /// @warning This function is locked during callbacks.
-    public CreateFixtureShapeDensity(shape: b2Shape, density = 0): b2Fixture {
+    public CreateShapeFixture(shape: b2Shape, density = 0): b2Fixture {
         return this.CreateFixtureDef({ shape, density });
     }
 
@@ -319,12 +312,12 @@ export class b2Body {
         }
 
         if (this.m_enabledFlag) {
-            fixture.DestroyProxies();
+            const broadPhase = this.m_world.m_contactManager.m_broadPhase;
+            fixture.DestroyProxies(broadPhase);
         }
 
         // fixture.m_body = null;
         fixture.m_next = null;
-        fixture.Reset();
 
         --this.m_fixtureCount;
 
@@ -353,11 +346,13 @@ export class b2Body {
         this.m_sweep.c0.Copy(this.m_sweep.c);
         this.m_sweep.a0 = angle;
 
+	    const broadPhase = this.m_world.m_contactManager.m_broadPhase;
         for (let f: b2Fixture | null = this.m_fixtureList; f; f = f.m_next) {
-            f.SynchronizeProxies(this.m_xf, this.m_xf);
+            f.Synchronize(broadPhase, this.m_xf, this.m_xf);
         }
 
-        this.m_world.m_contactManager.FindNewContacts();
+        // Check for new contacts the next step
+        this.m_world.m_newContacts = true;
     }
 
     public SetTransform(xf: b2Transform): void {
@@ -837,8 +832,9 @@ export class b2Body {
         this.m_contactList = null;
 
         // Touch the proxies so that new contacts will be created (when appropriate)
+	    const broadPhase = this.m_world.m_contactManager.m_broadPhase;
         for (let f: b2Fixture | null = this.m_fixtureList; f; f = f.m_next) {
-            f.TouchProxies();
+            f.TouchProxies(broadPhase);
         }
     }
 
@@ -918,17 +914,18 @@ export class b2Body {
 
         this.m_enabledFlag = flag;
 
+        const broadPhase = this.m_world.m_contactManager.m_broadPhase;
         if (flag) {
             // Create all proxies.
             for (let f: b2Fixture | null = this.m_fixtureList; f; f = f.m_next) {
-                f.CreateProxies();
+			    f.CreateProxies(broadPhase, this.m_xf);
             }
             // Contacts are created at the beginning of the next
             this.m_world.m_newContacts = true;
         } else {
             // Destroy all proxies.
             for (let f: b2Fixture | null = this.m_fixtureList; f; f = f.m_next) {
-                f.DestroyProxies();
+                f.DestroyProxies(broadPhase);
             }
             // Destroy the attached contacts.
             let ce: b2ContactEdge | null = this.m_contactList;
@@ -1005,6 +1002,7 @@ export class b2Body {
     private static SynchronizeFixtures_s_xf1: b2Transform = new b2Transform();
 
     public SynchronizeFixtures(): void {
+	    const broadPhase = this.m_world.m_contactManager.m_broadPhase;
         if (this.m_awakeFlag) {
             const xf1: b2Transform = b2Body.SynchronizeFixtures_s_xf1;
             xf1.q.SetAngle(this.m_sweep.a0);
@@ -1012,11 +1010,11 @@ export class b2Body {
             b2Vec2.SubVV(this.m_sweep.c0, xf1.p, xf1.p);
 
             for (let f: b2Fixture | null = this.m_fixtureList; f; f = f.m_next) {
-                f.SynchronizeProxies(xf1, this.m_xf);
+                f.Synchronize(broadPhase, xf1, this.m_xf);
             }
         } else {
             for (let f: b2Fixture | null = this.m_fixtureList; f; f = f.m_next) {
-                f.SynchronizeProxies(this.m_xf, this.m_xf);
+                f.Synchronize(broadPhase, this.m_xf, this.m_xf);
             }
         }
     }

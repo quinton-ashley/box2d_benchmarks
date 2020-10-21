@@ -22,7 +22,7 @@ import { b2Manifold } from "../collision/b2_collision";
 import { b2Contact } from "./b2_contact";
 import { b2Body, b2BodyType } from "./b2_body";
 import { b2Joint } from "./b2_joint";
-import { b2Fixture, b2Filter } from "./b2_fixture";
+import { b2Fixture } from "./b2_fixture";
 
 /// Joints and fixtures are destroyed when their associated
 /// body is destroyed. Implement this listener so that you
@@ -56,16 +56,14 @@ export class b2ContactFilter {
             return false;
         }
 
-        const filter1: b2Filter = fixtureA.GetFilterData();
-        const filter2: b2Filter = fixtureB.GetFilterData();
+        const filterA = fixtureA.GetFilterData();
+        const filterB = fixtureB.GetFilterData();
 
-        if (filter1.groupIndex === filter2.groupIndex && filter1.groupIndex !== 0) {
-            return filter1.groupIndex > 0;
+        if (filterA.groupIndex === filterB.groupIndex && filterA.groupIndex !== 0) {
+            return filterA.groupIndex > 0;
         }
 
-        const collide: boolean =
-            (filter1.maskBits & filter2.categoryBits) !== 0 && (filter1.categoryBits & filter2.maskBits) !== 0;
-        return collide;
+        return (filterA.maskBits & filterB.categoryBits) !== 0 && (filterA.categoryBits & filterB.maskBits) !== 0;
     }
 
     public static readonly b2_defaultFilter: b2ContactFilter = new b2ContactFilter();

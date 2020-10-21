@@ -181,17 +181,15 @@ export class b2World {
         b.m_contactList = null;
 
         // Delete the attached fixtures. This destroys broad-phase proxies.
+        const broadPhase = this.m_contactManager.m_broadPhase;
         let f: b2Fixture | null = b.m_fixtureList;
         while (f) {
             const f0: b2Fixture = f;
             f = f.m_next;
 
-            if (this.m_destructionListener) {
-                this.m_destructionListener.SayGoodbyeFixture(f0);
-            }
+            this.m_destructionListener?.SayGoodbyeFixture(f0);
 
-            f0.DestroyProxies();
-            f0.Reset();
+            f0.DestroyProxies(broadPhase);
 
             b.m_fixtureList = f;
             b.m_fixtureCount -= 1;

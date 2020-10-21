@@ -20,9 +20,7 @@ import { b2Vec2, XY } from "../common/b2_math";
 import { b2AABB, b2RayCastInput } from "./b2_collision";
 import { b2TreeNode, b2DynamicTree } from "./b2_dynamic_tree";
 
-export class b2Pair<T> {
-    constructor(public proxyA: b2TreeNode<T>, public proxyB: b2TreeNode<T>) {}
-}
+type b2Pair<T> = [b2TreeNode<T>, b2TreeNode<T>];
 
 /// The broad-phase is used for computing pairs and performing volume queries and ray casts.
 /// This broad-phase does not persist pairs. Instead, this reports potentially new pairs.
@@ -30,18 +28,17 @@ export class b2Pair<T> {
 export class b2BroadPhase<T> {
     public readonly m_tree: b2DynamicTree<T> = new b2DynamicTree<T>();
 
-    public m_proxyCount = 0;
+    private m_proxyCount = 0;
 
-    // public m_moveCapacity: number = 16;
-    public m_moveCount = 0;
+    private m_moveCount = 0;
 
-    public readonly m_moveBuffer: Array<b2TreeNode<T> | null> = [];
+    private readonly m_moveBuffer: Array<b2TreeNode<T> | null> = [];
 
-    // public m_pairCapacity: number = 16;
-    public m_pairCount = 0;
+    private m_pairCount = 0;
 
-    public readonly m_pairBuffer: Array<b2Pair<T>> = [];
-    // public m_queryProxyId: number = 0;
+    private readonly m_pairBuffer: Array<b2Pair<T>> = [];
+
+    private m_queryProxy = new b2TreeNode<T>();
 
     /// Create a proxy with an initial AABB. Pairs are not reported until
     /// UpdatePairs is called.
@@ -73,23 +70,6 @@ export class b2BroadPhase<T> {
         this.BufferMove(proxy);
     }
 
-    /// Get the fat AABB for a proxy.
-    // public GetFatAABB(proxy: b2TreeNode<T>): b2AABB {
-    //   return this.m_tree.GetFatAABB(proxy);
-    // }
-
-    /// Get user data from a proxy. Returns NULL if the id is invalid.
-    // public GetUserData(proxy: b2TreeNode<T>): T {
-    //   return this.m_tree.GetUserData(proxy);
-    // }
-
-    /// Test overlap of fat AABBs.
-    // public TestOverlap(proxyA: b2TreeNode<T>, proxyB: b2TreeNode<T>): boolean {
-    //   const aabbA: b2AABB = this.m_tree.GetFatAABB(proxyA);
-    //   const aabbB: b2AABB = this.m_tree.GetFatAABB(proxyB);
-    //   return b2TestOverlapAABB(aabbA, aabbB);
-    // }
-
     /// Get the number of proxies.
     public GetProxyCount(): number {
         return this.m_proxyCount;
@@ -102,75 +82,31 @@ export class b2BroadPhase<T> {
 
         // Perform tree queries for all moving proxies.
         for (let i = 0; i < this.m_moveCount; ++i) {
-            const queryProxy: b2TreeNode<T> | null = this.m_moveBuffer[i];
-            if (queryProxy === null) {
-                continue;
-            }
-
-            // This is called from box2d.b2DynamicTree::Query when we are gathering pairs.
-            // boolean b2BroadPhase::QueryCallback(int32 proxyId);
+            const queryProxy = this.m_moveBuffer[i];
+            if (queryProxy === null) continue;
+            this.m_queryProxy = queryProxy;
 
             // We have to query the tree with the fat AABB so that
             // we don't fail to create a pair that may touch later.
-            const fatAABB: b2AABB = queryProxy.aabb; // this.m_tree.GetFatAABB(queryProxy);
+            const fatAABB: b2AABB = queryProxy.aabb;
 
             // Query tree, create pairs and add them pair buffer.
-            this.m_tree.Query(fatAABB, (proxy: b2TreeNode<T>): boolean => {
-                // A proxy cannot form a pair with itself.
-                if (proxy.m_id === queryProxy.m_id) {
-                    return true;
-                }
-
-                const { moved } = proxy; // this.m_tree.WasMoved(proxy);
-                if (moved && proxy.m_id > queryProxy.m_id) {
-                    // Both proxies are moving. Avoid duplicate pairs.
-                    return true;
-                }
-
-                // const proxyA = proxy < queryProxy ? proxy : queryProxy;
-                // const proxyB = proxy >= queryProxy ? proxy : queryProxy;
-                let proxyA: b2TreeNode<T>;
-                let proxyB: b2TreeNode<T>;
-                if (proxy.m_id < queryProxy.m_id) {
-                    proxyA = proxy;
-                    proxyB = queryProxy;
-                } else {
-                    proxyA = queryProxy;
-                    proxyB = proxy;
-                }
-
-                // Grow the pair buffer as needed.
-                if (this.m_pairCount === this.m_pairBuffer.length) {
-                    this.m_pairBuffer[this.m_pairCount] = new b2Pair(proxyA, proxyB);
-                } else {
-                    const pair: b2Pair<T> = this.m_pairBuffer[this.m_pairCount];
-                    pair.proxyA = proxyA;
-                    pair.proxyB = proxyB;
-                }
-
-                ++this.m_pairCount;
-
-                return true;
-            });
+            this.m_tree.Query(fatAABB, this.QueryCallback);
         }
 
         // Send pairs to caller
         for (let i = 0; i < this.m_pairCount; ++i) {
-            const primaryPair: b2Pair<T> = this.m_pairBuffer[i];
-            const userDataA: T = primaryPair.proxyA.userData; // this.m_tree.GetUserData(primaryPair.proxyA);
-            const userDataB: T = primaryPair.proxyB.userData; // this.m_tree.GetUserData(primaryPair.proxyB);
+            const primaryPair = this.m_pairBuffer[i];
+            const userDataA = primaryPair[0].userData;
+            const userDataB = primaryPair[1].userData;
 
             callback(userDataA, userDataB);
         }
 
         // Clear move flags
         for (let i = 0; i < this.m_moveCount; ++i) {
-            const proxy: b2TreeNode<T> | null = this.m_moveBuffer[i];
-            if (proxy === null) {
-                continue;
-            }
-
-            proxy.moved = false; // this.m_tree.ClearMoved(proxy);
+            const proxy = this.m_moveBuffer[i];
+            if (proxy) proxy.moved = false;
         }
 
         // Reset move buffer
@@ -186,6 +122,25 @@ export class b2BroadPhase<T> {
     public QueryPoint(point: XY, callback: (node: b2TreeNode<T>) => boolean): void {
         this.m_tree.QueryPoint(point, callback);
     }
+
+    private QueryCallback = (proxy: b2TreeNode<T>) => {
+        // A proxy cannot form a pair with itself.
+        if (proxy.m_id === this.m_queryProxy.m_id) {
+            return true;
+        }
+
+        if (proxy.moved && proxy.m_id > this.m_queryProxy.m_id) {
+            // Both proxies are moving. Avoid duplicate pairs.
+            return true;
+        }
+
+        // Grows the pair buffer as needed.
+        this.m_pairBuffer[this.m_pairCount] =
+            proxy.m_id < this.m_queryProxy.m_id ? [proxy, this.m_queryProxy] : [this.m_queryProxy, proxy];
+        ++this.m_pairCount;
+
+        return true;
+    };
 
     /// Ray-cast against the proxies in the tree. This relies on the callback
     /// to perform a exact ray-cast in the case were the proxy contains a shape.

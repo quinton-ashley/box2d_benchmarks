@@ -24,6 +24,7 @@ import { b2Shape, b2ShapeType, b2MassData } from "../collision/b2_shape";
 import type { b2Body } from "./b2_body";
 import { b2Assert } from "../common/b2_common";
 import { b2_lengthUnitsPerMeter } from "../common/b2_settings";
+import { b2BroadPhase } from "../collision/b2_broad_phase";
 
 /// This holds contact filtering data.
 export interface b2IFilter {
@@ -112,46 +113,24 @@ export class b2FixtureProxy {
 
     public readonly childIndex: number = 0;
 
-    public treeNode: b2TreeNode<b2FixtureProxy>;
+    public readonly treeNode: b2TreeNode<b2FixtureProxy>;
 
-    constructor(fixture: b2Fixture, childIndex: number) {
+    public constructor(
+        fixture: b2Fixture,
+        broadPhase: b2BroadPhase<b2FixtureProxy>,
+        xf: b2Transform,
+        childIndex: number
+    ) {
         this.fixture = fixture;
         this.childIndex = childIndex;
-        this.fixture.m_shape.ComputeAABB(this.aabb, this.fixture.m_body.GetTransform(), childIndex);
-        this.treeNode = this.fixture.m_body.m_world.m_contactManager.m_broadPhase.CreateProxy(this.aabb, this);
-    }
-
-    public Reset(): void {
-        this.fixture.m_body.m_world.m_contactManager.m_broadPhase.DestroyProxy(this.treeNode);
-    }
-
-    public Touch(): void {
-        this.fixture.m_body.m_world.m_contactManager.m_broadPhase.TouchProxy(this.treeNode);
-    }
-
-    private static Synchronize_s_aabb1 = new b2AABB();
-
-    private static Synchronize_s_aabb2 = new b2AABB();
-
-    private static Synchronize_s_displacement = new b2Vec2();
-
-    public Synchronize(transform1: b2Transform, transform2: b2Transform): void {
-        if (transform1 === transform2) {
-            this.fixture.m_shape.ComputeAABB(this.aabb, transform1, this.childIndex);
-            this.fixture.m_body.m_world.m_contactManager.m_broadPhase.MoveProxy(this.treeNode, this.aabb, b2Vec2.ZERO);
-        } else {
-            // Compute an AABB that covers the swept shape (may miss some rotation effect).
-            const aabb1: b2AABB = b2FixtureProxy.Synchronize_s_aabb1;
-            const aabb2: b2AABB = b2FixtureProxy.Synchronize_s_aabb2;
-            this.fixture.m_shape.ComputeAABB(aabb1, transform1, this.childIndex);
-            this.fixture.m_shape.ComputeAABB(aabb2, transform2, this.childIndex);
-            this.aabb.Combine2(aabb1, aabb2);
-            const displacement: b2Vec2 = b2FixtureProxy.Synchronize_s_displacement;
-            displacement.Copy(aabb2.GetCenter()).SelfSub(aabb1.GetCenter());
-            this.fixture.m_body.m_world.m_contactManager.m_broadPhase.MoveProxy(this.treeNode, this.aabb, displacement);
-        }
+        fixture.m_shape.ComputeAABB(this.aabb, xf, childIndex);
+        this.treeNode = broadPhase.CreateProxy(this.aabb, this);
     }
 }
+
+const Synchronize_s_aabb1 = new b2AABB();
+const Synchronize_s_aabb2 = new b2AABB();
+const Synchronize_s_displacement = new b2Vec2();
 
 /// A fixture is used to attach a shape to a body for collision detection. A fixture
 /// inherits its transform from its parent. Fixtures hold additional non-geometric data
@@ -195,11 +174,6 @@ export class b2Fixture {
         this.m_filter.Copy(def.filter ?? b2Filter.DEFAULT);
         this.m_isSensor = def.isSensor ?? false;
         this.m_density = def.density ?? 0;
-    }
-
-    public Reset(): void {
-        // The proxies must be destroyed before calling this.
-        // DEBUG: b2Assert(this.m_proxyCount === 0);
     }
 
     /// Get the type of the child shape. You can use this to down cast to the concrete shape.
@@ -259,8 +233,11 @@ export class b2Fixture {
             edge = edge.next;
         }
 
-        // Touch each proxy so that new pairs may be created
-        this.TouchProxies();
+        const world = this.m_body.GetWorld();
+        if (world) {
+            // Touch each proxy so that new pairs may be created
+            this.TouchProxies(world.m_contactManager.m_broadPhase);
+        }
     }
 
     /// Get the parent body of this fixture. This is NULL if the fixture is not attached.
@@ -311,6 +288,7 @@ export class b2Fixture {
     /// Set the density of this fixture. This will _not_ automatically adjust the mass
     /// of the body. You must call b2Body::ResetMassData to update the body's mass.
     public SetDensity(density: number): void {
+        // DEBUG: b2Assert(Number.isFinite(density) && density >= 0);
         this.m_density = density;
     }
 
@@ -350,31 +328,40 @@ export class b2Fixture {
     }
 
     // These support body activation/deactivation.
-    public CreateProxies(): void {
+    public CreateProxies(broadPhase: b2BroadPhase<b2FixtureProxy>, xf: b2Transform): void {
         b2Assert(this.m_proxies.length === 0);
         // Create proxies in the broad-phase.
-        for (let i = 0; i < this.m_shape.GetChildCount(); ++i) {
-            this.m_proxies[i] = new b2FixtureProxy(this, i);
+        this.m_proxies.length = this.m_shape.GetChildCount();
+        for (let i = 0; i < this.m_proxies.length; ++i) {
+            this.m_proxies[i] = new b2FixtureProxy(this, broadPhase, xf, i);
         }
     }
 
-    public DestroyProxies(): void {
+    public DestroyProxies(broadPhase: b2BroadPhase<b2FixtureProxy>): void {
         // Destroy proxies in the broad-phase.
         for (const proxy of this.m_proxies) {
-            proxy.Reset();
+            broadPhase.DestroyProxy(proxy.treeNode);
         }
         this.m_proxies.length = 0;
     }
 
-    public TouchProxies(): void {
+    public TouchProxies(broadPhase: b2BroadPhase<b2FixtureProxy>): void {
         for (const proxy of this.m_proxies) {
-            proxy.Touch();
+            broadPhase.TouchProxy(proxy.treeNode);
         }
     }
 
-    public SynchronizeProxies(transform1: b2Transform, transform2: b2Transform): void {
+    public Synchronize(broadPhase: b2BroadPhase<b2FixtureProxy>, transform1: b2Transform, transform2: b2Transform) {
         for (const proxy of this.m_proxies) {
-            proxy.Synchronize(transform1, transform2);
+            // Compute an AABB that covers the swept shape (may miss some rotation effect).
+            const aabb1: b2AABB = Synchronize_s_aabb1;
+            const aabb2: b2AABB = Synchronize_s_aabb2;
+            this.m_shape.ComputeAABB(aabb1, transform1, proxy.childIndex);
+            this.m_shape.ComputeAABB(aabb2, transform2, proxy.childIndex);
+            proxy.aabb.Combine2(aabb1, aabb2);
+            const displacement = Synchronize_s_displacement;
+            displacement.Copy(aabb2.GetCenter()).SelfSub(aabb1.GetCenter());
+            broadPhase.MoveProxy(proxy.treeNode, proxy.aabb, displacement);
         }
     }
 }

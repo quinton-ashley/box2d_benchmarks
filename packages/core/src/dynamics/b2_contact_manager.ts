@@ -41,7 +41,7 @@ export class b2ContactManager {
     public readonly m_contactFactory: b2ContactFactory = new b2ContactFactory();
 
     // Broad-phase callback.
-    public AddPair(proxyA: b2FixtureProxy, proxyB: b2FixtureProxy): void {
+    public AddPair = (proxyA: b2FixtureProxy, proxyB: b2FixtureProxy): void => {
         // DEBUG: b2Assert(proxyA instanceof b2FixtureProxy);
         // DEBUG: b2Assert(proxyB instanceof b2FixtureProxy);
 
@@ -137,9 +137,7 @@ export class b2ContactManager {
     }
 
     public FindNewContacts(): void {
-        this.m_broadPhase.UpdatePairs((proxyA: b2FixtureProxy, proxyB: b2FixtureProxy): void => {
-            this.AddPair(proxyA, proxyB);
-        });
+        this.m_broadPhase.UpdatePairs(this.AddPair);
     }
 
     public Destroy(c: b2Contact): void {
