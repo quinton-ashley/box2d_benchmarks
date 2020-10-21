@@ -32,8 +32,6 @@ import { b2EdgeShape } from "./b2_edge_shape";
 export class b2ChainShape extends b2Shape {
     public m_vertices: b2Vec2[] = [];
 
-    public m_count = 0;
-
     public readonly m_prevVertex: b2Vec2 = new b2Vec2();
 
     public readonly m_nextVertex: b2Vec2 = new b2Vec2();
@@ -56,13 +54,13 @@ export class b2ChainShape extends b2Shape {
             const vertices: number[] = args[0];
             b2Assert(vertices.length % 2 === 0);
             return this.CreateLoopEx(
-                (index: number): XY => ({ x: vertices[index * 2], y: vertices[index * 2 + 1] }),
-                vertices.length / 2,
+                (index) => ({ x: vertices[index * 2], y: vertices[index * 2 + 1] }),
+                vertices.length / 2
             );
         }
         const vertices: XY[] = args[0];
         const count: number = args[1] || vertices.length;
-        return this.CreateLoopEx((index: number): XY => vertices[index], count);
+        return this.CreateLoopEx((index) => vertices[index], count);
     }
 
     private CreateLoopEx(vertices: (index: number) => XY, count: number): b2ChainShape {
@@ -77,13 +75,13 @@ export class b2ChainShape extends b2Shape {
         // DEBUG:   b2Assert(b2Vec2.DistanceSquaredVV(v1, v2) > b2_linearSlop * b2_linearSlop);
         // DEBUG: }
 
-        this.m_count = count + 1;
-        this.m_vertices = b2Vec2.MakeArray(this.m_count);
+        this.m_vertices.length = count + 1;
         for (let i = 0; i < count; ++i) {
-            this.m_vertices[i].Copy(vertices(i));
+            const { x, y } = vertices(i);
+            this.m_vertices[i] = new b2Vec2(x, y);
         }
-        this.m_vertices[count].Copy(this.m_vertices[0]);
-        this.m_prevVertex.Copy(this.m_vertices[this.m_count - 2]);
+        this.m_vertices[count] = this.m_vertices[0].Clone();
+        this.m_prevVertex.Copy(this.m_vertices[this.m_vertices.length - 2]);
         this.m_nextVertex.Copy(this.m_vertices[1]);
         return this;
     }
@@ -106,24 +104,24 @@ export class b2ChainShape extends b2Shape {
             const nextVertex: Readonly<XY> = args[2];
             b2Assert(vertices.length % 2 === 0);
             return this.CreateChainEx(
-                (index: number): XY => ({ x: vertices[index * 2], y: vertices[index * 2 + 1] }),
+                (index) => ({ x: vertices[index * 2], y: vertices[index * 2 + 1] }),
                 vertices.length / 2,
                 prevVertex,
-                nextVertex,
+                nextVertex
             );
         }
         const vertices: XY[] = args[0];
         const count: number = args[1] || vertices.length;
         const prevVertex: Readonly<XY> = args[2];
         const nextVertex: Readonly<XY> = args[3];
-        return this.CreateChainEx((index: number): XY => vertices[index], count, prevVertex, nextVertex);
+        return this.CreateChainEx((index) => vertices[index], count, prevVertex, nextVertex);
     }
 
     private CreateChainEx(
         vertices: (index: number) => XY,
         count: number,
         prevVertex: Readonly<XY>,
-        nextVertex: Readonly<XY>,
+        nextVertex: Readonly<XY>
     ): b2ChainShape {
         // DEBUG: b2Assert(count >= 2);
         // DEBUG: for (let i: number = 1; i < count; ++i) {
@@ -133,10 +131,10 @@ export class b2ChainShape extends b2Shape {
         // DEBUG:   b2Assert(b2Vec2.DistanceSquaredVV(v1, v2) > b2_linearSlop * b2_linearSlop);
         // DEBUG: }
 
-        this.m_count = count;
-        this.m_vertices = b2Vec2.MakeArray(count);
+        this.m_vertices.length = count;
         for (let i = 0; i < count; ++i) {
-            this.m_vertices[i].Copy(vertices(i));
+            const { x, y } = vertices(i);
+            this.m_vertices[i] = new b2Vec2(x, y);
         }
 
         this.m_prevVertex.Copy(prevVertex);
@@ -155,27 +153,23 @@ export class b2ChainShape extends b2Shape {
 
         // DEBUG: b2Assert(other instanceof b2ChainShape);
 
-        this.CreateChainEx(
-            (index: number): XY => other.m_vertices[index],
-            other.m_count,
+        return this.CreateChainEx(
+            (index) => other.m_vertices[index],
+            other.m_vertices.length,
             other.m_prevVertex,
-            other.m_nextVertex,
+            other.m_nextVertex
         );
-        this.m_prevVertex.Copy(other.m_prevVertex);
-        this.m_nextVertex.Copy(other.m_nextVertex);
-
-        return this;
     }
 
     /// @see b2Shape::GetChildCount
     public GetChildCount(): number {
         // edge count = vertex count - 1
-        return this.m_count - 1;
+        return this.m_vertices.length - 1;
     }
 
     /// Get a child edge.
     public GetChildEdge(edge: b2EdgeShape, index: number): void {
-        // DEBUG: b2Assert(0 <= index && index < this.m_count - 1);
+        // DEBUG: b2Assert(0 <= index && index < this.m_vertices.length - 1);
         edge.m_radius = this.m_radius;
 
         edge.m_vertex1.Copy(this.m_vertices[index]);
@@ -188,7 +182,7 @@ export class b2ChainShape extends b2Shape {
             edge.m_vertex0.Copy(this.m_prevVertex);
         }
 
-        if (index < this.m_count - 2) {
+        if (index < this.m_vertices.length - 2) {
             edge.m_vertex3.Copy(this.m_vertices[index + 2]);
         } else {
             edge.m_vertex3.Copy(this.m_nextVertex);
@@ -205,12 +199,12 @@ export class b2ChainShape extends b2Shape {
     private static RayCast_s_edgeShape = new b2EdgeShape();
 
     public RayCast(output: b2RayCastOutput, input: b2RayCastInput, xf: b2Transform, childIndex: number): boolean {
-        // DEBUG: b2Assert(childIndex < this.m_count);
+        // DEBUG: b2Assert(childIndex < this.m_vertices.length);
 
         const edgeShape: b2EdgeShape = b2ChainShape.RayCast_s_edgeShape;
 
         edgeShape.m_vertex1.Copy(this.m_vertices[childIndex]);
-        edgeShape.m_vertex2.Copy(this.m_vertices[(childIndex + 1) % this.m_count]);
+        edgeShape.m_vertex2.Copy(this.m_vertices[(childIndex + 1) % this.m_vertices.length]);
 
         return edgeShape.RayCast(output, input, xf, 0);
     }
@@ -225,10 +219,10 @@ export class b2ChainShape extends b2Shape {
     private static ComputeAABB_s_upper = new b2Vec2();
 
     public ComputeAABB(aabb: b2AABB, xf: b2Transform, childIndex: number): void {
-        // DEBUG: b2Assert(childIndex < this.m_count);
+        // DEBUG: b2Assert(childIndex < this.m_vertices.length);
 
         const vertexi1: b2Vec2 = this.m_vertices[childIndex];
-        const vertexi2: b2Vec2 = this.m_vertices[(childIndex + 1) % this.m_count];
+        const vertexi2: b2Vec2 = this.m_vertices[(childIndex + 1) % this.m_vertices.length];
 
         const v1: b2Vec2 = b2Transform.MulXV(xf, vertexi1, b2ChainShape.ComputeAABB_s_v1);
         const v2: b2Vec2 = b2Transform.MulXV(xf, vertexi2, b2ChainShape.ComputeAABB_s_v2);
@@ -251,11 +245,11 @@ export class b2ChainShape extends b2Shape {
     }
 
     public SetupDistanceProxy(proxy: b2DistanceProxy, index: number): void {
-        // DEBUG: b2Assert(0 <= index && index < this.m_count);
+        // DEBUG: b2Assert(0 <= index && index < this.m_vertices.length);
 
         proxy.m_vertices = proxy.m_buffer;
         proxy.m_vertices[0].Copy(this.m_vertices[index]);
-        if (index + 1 < this.m_count) {
+        if (index + 1 < this.m_vertices.length) {
             proxy.m_vertices[1].Copy(this.m_vertices[index + 1]);
         } else {
             proxy.m_vertices[1].Copy(this.m_vertices[0]);

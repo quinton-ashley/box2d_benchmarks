@@ -185,10 +185,9 @@ export function DrawShape(draw: b2Draw, fixture: b2Fixture, color: b2Color): voi
 
         case b2ShapeType.e_chain: {
             const chain: b2ChainShape = shape as b2ChainShape;
-            const count: number = chain.m_count;
             const vertices: b2Vec2[] = chain.m_vertices;
             let v1: b2Vec2 = vertices[0];
-            for (let i = 1; i < count; ++i) {
+            for (let i = 1; i < vertices.length; ++i) {
                 const v2: b2Vec2 = vertices[i];
                 draw.DrawSegment(v1, v2, color);
                 v1 = v2;
