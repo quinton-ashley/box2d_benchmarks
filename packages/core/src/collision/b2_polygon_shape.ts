@@ -17,7 +17,7 @@
  */
 
 // DEBUG: import { b2Assert, b2_epsilon_sq } from "../common/b2_common";
-import { b2Assert, b2_epsilon, b2_linearSlop, b2_polygonRadius } from "../common/b2_common";
+import { b2Assert, b2_linearSlop, b2_polygonRadius } from "../common/b2_common";
 import { b2Vec2, b2Rot, b2Transform, XY } from "../common/b2_math";
 import { b2AABB, b2RayCastInput, b2RayCastOutput } from "./b2_collision";
 import { b2DistanceProxy } from "./b2_distance";
@@ -453,110 +453,6 @@ export class b2PolygonShape extends b2Shape {
         proxy.m_vertices = this.m_vertices;
         proxy.m_count = this.m_count;
         proxy.m_radius = this.m_radius;
-    }
-
-    private static ComputeSubmergedArea_s_normalL = new b2Vec2();
-
-    private static ComputeSubmergedArea_s_md = new b2MassData();
-
-    private static ComputeSubmergedArea_s_intoVec = new b2Vec2();
-
-    private static ComputeSubmergedArea_s_outoVec = new b2Vec2();
-
-    private static ComputeSubmergedArea_s_center = new b2Vec2();
-
-    public ComputeSubmergedArea(normal: b2Vec2, offset: number, xf: b2Transform, c: b2Vec2): number {
-        // Transform plane into shape co-ordinates
-        const normalL: b2Vec2 = b2Rot.MulTRV(xf.q, normal, b2PolygonShape.ComputeSubmergedArea_s_normalL);
-        const offsetL: number = offset - b2Vec2.DotVV(normal, xf.p);
-
-        const depths: number[] = [];
-        let diveCount = 0;
-        let intoIndex = -1;
-        let outoIndex = -1;
-
-        let lastSubmerged = false;
-        for (let i = 0; i < this.m_count; ++i) {
-            depths[i] = b2Vec2.DotVV(normalL, this.m_vertices[i]) - offsetL;
-            const isSubmerged: boolean = depths[i] < -b2_epsilon;
-            if (i > 0) {
-                if (isSubmerged) {
-                    if (!lastSubmerged) {
-                        intoIndex = i - 1;
-                        diveCount++;
-                    }
-                } else if (lastSubmerged) {
-                    outoIndex = i - 1;
-                    diveCount++;
-                }
-            }
-            lastSubmerged = isSubmerged;
-        }
-        switch (diveCount) {
-            case 0:
-                if (lastSubmerged) {
-                    // Completely submerged
-                    const md: b2MassData = b2PolygonShape.ComputeSubmergedArea_s_md;
-                    this.ComputeMass(md, 1);
-                    b2Transform.MulXV(xf, md.center, c);
-                    return md.mass;
-                }
-                // Completely dry
-                return 0;
-
-            case 1:
-                if (intoIndex === -1) {
-                    intoIndex = this.m_count - 1;
-                } else {
-                    outoIndex = this.m_count - 1;
-                }
-                break;
-        }
-        const intoIndex2: number = (intoIndex + 1) % this.m_count;
-        const outoIndex2: number = (outoIndex + 1) % this.m_count;
-        const intoLamdda: number = (0 - depths[intoIndex]) / (depths[intoIndex2] - depths[intoIndex]);
-        const outoLamdda: number = (0 - depths[outoIndex]) / (depths[outoIndex2] - depths[outoIndex]);
-
-        const intoVec: b2Vec2 = b2PolygonShape.ComputeSubmergedArea_s_intoVec.Set(
-            this.m_vertices[intoIndex].x * (1 - intoLamdda) + this.m_vertices[intoIndex2].x * intoLamdda,
-            this.m_vertices[intoIndex].y * (1 - intoLamdda) + this.m_vertices[intoIndex2].y * intoLamdda,
-        );
-        const outoVec: b2Vec2 = b2PolygonShape.ComputeSubmergedArea_s_outoVec.Set(
-            this.m_vertices[outoIndex].x * (1 - outoLamdda) + this.m_vertices[outoIndex2].x * outoLamdda,
-            this.m_vertices[outoIndex].y * (1 - outoLamdda) + this.m_vertices[outoIndex2].y * outoLamdda,
-        );
-
-        // Initialize accumulator
-        let area = 0;
-        const center: b2Vec2 = b2PolygonShape.ComputeSubmergedArea_s_center.SetZero();
-        let p2: b2Vec2 = this.m_vertices[intoIndex2];
-        let p3: b2Vec2;
-
-        // An awkward loop from intoIndex2+1 to outIndex2
-        let i: number = intoIndex2;
-        while (i !== outoIndex2) {
-            i = (i + 1) % this.m_count;
-            if (i === outoIndex2) {
-                p3 = outoVec;
-            } else {
-                p3 = this.m_vertices[i];
-            }
-
-            const triangleArea: number =
-                0.5 * ((p2.x - intoVec.x) * (p3.y - intoVec.y) - (p2.y - intoVec.y) * (p3.x - intoVec.x));
-            area += triangleArea;
-            // Area weighted centroid
-            center.x += (triangleArea * (intoVec.x + p2.x + p3.x)) / 3;
-            center.y += (triangleArea * (intoVec.y + p2.y + p3.y)) / 3;
-
-            p2 = p3;
-        }
-
-        // Normalize and transform centroid
-        center.SelfMul(1 / area);
-        b2Transform.MulXV(xf, center, c);
-
-        return area;
     }
 
     private static ComputeCentroid_s_s = new b2Vec2();

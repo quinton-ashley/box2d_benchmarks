@@ -19,6 +19,7 @@
 import { b2Vec2, b2TimeStep, b2_epsilon } from "@box2d/core";
 
 import { b2Controller, b2ControllerEdge } from "./b2_controller";
+import { b2SubmergedAreaForShape } from "./b2_submerged_area";
 
 /**
  * Calculates buoyancy forces for fluids in the form of a half
@@ -91,9 +92,13 @@ export class b2BuoyancyController extends b2Controller {
             let mass = 0;
             for (let fixture = body.GetFixtureList(); fixture; fixture = fixture.m_next) {
                 const sc = new b2Vec2();
-                const sarea = fixture
-                    .GetShape()
-                    .ComputeSubmergedArea(this.normal, this.offset, body.GetTransform(), sc);
+                const sarea = b2SubmergedAreaForShape(
+                    fixture.GetShape(),
+                    this.normal,
+                    this.offset,
+                    body.GetTransform(),
+                    sc,
+                );
                 area += sarea;
                 areac.x += sarea * sc.x;
                 areac.y += sarea * sc.y;

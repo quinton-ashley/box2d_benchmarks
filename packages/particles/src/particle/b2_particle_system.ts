@@ -5613,11 +5613,6 @@ export class b2ParticleSystem_CompositeShape extends b2Shape {
     public SetupDistanceProxy(_proxy: b2DistanceProxy, _index: number): void {
         // DEBUG: b2Assert(false);
     }
-
-    public ComputeSubmergedArea(_normal: b2Vec2, _offset: number, _xf: b2Transform, _c: b2Vec2): number {
-        // DEBUG: b2Assert(false);
-        return 0;
-    }
 }
 
 export class b2ParticleSystem_ReactiveFilter extends b2ParticleSystem_ConnectionFilter {

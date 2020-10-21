@@ -346,7 +346,7 @@ export class b2Body {
         this.m_sweep.c0.Copy(this.m_sweep.c);
         this.m_sweep.a0 = angle;
 
-	    const broadPhase = this.m_world.m_contactManager.m_broadPhase;
+        const broadPhase = this.m_world.m_contactManager.m_broadPhase;
         for (let f: b2Fixture | null = this.m_fixtureList; f; f = f.m_next) {
             f.Synchronize(broadPhase, this.m_xf, this.m_xf);
         }
@@ -832,7 +832,7 @@ export class b2Body {
         this.m_contactList = null;
 
         // Touch the proxies so that new contacts will be created (when appropriate)
-	    const broadPhase = this.m_world.m_contactManager.m_broadPhase;
+        const broadPhase = this.m_world.m_contactManager.m_broadPhase;
         for (let f: b2Fixture | null = this.m_fixtureList; f; f = f.m_next) {
             f.TouchProxies(broadPhase);
         }
@@ -918,7 +918,7 @@ export class b2Body {
         if (flag) {
             // Create all proxies.
             for (let f: b2Fixture | null = this.m_fixtureList; f; f = f.m_next) {
-			    f.CreateProxies(broadPhase, this.m_xf);
+                f.CreateProxies(broadPhase, this.m_xf);
             }
             // Contacts are created at the beginning of the next
             this.m_world.m_newContacts = true;
@@ -1002,7 +1002,7 @@ export class b2Body {
     private static SynchronizeFixtures_s_xf1: b2Transform = new b2Transform();
 
     public SynchronizeFixtures(): void {
-	    const broadPhase = this.m_world.m_contactManager.m_broadPhase;
+        const broadPhase = this.m_world.m_contactManager.m_broadPhase;
         if (this.m_awakeFlag) {
             const xf1: b2Transform = b2Body.SynchronizeFixtures_s_xf1;
             xf1.q.SetAngle(this.m_sweep.a0);

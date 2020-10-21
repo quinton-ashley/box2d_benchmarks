@@ -134,7 +134,7 @@ export class b2ContactManager {
         bodyB.m_contactList = c.m_nodeB;
 
         ++this.m_contactCount;
-    }
+    };
 
     public FindNewContacts(): void {
         this.m_broadPhase.UpdatePairs(this.AddPair);

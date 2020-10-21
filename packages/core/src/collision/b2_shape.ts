@@ -105,6 +105,4 @@ export abstract class b2Shape {
     public abstract ComputeMass(massData: b2MassData, density: number): void;
 
     public abstract SetupDistanceProxy(proxy: b2DistanceProxy, index: number): void;
-
-    public abstract ComputeSubmergedArea(normal: b2Vec2, offset: number, xf: b2Transform, c: b2Vec2): number;
 }

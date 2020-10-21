@@ -196,9 +196,4 @@ export class b2EdgeShape extends b2Shape {
         proxy.m_count = 2;
         proxy.m_radius = this.m_radius;
     }
-
-    public ComputeSubmergedArea(_normal: b2Vec2, _offset: number, _xf: b2Transform, c: b2Vec2): number {
-        c.SetZero();
-        return 0;
-    }
 }

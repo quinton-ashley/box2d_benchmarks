@@ -55,7 +55,7 @@ export class b2ChainShape extends b2Shape {
             b2Assert(vertices.length % 2 === 0);
             return this.CreateLoopEx(
                 (index) => ({ x: vertices[index * 2], y: vertices[index * 2 + 1] }),
-                vertices.length / 2
+                vertices.length / 2,
             );
         }
         const vertices: XY[] = args[0];
@@ -107,7 +107,7 @@ export class b2ChainShape extends b2Shape {
                 (index) => ({ x: vertices[index * 2], y: vertices[index * 2 + 1] }),
                 vertices.length / 2,
                 prevVertex,
-                nextVertex
+                nextVertex,
             );
         }
         const vertices: XY[] = args[0];
@@ -121,7 +121,7 @@ export class b2ChainShape extends b2Shape {
         vertices: (index: number) => XY,
         count: number,
         prevVertex: Readonly<XY>,
-        nextVertex: Readonly<XY>
+        nextVertex: Readonly<XY>,
     ): b2ChainShape {
         // DEBUG: b2Assert(count >= 2);
         // DEBUG: for (let i: number = 1; i < count; ++i) {
@@ -157,7 +157,7 @@ export class b2ChainShape extends b2Shape {
             (index) => other.m_vertices[index],
             other.m_vertices.length,
             other.m_prevVertex,
-            other.m_nextVertex
+            other.m_nextVertex,
         );
     }
 
@@ -256,10 +256,5 @@ export class b2ChainShape extends b2Shape {
         }
         proxy.m_count = 2;
         proxy.m_radius = this.m_radius;
-    }
-
-    public ComputeSubmergedArea(normal: b2Vec2, offset: number, xf: b2Transform, c: b2Vec2): number {
-        c.SetZero();
-        return 0;
     }
 }

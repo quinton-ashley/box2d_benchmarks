@@ -119,7 +119,7 @@ export class b2FixtureProxy {
         fixture: b2Fixture,
         broadPhase: b2BroadPhase<b2FixtureProxy>,
         xf: b2Transform,
-        childIndex: number
+        childIndex: number,
     ) {
         this.fixture = fixture;
         this.childIndex = childIndex;

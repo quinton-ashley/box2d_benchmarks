@@ -140,30 +140,4 @@ export class b2CircleShape extends b2Shape {
         proxy.m_count = 1;
         proxy.m_radius = this.m_radius;
     }
-
-    public ComputeSubmergedArea(normal: b2Vec2, offset: number, xf: b2Transform, c: b2Vec2): number {
-        const p: b2Vec2 = b2Transform.MulXV(xf, this.m_p, new b2Vec2());
-        const l: number = -(b2Vec2.DotVV(normal, p) - offset);
-
-        if (l < -this.m_radius + b2_epsilon) {
-            // Completely dry
-            return 0;
-        }
-        if (l > this.m_radius) {
-            // Completely wet
-            c.Copy(p);
-            return Math.PI * this.m_radius * this.m_radius;
-        }
-
-        // Magic
-        const r2: number = this.m_radius * this.m_radius;
-        const l2: number = l * l;
-        const area: number = r2 * (Math.asin(l / this.m_radius) + Math.PI / 2) + l * Math.sqrt(r2 - l2);
-        const com: number = ((-2 / 3) * (r2 - l2) ** 1.5) / area;
-
-        c.x = p.x + normal.x * com;
-        c.y = p.y + normal.y * com;
-
-        return area;
-    }
 }
