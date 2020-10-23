@@ -14,7 +14,7 @@ export const planckFactory: TestFactory = (gravity, edgeV1, edgeV2, edgeDensity)
     ground.createFixture(edgeShape as any, edgeDensity);
 
     return {
-        name: "plank.js",
+        name: "planck.js",
         createBoxShape(hx: number, hy: number) {
             return new Box(hx, hy);
         },

@@ -13,7 +13,7 @@ Based on [bench2d](https://github.com/joelgwebber/bench2d) by joelgwebber
 | @box2d/core    |         9.23 |       10 |         9 |  3.36 |
 | box2d-html5    |        11.59 |       10 |        13 |  4.22 |
 | @flyover/box2d |        18.33 |       16 |        21 |  6.68 |
-| plank.js       |        23.39 |       19 |        28 |  8.52 |
+| planck.js       |        23.39 |       19 |        28 |  8.52 |
 
 ## Example output using Firefox 81
 
@@ -24,7 +24,7 @@ Based on [bench2d](https://github.com/joelgwebber/bench2d) by joelgwebber
 | box2d-html5    |        19.12 |       16 |        40 |  1.40 |
 | box2d.js       |        23.08 |       37 |        20 |  1.69 |
 | @flyover/box2d |        25.89 |       38 |        23 |  1.89 |
-| plank.js       |       111.90 |       64 |        40 |  8.17 |
+| planck.js       |       111.90 |       64 |        40 |  8.17 |
 
 ## Example output using Chrome 86
 
@@ -35,4 +35,4 @@ Based on [bench2d](https://github.com/joelgwebber/bench2d) by joelgwebber
 | @box2d/core    |        10.05 |       10 |         7 |  1.84 |
 | box2d-html5    |        11.05 |       11 |        10 |  2.02 |
 | @flyover/box2d |        17.83 |       20 |        17 |  3.26 |
-| plank.js       |        23.17 |       25 |        18 |  4.23 |
+| planck.js       |        23.17 |       25 |        18 |  4.23 |
