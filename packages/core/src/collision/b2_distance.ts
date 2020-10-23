@@ -100,14 +100,16 @@ export class b2DistanceProxy {
     }
 }
 
+/// Used to warm start b2Distance.
+/// Set count to zero on first call.
 export class b2SimplexCache {
-    public metric = 0;
+    public metric = 0; /// < length or area
 
     public count = 0;
 
-    public readonly indexA: [number, number, number] = [0, 0, 0];
+    public readonly indexA: [number, number, number] = [0, 0, 0]; /// < vertices on shape A
 
-    public readonly indexB: [number, number, number] = [0, 0, 0];
+    public readonly indexB: [number, number, number] = [0, 0, 0]; /// < vertices on shape B
 
     public Reset(): b2SimplexCache {
         this.metric = 0;
@@ -116,6 +118,9 @@ export class b2SimplexCache {
     }
 }
 
+/// Input for b2Distance.
+/// You have to option to use the shape radii
+/// in the computation. Even
 export class b2DistanceInput {
     public readonly proxyA: b2DistanceProxy = new b2DistanceProxy();
 
@@ -137,10 +142,11 @@ export class b2DistanceInput {
     }
 }
 
+/// Output for b2Distance.
 export class b2DistanceOutput {
-    public readonly pointA: b2Vec2 = new b2Vec2();
+    public readonly pointA: b2Vec2 = new b2Vec2(); /// < closest point on shapeA
 
-    public readonly pointB: b2Vec2 = new b2Vec2();
+    public readonly pointB: b2Vec2 = new b2Vec2(); /// < closest point on shapeB
 
     public distance = 0;
 
@@ -545,11 +551,7 @@ const b2Distance_s_supportB: b2Vec2 = new b2Vec2();
 export function b2Distance(output: b2DistanceOutput, cache: b2SimplexCache, input: b2DistanceInput): void {
     ++b2Gjk.calls;
 
-    const { proxyA } = input;
-    const { proxyB } = input;
-
-    const { transformA } = input;
-    const { transformB } = input;
+    const { proxyA, proxyB, transformA, transformB } = input;
 
     // Initialize the simplex.
     const simplex: b2Simplex = b2Distance_s_simplex;
@@ -561,8 +563,8 @@ export function b2Distance(output: b2DistanceOutput, cache: b2SimplexCache, inpu
 
     // These store the vertices of the last simplex so that we
     // can check for duplicates and prevent cycling.
-    const saveA: [number, number, number] = b2Distance_s_saveA;
-    const saveB: [number, number, number] = b2Distance_s_saveB;
+    const saveA = b2Distance_s_saveA;
+    const saveB = b2Distance_s_saveB;
     let saveCount = 0;
 
     // Main iteration loop.
@@ -697,28 +699,17 @@ export function b2ShapeCast(output: b2ShapeCastOutput, input: b2ShapeCastInput):
     output.normal.SetZero();
     output.point.SetZero();
 
-    // const b2DistanceProxy* proxyA = &input.proxyA;
-    const { proxyA } = input;
-    // const b2DistanceProxy* proxyB = &input.proxyB;
-    const { proxyB } = input;
+    const { proxyA, proxyB } = input;
 
-    // float32 radiusA = Math.max(proxyA.m_radius, b2_polygonRadius);
     const radiusA = Math.max(proxyA.m_radius, b2_polygonRadius);
-    // float32 radiusB = Math.max(proxyB.m_radius, b2_polygonRadius);
     const radiusB = Math.max(proxyB.m_radius, b2_polygonRadius);
-    // float32 radius = radiusA + radiusB;
     const radius = radiusA + radiusB;
 
-    // b2Transform xfA = input.transformA;
     const xfA = input.transformA;
-    // b2Transform xfB = input.transformB;
     const xfB = input.transformB;
 
-    // b2Vec2 r = input.translationB;
     const r = input.translationB;
-    // b2Vec2 n(0.0f, 0.0f);
-    const n = b2ShapeCast_s_n.Set(0.0, 0.0);
-    // float32 lambda = 0.0f;
+    const n = b2ShapeCast_s_n.SetZero();
     let lambda = 0.0;
 
     // Initial simplex
@@ -730,44 +721,29 @@ export function b2ShapeCast(output: b2ShapeCastOutput, input: b2ShapeCastInput):
     const vertices = simplex.m_vertices;
 
     // Get support point in -r direction
-    // int32 indexA = proxyA.GetSupport(b2MulT(xfA.q, -r));
     let indexA = proxyA.GetSupport(b2Rot.MulTRV(xfA.q, b2Vec2.NegV(r, b2Vec2.s_t1), b2Vec2.s_t0));
-    // b2Vec2 wA = b2Mul(xfA, proxyA.GetVertex(indexA));
     let wA = b2Transform.MulXV(xfA, proxyA.GetVertex(indexA), b2ShapeCast_s_wA);
-    // int32 indexB = proxyB.GetSupport(b2MulT(xfB.q, r));
     let indexB = proxyB.GetSupport(b2Rot.MulTRV(xfB.q, r, b2Vec2.s_t0));
-    // b2Vec2 wB = b2Mul(xfB, proxyB.GetVertex(indexB));
     let wB = b2Transform.MulXV(xfB, proxyB.GetVertex(indexB), b2ShapeCast_s_wB);
-    // b2Vec2 v = wA - wB;
     const v = b2Vec2.SubVV(wA, wB, b2ShapeCast_s_v);
 
     // Sigma is the target distance between polygons
-    // float32 sigma = Math.max(b2_polygonRadius, radius - b2_polygonRadius);
     const sigma = Math.max(b2_polygonRadius, radius - b2_polygonRadius);
-    // const float32 tolerance = 0.5f * b2_linearSlop;
     const tolerance = 0.5 * b2_linearSlop;
 
     // Main iteration loop.
-    // const int32 k_maxIters = 20;
     const k_maxIters = 20;
-    // int32 iter = 0;
     let iter = 0;
-    // while (iter < k_maxIters && Math.abs(v.Length() - sigma) > tolerance)
-    while (iter < k_maxIters && Math.abs(v.Length() - sigma) > tolerance) {
+    while (iter < k_maxIters && v.Length() - sigma > tolerance) {
         // DEBUG: b2Assert(simplex.m_count < 3);
 
         output.iterations += 1;
 
         // Support in direction -v (A - B)
-        // indexA = proxyA.GetSupport(b2MulT(xfA.q, -v));
         indexA = proxyA.GetSupport(b2Rot.MulTRV(xfA.q, b2Vec2.NegV(v, b2Vec2.s_t1), b2Vec2.s_t0));
-        // wA = b2Mul(xfA, proxyA.GetVertex(indexA));
         wA = b2Transform.MulXV(xfA, proxyA.GetVertex(indexA), b2ShapeCast_s_wA);
-        // indexB = proxyB.GetSupport(b2MulT(xfB.q, v));
         indexB = proxyB.GetSupport(b2Rot.MulTRV(xfB.q, v, b2Vec2.s_t0));
-        // wB = b2Mul(xfB, proxyB.GetVertex(indexB));
         wB = b2Transform.MulXV(xfB, proxyB.GetVertex(indexB), b2ShapeCast_s_wB);
-        // b2Vec2 p = wA - wB;
         const p = b2Vec2.SubVV(wA, wB, b2ShapeCast_s_p);
 
         // -v is a normal at p
@@ -777,16 +753,15 @@ export function b2ShapeCast(output: b2ShapeCastOutput, input: b2ShapeCastInput):
         const vp = b2Vec2.DotVV(v, p);
         const vr = b2Vec2.DotVV(v, r);
         if (vp - sigma > lambda * vr) {
-            if (vr <= 0.0) {
+            if (vr <= 0) {
                 return false;
             }
 
             lambda = (vp - sigma) / vr;
-            if (lambda > 1.0) {
+            if (lambda > 1) {
                 return false;
             }
 
-            // n = -v;
             n.Copy(v).SelfNeg();
             simplex.m_count = 0;
         }
@@ -795,15 +770,11 @@ export function b2ShapeCast(output: b2ShapeCastOutput, input: b2ShapeCastInput):
         // Shift by lambda * r because we want the closest point to the current clip point.
         // Note that the support point p is not shifted because we want the plane equation
         // to be formed in unshifted space.
-        // b2SimplexVertex* vertex = vertices + simplex.m_count;
         const vertex: b2SimplexVertex = vertices[simplex.m_count];
         vertex.indexA = indexB;
-        // vertex.wA = wB + lambda * r;
         vertex.wA.Copy(wB).SelfMulAdd(lambda, r);
         vertex.indexB = indexA;
-        // vertex.wB = wA;
         vertex.wB.Copy(wA);
-        // vertex.w = vertex.wB - vertex.wA;
         vertex.w.Copy(vertex.wB).SelfSub(vertex.wA);
         vertex.a = 1.0;
         simplex.m_count += 1;
@@ -831,11 +802,15 @@ export function b2ShapeCast(output: b2ShapeCastOutput, input: b2ShapeCastInput):
         }
 
         // Get search direction.
-        // v = simplex.GetClosestPoint();
         simplex.GetClosestPoint(v);
 
         // Iteration count is equated to the number of support point calls.
         ++iter;
+    }
+
+    if (iter === 0) {
+        // Initial overlap
+        return false;
     }
 
     // Prepare output.
@@ -843,13 +818,12 @@ export function b2ShapeCast(output: b2ShapeCastOutput, input: b2ShapeCastInput):
     const pointB = b2ShapeCast_s_pointB;
     simplex.GetWitnessPoints(pointA, pointB);
 
-    if (v.LengthSquared() > 0.0) {
-        // n = -v;
+    if (v.LengthSquared() > 0) {
         n.Copy(v).SelfNeg();
         n.Normalize();
     }
 
-    // output.point = pointA + radiusA * n;
+    output.point.Copy(pointA).SelfMulAdd(radiusA, n);
     output.normal.Copy(n);
     output.lambda = lambda;
     output.iterations = iter;

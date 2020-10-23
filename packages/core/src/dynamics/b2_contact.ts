@@ -48,6 +48,11 @@ export function b2MixRestitutionThreshold(threshold1: number, threshold2: number
     return threshold1 < threshold2 ? threshold1 : threshold2;
 }
 
+/// A contact edge is used to connect bodies and contacts together
+/// in a contact graph where each body is a node and each contact
+/// is an edge. A contact edge belongs to a doubly linked list
+/// maintained in each attached body. Each contact has two contact
+/// nodes, one for each attached body.
 export class b2ContactEdge {
     private m_other: b2Body | null = null; /// < provides quick access to the other body attached.
 

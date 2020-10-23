@@ -83,6 +83,11 @@ export class b2ContactManager {
             edge = edge.next;
         }
 
+        // Does a joint override collision? Is at least one body dynamic?
+        if (bodyB.ShouldCollide(bodyA) === false) {
+            return;
+        }
+
         // Check user filtering.
         if (this.m_contactFilter && !this.m_contactFilter.ShouldCollide(fixtureA, fixtureB)) {
             return;
@@ -215,9 +220,12 @@ export class b2ContactManager {
 
             // Is this contact flagged for filtering?
             if (c.m_filterFlag) {
-                // Check user filtering.
-                if (this.m_contactFilter && !this.m_contactFilter.ShouldCollide(fixtureA, fixtureB)) {
-                    const cNuke: b2Contact = c;
+                // Should these bodies collide?
+                if (
+                    !bodyB.ShouldCollide(bodyA) ||
+                    (this.m_contactFilter && !this.m_contactFilter.ShouldCollide(fixtureA, fixtureB))
+                ) {
+                    const cNuke = c;
                     c = cNuke.m_next;
                     this.Destroy(cNuke);
                     continue;
