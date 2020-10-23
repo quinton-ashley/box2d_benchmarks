@@ -122,7 +122,7 @@ export function b2CollidePolygonAndCircle(
 
         manifold.pointCount = 1;
         manifold.type = b2ManifoldType.e_faceA;
-        manifold.localNormal.Copy(normals[vertIndex1]).SelfNormalize();
+        manifold.localNormal.Copy(normals[vertIndex1]);
         manifold.localPoint.Copy(faceCenter);
         manifold.points[0].localPoint.Copy(circleB.m_p);
         manifold.points[0].id.key = 0;

@@ -19,7 +19,6 @@
 // DEBUG: import { b2Assert } from "../common/b2_common";
 import { b2BroadPhase } from "../collision/b2_broad_phase";
 import { b2TreeNode } from "../collision/b2_dynamic_tree";
-import { b2TestOverlapAABB } from "../collision/b2_collision";
 import { b2Contact, b2ContactEdge } from "./b2_contact";
 import { b2ContactFactory } from "./b2_contact_factory";
 import { b2Body, b2BodyType } from "./b2_body";
@@ -239,7 +238,7 @@ export class b2ContactManager {
 
             const treeNodeA: b2TreeNode<b2FixtureProxy> = fixtureA.m_proxies[indexA].treeNode;
             const treeNodeB: b2TreeNode<b2FixtureProxy> = fixtureB.m_proxies[indexB].treeNode;
-            const overlap: boolean = b2TestOverlapAABB(treeNodeA.aabb, treeNodeB.aabb);
+            const overlap: boolean = treeNodeA.aabb.TestOverlap(treeNodeB.aabb);
 
             // Here we destroy contacts that cease to overlap in the broad-phase.
             if (!overlap) {

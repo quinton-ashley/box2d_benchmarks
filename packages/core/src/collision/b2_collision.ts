@@ -268,7 +268,7 @@ export class b2WorldManifold {
                 const cA: b2Vec2 = b2Vec2.AddVMulSV(pointA, radiusA, this.normal, b2WorldManifold.Initialize_s_cA);
                 const cB: b2Vec2 = b2Vec2.SubVMulSV(pointB, radiusB, this.normal, b2WorldManifold.Initialize_s_cB);
                 b2Vec2.MidVV(cA, cB, this.points[0]);
-                this.separations[0] = b2Vec2.DotVV(b2Vec2.SubVV(cB, cA, b2Vec2.s_t0), this.normal); // b2Dot(cB - cA, normal);
+                this.separations[0] = b2Vec2.DotVV(b2Vec2.SubVV(cB, cA, b2Vec2.s_t0), this.normal);
                 break;
             }
 
@@ -296,7 +296,7 @@ export class b2WorldManifold {
                         b2WorldManifold.Initialize_s_cB,
                     );
                     b2Vec2.MidVV(cA, cB, this.points[i]);
-                    this.separations[i] = b2Vec2.DotVV(b2Vec2.SubVV(cB, cA, b2Vec2.s_t0), this.normal); // b2Dot(cB - cA, normal);
+                    this.separations[i] = b2Vec2.DotVV(b2Vec2.SubVV(cB, cA, b2Vec2.s_t0), this.normal);
                 }
                 break;
             }
@@ -325,7 +325,7 @@ export class b2WorldManifold {
                         b2WorldManifold.Initialize_s_cA,
                     );
                     b2Vec2.MidVV(cA, cB, this.points[i]);
-                    this.separations[i] = b2Vec2.DotVV(b2Vec2.SubVV(cA, cB, b2Vec2.s_t0), this.normal); // b2Dot(cA - cB, normal);
+                    this.separations[i] = b2Vec2.DotVV(b2Vec2.SubVV(cA, cB, b2Vec2.s_t0), this.normal);
                 }
 
                 // Ensure normal points from A to B.
@@ -355,8 +355,7 @@ export function b2GetPointStates(
     // Detect persists and removes.
     let i: number;
     for (i = 0; i < manifold1.pointCount; ++i) {
-        const { id } = manifold1.points[i];
-        const { key } = id;
+        const { key } = manifold1.points[i].id;
 
         state1[i] = b2PointState.b2_removeState;
 
@@ -373,8 +372,7 @@ export function b2GetPointStates(
 
     // Detect persists and adds.
     for (i = 0; i < manifold2.pointCount; ++i) {
-        const { id } = manifold2.points[i];
-        const { key } = id;
+        const { key } = manifold2.points[i].id;
 
         state2[i] = b2PointState.b2_addState;
 
@@ -455,19 +453,12 @@ export class b2AABB {
 
     /// Verify that the bounds are sorted.
     public IsValid(): boolean {
-        if (!this.lowerBound.IsValid()) {
-            return false;
-        }
-        if (!this.upperBound.IsValid()) {
-            return false;
-        }
-        if (this.upperBound.x < this.lowerBound.x) {
-            return false;
-        }
-        if (this.upperBound.y < this.lowerBound.y) {
-            return false;
-        }
-        return true;
+        return (
+            this.lowerBound.IsValid() &&
+            this.upperBound.IsValid() &&
+            this.upperBound.x >= this.lowerBound.x &&
+            this.upperBound.y >= this.lowerBound.y
+        );
     }
 
     /// Get the center of the AABB.
@@ -512,19 +503,12 @@ export class b2AABB {
 
     /// Does this aabb contain the provided AABB.
     public Contains(aabb: b2AABB): boolean {
-        if (this.lowerBound.x <= aabb.lowerBound.x) {
-            return false;
-        }
-        if (this.lowerBound.y <= aabb.lowerBound.y) {
-            return false;
-        }
-        if (aabb.upperBound.x <= this.upperBound.x) {
-            return false;
-        }
-        if (aabb.upperBound.y <= this.upperBound.y) {
-            return false;
-        }
-        return true;
+        return (
+            this.lowerBound.x <= aabb.lowerBound.x &&
+            this.lowerBound.y <= aabb.lowerBound.y &&
+            aabb.upperBound.x <= this.upperBound.x &&
+            aabb.upperBound.y <= this.upperBound.y
+        );
     }
 
     // From Real-time Collision Detection, p179.
@@ -650,26 +634,10 @@ export class b2AABB {
     }
 }
 
-export function b2TestOverlapAABB(a: b2AABB, b: b2AABB): boolean {
-    if (a.upperBound.x < b.lowerBound.x) {
-        return false;
-    }
-    if (a.upperBound.y < b.lowerBound.y) {
-        return false;
-    }
-    if (b.upperBound.x < a.lowerBound.x) {
-        return false;
-    }
-    if (b.upperBound.y < a.lowerBound.y) {
-        return false;
-    }
-    return true;
-}
-
 /// Clipping for contact manifolds.
 export function b2ClipSegmentToLine(
     vOut: [b2ClipVertex, b2ClipVertex],
-    vIn: [b2ClipVertex, b2ClipVertex],
+    [vIn0, vIn1]: [b2ClipVertex, b2ClipVertex],
     normal: b2Vec2,
     offset: number,
     vertexIndexA: number,
@@ -677,31 +645,23 @@ export function b2ClipSegmentToLine(
     // Start with no output points
     let count = 0;
 
-    const vIn0: b2ClipVertex = vIn[0];
-    const vIn1: b2ClipVertex = vIn[1];
-
     // Calculate the distance of end points to the line
     const distance0: number = b2Vec2.DotVV(normal, vIn0.v) - offset;
     const distance1: number = b2Vec2.DotVV(normal, vIn1.v) - offset;
 
     // If the points are behind the plane
-    if (distance0 <= 0) {
-        vOut[count++].Copy(vIn0);
-    }
-    if (distance1 <= 0) {
-        vOut[count++].Copy(vIn1);
-    }
+    if (distance0 <= 0) vOut[count++].Copy(vIn0);
+    if (distance1 <= 0) vOut[count++].Copy(vIn1);
 
     // If the points are on different sides of the plane
     if (distance0 * distance1 < 0) {
         // Find intersection point of edge and plane
         const interp: number = distance0 / (distance0 - distance1);
-        const { v } = vOut[count];
+        const { v, id } = vOut[count];
         v.x = vIn0.v.x + interp * (vIn1.v.x - vIn0.v.x);
         v.y = vIn0.v.y + interp * (vIn1.v.y - vIn0.v.y);
 
         // VertexA is hitting edgeB.
-        const { id } = vOut[count];
         id.cf.indexA = vertexIndexA;
         id.cf.indexB = vIn0.id.cf.indexB;
         id.cf.typeA = b2ContactFeatureType.e_vertex;

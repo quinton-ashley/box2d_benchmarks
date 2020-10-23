@@ -19,7 +19,7 @@
 // DEBUG: import { b2Assert } from "../common/b2_common";
 import { b2Assert, b2_aabbExtension, b2_aabbMultiplier } from "../common/b2_common";
 import { b2Vec2, XY } from "../common/b2_math";
-import { b2AABB, b2RayCastInput, b2TestOverlapAABB } from "./b2_collision";
+import { b2AABB, b2RayCastInput } from "./b2_collision";
 
 function verify<T>(value: T | null): T {
     b2Assert(value !== null);
@@ -193,7 +193,7 @@ export class b2DynamicTree<T> {
             const node = stack.pop();
             if (!node) continue;
 
-            if (!b2TestOverlapAABB(node.aabb, segmentAABB)) {
+            if (!node.aabb.TestOverlap(segmentAABB)) {
                 continue;
             }
 

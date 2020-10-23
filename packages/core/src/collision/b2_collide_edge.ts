@@ -165,9 +165,9 @@ export function b2CollideEdgeAndCircle(
 }
 
 enum b2EPAxisType {
-    e_unknown = 0,
-    e_edgeA = 1,
-    e_edgeB = 2,
+    e_unknown,
+    e_edgeA,
+    e_edgeB,
 }
 
 class b2EPAxis {

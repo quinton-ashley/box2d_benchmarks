@@ -15,13 +15,7 @@ import { b2PolygonShape } from "./b2_polygon_shape";
 const b2FindMaxSeparation_s_xf: b2Transform = new b2Transform();
 const b2FindMaxSeparation_s_n: b2Vec2 = new b2Vec2();
 const b2FindMaxSeparation_s_v1: b2Vec2 = new b2Vec2();
-function b2FindMaxSeparation(
-    edgeIndex: [number],
-    poly1: b2PolygonShape,
-    xf1: b2Transform,
-    poly2: b2PolygonShape,
-    xf2: b2Transform,
-): number {
+function b2FindMaxSeparation(poly1: b2PolygonShape, xf1: b2Transform, poly2: b2PolygonShape, xf2: b2Transform) {
     const count1: number = poly1.m_count;
     const count2: number = poly2.m_count;
     const n1s: b2Vec2[] = poly1.m_normals;
@@ -52,8 +46,7 @@ function b2FindMaxSeparation(
         }
     }
 
-    edgeIndex[0] = bestIndex;
-    return maxSeparation;
+    return [maxSeparation, bestIndex] as const;
 }
 
 const b2FindIncidentEdge_s_normal1: b2Vec2 = new b2Vec2();
@@ -74,11 +67,7 @@ function b2FindIncidentEdge(
     // DEBUG: b2Assert(0 <= edge1 && edge1 < poly1.m_count);
 
     // Get the normal of the reference edge in poly2's frame.
-    const normal1: b2Vec2 = b2Rot.MulTRV(
-        xf2.q,
-        b2Rot.MulRV(xf1.q, normals1[edge1], b2Vec2.s_t0),
-        b2FindIncidentEdge_s_normal1,
-    );
+    const normal1 = b2Rot.MulTRV(xf2.q, b2Rot.MulRV(xf1.q, normals1[edge1], b2Vec2.s_t0), b2FindIncidentEdge_s_normal1);
 
     // Find the incident edge on poly2.
     let index = 0;
@@ -122,8 +111,6 @@ function b2FindIncidentEdge(
 const b2CollidePolygons_s_incidentEdge: [b2ClipVertex, b2ClipVertex] = [new b2ClipVertex(), new b2ClipVertex()];
 const b2CollidePolygons_s_clipPoints1: [b2ClipVertex, b2ClipVertex] = [new b2ClipVertex(), new b2ClipVertex()];
 const b2CollidePolygons_s_clipPoints2: [b2ClipVertex, b2ClipVertex] = [new b2ClipVertex(), new b2ClipVertex()];
-const b2CollidePolygons_s_edgeA: [number] = [0];
-const b2CollidePolygons_s_edgeB: [number] = [0];
 const b2CollidePolygons_s_localTangent: b2Vec2 = new b2Vec2();
 const b2CollidePolygons_s_localNormal: b2Vec2 = new b2Vec2();
 const b2CollidePolygons_s_planePoint: b2Vec2 = new b2Vec2();
@@ -142,16 +129,12 @@ export function b2CollidePolygons(
     manifold.pointCount = 0;
     const totalRadius: number = polyA.m_radius + polyB.m_radius;
 
-    const edgeA: [number] = b2CollidePolygons_s_edgeA;
-    edgeA[0] = 0;
-    const separationA: number = b2FindMaxSeparation(edgeA, polyA, xfA, polyB, xfB);
+    const [separationA, edgeA] = b2FindMaxSeparation(polyA, xfA, polyB, xfB);
     if (separationA > totalRadius) {
         return;
     }
 
-    const edgeB: [number] = b2CollidePolygons_s_edgeB;
-    edgeB[0] = 0;
-    const separationB: number = b2FindMaxSeparation(edgeB, polyB, xfB, polyA, xfA);
+    const [separationB, edgeB] = b2FindMaxSeparation(polyB, xfB, polyA, xfA);
     if (separationB > totalRadius) {
         return;
     }
@@ -160,8 +143,8 @@ export function b2CollidePolygons(
     let poly2: b2PolygonShape; // incident polygon
     let xf1: b2Transform;
     let xf2: b2Transform;
-    let edge1 = 0; // reference edge
-    let flip = 0;
+    let edge1: number; // reference edge
+    let flip: number;
     const k_tol = 0.1 * b2_linearSlop;
 
     if (separationB > separationA + k_tol) {
@@ -169,7 +152,7 @@ export function b2CollidePolygons(
         poly2 = polyA;
         xf1 = xfB;
         xf2 = xfA;
-        [edge1] = edgeB;
+        edge1 = edgeB;
         manifold.type = b2ManifoldType.e_faceB;
         flip = 1;
     } else {
@@ -177,7 +160,7 @@ export function b2CollidePolygons(
         poly2 = polyB;
         xf1 = xfA;
         xf2 = xfB;
-        [edge1] = edgeA;
+        edge1 = edgeA;
         manifold.type = b2ManifoldType.e_faceA;
         flip = 0;
     }
@@ -216,11 +199,10 @@ export function b2CollidePolygons(
     // Clip incident edge against extruded edge1 side edges.
     const clipPoints1 = b2CollidePolygons_s_clipPoints1;
     const clipPoints2 = b2CollidePolygons_s_clipPoints2;
-    let np: number;
 
     // Clip to box side 1
     const ntangent: b2Vec2 = b2Vec2.NegV(tangent, b2CollidePolygons_s_ntangent);
-    np = b2ClipSegmentToLine(clipPoints1, incidentEdge, ntangent, sideOffset1, iv1);
+    let np = b2ClipSegmentToLine(clipPoints1, incidentEdge, ntangent, sideOffset1, iv1);
 
     if (np < 2) {
         return;
