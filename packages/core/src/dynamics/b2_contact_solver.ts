@@ -345,7 +345,7 @@ export class b2ContactSolver {
             const { radiusA, radiusB, localCenterA, localCenterB } = pc;
             const manifold: b2Manifold = this.m_contacts[vc.contactIndex].GetManifold();
 
-            const { indexA, indexB, tangent } = vc;
+            const { indexA, indexB, tangent, pointCount } = vc;
 
             const mA: number = vc.invMassA;
             const mB: number = vc.invMassB;
@@ -374,7 +374,6 @@ export class b2ContactSolver {
             vc.normal.Copy(worldManifold.normal);
             b2Vec2.CrossVOne(vc.normal, tangent); // compute from normal
 
-            const { pointCount } = vc;
             for (let j = 0; j < pointCount; ++j) {
                 const vcp: b2VelocityConstraintPoint = vc.points[j];
 
@@ -516,7 +515,7 @@ export class b2ContactSolver {
         for (let i = 0; i < this.m_count; ++i) {
             const vc: b2ContactVelocityConstraint = this.m_velocityConstraints[i];
 
-            const { indexA, indexB, pointCount } = vc;
+            const { indexA, indexB, pointCount, normal, tangent, friction } = vc;
             const mA: number = vc.invMassA;
             const iA: number = vc.invIA;
             const mB: number = vc.invMassB;
@@ -526,8 +525,6 @@ export class b2ContactSolver {
             let wA: number = this.m_velocities[indexA].w;
             const vB: b2Vec2 = this.m_velocities[indexB].v;
             let wB: number = this.m_velocities[indexB].w;
-
-            const { normal, tangent, friction } = vc;
 
             // DEBUG: b2Assert(pointCount === 1 || pointCount === 2);
 

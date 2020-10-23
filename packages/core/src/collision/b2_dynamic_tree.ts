@@ -161,8 +161,8 @@ export class b2DynamicTree<T> {
     }
 
     public RayCast(input: b2RayCastInput, callback: (input: b2RayCastInput, node: b2TreeNode<T>) => number): void {
-        const { p1 } = input;
-        const { p2 } = input;
+        const { p1, p2 } = input;
+        let { maxFraction } = input;
         const r: b2Vec2 = b2Vec2.SubVV(p2, p1, b2DynamicTree.s_r);
         // DEBUG: b2Assert(r.LengthSquared() > 0);
         r.Normalize();
@@ -173,8 +173,6 @@ export class b2DynamicTree<T> {
 
         // Separating axis for segment (Gino, p80).
         // |dot(v, p1 - c)| > dot(|v|, h)
-
-        let { maxFraction } = input;
 
         // Build a bounding box for the segment.
         const segmentAABB: b2AABB = b2DynamicTree.s_segmentAABB;
@@ -871,8 +869,7 @@ export class b2DynamicTree<T> {
 
         // DEBUG: b2Assert(!node.IsLeaf());
 
-        const { child1 } = node;
-        const { child2 } = node;
+        const { child1, child2 } = node;
         b2DynamicTree.ShiftOriginNode(child1, newOrigin);
         b2DynamicTree.ShiftOriginNode(child2, newOrigin);
 

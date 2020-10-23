@@ -231,10 +231,10 @@ export function b2CollidePolygons(
             if (flip) {
                 // Swap features
                 const { cf } = cp.id;
-                cp.id.cf.indexA = cf.indexB;
-                cp.id.cf.indexB = cf.indexA;
-                cp.id.cf.typeA = cf.typeB;
-                cp.id.cf.typeB = cf.typeA;
+                cf.indexA = cf.indexB;
+                cf.indexB = cf.indexA;
+                cf.typeA = cf.typeB;
+                cf.typeB = cf.typeA;
             }
             ++pointCount;
         }

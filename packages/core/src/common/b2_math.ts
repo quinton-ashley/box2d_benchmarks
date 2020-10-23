@@ -173,14 +173,12 @@ export class b2Vec2 implements XY {
     }
 
     public Length(): number {
-        const { x } = this;
-        const { y } = this;
+        const { x, y } = this;
         return Math.sqrt(x * x + y * y);
     }
 
     public LengthSquared(): number {
-        const { x } = this;
-        const { y } = this;
+        const { x, y } = this;
         return x * x + y * y;
     }
 
