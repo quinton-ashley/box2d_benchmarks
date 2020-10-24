@@ -26,6 +26,7 @@ import {
     b2RandomRange,
     b2TreeNode,
     XY,
+    b2Verify,
 } from "@box2d/core";
 
 import { Test } from "../../test";
@@ -267,7 +268,7 @@ export class DynamicTreeTest extends Test {
 
     public Query(): void {
         this.m_tree.Query(this.m_queryAABB, (proxyId: b2TreeNode<DynamicTreeTest_Actor>): boolean => {
-            const actor = proxyId.userData; // this.m_tree.GetUserData(proxyId);
+            const actor = b2Verify(proxyId.userData);
             actor.overlap = this.m_queryAABB.TestOverlap(actor.aabb);
             return true;
         });
@@ -288,7 +289,7 @@ export class DynamicTreeTest extends Test {
 
         // Ray cast against the dynamic tree.
         this.m_tree.RayCast(input, (input2: b2RayCastInput, proxyId: b2TreeNode<DynamicTreeTest_Actor>): number => {
-            const actor: DynamicTreeTest_Actor = proxyId.userData; // this.m_tree.GetUserData(proxyId);
+            const actor = b2Verify(proxyId.userData);
 
             const output = new b2RayCastOutput();
             const hit = actor.aabb.RayCast(output, input2);

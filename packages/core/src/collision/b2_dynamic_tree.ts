@@ -17,14 +17,25 @@
  */
 
 // DEBUG: import { b2Assert } from "../common/b2_common";
-import { b2Assert, b2_aabbExtension, b2_aabbMultiplier } from "../common/b2_common";
+import { b2Assert, b2Verify, b2_aabbExtension, b2_aabbMultiplier } from "../common/b2_common";
 import { b2Vec2, XY } from "../common/b2_math";
 import { b2AABB, b2RayCastInput } from "./b2_collision";
 
-function verify<T>(value: T | null): T {
-    b2Assert(value !== null);
-    return value;
-}
+const temp = {
+    stack: [] as Array<b2TreeNode<any> | null>,
+    t: new b2Vec2(),
+    r: new b2Vec2(),
+    v: new b2Vec2(),
+    abs_v: new b2Vec2(),
+    segmentAABB: new b2AABB(),
+    subInput: new b2RayCastInput(),
+    combinedAABB: new b2AABB(),
+    aabb: new b2AABB(),
+    fatAABB: new b2AABB(),
+    hugeAABB: new b2AABB(),
+};
+
+let nextNodeid = 0;
 
 /// A node in the dynamic tree. The client does not interact with this directly.
 export class b2TreeNode<T> {
@@ -32,17 +43,7 @@ export class b2TreeNode<T> {
 
     public readonly aabb: b2AABB = new b2AABB();
 
-    private m_userData: T | null = null;
-
-    public get userData(): T {
-        b2Assert(this.m_userData !== null);
-        return this.m_userData;
-    }
-
-    public set userData(value: T) {
-        b2Assert(this.m_userData === null);
-        this.m_userData = value;
-    }
+    public userData: T | null = null;
 
     public parent: b2TreeNode<T> | null = null; // or next
 
@@ -54,25 +55,69 @@ export class b2TreeNode<T> {
 
     public moved = false;
 
-    constructor(id = 0) {
-        this.m_id = id;
+    constructor() {
+        this.m_id = nextNodeid++;
     }
 
     public Reset(): void {
-        this.m_userData = null;
+        this.child1 = null;
+        this.child2 = null;
+        this.height = -1;
+        this.userData = null;
     }
 
     public IsLeaf(): boolean {
         return this.child1 === null;
     }
+
+    public GetArea(): number {
+        if (this.IsLeaf()) return 0;
+
+        let area: number = this.aabb.GetPerimeter();
+        if (this.child1) area += this.child1.GetArea();
+        if (this.child2) area += this.child2.GetArea();
+        return area;
+    }
+
+    public ComputeHeight(): number {
+        if (this.IsLeaf()) return 0;
+
+        b2Assert(this.child1 !== null && this.child2 !== null);
+
+        const height1 = b2Verify(this.child1).ComputeHeight();
+        const height2 = b2Verify(this.child2).ComputeHeight();
+        return 1 + Math.max(height1, height2);
+    }
+
+    public GetMaxBalance(): number {
+        if (this.height <= 1) return 0;
+
+        const child1 = b2Verify(this.child1);
+        const child2 = b2Verify(this.child2);
+        return Math.max(child1.GetMaxBalance(), child2.GetMaxBalance(), Math.abs(child2.height - child1.height));
+    }
+
+    public ShiftOrigin(newOrigin: XY): void {
+        if (this.height <= 1) return;
+
+        b2Verify(this.child1).ShiftOrigin(newOrigin);
+        b2Verify(this.child2).ShiftOrigin(newOrigin);
+
+        this.aabb.lowerBound.SelfSub(newOrigin);
+        this.aabb.upperBound.SelfSub(newOrigin);
+    }
 }
 
+/// A dynamic AABB tree broad-phase, inspired by Nathanael Presson's btDbvt.
+/// A dynamic tree arranges data in a binary tree to accelerate
+/// queries such as volume queries and ray casts. Leafs are proxies
+/// with an AABB. In the tree we expand the proxy AABB by b2_fatAABBFactor
+/// so that the proxy AABB is bigger than the client object. This allows the client
+/// object to move by small amounts without triggering a tree update.
+///
+/// Nodes are pooled
 export class b2DynamicTree<T> {
     public m_root: b2TreeNode<T> | null = null;
-
-    // b2TreeNode* public m_nodes;
-    // int32 public m_nodeCount;
-    // int32 public m_nodeCapacity;
 
     public m_freeList: b2TreeNode<T> | null = null;
 
@@ -80,52 +125,15 @@ export class b2DynamicTree<T> {
 
     public m_insertionCount = 0;
 
-    public readonly m_stack: Array<b2TreeNode<T> | null> = [];
-
-    public static readonly s_r = new b2Vec2();
-
-    public static readonly s_v = new b2Vec2();
-
-    public static readonly s_abs_v = new b2Vec2();
-
-    public static readonly s_segmentAABB = new b2AABB();
-
-    public static readonly s_subInput = new b2RayCastInput();
-
-    public static readonly s_combinedAABB = new b2AABB();
-
-    public static readonly s_aabb = new b2AABB();
-
-    // public GetUserData(node: b2TreeNode<T>): T {
-    //   // DEBUG: b2Assert(node !== null);
-    //   return node.userData;
-    // }
-
-    // public WasMoved(node: b2TreeNode<T>): boolean {
-    //   return node.moved;
-    // }
-
-    // public ClearMoved(node: b2TreeNode<T>): void {
-    //   node.moved = false;
-    // }
-
-    // public GetFatAABB(node: b2TreeNode<T>): b2AABB {
-    //   // DEBUG: b2Assert(node !== null);
-    //   return node.aabb;
-    // }
-
     public Query(aabb: b2AABB, callback: (node: b2TreeNode<T>) => boolean): void {
-        const stack = this.m_stack;
+        const stack = temp.stack as Array<b2TreeNode<T> | null>;
         stack.length = 0;
-        stack.push(this.m_root);
 
-        while (stack.length > 0) {
-            const node = stack.pop();
-            if (!node) continue;
-
+        let node: b2TreeNode<T> | null | undefined = this.m_root;
+        while (node) {
             if (node.aabb.TestOverlap(aabb)) {
                 if (node.IsLeaf()) {
-                    const proceed: boolean = callback(node);
+                    const proceed = callback(node);
                     if (!proceed) {
                         return;
                     }
@@ -134,21 +142,19 @@ export class b2DynamicTree<T> {
                     stack.push(node.child2);
                 }
             }
+            node = stack.pop();
         }
     }
 
     public QueryPoint(point: XY, callback: (node: b2TreeNode<T>) => boolean): void {
-        const stack = this.m_stack;
+        const stack = temp.stack as Array<b2TreeNode<T> | null>;
         stack.length = 0;
-        stack.push(this.m_root);
 
-        while (stack.length > 0) {
-            const node = stack.pop();
-            if (!node) continue;
-
+        let node: b2TreeNode<T> | null | undefined = this.m_root;
+        while (node) {
             if (node.aabb.TestContain(point)) {
                 if (node.IsLeaf()) {
-                    const proceed: boolean = callback(node);
+                    const proceed = callback(node);
                     if (!proceed) {
                         return;
                     }
@@ -157,61 +163,57 @@ export class b2DynamicTree<T> {
                     stack.push(node.child2);
                 }
             }
+            node = stack.pop();
         }
     }
 
     public RayCast(input: b2RayCastInput, callback: (input: b2RayCastInput, node: b2TreeNode<T>) => number): void {
         const { p1, p2 } = input;
-        let { maxFraction } = input;
-        const r: b2Vec2 = b2Vec2.SubVV(p2, p1, b2DynamicTree.s_r);
+        const r = b2Vec2.SubVV(p2, p1, temp.r);
         // DEBUG: b2Assert(r.LengthSquared() > 0);
         r.Normalize();
 
         // v is perpendicular to the segment.
-        const v: b2Vec2 = b2Vec2.CrossOneV(r, b2DynamicTree.s_v);
-        const abs_v: b2Vec2 = b2Vec2.AbsV(v, b2DynamicTree.s_abs_v);
+        const v = b2Vec2.CrossOneV(r, temp.v);
+        const abs_v = b2Vec2.AbsV(v, temp.abs_v);
 
         // Separating axis for segment (Gino, p80).
         // |dot(v, p1 - c)| > dot(|v|, h)
 
+        let { maxFraction } = input;
+
         // Build a bounding box for the segment.
-        const segmentAABB: b2AABB = b2DynamicTree.s_segmentAABB;
-        let t_x: number = p1.x + maxFraction * (p2.x - p1.x);
-        let t_y: number = p1.y + maxFraction * (p2.y - p1.y);
-        segmentAABB.lowerBound.x = Math.min(p1.x, t_x);
-        segmentAABB.lowerBound.y = Math.min(p1.y, t_y);
-        segmentAABB.upperBound.x = Math.max(p1.x, t_x);
-        segmentAABB.upperBound.y = Math.max(p1.y, t_y);
+        const { segmentAABB, subInput } = temp;
+        const t = temp.t.Set(p1.x + maxFraction * (p2.x - p1.x), p1.y + maxFraction * (p2.y - p1.y));
+        b2Vec2.MinV(p1, t, segmentAABB.lowerBound);
+        b2Vec2.MaxV(p1, t, segmentAABB.upperBound);
 
-        const stack = this.m_stack;
+        const stack = temp.stack as Array<b2TreeNode<T> | null>;
         stack.length = 0;
-        stack.push(this.m_root);
 
-        while (stack.length > 0) {
-            const node = stack.pop();
-            if (!node) continue;
-
+        let node: b2TreeNode<T> | null | undefined = this.m_root;
+        while (node) {
             if (!node.aabb.TestOverlap(segmentAABB)) {
+                node = stack.pop();
                 continue;
             }
 
             // Separating axis for segment (Gino, p80).
             // |dot(v, p1 - c)| > dot(|v|, h)
-            const c: b2Vec2 = node.aabb.GetCenter();
-            const h: b2Vec2 = node.aabb.GetExtents();
-            const separation: number =
-                Math.abs(b2Vec2.DotVV(v, b2Vec2.SubVV(p1, c, b2Vec2.s_t0))) - b2Vec2.DotVV(abs_v, h);
+            const c = node.aabb.GetCenter();
+            const h = node.aabb.GetExtents();
+            const separation = Math.abs(b2Vec2.DotVV(v, b2Vec2.SubVV(p1, c, b2Vec2.s_t0))) - b2Vec2.DotVV(abs_v, h);
             if (separation > 0) {
+                node = stack.pop();
                 continue;
             }
 
             if (node.IsLeaf()) {
-                const subInput: b2RayCastInput = b2DynamicTree.s_subInput;
                 subInput.p1.Copy(input.p1);
                 subInput.p2.Copy(input.p2);
                 subInput.maxFraction = maxFraction;
 
-                const value: number = callback(subInput, node);
+                const value = callback(subInput, node);
 
                 if (value === 0) {
                     // The client has terminated the ray cast.
@@ -221,57 +223,46 @@ export class b2DynamicTree<T> {
                 if (value > 0) {
                     // Update segment bounding box.
                     maxFraction = value;
-                    t_x = p1.x + maxFraction * (p2.x - p1.x);
-                    t_y = p1.y + maxFraction * (p2.y - p1.y);
-                    segmentAABB.lowerBound.x = Math.min(p1.x, t_x);
-                    segmentAABB.lowerBound.y = Math.min(p1.y, t_y);
-                    segmentAABB.upperBound.x = Math.max(p1.x, t_x);
-                    segmentAABB.upperBound.y = Math.max(p1.y, t_y);
+                    t.Set(p1.x + maxFraction * (p2.x - p1.x), p1.y + maxFraction * (p2.y - p1.y));
+                    b2Vec2.MinV(p1, t, segmentAABB.lowerBound);
+                    b2Vec2.MaxV(p1, t, segmentAABB.upperBound);
                 }
             } else {
                 stack.push(node.child1);
                 stack.push(node.child2);
             }
+            node = stack.pop();
         }
     }
-
-    public static s_node_id = 0;
 
     public AllocateNode(): b2TreeNode<T> {
         // Expand the node pool as needed.
-        if (this.m_freeList !== null) {
-            const node: b2TreeNode<T> = this.m_freeList;
-            this.m_freeList = node.parent; // this.m_freeList = node.next;
-            node.parent = null;
-            node.child1 = null;
-            node.child2 = null;
-            node.height = 0;
-            node.moved = false;
-            return node;
+        if (this.m_freeList === null) {
+            return new b2TreeNode<T>();
         }
 
-        return new b2TreeNode<T>(b2DynamicTree.s_node_id++);
+        const node = this.m_freeList;
+        this.m_freeList = node.parent;
+        node.parent = null;
+        node.child1 = null;
+        node.child2 = null;
+        node.height = 0;
+        node.moved = false;
+        return node;
     }
 
     public FreeNode(node: b2TreeNode<T>): void {
-        node.parent = this.m_freeList; // node.next = this.m_freeList;
-        node.child1 = null;
-        node.child2 = null;
-        node.height = -1;
+        node.parent = this.m_freeList;
         node.Reset();
         this.m_freeList = node;
     }
 
     public CreateProxy(aabb: b2AABB, userData: T): b2TreeNode<T> {
-        const node: b2TreeNode<T> = this.AllocateNode();
+        const node = this.AllocateNode();
 
         // Fatten the aabb.
-        const r_x: number = b2_aabbExtension;
-        const r_y: number = b2_aabbExtension;
-        node.aabb.lowerBound.x = aabb.lowerBound.x - r_x;
-        node.aabb.lowerBound.y = aabb.lowerBound.y - r_y;
-        node.aabb.upperBound.x = aabb.upperBound.x + r_x;
-        node.aabb.upperBound.y = aabb.upperBound.y + r_y;
+        node.aabb.lowerBound.Set(aabb.lowerBound.x - b2_aabbExtension, aabb.lowerBound.y - b2_aabbExtension);
+        node.aabb.upperBound.Set(aabb.upperBound.x + b2_aabbExtension, aabb.upperBound.y + b2_aabbExtension);
         node.userData = userData;
         node.height = 0;
         node.moved = true;
@@ -288,21 +279,13 @@ export class b2DynamicTree<T> {
         this.FreeNode(node);
     }
 
-    private static MoveProxy_s_fatAABB = new b2AABB();
-
-    private static MoveProxy_s_hugeAABB = new b2AABB();
-
     public MoveProxy(node: b2TreeNode<T>, aabb: b2AABB, displacement: b2Vec2): boolean {
         // DEBUG: b2Assert(node.IsLeaf());
 
         // Extend AABB
-        const fatAABB: b2AABB = b2DynamicTree.MoveProxy_s_fatAABB;
-        const r_x: number = b2_aabbExtension;
-        const r_y: number = b2_aabbExtension;
-        fatAABB.lowerBound.x = aabb.lowerBound.x - r_x;
-        fatAABB.lowerBound.y = aabb.lowerBound.y - r_y;
-        fatAABB.upperBound.x = aabb.upperBound.x + r_x;
-        fatAABB.upperBound.y = aabb.upperBound.y + r_y;
+        const { fatAABB, hugeAABB } = temp;
+        fatAABB.lowerBound.Set(aabb.lowerBound.x - b2_aabbExtension, aabb.lowerBound.y - b2_aabbExtension);
+        fatAABB.upperBound.Set(aabb.upperBound.x + b2_aabbExtension, aabb.upperBound.y + b2_aabbExtension);
 
         // Predict AABB movement
         const d_x: number = b2_aabbMultiplier * displacement.x;
@@ -320,16 +303,14 @@ export class b2DynamicTree<T> {
             fatAABB.upperBound.y += d_y;
         }
 
-        const treeAABB = node.aabb; // m_nodes[proxyId].aabb;
+        const treeAABB = node.aabb;
         if (treeAABB.Contains(aabb)) {
             // The tree AABB still contains the object, but it might be too large.
             // Perhaps the object was moving fast but has since gone to sleep.
             // The huge AABB is larger than the new fat AABB.
-            const hugeAABB: b2AABB = b2DynamicTree.MoveProxy_s_hugeAABB;
-            hugeAABB.lowerBound.x = fatAABB.lowerBound.x - 4.0 * r_x;
-            hugeAABB.lowerBound.y = fatAABB.lowerBound.y - 4.0 * r_y;
-            hugeAABB.upperBound.x = fatAABB.upperBound.x + 4.0 * r_x;
-            hugeAABB.upperBound.y = fatAABB.upperBound.y + 4.0 * r_y;
+            const r4 = 4 * b2_aabbExtension;
+            hugeAABB.lowerBound.Set(fatAABB.lowerBound.x - r4, aabb.lowerBound.y - r4);
+            hugeAABB.upperBound.Set(fatAABB.upperBound.x + r4, aabb.upperBound.y + r4);
 
             if (hugeAABB.Contains(treeAABB)) {
                 // The tree AABB contains the object AABB and the tree AABB is
@@ -342,7 +323,7 @@ export class b2DynamicTree<T> {
 
         this.RemoveLeaf(node);
 
-        node.aabb.Copy(fatAABB); // m_nodes[proxyId].aabb = fatAABB;
+        node.aabb.Copy(fatAABB);
 
         this.InsertLeaf(node);
 
@@ -361,27 +342,26 @@ export class b2DynamicTree<T> {
         }
 
         // Find the best sibling for this node
-        const leafAABB: b2AABB = leaf.aabb;
-        let sibling: b2TreeNode<T> = this.m_root;
+        const { combinedAABB, aabb } = temp;
+        const leafAABB = leaf.aabb;
+        let sibling = this.m_root;
         while (!sibling.IsLeaf()) {
-            const child1: b2TreeNode<T> = verify(sibling.child1);
-            const child2: b2TreeNode<T> = verify(sibling.child2);
+            const child1 = b2Verify(sibling.child1);
+            const child2 = b2Verify(sibling.child2);
 
-            const area: number = sibling.aabb.GetPerimeter();
+            const area = sibling.aabb.GetPerimeter();
 
-            const combinedAABB: b2AABB = b2DynamicTree.s_combinedAABB;
             combinedAABB.Combine2(sibling.aabb, leafAABB);
-            const combinedArea: number = combinedAABB.GetPerimeter();
+            const combinedArea = combinedAABB.GetPerimeter();
 
             // Cost of creating a new parent for this node and the new leaf
-            const cost: number = 2 * combinedArea;
+            const cost = 2 * combinedArea;
 
             // Minimum cost of pushing the leaf further down the tree
-            const inheritanceCost: number = 2 * (combinedArea - area);
+            const inheritanceCost = 2 * (combinedArea - area);
 
             // Cost of descending into child1
             let cost1: number;
-            const aabb: b2AABB = b2DynamicTree.s_aabb;
             let oldArea: number;
             let newArea: number;
             if (child1.IsLeaf()) {
@@ -419,10 +399,11 @@ export class b2DynamicTree<T> {
             }
         }
 
-        // Create a parent for the siblings.
-        const oldParent: b2TreeNode<T> | null = sibling.parent;
-        const newParent: b2TreeNode<T> = this.AllocateNode();
+        // Create a new parent.
+        const oldParent = sibling.parent;
+        const newParent = this.AllocateNode();
         newParent.parent = oldParent;
+        newParent.userData = null;
         newParent.aabb.Combine2(leafAABB, sibling.aabb);
         newParent.height = sibling.height + 1;
 
@@ -452,8 +433,8 @@ export class b2DynamicTree<T> {
         while (node !== null) {
             node = this.Balance(node);
 
-            const child1: b2TreeNode<T> = verify(node.child1);
-            const child2: b2TreeNode<T> = verify(node.child2);
+            const child1 = b2Verify(node.child1);
+            const child2 = b2Verify(node.child2);
 
             node.height = 1 + Math.max(child1.height, child2.height);
             node.aabb.Combine2(child1.aabb, child2.aabb);
@@ -470,9 +451,9 @@ export class b2DynamicTree<T> {
             return;
         }
 
-        const parent: b2TreeNode<T> = verify(leaf.parent);
-        const grandParent: b2TreeNode<T> | null = parent?.parent;
-        const sibling: b2TreeNode<T> = verify(parent.child1 === leaf ? parent.child2 : parent.child1);
+        const parent = b2Verify(leaf.parent);
+        const grandParent = parent?.parent;
+        const sibling = b2Verify(parent.child1 === leaf ? parent.child2 : parent.child1);
 
         if (grandParent !== null) {
             // Destroy parent and connect sibling to grandParent.
@@ -489,8 +470,8 @@ export class b2DynamicTree<T> {
             while (index !== null) {
                 index = this.Balance(index);
 
-                const child1: b2TreeNode<T> = verify(index.child1);
-                const child2: b2TreeNode<T> = verify(index.child2);
+                const child1 = b2Verify(index.child1);
+                const child2 = b2Verify(index.child2);
 
                 index.aabb.Combine2(child1.aabb, child2.aabb);
                 index.height = 1 + Math.max(child1.height, child2.height);
@@ -513,15 +494,15 @@ export class b2DynamicTree<T> {
             return A;
         }
 
-        const B: b2TreeNode<T> = verify(A.child1);
-        const C: b2TreeNode<T> = verify(A.child2);
+        const B = b2Verify(A.child1);
+        const C = b2Verify(A.child2);
 
         const balance: number = C.height - B.height;
 
         // Rotate C up
         if (balance > 1) {
-            const F: b2TreeNode<T> = verify(C.child1);
-            const G: b2TreeNode<T> = verify(C.child2);
+            const F = b2Verify(C.child1);
+            const G = b2Verify(C.child2);
 
             // Swap A and C
             C.child1 = A;
@@ -566,8 +547,8 @@ export class b2DynamicTree<T> {
 
         // Rotate B up
         if (balance < -1) {
-            const D: b2TreeNode<T> = verify(B.child1);
-            const E: b2TreeNode<T> = verify(B.child2);
+            const D = b2Verify(B.child1);
+            const E = b2Verify(B.child2);
 
             // Swap A and B
             B.child1 = A;
@@ -621,63 +602,24 @@ export class b2DynamicTree<T> {
         return this.m_root.height;
     }
 
-    private static GetAreaNode<T2>(node: b2TreeNode<T2> | null): number {
-        if (node === null) {
-            return 0;
-        }
-
-        if (node.IsLeaf()) {
-            return 0;
-        }
-
-        let area: number = node.aabb.GetPerimeter();
-        area += b2DynamicTree.GetAreaNode(node.child1);
-        area += b2DynamicTree.GetAreaNode(node.child2);
-        return area;
-    }
-
     public GetAreaRatio(): number {
         if (this.m_root === null) {
             return 0;
         }
 
-        const root: b2TreeNode<T> = this.m_root;
-        const rootArea: number = root.aabb.GetPerimeter();
+        const root = this.m_root;
+        const rootArea = root.aabb.GetPerimeter();
 
-        const totalArea: number = b2DynamicTree.GetAreaNode(this.m_root);
-
-        /*
-    float32 totalArea = 0.0;
-    for (int32 i = 0; i < m_nodeCapacity; ++i) {
-      const b2TreeNode<T>* node = m_nodes + i;
-      if (node.height < 0) {
-        // Free node in pool
-        continue;
-      }
-
-      totalArea += node.aabb.GetPerimeter();
-    }
-    */
+        const totalArea = root.GetArea();
 
         return totalArea / rootArea;
     }
 
-    public static ComputeHeightNode<T2>(node: b2TreeNode<T2> | null): number {
-        if (node === null) {
-            return 0;
-        }
-
-        if (node.IsLeaf()) {
-            return 0;
-        }
-
-        const height1: number = b2DynamicTree.ComputeHeightNode(node.child1);
-        const height2: number = b2DynamicTree.ComputeHeightNode(node.child2);
-        return 1 + Math.max(height1, height2);
-    }
-
     public ComputeHeight(): number {
-        const height: number = b2DynamicTree.ComputeHeightNode(this.m_root);
+        if (this.m_root === null) {
+            return 0;
+        }
+        const height = this.m_root.ComputeHeight();
         return height;
     }
 
@@ -697,8 +639,8 @@ export class b2DynamicTree<T> {
             return;
         }
 
-        const child1: b2TreeNode<T> = verify(node.child1);
-        const child2: b2TreeNode<T> = verify(node.child2);
+        const child1 = b2Verify(node.child1);
+        const child2 = b2Verify(node.child2);
 
         // DEBUG: b2Assert(child1.parent === index);
         // DEBUG: b2Assert(child2.parent === index);
@@ -719,16 +661,16 @@ export class b2DynamicTree<T> {
             return;
         }
 
-        const child1: b2TreeNode<T> = verify(node.child1);
-        const child2: b2TreeNode<T> = verify(node.child2);
+        const child1 = b2Verify(node.child1);
+        const child2 = b2Verify(node.child2);
 
-        // DEBUG: const height1: number = child1.height;
-        // DEBUG: const height2: number = child2.height;
-        // DEBUG: const height: number = 1 + Math.max(height1, height2);
+        // DEBUG: const height1 = child1.height;
+        // DEBUG: const height2 = child2.height;
+        // DEBUG: const height = 1 + Math.max(height1, height2);
         // DEBUG: b2Assert(node.height === height);
 
-        const aabb: b2AABB = b2DynamicTree.s_aabb;
-        aabb.Combine2(child1.aabb, child2.aabb);
+        // DEBUG: const { aabb } = temp;
+        // DEBUG: aabb.Combine2(child1.aabb, child2.aabb);
 
         // DEBUG: b2Assert(aabb.lowerBound === node.aabb.lowerBound);
         // DEBUG: b2Assert(aabb.upperBound === node.aabb.upperBound);
@@ -750,46 +692,14 @@ export class b2DynamicTree<T> {
         // b2Assert(this.m_nodeCount + freeCount === this.m_nodeCapacity);
     }
 
-    private static GetMaxBalanceNode<T2>(node: b2TreeNode<T2> | null, maxBalance: number): number {
-        if (node === null) {
-            return maxBalance;
-        }
-
-        if (node.height <= 1) {
-            return maxBalance;
-        }
-
-        // DEBUG: b2Assert(!node.IsLeaf());
-
-        const child1: b2TreeNode<T2> = verify(node.child1);
-        const child2: b2TreeNode<T2> = verify(node.child2);
-        const balance: number = Math.abs(child2.height - child1.height);
-        return Math.max(maxBalance, balance);
-    }
-
     public GetMaxBalance(): number {
-        const maxBalance: number = b2DynamicTree.GetMaxBalanceNode(this.m_root, 0);
-
-        /*
-    int32 maxBalance = 0;
-    for (int32 i = 0; i < m_nodeCapacity; ++i) {
-      const b2TreeNode<T>* node = m_nodes + i;
-      if (node.height <= 1) {
-        continue;
-      }
-
-      b2Assert(!node.IsLeaf());
-
-      int32 child1 = node.child1;
-      int32 child2 = node.child2;
-      int32 balance = Math.abs(m_nodes[child2].height - m_nodes[child1].height);
-      maxBalance = Math.max(maxBalance, balance);
-    }
-    */
-
-        return maxBalance;
+        if (this.m_root === null) {
+            return 0;
+        }
+        return this.m_root.GetMaxBalance();
     }
 
+    /// Build an optimal tree. Very expensive. For testing.
     public RebuildBottomUp(): void {
         /*
     int32* nodes = (int32*)b2Alloc(m_nodeCount * sizeof(int32));
@@ -858,34 +768,7 @@ export class b2DynamicTree<T> {
         this.Validate();
     }
 
-    private static ShiftOriginNode<T2>(node: b2TreeNode<T2> | null, newOrigin: XY): void {
-        if (node === null) {
-            return;
-        }
-
-        if (node.height <= 1) {
-            return;
-        }
-
-        // DEBUG: b2Assert(!node.IsLeaf());
-
-        const { child1, child2 } = node;
-        b2DynamicTree.ShiftOriginNode(child1, newOrigin);
-        b2DynamicTree.ShiftOriginNode(child2, newOrigin);
-
-        node.aabb.lowerBound.SelfSub(newOrigin);
-        node.aabb.upperBound.SelfSub(newOrigin);
-    }
-
     public ShiftOrigin(newOrigin: XY): void {
-        b2DynamicTree.ShiftOriginNode(this.m_root, newOrigin);
-
-        /*
-    // Build array of leaves. Free the rest.
-    for (int32 i = 0; i < m_nodeCapacity; ++i) {
-      m_nodes[i].aabb.lowerBound -= newOrigin;
-      m_nodes[i].aabb.upperBound -= newOrigin;
-    }
-    */
+        this.m_root?.ShiftOrigin(newOrigin);
     }
 }

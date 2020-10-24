@@ -16,6 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
+import { b2Verify } from "../common/b2_common";
 import { b2Vec2, XY } from "../common/b2_math";
 import { b2AABB, b2RayCastInput } from "./b2_collision";
 import { b2TreeNode, b2DynamicTree } from "./b2_dynamic_tree";
@@ -97,8 +98,8 @@ export class b2BroadPhase<T> {
         // Send pairs to caller
         for (let i = 0; i < this.m_pairCount; ++i) {
             const primaryPair = this.m_pairBuffer[i];
-            const userDataA = primaryPair[0].userData;
-            const userDataB = primaryPair[1].userData;
+            const userDataA = b2Verify(primaryPair[0].userData);
+            const userDataB = b2Verify(primaryPair[1].userData);
 
             callback(userDataA, userDataB);
         }

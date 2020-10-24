@@ -17,7 +17,7 @@
  */
 
 // DEBUG: import { b2Assert } from "../common/b2_common";
-import { b2Assert, b2_epsilon, b2_maxSubSteps, b2_maxTOIContacts } from "../common/b2_common";
+import { b2Assert, b2Verify, b2_epsilon, b2_maxSubSteps, b2_maxTOIContacts } from "../common/b2_common";
 import { b2Vec2, b2Transform, b2Sweep, XY } from "../common/b2_math";
 import { b2Timer } from "../common/b2_timer";
 import { b2AABB, b2RayCastInput, b2RayCastOutput, b2TestOverlapShape } from "../collision/b2_collision";
@@ -488,7 +488,7 @@ export class b2World {
     /// @param callback a user implemented callback class or function.
     public QueryAABB(aabb: b2AABB, callback: b2QueryCallback | b2QueryCallbackFunction): void {
         this.m_contactManager.m_broadPhase.Query(aabb, (proxy: b2TreeNode<b2FixtureProxy>): boolean => {
-            const fixture_proxy: b2FixtureProxy = proxy.userData;
+            const fixture_proxy = b2Verify(proxy.userData);
             // DEBUG: b2Assert(fixture_proxy instanceof b2FixtureProxy);
             const { fixture } = fixture_proxy;
             if (callback instanceof b2QueryCallback) {
@@ -512,7 +512,7 @@ export class b2World {
     /// @param callback a user implemented callback class or function.
     public QueryPointAABB(point: XY, callback: b2QueryCallback | b2QueryCallbackFunction): void {
         this.m_contactManager.m_broadPhase.QueryPoint(point, (proxy: b2TreeNode<b2FixtureProxy>): boolean => {
-            const fixture_proxy: b2FixtureProxy = proxy.userData;
+            const fixture_proxy = b2Verify(proxy.userData);
             // DEBUG: b2Assert(fixture_proxy instanceof b2FixtureProxy);
             const { fixture } = fixture_proxy;
             if (callback instanceof b2QueryCallback) {
@@ -541,7 +541,7 @@ export class b2World {
         const aabb: b2AABB = b2World.QueryFixtureShape_s_aabb;
         shape.ComputeAABB(aabb, transform, index);
         this.m_contactManager.m_broadPhase.Query(aabb, (proxy) => {
-            const fixture_proxy: b2FixtureProxy = proxy.userData;
+            const fixture_proxy = b2Verify(proxy.userData);
             // DEBUG: b2Assert(fixture_proxy instanceof b2FixtureProxy);
             const { fixture } = fixture_proxy;
             if (
@@ -578,7 +578,7 @@ export class b2World {
 
     public QueryFixturePoint(point: XY, callback: b2QueryCallback | b2QueryCallbackFunction): void {
         this.m_contactManager.m_broadPhase.QueryPoint(point, (proxy: b2TreeNode<b2FixtureProxy>): boolean => {
-            const fixture_proxy: b2FixtureProxy = proxy.userData;
+            const fixture_proxy = b2Verify(proxy.userData);
             // DEBUG: b2Assert(fixture_proxy instanceof b2FixtureProxy);
             const { fixture } = fixture_proxy;
             if (fixture.TestPoint(point)) {
@@ -619,7 +619,7 @@ export class b2World {
         this.m_contactManager.m_broadPhase.RayCast(
             input,
             (input2: b2RayCastInput, proxy: b2TreeNode<b2FixtureProxy>): number => {
-                const fixture_proxy: b2FixtureProxy = proxy.userData;
+                const fixture_proxy = b2Verify(proxy.userData);
                 // DEBUG: b2Assert(fixture_proxy instanceof b2FixtureProxy);
                 const { fixture } = fixture_proxy;
                 const index: number = fixture_proxy.childIndex;

@@ -22,6 +22,11 @@ export function b2Assert(condition: boolean, message?: string): asserts conditio
     if (!condition) throw new Error(message);
 }
 
+export function b2Verify<T>(value: T | null): T {
+    if (value === null) throw new Error();
+    return value;
+}
+
 export const b2_maxFloat = 1e37; // FLT_MAX instead of Number.MAX_VALUE;
 export const b2_epsilon = 1e-5; // FLT_EPSILON instead of Number.MIN_VALUE;
 export const b2_epsilon_sq: number = b2_epsilon * b2_epsilon;
