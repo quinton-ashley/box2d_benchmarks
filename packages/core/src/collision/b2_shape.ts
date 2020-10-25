@@ -104,5 +104,6 @@ export abstract class b2Shape {
     /// @param density the density in kilograms per meter squared.
     public abstract ComputeMass(massData: b2MassData, density: number): void;
 
+    // Fixme: check the logic of the implementations. Seems strange
     public abstract SetupDistanceProxy(proxy: b2DistanceProxy, index: number): void;
 }

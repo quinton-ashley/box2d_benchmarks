@@ -722,35 +722,35 @@ export class b2Body {
     /// Get the world coordinates of a point given the local coordinates.
     /// @param localPoint a point on the body measured relative the the body's origin.
     /// @return the same point expressed in world coordinates.
-    public GetWorldPoint<T extends XY>(localPoint: XY, out: T): T {
+    public GetWorldPoint<T extends XY>(localPoint: Readonly<XY>, out: T): T {
         return b2Transform.MulXV(this.m_xf, localPoint, out);
     }
 
     /// Get the world coordinates of a vector given the local coordinates.
     /// @param localVector a vector fixed in the body.
     /// @return the same vector expressed in world coordinates.
-    public GetWorldVector<T extends XY>(localVector: XY, out: T): T {
+    public GetWorldVector<T extends XY>(localVector: Readonly<XY>, out: T): T {
         return b2Rot.MulRV(this.m_xf.q, localVector, out);
     }
 
     /// Gets a local point relative to the body's origin given a world point.
     /// @param a point in world coordinates.
     /// @return the corresponding local point relative to the body's origin.
-    public GetLocalPoint<T extends XY>(worldPoint: XY, out: T): T {
+    public GetLocalPoint<T extends XY>(worldPoint: Readonly<XY>, out: T): T {
         return b2Transform.MulTXV(this.m_xf, worldPoint, out);
     }
 
     /// Gets a local vector given a world vector.
     /// @param a vector in world coordinates.
     /// @return the corresponding local vector.
-    public GetLocalVector<T extends XY>(worldVector: XY, out: T): T {
+    public GetLocalVector<T extends XY>(worldVector: Readonly<XY>, out: T): T {
         return b2Rot.MulTRV(this.m_xf.q, worldVector, out);
     }
 
     /// Get the world linear velocity of a world point attached to this body.
     /// @param a point in world coordinates.
     /// @return the world velocity of a point.
-    public GetLinearVelocityFromWorldPoint<T extends XY>(worldPoint: XY, out: T): T {
+    public GetLinearVelocityFromWorldPoint<T extends XY>(worldPoint: Readonly<XY>, out: T): T {
         return b2Vec2.AddVCrossSV(
             this.m_linearVelocity,
             this.m_angularVelocity,
@@ -762,7 +762,7 @@ export class b2Body {
     /// Get the world velocity of a local point.
     /// @param a point in local coordinates.
     /// @return the world velocity of a point.
-    public GetLinearVelocityFromLocalPoint<T extends XY>(localPoint: XY, out: T): T {
+    public GetLinearVelocityFromLocalPoint<T extends XY>(localPoint: Readonly<XY>, out: T): T {
         return this.GetLinearVelocityFromWorldPoint(this.GetWorldPoint(localPoint, out), out);
     }
 

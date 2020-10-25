@@ -27,10 +27,12 @@ import { b2MassData, b2Shape, b2ShapeType } from "./b2_shape";
 /// to other edge shapes. Edges created independently are two-sided and do
 /// no provide smooth movement across junctions.
 export class b2EdgeShape extends b2Shape {
+    /// These are the edge vertices
     public readonly m_vertex1: b2Vec2 = new b2Vec2();
 
     public readonly m_vertex2: b2Vec2 = new b2Vec2();
 
+    /// Optional adjacent vertices. These are used for smooth collision.
     public readonly m_vertex0: b2Vec2 = new b2Vec2();
 
     public readonly m_vertex3: b2Vec2 = new b2Vec2();
@@ -112,47 +114,47 @@ export class b2EdgeShape extends b2Shape {
 
     public RayCast(output: b2RayCastOutput, input: b2RayCastInput, xf: b2Transform, _childIndex: number): boolean {
         // Put the ray into the edge's frame of reference.
-        const p1: b2Vec2 = b2Transform.MulTXV(xf, input.p1, b2EdgeShape.RayCast_s_p1);
-        const p2: b2Vec2 = b2Transform.MulTXV(xf, input.p2, b2EdgeShape.RayCast_s_p2);
-        const d: b2Vec2 = b2Vec2.SubVV(p2, p1, b2EdgeShape.RayCast_s_d);
+        const p1 = b2Transform.MulTXV(xf, input.p1, b2EdgeShape.RayCast_s_p1);
+        const p2 = b2Transform.MulTXV(xf, input.p2, b2EdgeShape.RayCast_s_p2);
+        const d = b2Vec2.SubVV(p2, p1, b2EdgeShape.RayCast_s_d);
 
-        const v1: b2Vec2 = this.m_vertex1;
-        const v2: b2Vec2 = this.m_vertex2;
-        const e: b2Vec2 = b2Vec2.SubVV(v2, v1, b2EdgeShape.RayCast_s_e);
+        const v1 = this.m_vertex1;
+        const v2 = this.m_vertex2;
+        const e = b2Vec2.SubVV(v2, v1, b2EdgeShape.RayCast_s_e);
 
         // Normal points to the right, looking from v1 at v2
-        const normal: b2Vec2 = output.normal.Set(e.y, -e.x).SelfNormalize();
+        const normal = output.normal.Set(e.y, -e.x).SelfNormalize();
 
         // q = p1 + t * d
         // dot(normal, q - v1) = 0
         // dot(normal, p1 - v1) + t * dot(normal, d) = 0
-        const numerator: number = b2Vec2.DotVV(normal, b2Vec2.SubVV(v1, p1, b2Vec2.s_t0));
-        if (this.m_oneSided && numerator > 0.0) {
+        const numerator = b2Vec2.DotVV(normal, b2Vec2.SubVV(v1, p1, b2Vec2.s_t0));
+        if (this.m_oneSided && numerator > 0) {
             return false;
         }
 
-        const denominator: number = b2Vec2.DotVV(normal, d);
+        const denominator = b2Vec2.DotVV(normal, d);
 
         if (denominator === 0) {
             return false;
         }
 
-        const t: number = numerator / denominator;
+        const t = numerator / denominator;
         if (t < 0 || input.maxFraction < t) {
             return false;
         }
 
-        const q: b2Vec2 = b2Vec2.AddVMulSV(p1, t, d, b2EdgeShape.RayCast_s_q);
+        const q = b2Vec2.AddVMulSV(p1, t, d, b2EdgeShape.RayCast_s_q);
 
         // q = v1 + s * r
         // s = dot(q - v1, r) / dot(r, r)
-        const r: b2Vec2 = b2Vec2.SubVV(v2, v1, b2EdgeShape.RayCast_s_r);
-        const rr: number = b2Vec2.DotVV(r, r);
+        const r = b2Vec2.SubVV(v2, v1, b2EdgeShape.RayCast_s_r);
+        const rr = b2Vec2.DotVV(r, r);
         if (rr === 0) {
             return false;
         }
 
-        const s: number = b2Vec2.DotVV(b2Vec2.SubVV(q, v1, b2Vec2.s_t0), r) / rr;
+        const s = b2Vec2.DotVV(b2Vec2.SubVV(q, v1, b2Vec2.s_t0), r) / rr;
         if (s < 0 || s > 1) {
             return false;
         }

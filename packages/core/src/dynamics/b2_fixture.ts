@@ -27,52 +27,25 @@ import { b2_lengthUnitsPerMeter } from "../common/b2_settings";
 import { b2BroadPhase } from "../collision/b2_broad_phase";
 
 /// This holds contact filtering data.
-export interface b2IFilter {
+export interface b2Filter {
     /// The collision category bits. Normally you would just set one bit.
-    categoryBits?: number;
+    categoryBits: number;
 
     /// The collision mask bits. This states the categories that this
     /// shape would accept for collision.
-    maskBits?: number;
+    maskBits: number;
 
     /// Collision groups allow a certain group of objects to never collide (negative)
     /// or always collide (positive). Zero means no collision group. Non-zero group
     /// filtering always wins against the mask bits.
-    groupIndex?: number;
+    groupIndex: number;
 }
 
-/// This holds contact filtering data.
-export class b2Filter implements b2IFilter {
-    public static readonly DEFAULT: Readonly<Required<b2IFilter>> = {
-        categoryBits: 0x0001,
-        maskBits: 0xffff,
-        groupIndex: 0,
-    };
-
-    /// The collision category bits. Normally you would just set one bit.
-    public categoryBits = b2Filter.DEFAULT.categoryBits;
-
-    /// The collision mask bits. This states the categories that this
-    /// shape would accept for collision.
-    public maskBits = b2Filter.DEFAULT.maskBits;
-
-    /// Collision groups allow a certain group of objects to never collide (negative)
-    /// or always collide (positive). Zero means no collision group. Non-zero group
-    /// filtering always wins against the mask bits.
-    public groupIndex = b2Filter.DEFAULT.groupIndex;
-
-    public Clone(): b2Filter {
-        return new b2Filter().Copy(this);
-    }
-
-    public Copy(other: b2IFilter): this {
-        // DEBUG: b2Assert(this !== other);
-        this.categoryBits = other.categoryBits ?? b2Filter.DEFAULT.categoryBits;
-        this.maskBits = other.maskBits ?? b2Filter.DEFAULT.maskBits;
-        this.groupIndex = other.groupIndex ?? b2Filter.DEFAULT.groupIndex;
-        return this;
-    }
-}
+export const b2DefaultFilter: Readonly<b2Filter> = {
+    categoryBits: 0x0001,
+    maskBits: 0xffff,
+    groupIndex: 0,
+};
 
 /// A fixture definition is used to create a fixture. This class defines an
 /// abstract fixture definition. You can reuse fixture definitions safely.
@@ -102,7 +75,7 @@ export interface b2FixtureDef {
     isSensor?: boolean;
 
     /// Contact filtering data.
-    filter?: b2IFilter;
+    filter?: Partial<b2Filter>;
 }
 
 /// This proxy is used internally to connect fixtures to the broad-phase.
@@ -158,7 +131,7 @@ export class b2Fixture {
         return this.m_proxies.length;
     }
 
-    public readonly m_filter: b2Filter = new b2Filter();
+    public readonly m_filter: b2Filter;
 
     public m_isSensor = false;
 
@@ -171,7 +144,10 @@ export class b2Fixture {
         this.m_friction = def.friction ?? 0.2;
         this.m_restitution = def.restitution ?? 0;
         this.m_restitutionThreshold = def.restitutionThreshold ?? b2_lengthUnitsPerMeter;
-        this.m_filter.Copy(def.filter ?? b2Filter.DEFAULT);
+        this.m_filter = {
+            ...b2DefaultFilter,
+            ...def.filter,
+        };
         this.m_isSensor = def.isSensor ?? false;
         this.m_density = def.density ?? 0;
     }
@@ -206,8 +182,10 @@ export class b2Fixture {
     /// Set the contact filtering data. This will not update contacts until the next time
     /// step when either parent body is active and awake.
     /// This automatically calls Refilter.
-    public SetFilterData(filter: b2Filter): void {
-        this.m_filter.Copy(filter);
+    public SetFilterData(filter: Readonly<Partial<b2Filter>>): void {
+        this.m_filter.categoryBits = filter.categoryBits ?? b2DefaultFilter.categoryBits;
+        this.m_filter.groupIndex = filter.groupIndex ?? b2DefaultFilter.groupIndex;
+        this.m_filter.maskBits = filter.maskBits ?? b2DefaultFilter.maskBits;
 
         this.Refilter();
     }
@@ -354,13 +332,13 @@ export class b2Fixture {
     public Synchronize(broadPhase: b2BroadPhase<b2FixtureProxy>, transform1: b2Transform, transform2: b2Transform) {
         for (const proxy of this.m_proxies) {
             // Compute an AABB that covers the swept shape (may miss some rotation effect).
-            const aabb1: b2AABB = Synchronize_s_aabb1;
-            const aabb2: b2AABB = Synchronize_s_aabb2;
+            const aabb1 = Synchronize_s_aabb1;
+            const aabb2 = Synchronize_s_aabb2;
             this.m_shape.ComputeAABB(aabb1, transform1, proxy.childIndex);
             this.m_shape.ComputeAABB(aabb2, transform2, proxy.childIndex);
             proxy.aabb.Combine2(aabb1, aabb2);
             const displacement = Synchronize_s_displacement;
-            displacement.Copy(aabb2.GetCenter()).SelfSub(aabb1.GetCenter());
+            b2Vec2.SubVV(aabb2.GetCenter(), aabb1.GetCenter(), displacement);
             broadPhase.MoveProxy(proxy.treeNode, proxy.aabb, displacement);
         }
     }

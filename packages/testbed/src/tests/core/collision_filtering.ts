@@ -24,7 +24,7 @@ import {
     b2BodyType,
     b2PrismaticJointDef,
     b2CircleShape,
-    b2IFilter,
+    b2Filter,
 } from "@box2d/core";
 
 import { Test } from "../../test";
@@ -69,7 +69,7 @@ export class CollisionFiltering extends Test {
         const polygon = new b2PolygonShape();
         polygon.Set(vertices, 3);
 
-        const triangleFilter: b2IFilter = {
+        const triangleFilter: b2Filter = {
             groupIndex: CollisionFiltering.k_smallGroup,
             categoryBits: CollisionFiltering.k_triangleCategory,
             maskBits: CollisionFiltering.k_triangleMask,
@@ -131,7 +131,7 @@ export class CollisionFiltering extends Test {
 
         // Small box
         polygon.SetAsBox(1.0, 0.5);
-        const boxFilter: b2IFilter = {
+        const boxFilter: b2Filter = {
             groupIndex: CollisionFiltering.k_smallGroup,
             categoryBits: CollisionFiltering.k_boxCategory,
             maskBits: CollisionFiltering.k_boxMask,
@@ -163,7 +163,7 @@ export class CollisionFiltering extends Test {
         const circle = new b2CircleShape();
         circle.m_radius = 1.0;
 
-        const circleFilter: b2IFilter = {
+        const circleFilter: b2Filter = {
             groupIndex: CollisionFiltering.k_smallGroup,
             categoryBits: CollisionFiltering.k_circleCategory,
             maskBits: CollisionFiltering.k_circleMask,

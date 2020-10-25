@@ -1059,7 +1059,7 @@ export class b2Transform {
         return this.q.GetAngle();
     }
 
-    public static MulXV<T extends XY>(T: b2Transform, v: XY, out: T): T {
+    public static MulXV<T extends XY>(T: b2Transform, v: Readonly<XY>, out: T): T {
         // float32 x = (T.q.c * v.x - T.q.s * v.y) + T.p.x;
         // float32 y = (T.q.s * v.x + T.q.c * v.y) + T.p.y;
         // return b2Vec2(x, y);
@@ -1072,7 +1072,7 @@ export class b2Transform {
         return out;
     }
 
-    public static MulTXV<T extends XY>(T: b2Transform, v: XY, out: T): T {
+    public static MulTXV<T extends XY>(T: b2Transform, v: Readonly<XY>, out: T): T {
         // float32 px = v.x - T.p.x;
         // float32 py = v.y - T.p.y;
         // float32 x = (T.q.c * px + T.q.s * py);
