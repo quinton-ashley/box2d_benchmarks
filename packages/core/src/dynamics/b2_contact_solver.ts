@@ -626,7 +626,8 @@ export class b2ContactSolver {
                 //    = A * x + b'
                 // b' = b - A * a;
 
-                const [cp1, cp2] = vc.points;
+                const cp1 = vc.points[0];
+                const cp2 = vc.points[1];
 
                 a.Set(cp1.normalImpulse, cp2.normalImpulse);
                 // DEBUG: b2Assert(a.x >= 0 && a.y >= 0);

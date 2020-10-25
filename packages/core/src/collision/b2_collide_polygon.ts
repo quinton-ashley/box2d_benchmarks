@@ -15,7 +15,13 @@ import { b2PolygonShape } from "./b2_polygon_shape";
 const b2FindMaxSeparation_s_xf: b2Transform = new b2Transform();
 const b2FindMaxSeparation_s_n: b2Vec2 = new b2Vec2();
 const b2FindMaxSeparation_s_v1: b2Vec2 = new b2Vec2();
-function b2FindMaxSeparation(poly1: b2PolygonShape, xf1: b2Transform, poly2: b2PolygonShape, xf2: b2Transform) {
+function b2FindMaxSeparation(
+    edgeIndex: [number],
+    poly1: b2PolygonShape,
+    xf1: b2Transform,
+    poly2: b2PolygonShape,
+    xf2: b2Transform,
+) {
     const count1: number = poly1.m_count;
     const count2: number = poly2.m_count;
     const n1s: b2Vec2[] = poly1.m_normals;
@@ -46,7 +52,9 @@ function b2FindMaxSeparation(poly1: b2PolygonShape, xf1: b2Transform, poly2: b2P
         }
     }
 
-    return [maxSeparation, bestIndex] as const;
+    edgeIndex[0] = bestIndex;
+
+    return maxSeparation;
 }
 
 const b2FindIncidentEdge_s_normal1: b2Vec2 = new b2Vec2();
@@ -111,6 +119,8 @@ function b2FindIncidentEdge(
 const b2CollidePolygons_s_incidentEdge: [b2ClipVertex, b2ClipVertex] = [new b2ClipVertex(), new b2ClipVertex()];
 const b2CollidePolygons_s_clipPoints1: [b2ClipVertex, b2ClipVertex] = [new b2ClipVertex(), new b2ClipVertex()];
 const b2CollidePolygons_s_clipPoints2: [b2ClipVertex, b2ClipVertex] = [new b2ClipVertex(), new b2ClipVertex()];
+const b2CollidePolygons_s_edgeA: [number] = [0];
+const b2CollidePolygons_s_edgeB: [number] = [0];
 const b2CollidePolygons_s_localTangent: b2Vec2 = new b2Vec2();
 const b2CollidePolygons_s_localNormal: b2Vec2 = new b2Vec2();
 const b2CollidePolygons_s_planePoint: b2Vec2 = new b2Vec2();
@@ -129,12 +139,14 @@ export function b2CollidePolygons(
     manifold.pointCount = 0;
     const totalRadius: number = polyA.m_radius + polyB.m_radius;
 
-    const [separationA, edgeA] = b2FindMaxSeparation(polyA, xfA, polyB, xfB);
+    const edgeIndexA = b2CollidePolygons_s_edgeA;
+    const separationA = b2FindMaxSeparation(edgeIndexA, polyA, xfA, polyB, xfB);
     if (separationA > totalRadius) {
         return;
     }
 
-    const [separationB, edgeB] = b2FindMaxSeparation(polyB, xfB, polyA, xfA);
+    const edgeIndexB = b2CollidePolygons_s_edgeB;
+    const separationB = b2FindMaxSeparation(edgeIndexB, polyB, xfB, polyA, xfA);
     if (separationB > totalRadius) {
         return;
     }
@@ -152,7 +164,8 @@ export function b2CollidePolygons(
         poly2 = polyA;
         xf1 = xfB;
         xf2 = xfA;
-        edge1 = edgeB;
+        // eslint-disable-next-line prefer-destructuring
+        edge1 = edgeIndexB[0];
         manifold.type = b2ManifoldType.e_faceB;
         flip = 1;
     } else {
@@ -160,7 +173,8 @@ export function b2CollidePolygons(
         poly2 = polyB;
         xf1 = xfA;
         xf2 = xfB;
-        edge1 = edgeA;
+        // eslint-disable-next-line prefer-destructuring
+        edge1 = edgeIndexA[0];
         manifold.type = b2ManifoldType.e_faceA;
         flip = 0;
     }
