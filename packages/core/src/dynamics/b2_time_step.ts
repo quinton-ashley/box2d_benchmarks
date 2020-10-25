@@ -87,8 +87,9 @@ export class b2TimeStep {
     }
 }
 
+/// This is an internal structure.
 export class b2Position {
-    public readonly c: b2Vec2 = new b2Vec2();
+    public readonly c = new b2Vec2();
 
     public a = 0;
 
@@ -97,8 +98,9 @@ export class b2Position {
     }
 }
 
+/// This is an internal structure.
 export class b2Velocity {
-    public readonly v: b2Vec2 = new b2Vec2();
+    public readonly v = new b2Vec2();
 
     public w = 0;
 
@@ -107,8 +109,9 @@ export class b2Velocity {
     }
 }
 
+/// Solver Data
 export class b2SolverData {
-    public readonly step: b2TimeStep = b2TimeStep.Create();
+    public readonly step = b2TimeStep.Create();
 
     public positions!: b2Position[];
 

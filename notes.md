@@ -1,0 +1,2 @@
+- array destructuring seems very slow. object destructuring is not problematic.
+    - So, replace all current array destructuring somehow

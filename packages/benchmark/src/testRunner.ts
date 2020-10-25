@@ -62,9 +62,9 @@ async function benchAsync(test: TestInterface, progress: ProgressFunc): Promise<
         const times: number[] = [];
         const runNext = () => {
             if (step < BENCH_ITERATIONS) {
-                const begin = Date.now();
+                const begin = performance.now();
                 test.step(TIME_STEP, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
-                times.push(Date.now() - begin);
+                times.push(performance.now() - begin);
                 progress(WARMUP_ITERATIONS + step, WARMUP_ITERATIONS + BENCH_ITERATIONS);
                 step++;
                 window.requestAnimationFrame(runNext);
@@ -85,9 +85,9 @@ function warmup(test: TestInterface) {
 function bench(test: TestInterface) {
     const times: number[] = [];
     for (let i = 0; i < BENCH_ITERATIONS; i++) {
-        const begin = Date.now();
+        const begin = performance.now();
         test.step(TIME_STEP, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
-        times.push(Date.now() - begin);
+        times.push(performance.now() - begin);
     }
     return times.sort();
 }
