@@ -20,7 +20,6 @@ import { b2_maxManifoldPoints, b2MakeNumberArray } from "../common/b2_common";
 import { b2Vec2 } from "../common/b2_math";
 import { b2Manifold } from "../collision/b2_collision";
 import { b2Contact } from "./b2_contact";
-import { b2Body, b2BodyType } from "./b2_body";
 import { b2Joint } from "./b2_joint";
 import { b2Fixture } from "./b2_fixture";
 
@@ -43,19 +42,6 @@ export class b2ContactFilter {
     /// Return true if contact calculations should be performed between these two shapes.
     /// @warning for performance reasons this is only called when the AABBs begin to overlap.
     public ShouldCollide(fixtureA: b2Fixture, fixtureB: b2Fixture): boolean {
-        const bodyA: b2Body = fixtureA.GetBody();
-        const bodyB: b2Body = fixtureB.GetBody();
-
-        // At least one body should be dynamic or kinematic.
-        if (bodyB.GetType() === b2BodyType.b2_staticBody && bodyA.GetType() === b2BodyType.b2_staticBody) {
-            return false;
-        }
-
-        // Does a joint prevent collision?
-        if (!bodyB.ShouldCollideConnected(bodyA)) {
-            return false;
-        }
-
         const filterA = fixtureA.GetFilterData();
         const filterB = fixtureB.GetFilterData();
 
