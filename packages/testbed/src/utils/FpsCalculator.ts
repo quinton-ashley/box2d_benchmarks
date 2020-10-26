@@ -38,7 +38,7 @@ export class FpsCalculator {
 
     public getFrames() {
         if (this.index === 0) return this.frameTimes;
-        return [...this.frameTimes.slice(this.index), ...this.frameTimes.slice(0, this.index)];
+        return this.frameTimes.slice(this.index).concat(this.frameTimes.slice(0, this.index));
     }
 
     public addFrame() {

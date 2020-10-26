@@ -114,7 +114,7 @@ export class ChainLight extends Light {
         this.endY = Array.from({ length: rays }, () => 0);
         this.startX = Array.from({ length: rays }, () => 0);
         this.startY = Array.from({ length: rays }, () => 0);
-        this.chain = chain ? [...chain] : [];
+        this.chain = chain ? chain.slice() : [];
 
         this.setMesh();
     }
