@@ -128,7 +128,7 @@ export class TestManager {
         // disable context menu to use right-click
         window.addEventListener(
             "contextmenu",
-            (e: MouseEvent): void => {
+            (e) => {
                 if (e.target instanceof HTMLElement && e.target.closest("main")) {
                     e.preventDefault();
                 }

@@ -267,7 +267,7 @@ export class DynamicTreeTest extends Test {
     }
 
     public Query(): void {
-        this.m_tree.Query(this.m_queryAABB, (proxyId: b2TreeNode<DynamicTreeTest_Actor>): boolean => {
+        this.m_tree.Query(this.m_queryAABB, (proxyId) => {
             const actor = b2Verify(proxyId.userData);
             actor.overlap = this.m_queryAABB.TestOverlap(actor.aabb);
             return true;
@@ -288,7 +288,7 @@ export class DynamicTreeTest extends Test {
         input.Copy(this.m_rayCastInput);
 
         // Ray cast against the dynamic tree.
-        this.m_tree.RayCast(input, (input2, proxyId): number => {
+        this.m_tree.RayCast(input, (input2, proxyId) => {
             const actor = b2Verify(proxyId.userData);
 
             const output = new b2RayCastOutput();

@@ -2602,7 +2602,7 @@ export class b2ParticleSystem {
             /// }
             const stride = this.GetParticleStride();
             diagram.Generate(stride / 2, stride * 2);
-            const callback = /* UpdateTriadsCallback */ (a: number, b: number, c: number): void => {
+            diagram.GetNodes((a, b, c) => {
                 const af = this.m_flagsBuffer.data[a];
                 const bf = this.m_flagsBuffer.data[b];
                 const cf = this.m_flagsBuffer.data[c];
@@ -2651,8 +2651,7 @@ export class b2ParticleSystem {
                     triad.kc = -b2Vec2.DotVV(dbc, dca);
                     triad.s = b2Vec2.CrossVV(pa, pb) + b2Vec2.CrossVV(pb, pc) + b2Vec2.CrossVV(pc, pa);
                 }
-            };
-            diagram.GetNodes(callback);
+            });
             /// std::stable_sort(m_triadBuffer.Begin(), m_triadBuffer.End(), CompareTriadIndices);
             std_stable_sort(this.m_triadBuffer.data, 0, this.m_triadBuffer.count, b2ParticleSystem.CompareTriadIndices);
             /// m_triadBuffer.Unique(MatchTriadIndices);
@@ -3128,13 +3127,11 @@ export class b2ParticleSystem {
 
         /// contacts.RemoveIf(b2ParticleContactRemovePredicate(this, contactFilter));
         // DEBUG: b2Assert(contacts === this.m_contactBuffer);
-        const predicate = (contact: b2ParticleContact): boolean => {
-            return (
+        this.m_contactBuffer.RemoveIf(
+            (contact) =>
                 (contact.flags & b2ParticleFlag.b2_particleContactFilterParticle) !== 0 &&
-                !contactFilter.ShouldCollideParticleParticle(this, contact.indexA, contact.indexB)
-            );
-        };
-        this.m_contactBuffer.RemoveIf(predicate);
+                !contactFilter.ShouldCollideParticleParticle(this, contact.indexA, contact.indexB),
+        );
     }
 
     public NotifyContactListenerPreContact(particlePairs: b2ParticlePairSet): void {
@@ -4686,7 +4683,7 @@ export class b2ParticleSystem {
              * would be sorted as
              * (0.0, 1.0, -2.0, 1.0, 0.7, 0.3)
              */
-            const ExpirationTimeComparator = (particleIndexA: number, particleIndexB: number): boolean => {
+            std_sort(expirationTimeIndices, 0, particleCount, (particleIndexA, particleIndexB) => {
                 const expirationTimeA = expirationTimes[particleIndexA];
                 const expirationTimeB = expirationTimes[particleIndexB];
                 const infiniteExpirationTimeA = expirationTimeA <= 0.0;
@@ -4694,9 +4691,7 @@ export class b2ParticleSystem {
                 return infiniteExpirationTimeA === infiniteExpirationTimeB
                     ? expirationTimeA > expirationTimeB
                     : infiniteExpirationTimeA;
-            };
-
-            std_sort(expirationTimeIndices, 0, particleCount, ExpirationTimeComparator);
+            });
 
             this.m_expirationTimeBufferRequiresSorting = false;
         }
