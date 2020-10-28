@@ -48,9 +48,7 @@ import {
     b2ContactListener,
     b2DestructionListener,
     b2QueryCallback,
-    b2QueryCallbackFunction,
     b2RayCastCallback,
-    b2RayCastCallbackFunction,
 } from "./b2_world_callbacks";
 
 /// The world class manages all physics entities, dynamic simulation,
@@ -486,15 +484,11 @@ export class b2World {
     /// provided AABB.
     /// @param aabb the query box.
     /// @param callback a user implemented callback class or function.
-    public QueryAABB(aabb: b2AABB, callback: b2QueryCallback | b2QueryCallbackFunction): void {
+    public QueryAABB(aabb: b2AABB, callback: b2QueryCallback): void {
         this.m_contactManager.m_broadPhase.Query(aabb, (proxy: b2TreeNode<b2FixtureProxy>): boolean => {
             const fixture_proxy = b2Verify(proxy.userData);
             // DEBUG: b2Assert(fixture_proxy instanceof b2FixtureProxy);
-            const { fixture } = fixture_proxy;
-            if (callback instanceof b2QueryCallback) {
-                return callback.ReportFixture(fixture);
-            }
-            return callback(fixture);
+            return callback(fixture_proxy.fixture);
         });
     }
 
@@ -510,15 +504,11 @@ export class b2World {
     /// provided point.
     /// @param point the query point.
     /// @param callback a user implemented callback class or function.
-    public QueryPointAABB(point: XY, callback: b2QueryCallback | b2QueryCallbackFunction): void {
+    public QueryPointAABB(point: XY, callback: b2QueryCallback): void {
         this.m_contactManager.m_broadPhase.QueryPoint(point, (proxy: b2TreeNode<b2FixtureProxy>): boolean => {
             const fixture_proxy = b2Verify(proxy.userData);
             // DEBUG: b2Assert(fixture_proxy instanceof b2FixtureProxy);
-            const { fixture } = fixture_proxy;
-            if (callback instanceof b2QueryCallback) {
-                return callback.ReportFixture(fixture);
-            }
-            return callback(fixture);
+            return callback(fixture_proxy.fixture);
         });
     }
 
@@ -532,34 +522,22 @@ export class b2World {
 
     private static QueryFixtureShape_s_aabb = new b2AABB();
 
-    public QueryFixtureShape(
-        shape: b2Shape,
-        index: number,
-        transform: b2Transform,
-        callback: b2QueryCallback | b2QueryCallbackFunction,
-    ): void {
+    public QueryFixtureShape(shape: b2Shape, index: number, transform: b2Transform, callback: b2QueryCallback): void {
         const aabb: b2AABB = b2World.QueryFixtureShape_s_aabb;
         shape.ComputeAABB(aabb, transform, index);
         this.m_contactManager.m_broadPhase.Query(aabb, (proxy) => {
             const fixture_proxy = b2Verify(proxy.userData);
             // DEBUG: b2Assert(fixture_proxy instanceof b2FixtureProxy);
             const { fixture } = fixture_proxy;
-            if (
-                b2TestOverlapShape(
-                    shape,
-                    index,
-                    fixture.GetShape(),
-                    fixture_proxy.childIndex,
-                    transform,
-                    fixture.GetBody().GetTransform(),
-                )
-            ) {
-                if (callback instanceof b2QueryCallback) {
-                    return callback.ReportFixture(fixture);
-                }
-                return callback(fixture);
-            }
-            return true;
+            const overlap = b2TestOverlapShape(
+                shape,
+                index,
+                fixture.GetShape(),
+                fixture_proxy.childIndex,
+                transform,
+                fixture.GetBody().GetTransform(),
+            );
+            return !overlap || callback(fixture);
         });
     }
 
@@ -576,18 +554,13 @@ export class b2World {
         return out;
     }
 
-    public QueryFixturePoint(point: XY, callback: b2QueryCallback | b2QueryCallbackFunction): void {
+    public QueryFixturePoint(point: XY, callback: b2QueryCallback): void {
         this.m_contactManager.m_broadPhase.QueryPoint(point, (proxy: b2TreeNode<b2FixtureProxy>): boolean => {
             const fixture_proxy = b2Verify(proxy.userData);
             // DEBUG: b2Assert(fixture_proxy instanceof b2FixtureProxy);
             const { fixture } = fixture_proxy;
-            if (fixture.TestPoint(point)) {
-                if (callback instanceof b2QueryCallback) {
-                    return callback.ReportFixture(fixture);
-                }
-                return callback(fixture);
-            }
-            return true;
+            const overlap = fixture.TestPoint(point);
+            return !overlap || callback(fixture);
         });
     }
 
@@ -611,35 +584,29 @@ export class b2World {
     /// @param point1 the ray starting point
     /// @param point2 the ray ending point
     /// @param callback a user implemented callback class or function.
-    public RayCast(point1: XY, point2: XY, callback: b2RayCastCallback | b2RayCastCallbackFunction): void {
+    public RayCast(point1: XY, point2: XY, callback: b2RayCastCallback): void {
         const input: b2RayCastInput = b2World.RayCast_s_input;
         input.maxFraction = 1;
         input.p1.Copy(point1);
         input.p2.Copy(point2);
-        this.m_contactManager.m_broadPhase.RayCast(
-            input,
-            (input2: b2RayCastInput, proxy: b2TreeNode<b2FixtureProxy>): number => {
-                const fixture_proxy = b2Verify(proxy.userData);
-                // DEBUG: b2Assert(fixture_proxy instanceof b2FixtureProxy);
-                const { fixture } = fixture_proxy;
-                const index: number = fixture_proxy.childIndex;
-                const output: b2RayCastOutput = b2World.RayCast_s_output;
-                const hit: boolean = fixture.RayCast(output, input2, index);
-                if (hit) {
-                    const { fraction } = output;
-                    const point: b2Vec2 = b2World.RayCast_s_point;
-                    point.Set(
-                        (1 - fraction) * point1.x + fraction * point2.x,
-                        (1 - fraction) * point1.y + fraction * point2.y,
-                    );
-                    if (callback instanceof b2RayCastCallback) {
-                        return callback.ReportFixture(fixture, point, output.normal, fraction);
-                    }
-                    return callback(fixture, point, output.normal, fraction);
-                }
-                return input2.maxFraction;
-            },
-        );
+        this.m_contactManager.m_broadPhase.RayCast(input, (input2, proxy) => {
+            const fixture_proxy = b2Verify(proxy.userData);
+            // DEBUG: b2Assert(fixture_proxy instanceof b2FixtureProxy);
+            const { fixture } = fixture_proxy;
+            const index = fixture_proxy.childIndex;
+            const output = b2World.RayCast_s_output;
+            const hit = fixture.RayCast(output, input2, index);
+            if (hit) {
+                const { fraction } = output;
+                const point = b2World.RayCast_s_point;
+                point.Set(
+                    (1 - fraction) * point1.x + fraction * point2.x,
+                    (1 - fraction) * point1.y + fraction * point2.y,
+                );
+                return callback(fixture, point, output.normal, fraction);
+            }
+            return input2.maxFraction;
+        });
     }
 
     public RayCastOne(point1: XY, point2: XY): b2Fixture | null {

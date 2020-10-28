@@ -17,10 +17,8 @@
  */
 
 import {
-    b2QueryCallback,
     b2CircleShape,
     b2Transform,
-    b2Fixture,
     b2TestOverlapShape,
     b2Color,
     b2Body,
@@ -37,42 +35,14 @@ import { Settings } from "../../settings";
 import { g_debugDraw } from "../../utils/draw";
 import { HotKey, hotKeyPress } from "../../utils/hotkeys";
 
-/**
- * This callback is called by b2World::QueryAABB. We find
- * all the fixtures that overlap an AABB. Of those, we use
- * b2TestOverlap to determine which fixtures overlap a circle.
- * Up to 4 overlapped fixtures will be highlighted with a yellow
- * border.
- */
-export class PolyShapesCallback extends b2QueryCallback {
-    public static readonly e_maxCount = 4;
+const queryCallbackMaxCount = 4;
 
-    public m_circle = new b2CircleShape();
-
-    public m_transform = new b2Transform();
-
-    public m_count = 0;
-
-    public ReportFixture(fixture: b2Fixture) {
-        if (this.m_count === PolyShapesCallback.e_maxCount) {
-            return false;
-        }
-
-        const body = fixture.GetBody();
-        const shape = fixture.GetShape();
-
-        const overlap = b2TestOverlapShape(shape, 0, this.m_circle, 0, body.GetTransform(), this.m_transform);
-
-        if (overlap) {
-            const color = new b2Color(0.95, 0.95, 0.6);
-            const center = body.GetWorldCenter();
-            g_debugDraw.DrawPoint(center, 5.0, color);
-            ++this.m_count;
-        }
-
-        return true;
-    }
-}
+const temp = {
+    Step: {
+        circle: new b2CircleShape(),
+        transform: new b2Transform(),
+    },
+};
 
 export class PolyShapes extends Test {
     public static readonly e_maxBodies = 256;
@@ -203,17 +173,40 @@ export class PolyShapes extends Test {
     public Step(settings: Settings, timeStep: number): void {
         super.Step(settings, timeStep);
 
-        const callback = new PolyShapesCallback();
-        callback.m_circle.m_radius = 2.0;
-        callback.m_circle.m_p.Set(0.0, 1.1);
-        callback.m_transform.SetIdentity();
+        let count = 0;
+        const { circle, transform } = temp.Step;
+        circle.m_radius = 2.0;
+        circle.m_p.Set(0.0, 1.1);
+        transform.SetIdentity();
 
         const aabb = new b2AABB();
-        callback.m_circle.ComputeAABB(aabb, callback.m_transform, 0);
+        circle.ComputeAABB(aabb, transform, 0);
 
-        this.m_world.QueryAABB(aabb, callback);
+        /**
+         * We find all the fixtures that overlap an AABB. Of those, we use
+         * b2TestOverlap to determine which fixtures overlap a circle.
+         * Up to 4 overlapped fixtures will be highlighted with a yellow
+         * border.
+         */
+        this.m_world.QueryAABB(aabb, (fixture) => {
+            if (count === queryCallbackMaxCount) return false;
+
+            const body = fixture.GetBody();
+            const shape = fixture.GetShape();
+
+            const overlap = b2TestOverlapShape(shape, 0, circle, 0, body.GetTransform(), transform);
+
+            if (overlap) {
+                const color = new b2Color(0.95, 0.95, 0.6);
+                const center = body.GetWorldCenter();
+                g_debugDraw.DrawPoint(center, 5.0, color);
+                ++count;
+            }
+
+            return true;
+        });
 
         const color = new b2Color(0.4, 0.7, 0.8);
-        g_debugDraw.DrawCircle(callback.m_circle.m_p, callback.m_circle.m_radius, color);
+        g_debugDraw.DrawCircle(circle.m_p, circle.m_radius, color);
     }
 }

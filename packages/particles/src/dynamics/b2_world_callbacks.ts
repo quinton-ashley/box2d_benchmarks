@@ -15,15 +15,7 @@
  * misrepresented as being the original software.
  * 3. This notice may not be removed or altered from any source distribution.
  */
-import {
-    b2DestructionListener,
-    b2Fixture,
-    b2ContactFilter,
-    b2ContactListener,
-    b2QueryCallback,
-    b2Vec2,
-    b2RayCastCallback,
-} from "@box2d/core";
+import { b2DestructionListener, b2Fixture, b2ContactFilter, b2ContactListener } from "@box2d/core";
 
 import { b2ParticleGroup } from "../particle/b2_particle_group";
 import { b2ParticleSystem, b2ParticleBodyContact, b2ParticleContact } from "../particle/b2_particle_system";
@@ -53,22 +45,6 @@ declare module "@box2d/core" {
         BeginContactParticleParticle(system: b2ParticleSystem, contact: b2ParticleContact): void;
         EndContactParticleParticle(system: b2ParticleSystem, contact: b2ParticleContact): void;
     }
-
-    interface b2QueryCallback {
-        ReportParticle(system: b2ParticleSystem, index: number): boolean;
-        ShouldQueryParticleSystem(system: b2ParticleSystem): boolean;
-    }
-
-    interface b2RayCastCallback {
-        ReportParticle(
-            system: b2ParticleSystem,
-            index: number,
-            point: b2Vec2,
-            normal: b2Vec2,
-            fraction: number,
-        ): number;
-        ShouldQueryParticleSystem(system: b2ParticleSystem): boolean;
-    }
 }
 
 // Default implementations
@@ -91,22 +67,4 @@ Object.assign(b2ContactListener.prototype, {
     EndContactFixtureParticle() {},
     BeginContactParticleParticle() {},
     EndContactParticleParticle() {},
-});
-
-Object.assign(b2QueryCallback.prototype, {
-    ReportParticle() {
-        return false;
-    },
-    ShouldQueryParticleSystem() {
-        return true;
-    },
-});
-
-Object.assign(b2RayCastCallback.prototype, {
-    ReportParticle() {
-        return 0;
-    },
-    ShouldQueryParticleSystem() {
-        return true;
-    },
 });

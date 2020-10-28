@@ -18,7 +18,6 @@
 
 import {
     b2_linearSlop,
-    b2QueryCallback,
     b2Fixture,
     b2Vec2,
     b2Body,
@@ -28,7 +27,6 @@ import {
     b2Transform,
     b2AABB,
     XY,
-    b2RayCastCallback,
     b2_maxFloat,
     b2EdgeShape,
     b2ShapeType,
@@ -61,6 +59,13 @@ import { b2ParticleFlag, b2ParticleDef, b2ParticleHandle, b2IParticleDef } from 
 import { b2ParticleGroupFlag, b2ParticleGroupDef, b2ParticleGroup, b2IParticleGroupDef } from "./b2_particle_group";
 import { b2VoronoiDiagram } from "./b2_voronoi_diagram";
 import { computeDistance } from "./b2_compute_distance";
+import {
+    b2ParticleSystem_SolveCollisionCallback,
+    b2ParticleSystem_UpdateBodyContactsCallback,
+} from "./b2_fixture_particle_query_callbacks";
+
+export type b2ParticleQueryCallback = (index: number) => boolean;
+export type b2ParticleRayCastCallback = (index: number, point: b2Vec2, normal: b2Vec2, fraction: number) => number;
 
 function std_iter_swap<T>(array: T[], a: number, b: number): void {
     const tmp: T = array[a];
@@ -300,46 +305,6 @@ export class b2ParticleSystem_UserOverridableBuffer<T> {
 }
 
 export type b2ParticleIndex = number;
-
-export class b2FixtureParticleQueryCallback extends b2QueryCallback {
-    public m_system: b2ParticleSystem;
-
-    constructor(system: b2ParticleSystem) {
-        super();
-        this.m_system = system;
-    }
-
-    public ShouldQueryParticleSystem(_system: b2ParticleSystem): boolean {
-        // Skip reporting particles.
-        return false;
-    }
-
-    public ReportFixture(fixture: b2Fixture): boolean {
-        if (fixture.IsSensor()) {
-            return true;
-        }
-        const shape = fixture.GetShape();
-        const childCount = shape.GetChildCount();
-        for (let childIndex = 0; childIndex < childCount; childIndex++) {
-            const aabb = fixture.GetAABB(childIndex);
-            const enumerator = this.m_system.GetInsideBoundsEnumerator(aabb);
-            let index: number;
-            // eslint-disable-next-line no-cond-assign
-            while ((index = enumerator.GetNext()) >= 0) {
-                this.ReportFixtureAndParticle(fixture, childIndex, index);
-            }
-        }
-        return true;
-    }
-
-    public ReportParticle(_system: b2ParticleSystem, _index: number): boolean {
-        return false;
-    }
-
-    public ReportFixtureAndParticle(_fixture: b2Fixture, _childIndex: number, _index: number): void {
-        // DEBUG: b2Assert(false); // pure virtual
-    }
-}
 
 export class b2ParticleContact {
     public indexA = 0;
@@ -1090,12 +1055,18 @@ export class b2ParticleSystem {
         const s_aabb = b2ParticleSystem.DestroyParticlesInShape_s_aabb;
         b2Assert(!this.m_world.IsLocked());
 
-        const callback = new b2ParticleSystem_DestroyParticlesInShapeCallback(this, shape, xf, callDestructionListener);
-
         const aabb = s_aabb;
         shape.ComputeAABB(aabb, xf, 0);
-        this.m_world.QueryAABB(aabb, callback);
-        return callback.Destroyed();
+        let destroyed = 0;
+        this.QueryAABB(aabb, (index) => {
+            // DEBUG: b2Assert(index >= 0 && index < this.m_system.m_count);
+            if (shape.TestPoint(xf, this.m_positionBuffer.data[index])) {
+                this.DestroyParticle(index, callDestructionListener);
+                destroyed++;
+            }
+            return true;
+        });
+        return destroyed;
     }
 
     public static readonly DestroyParticlesInShape_s_aabb = new b2AABB();
@@ -1917,12 +1888,11 @@ export class b2ParticleSystem {
     /**
      * Query the particle system for all particles that potentially
      * overlap the provided AABB.
-     * b2QueryCallback::ShouldQueryParticleSystem is ignored.
      *
      * @param callback a user implemented callback class.
      * @param aabb the query box.
      */
-    public QueryAABB(callback: b2QueryCallback, aabb: b2AABB): void {
+    public QueryAABB(aabb: b2AABB, callback: b2ParticleQueryCallback): void {
         if (this.m_proxyBuffer.count === 0) {
             return;
         }
@@ -1959,7 +1929,7 @@ export class b2ParticleSystem {
                 aabb.lowerBound.y < p.y &&
                 p.y < aabb.upperBound.y
             ) {
-                if (!callback.ReportParticle(this, i)) {
+                if (!callback(i)) {
                     break;
                 }
             }
@@ -1969,29 +1939,33 @@ export class b2ParticleSystem {
     /**
      * Query the particle system for all particles that potentially
      * overlap the provided shape's AABB. Calls QueryAABB
-     * internally. b2QueryCallback::ShouldQueryParticleSystem is
-     * ignored.
+     * internally.
      *
      * @param callback a user implemented callback class.
      * @param shape the query shape
      * @param xf the transform of the AABB
      * @param childIndex
      */
-    public QueryShapeAABB(callback: b2QueryCallback, shape: b2Shape, xf: b2Transform, childIndex = 0): void {
+    public QueryShapeAABB(
+        shape: b2Shape,
+        xf: b2Transform,
+        childIndex: number,
+        callback: b2ParticleQueryCallback,
+    ): void {
         const s_aabb = b2ParticleSystem.QueryShapeAABB_s_aabb;
         const aabb = s_aabb;
         shape.ComputeAABB(aabb, xf, childIndex);
-        this.QueryAABB(callback, aabb);
+        this.QueryAABB(aabb, callback);
     }
 
     public static readonly QueryShapeAABB_s_aabb = new b2AABB();
 
-    public QueryPointAABB(callback: b2QueryCallback, point: XY, slop: number = b2_linearSlop): void {
+    public QueryPointAABB(point: XY, slop: number, callback: b2ParticleQueryCallback): void {
         const s_aabb = b2ParticleSystem.QueryPointAABB_s_aabb;
         const aabb = s_aabb;
         aabb.lowerBound.Set(point.x - slop, point.y - slop);
         aabb.upperBound.Set(point.x + slop, point.y + slop);
-        this.QueryAABB(callback, aabb);
+        this.QueryAABB(aabb, callback);
     }
 
     public static readonly QueryPointAABB_s_aabb = new b2AABB();
@@ -2001,13 +1975,12 @@ export class b2ParticleSystem {
      * the ray. Your callback controls whether you get the closest
      * point, any point, or n-points. The ray-cast ignores particles
      * that contain the starting point.
-     * b2RayCastCallback::ShouldQueryParticleSystem is ignored.
      *
      * @param callback a user implemented callback class.
      * @param point1 the ray starting point
      * @param point2 the ray ending point
      */
-    public RayCast(callback: b2RayCastCallback, point1: XY, point2: XY): void {
+    public RayCast(point1: XY, point2: XY, callback: b2ParticleRayCastCallback): void {
         const s_aabb = b2ParticleSystem.RayCast_s_aabb;
         const s_p = b2ParticleSystem.RayCast_s_p;
         const s_v = b2ParticleSystem.RayCast_s_v;
@@ -2053,8 +2026,8 @@ export class b2ParticleSystem {
                 /// b2Vec2 n = p + t * v;
                 const n = b2Vec2.AddVMulSV(p, t, v, s_n);
                 n.Normalize();
-                /// float32 f = callback.ReportParticle(this, i, point1 + t * v, n, t);
-                const f = callback.ReportParticle(this, i, b2Vec2.AddVMulSV(point1, t, v, s_point), n, t);
+                /// float32 f = callback(i, point1 + t * v, n, t);
+                const f = callback(i, b2Vec2.AddVMulSV(point1, t, v, s_point), n, t);
                 fraction = Math.min(fraction, f);
                 if (fraction <= 0) {
                     break;
@@ -3319,12 +3292,9 @@ export class b2ParticleSystem {
         const aabb = s_aabb;
         this.ComputeAABB(aabb);
 
-        if (this.UpdateBodyContacts_callback === null) {
-            this.UpdateBodyContacts_callback = new b2ParticleSystem_UpdateBodyContactsCallback(this);
-        }
         const callback = this.UpdateBodyContacts_callback;
         callback.m_contactFilter = this.GetFixtureContactFilter();
-        this.m_world.QueryAABB(aabb, callback);
+        this.m_world.QueryAABB(aabb, (fixture) => callback.ReportFixture(fixture));
 
         if (this.m_def.strictContactCheck) {
             this.RemoveSpuriousBodyContacts();
@@ -3335,7 +3305,7 @@ export class b2ParticleSystem {
 
     public static readonly UpdateBodyContacts_s_aabb = new b2AABB();
 
-    public UpdateBodyContacts_callback: b2ParticleSystem_UpdateBodyContactsCallback | null = null;
+    private readonly UpdateBodyContacts_callback = new b2ParticleSystem_UpdateBodyContactsCallback(this);
 
     public Solve(step: b2TimeStep): void {
         const s_subStep = b2ParticleSystem.Solve_s_subStep;
@@ -3466,17 +3436,14 @@ export class b2ParticleSystem {
             aabb.upperBound.x = Math.max(aabb.upperBound.x, Math.max(p1.x, p2_x));
             aabb.upperBound.y = Math.max(aabb.upperBound.y, Math.max(p1.y, p2_y));
         }
-        if (this.SolveCollision_callback === null) {
-            this.SolveCollision_callback = new b2ParticleSystem_SolveCollisionCallback(this, step);
-        }
         const callback = this.SolveCollision_callback;
         callback.m_step = step;
-        this.m_world.QueryAABB(aabb, callback);
+        this.m_world.QueryAABB(aabb, (fixture) => callback.ReportFixture(fixture));
     }
 
     public static readonly SolveCollision_s_aabb = new b2AABB();
 
-    public SolveCollision_callback: b2ParticleSystem_SolveCollisionCallback | null = null;
+    private readonly SolveCollision_callback = new b2ParticleSystem_SolveCollisionCallback(this);
 
     public LimitVelocity(step: b2TimeStep): void {
         const vel_data = this.m_velocityBuffer.data;
@@ -5477,47 +5444,6 @@ export class b2ParticleSystem_ConnectionFilter {
     }
 }
 
-export class b2ParticleSystem_DestroyParticlesInShapeCallback extends b2QueryCallback {
-    public m_system: b2ParticleSystem;
-
-    public m_shape: b2Shape;
-
-    public m_xf: b2Transform;
-
-    public m_callDestructionListener = false;
-
-    public m_destroyed = 0;
-
-    constructor(system: b2ParticleSystem, shape: b2Shape, xf: b2Transform, callDestructionListener: boolean) {
-        super();
-        this.m_system = system;
-        this.m_shape = shape;
-        this.m_xf = xf;
-        this.m_callDestructionListener = callDestructionListener;
-        this.m_destroyed = 0;
-    }
-
-    public ReportFixture(_fixture: b2Fixture): boolean {
-        return false;
-    }
-
-    public ReportParticle(particleSystem: b2ParticleSystem, index: number): boolean {
-        if (particleSystem !== this.m_system) {
-            return false;
-        }
-        // DEBUG: b2Assert(index >= 0 && index < this.m_system.m_count);
-        if (this.m_shape.TestPoint(this.m_xf, this.m_system.m_positionBuffer.data[index])) {
-            this.m_system.DestroyParticle(index, this.m_callDestructionListener);
-            this.m_destroyed++;
-        }
-        return true;
-    }
-
-    public Destroyed(): number {
-        return this.m_destroyed;
-    }
-}
-
 export class b2ParticleSystem_JoinParticleGroupsFilter extends b2ParticleSystem_ConnectionFilter {
     public m_threshold = 0;
 
@@ -5625,157 +5551,5 @@ export class b2ParticleSystem_ReactiveFilter extends b2ParticleSystem_Connection
 
     public IsNecessary(index: number): boolean {
         return (this.m_flagsBuffer.data[index] & b2ParticleFlag.b2_reactiveParticle) !== 0;
-    }
-}
-
-export class b2ParticleSystem_UpdateBodyContactsCallback extends b2FixtureParticleQueryCallback {
-    public m_contactFilter: b2ContactFilter | null = null;
-
-    constructor(system: b2ParticleSystem, contactFilter: b2ContactFilter | null = null) {
-        super(system); // base class constructor
-        this.m_contactFilter = contactFilter;
-    }
-
-    public ShouldCollideFixtureParticle(
-        fixture: b2Fixture,
-        _particleSystem: b2ParticleSystem,
-        particleIndex: number,
-    ): boolean {
-        // Call the contact filter if it's set, to determine whether to
-        // filter this contact.  Returns true if contact calculations should
-        // be performed, false otherwise.
-        if (this.m_contactFilter) {
-            const flags = this.m_system.GetFlagsBuffer();
-            if (flags[particleIndex] & b2ParticleFlag.b2_fixtureContactFilterParticle) {
-                return this.m_contactFilter.ShouldCollideFixtureParticle(fixture, this.m_system, particleIndex);
-            }
-        }
-        return true;
-    }
-
-    public ReportFixtureAndParticle(fixture: b2Fixture, childIndex: number, a: number): void {
-        const s_n = b2ParticleSystem_UpdateBodyContactsCallback.ReportFixtureAndParticle_s_n;
-        const s_rp = b2ParticleSystem_UpdateBodyContactsCallback.ReportFixtureAndParticle_s_rp;
-        const ap = this.m_system.m_positionBuffer.data[a];
-        const n = s_n;
-
-        const d = computeDistance(fixture.GetShape(), fixture.GetBody().GetTransform(), ap, n, childIndex);
-        if (d < this.m_system.m_particleDiameter && this.ShouldCollideFixtureParticle(fixture, this.m_system, a)) {
-            const b = fixture.GetBody();
-            const bp = b.GetWorldCenter();
-            const bm = b.GetMass();
-            const bI = b.GetInertia() - bm * b.GetLocalCenter().LengthSquared();
-            const invBm = bm > 0 ? 1 / bm : 0;
-            const invBI = bI > 0 ? 1 / bI : 0;
-            const invAm =
-                this.m_system.m_flagsBuffer.data[a] & b2ParticleFlag.b2_wallParticle
-                    ? 0
-                    : this.m_system.GetParticleInvMass();
-            /// b2Vec2 rp = ap - bp;
-            const rp = b2Vec2.SubVV(ap, bp, s_rp);
-            const rpn = b2Vec2.CrossVV(rp, n);
-            const invM = invAm + invBm + invBI * rpn * rpn;
-
-            /// b2ParticleBodyContact& contact = m_system.m_bodyContactBuffer.Append();
-            const contact = this.m_system.m_bodyContactBuffer.data[this.m_system.m_bodyContactBuffer.Append()];
-            contact.index = a;
-            contact.body = b;
-            contact.fixture = fixture;
-            contact.weight = 1 - d * this.m_system.m_inverseDiameter;
-            /// contact.normal = -n;
-            contact.normal.Copy(n.SelfNeg());
-            contact.mass = invM > 0 ? 1 / invM : 0;
-            this.m_system.DetectStuckParticle(a);
-        }
-    }
-
-    public static readonly ReportFixtureAndParticle_s_n = new b2Vec2();
-
-    public static readonly ReportFixtureAndParticle_s_rp = new b2Vec2();
-}
-
-export class b2ParticleSystem_SolveCollisionCallback extends b2FixtureParticleQueryCallback {
-    public m_step: b2TimeStep;
-
-    constructor(system: b2ParticleSystem, step: b2TimeStep) {
-        super(system); // base class constructor
-        this.m_step = step;
-    }
-
-    public ReportFixtureAndParticle(fixture: b2Fixture, childIndex: number, a: number): void {
-        const s_p1 = b2ParticleSystem_SolveCollisionCallback.ReportFixtureAndParticle_s_p1;
-        const s_output = b2ParticleSystem_SolveCollisionCallback.ReportFixtureAndParticle_s_output;
-        const s_input = b2ParticleSystem_SolveCollisionCallback.ReportFixtureAndParticle_s_input;
-        const s_p = b2ParticleSystem_SolveCollisionCallback.ReportFixtureAndParticle_s_p;
-        const s_v = b2ParticleSystem_SolveCollisionCallback.ReportFixtureAndParticle_s_v;
-        const s_f = b2ParticleSystem_SolveCollisionCallback.ReportFixtureAndParticle_s_f;
-
-        const body = fixture.GetBody();
-        const ap = this.m_system.m_positionBuffer.data[a];
-        const av = this.m_system.m_velocityBuffer.data[a];
-        const output = s_output;
-        const input = s_input;
-        if (this.m_system.m_iterationIndex === 0) {
-            // Put 'ap' in the local space of the previous frame
-            /// b2Vec2 p1 = b2MulT(body.m_xf0, ap);
-            const p1 = b2Transform.MulTXV(body.m_xf0, ap, s_p1);
-            if (fixture.GetShape().GetType() === b2ShapeType.e_circle) {
-                // Make relative to the center of the circle
-                /// p1 -= body.GetLocalCenter();
-                p1.SelfSub(body.GetLocalCenter());
-                // Re-apply rotation about the center of the circle
-                /// p1 = b2Mul(body.m_xf0.q, p1);
-                b2Rot.MulRV(body.m_xf0.q, p1, p1);
-                // Subtract rotation of the current frame
-                /// p1 = b2MulT(body.m_xf.q, p1);
-                b2Rot.MulTRV(body.m_xf.q, p1, p1);
-                // Return to local space
-                /// p1 += body.GetLocalCenter();
-                p1.SelfAdd(body.GetLocalCenter());
-            }
-            // Return to global space and apply rotation of current frame
-            /// input.p1 = b2Mul(body.m_xf, p1);
-            b2Transform.MulXV(body.m_xf, p1, input.p1);
-        } else {
-            /// input.p1 = ap;
-            input.p1.Copy(ap);
-        }
-        /// input.p2 = ap + m_step.dt * av;
-        b2Vec2.AddVMulSV(ap, this.m_step.dt, av, input.p2);
-        input.maxFraction = 1;
-        if (fixture.RayCast(output, input, childIndex)) {
-            const n = output.normal;
-            /// b2Vec2 p = (1 - output.fraction) * input.p1 + output.fraction * input.p2 + b2_linearSlop * n;
-            const p = s_p;
-            p.x = (1 - output.fraction) * input.p1.x + output.fraction * input.p2.x + b2_linearSlop * n.x;
-            p.y = (1 - output.fraction) * input.p1.y + output.fraction * input.p2.y + b2_linearSlop * n.y;
-            /// b2Vec2 v = m_step.inv_dt * (p - ap);
-            const v = s_v;
-            v.x = this.m_step.inv_dt * (p.x - ap.x);
-            v.y = this.m_step.inv_dt * (p.y - ap.y);
-            /// m_system.m_velocityBuffer.data[a] = v;
-            this.m_system.m_velocityBuffer.data[a].Copy(v);
-            /// b2Vec2 f = m_step.inv_dt * m_system.GetParticleMass() * (av - v);
-            const f = s_f;
-            f.x = this.m_step.inv_dt * this.m_system.GetParticleMass() * (av.x - v.x);
-            f.y = this.m_step.inv_dt * this.m_system.GetParticleMass() * (av.y - v.y);
-            this.m_system.ParticleApplyForce(a, f);
-        }
-    }
-
-    public static readonly ReportFixtureAndParticle_s_p1 = new b2Vec2();
-
-    public static readonly ReportFixtureAndParticle_s_output = new b2RayCastOutput();
-
-    public static readonly ReportFixtureAndParticle_s_input = new b2RayCastInput();
-
-    public static readonly ReportFixtureAndParticle_s_p = new b2Vec2();
-
-    public static readonly ReportFixtureAndParticle_s_v = new b2Vec2();
-
-    public static readonly ReportFixtureAndParticle_s_f = new b2Vec2();
-
-    public ReportParticle(_system: b2ParticleSystem, _index: number): boolean {
-        return false;
     }
 }

@@ -105,35 +105,20 @@ export class b2ContactListener {
     public static readonly b2_defaultListener: b2ContactListener = new b2ContactListener();
 }
 
-/// Callback class for AABB queries.
-/// See b2World::Query
-export class b2QueryCallback {
-    /// Called for each fixture found in the query AABB.
-    /// @return false to terminate the query.
-    public ReportFixture(_fixture: b2Fixture): boolean {
-        return true;
-    }
-}
-
-export type b2QueryCallbackFunction = (fixture: b2Fixture) => boolean;
+/// Callback class for AABB queries
+export type b2QueryCallback = (fixture: b2Fixture) => boolean;
 
 /// Callback class for ray casts.
 /// See b2World::RayCast
-export class b2RayCastCallback {
-    /// Called for each fixture found in the query. You control how the ray cast
-    /// proceeds by returning a float:
-    /// return -1: ignore this fixture and continue
-    /// return 0: terminate the ray cast
-    /// return fraction: clip the ray to this point
-    /// return 1: don't clip the ray and continue
-    /// @param fixture the fixture hit by the ray
-    /// @param point the point of initial intersection
-    /// @param normal the normal vector at the point of intersection
-    /// @return -1 to filter, 0 to terminate, fraction to clip the ray for
-    /// closest hit, 1 to continue
-    public ReportFixture(_fixture: b2Fixture, _point: b2Vec2, _normal: b2Vec2, fraction: number): number {
-        return fraction;
-    }
-}
-
-export type b2RayCastCallbackFunction = (fixture: b2Fixture, point: b2Vec2, normal: b2Vec2, fraction: number) => number;
+/// Called for each fixture found in the query. You control how the ray cast
+/// proceeds by returning a float:
+/// return -1: ignore this fixture and continue
+/// return 0: terminate the ray cast
+/// return fraction: clip the ray to this point
+/// return 1: don't clip the ray and continue
+/// @param fixture the fixture hit by the ray
+/// @param point the point of initial intersection
+/// @param normal the normal vector at the point of intersection
+/// @return -1 to filter, 0 to terminate, fraction to clip the ray for
+/// closest hit, 1 to continue
+export type b2RayCastCallback = (fixture: b2Fixture, point: b2Vec2, normal: b2Vec2, fraction: number) => number;

@@ -16,124 +16,12 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import {
-    b2RayCastCallback,
-    b2Vec2,
-    b2Fixture,
-    b2Body,
-    b2PolygonShape,
-    b2CircleShape,
-    b2EdgeShape,
-    b2RandomRange,
-    b2Color,
-} from "@box2d/core";
+import { b2Vec2, b2Body, b2PolygonShape, b2CircleShape, b2EdgeShape, b2RandomRange, b2Color } from "@box2d/core";
 
 import { Test } from "../../test";
 import { Settings } from "../../settings";
 import { g_debugDraw } from "../../utils/draw";
 import { HotKey, hotKeyPress } from "../../utils/hotkeys";
-
-class RayCastClosestCallback extends b2RayCastCallback {
-    public m_hit = false;
-
-    public readonly m_point: b2Vec2 = new b2Vec2();
-
-    public readonly m_normal: b2Vec2 = new b2Vec2();
-
-    public ReportFixture(fixture: b2Fixture, point: b2Vec2, normal: b2Vec2, fraction: number): number {
-        const body: b2Body = fixture.GetBody();
-        const userData: any = body.GetUserData();
-        if (userData) {
-            const { index } = userData;
-            if (index === 0) {
-                // By returning -1, we instruct the calling code to ignore this fixture
-                // and continue the ray-cast to the next fixture.
-                return -1;
-            }
-        }
-
-        this.m_hit = true;
-        this.m_point.Copy(point);
-        this.m_normal.Copy(normal);
-
-        // By returning the current fraction, we instruct the calling code to clip the ray and
-        // continue the ray-cast to the next fixture. WARNING: do not assume that fixtures
-        // are reported in order. However, by clipping, we can always get the closest fixture.
-        return fraction;
-    }
-}
-
-// This callback finds any hit. Polygon 0 is filtered. For this type of query we are usually
-// just checking for obstruction, so the actual fixture and hit point are irrelevant.
-class RayCastAnyCallback extends b2RayCastCallback {
-    public m_hit = false;
-
-    public readonly m_point: b2Vec2 = new b2Vec2();
-
-    public readonly m_normal: b2Vec2 = new b2Vec2();
-
-    public ReportFixture(fixture: b2Fixture, point: b2Vec2, normal: b2Vec2, _fraction: number): number {
-        const body: b2Body = fixture.GetBody();
-        const userData: any = body.GetUserData();
-        if (userData) {
-            const { index } = userData;
-            if (index === 0) {
-                // By returning -1, we instruct the calling code to ignore this fixture
-                // and continue the ray-cast to the next fixture.
-                return -1;
-            }
-        }
-
-        this.m_hit = true;
-        this.m_point.Copy(point);
-        this.m_normal.Copy(normal);
-
-        // At this point we have a hit, so we know the ray is obstructed.
-        // By returning 0, we instruct the calling code to terminate the ray-cast.
-        return 0;
-    }
-}
-
-// This ray cast collects multiple hits along the ray. Polygon 0 is filtered.
-// The fixtures are not necessary reported in order, so we might not capture
-// the closest fixture.
-class RayCastMultipleCallback extends b2RayCastCallback {
-    private static e_maxCount = 3;
-
-    public m_points: b2Vec2[] = b2Vec2.MakeArray(RayCastMultipleCallback.e_maxCount);
-
-    public m_normals: b2Vec2[] = b2Vec2.MakeArray(RayCastMultipleCallback.e_maxCount);
-
-    public m_count = 0;
-
-    public ReportFixture(fixture: b2Fixture, point: b2Vec2, normal: b2Vec2, _fraction: number): number {
-        const body: b2Body = fixture.GetBody();
-        const userData: any = body.GetUserData();
-        if (userData) {
-            const { index } = userData;
-            if (index === 0) {
-                // By returning -1, we instruct the calling code to ignore this fixture
-                // and continue the ray-cast to the next fixture.
-                return -1;
-            }
-        }
-
-        // DEBUG: b2Assert(this.m_count < RayCastMultipleCallback.e_maxCount);
-
-        this.m_points[this.m_count].Copy(point);
-        this.m_normals[this.m_count].Copy(normal);
-        ++this.m_count;
-
-        if (this.m_count === RayCastMultipleCallback.e_maxCount) {
-            // At this point the buffer is full.
-            // By returning 0, we instruct the calling code to terminate the ray-cast.
-            return 0;
-        }
-
-        // By returning 1, we instruct the caller to continue without clipping the ray.
-        return 1;
-    }
-}
 
 enum RayCastMode {
     e_closest,
@@ -298,70 +186,27 @@ export class RayCast extends Test {
         const advanceRay: boolean = !settings.m_pause || settings.m_singleStep;
 
         super.Step(settings, timeStep);
-        switch (this.m_mode) {
-            case RayCastMode.e_closest:
-                this.addDebug("Ray-Cast Mode", "Find closest fixture along the ray");
-                break;
-
-            case RayCastMode.e_any:
-                this.addDebug("Ray-Cast Mode", "Check for obstruction");
-                break;
-
-            case RayCastMode.e_multiple:
-                this.addDebug("Ray-Cast Mode", "Gather multiple fixtures");
-                break;
-        }
 
         const L = 11.0;
         const point1 = new b2Vec2(0.0, 10.0);
         const d = new b2Vec2(L * Math.cos(this.m_angle), L * Math.sin(this.m_angle));
         const point2 = b2Vec2.AddVV(point1, d, new b2Vec2());
 
-        if (this.m_mode === RayCastMode.e_closest) {
-            const callback = new RayCastClosestCallback();
-            this.m_world.RayCast(point1, point2, callback);
+        switch (this.m_mode) {
+            case RayCastMode.e_closest:
+                this.addDebug("Ray-Cast Mode", "Find closest fixture along the ray");
+                this.rayCastClosest(point1, point2);
+                break;
 
-            if (callback.m_hit) {
-                g_debugDraw.DrawPoint(callback.m_point, 5.0, new b2Color(0.4, 0.9, 0.4));
-                g_debugDraw.DrawSegment(point1, callback.m_point, new b2Color(0.8, 0.8, 0.8));
-                const head = b2Vec2.AddVV(
-                    callback.m_point,
-                    b2Vec2.MulSV(0.5, callback.m_normal, b2Vec2.s_t0),
-                    new b2Vec2(),
-                );
-                g_debugDraw.DrawSegment(callback.m_point, head, new b2Color(0.9, 0.9, 0.4));
-            } else {
-                g_debugDraw.DrawSegment(point1, point2, new b2Color(0.8, 0.8, 0.8));
-            }
-        } else if (this.m_mode === RayCastMode.e_any) {
-            const callback = new RayCastAnyCallback();
-            this.m_world.RayCast(point1, point2, callback);
+            case RayCastMode.e_any:
+                this.addDebug("Ray-Cast Mode", "Check for obstruction");
+                this.rayCastAny(point1, point2);
+                break;
 
-            if (callback.m_hit) {
-                g_debugDraw.DrawPoint(callback.m_point, 5.0, new b2Color(0.4, 0.9, 0.4));
-                g_debugDraw.DrawSegment(point1, callback.m_point, new b2Color(0.8, 0.8, 0.8));
-                const head = b2Vec2.AddVV(
-                    callback.m_point,
-                    b2Vec2.MulSV(0.5, callback.m_normal, b2Vec2.s_t0),
-                    new b2Vec2(),
-                );
-                g_debugDraw.DrawSegment(callback.m_point, head, new b2Color(0.9, 0.9, 0.4));
-            } else {
-                g_debugDraw.DrawSegment(point1, point2, new b2Color(0.8, 0.8, 0.8));
-            }
-        } else if (this.m_mode === RayCastMode.e_multiple) {
-            const callback = new RayCastMultipleCallback();
-            this.m_world.RayCast(point1, point2, callback);
-            g_debugDraw.DrawSegment(point1, point2, new b2Color(0.8, 0.8, 0.8));
-
-            for (let i = 0; i < callback.m_count; ++i) {
-                const p = callback.m_points[i];
-                const n = callback.m_normals[i];
-                g_debugDraw.DrawPoint(p, 5.0, new b2Color(0.4, 0.9, 0.4));
-                g_debugDraw.DrawSegment(point1, p, new b2Color(0.8, 0.8, 0.8));
-                const head = b2Vec2.AddVV(p, b2Vec2.MulSV(0.5, n, b2Vec2.s_t0), new b2Vec2());
-                g_debugDraw.DrawSegment(p, head, new b2Color(0.9, 0.9, 0.4));
-            }
+            case RayCastMode.e_multiple:
+                this.addDebug("Ray-Cast Mode", "Gather multiple fixtures");
+                this.rayCastMultiple(point1, point2);
+                break;
         }
 
         if (advanceRay) {
@@ -409,5 +254,125 @@ export class RayCast extends Test {
       }
     #endif
     */
+    }
+
+    private rayCastClosest(point1: b2Vec2, point2: b2Vec2) {
+        let hit = false;
+        const resultPoint = new b2Vec2();
+        const resultNormal = new b2Vec2();
+        this.m_world.RayCast(point1, point2, (fixture, point, normal, fraction) => {
+            const body: b2Body = fixture.GetBody();
+            const userData: any = body.GetUserData();
+            if (userData) {
+                const { index } = userData;
+                if (index === 0) {
+                    // By returning -1, we instruct the calling code to ignore this fixture
+                    // and continue the ray-cast to the next fixture.
+                    return -1;
+                }
+            }
+
+            hit = true;
+            resultPoint.Copy(point);
+            resultNormal.Copy(normal);
+
+            // By returning the current fraction, we instruct the calling code to clip the ray and
+            // continue the ray-cast to the next fixture. WARNING: do not assume that fixtures
+            // are reported in order. However, by clipping, we can always get the closest fixture.
+            return fraction;
+        });
+
+        if (hit) {
+            g_debugDraw.DrawPoint(resultPoint, 5.0, new b2Color(0.4, 0.9, 0.4));
+            g_debugDraw.DrawSegment(point1, resultPoint, new b2Color(0.8, 0.8, 0.8));
+            const head = b2Vec2.AddVV(resultPoint, b2Vec2.MulSV(0.5, resultNormal, b2Vec2.s_t0), new b2Vec2());
+            g_debugDraw.DrawSegment(resultPoint, head, new b2Color(0.9, 0.9, 0.4));
+        } else {
+            g_debugDraw.DrawSegment(point1, point2, new b2Color(0.8, 0.8, 0.8));
+        }
+    }
+
+    // This callback finds any hit. Polygon 0 is filtered. For this type of query we are usually
+    // just checking for obstruction, so the actual fixture and hit point are irrelevant.
+    private rayCastAny(point1: b2Vec2, point2: b2Vec2) {
+        let hit = false;
+        const resultPoint = new b2Vec2();
+        const resultNormal = new b2Vec2();
+        this.m_world.RayCast(point1, point2, (fixture, point, normal, _fraction) => {
+            const body: b2Body = fixture.GetBody();
+            const userData: any = body.GetUserData();
+            if (userData) {
+                const { index } = userData;
+                if (index === 0) {
+                    // By returning -1, we instruct the calling code to ignore this fixture
+                    // and continue the ray-cast to the next fixture.
+                    return -1;
+                }
+            }
+
+            hit = true;
+            resultPoint.Copy(point);
+            resultNormal.Copy(normal);
+
+            // At this point we have a hit, so we know the ray is obstructed.
+            // By returning 0, we instruct the calling code to terminate the ray-cast.
+            return 0;
+        });
+
+        if (hit) {
+            g_debugDraw.DrawPoint(resultPoint, 5.0, new b2Color(0.4, 0.9, 0.4));
+            g_debugDraw.DrawSegment(point1, resultPoint, new b2Color(0.8, 0.8, 0.8));
+            const head = b2Vec2.AddVV(resultPoint, b2Vec2.MulSV(0.5, resultNormal, b2Vec2.s_t0), new b2Vec2());
+            g_debugDraw.DrawSegment(resultPoint, head, new b2Color(0.9, 0.9, 0.4));
+        } else {
+            g_debugDraw.DrawSegment(point1, point2, new b2Color(0.8, 0.8, 0.8));
+        }
+    }
+
+    // This ray cast collects multiple hits along the ray. Polygon 0 is filtered.
+    // The fixtures are not necessary reported in order, so we might not capture
+    // the closest fixture.
+    private rayCastMultiple(point1: b2Vec2, point2: b2Vec2) {
+        const e_maxCount = 3;
+        const resultPoints = b2Vec2.MakeArray(e_maxCount);
+        const resultNormals = b2Vec2.MakeArray(e_maxCount);
+
+        let count = 0;
+        this.m_world.RayCast(point1, point2, (fixture, point, normal) => {
+            const body: b2Body = fixture.GetBody();
+            const userData: any = body.GetUserData();
+            if (userData) {
+                const { index } = userData;
+                if (index === 0) {
+                    // By returning -1, we instruct the calling code to ignore this fixture
+                    // and continue the ray-cast to the next fixture.
+                    return -1;
+                }
+            }
+
+            // DEBUG: b2Assert(this.m_count < RayCastMultipleCallback.e_maxCount);
+            resultPoints[count].Copy(point);
+            resultNormals[count].Copy(normal);
+            ++count;
+
+            if (count === e_maxCount) {
+                // At this point the buffer is full.
+                // By returning 0, we instruct the calling code to terminate the ray-cast.
+                return 0;
+            }
+
+            // By returning 1, we instruct the caller to continue without clipping the ray.
+            return 1;
+        });
+        g_debugDraw.DrawSegment(point1, point2, new b2Color(0.8, 0.8, 0.8));
+
+        for (let i = 0; i < count; ++i) {
+            const p = resultPoints[i];
+            const n = resultNormals[i];
+            g_debugDraw.DrawPoint(p, 5.0, new b2Color(0.4, 0.9, 0.4));
+            g_debugDraw.DrawSegment(point1, p, new b2Color(0.8, 0.8, 0.8));
+            const head = b2Vec2.AddVV(p, b2Vec2.MulSV(0.5, n, b2Vec2.s_t0), new b2Vec2());
+            g_debugDraw.DrawSegment(p, head, new b2Color(0.9, 0.9, 0.4));
+        }
     }
 }

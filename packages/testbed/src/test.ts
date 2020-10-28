@@ -4,8 +4,6 @@ import {
     b2Fixture,
     b2Vec2,
     b2PointState,
-    b2QueryCallback,
-    b2Shape,
     b2Transform,
     b2ContactListener,
     b2World,
@@ -99,38 +97,6 @@ export class ContactPoint {
 
 const formatValueAveMax = (step: number, ave: number, max: number) =>
     `${step.toFixed(2)} [${ave.toFixed(2)}] (${max.toFixed(2)})`;
-
-class QueryCallback2 extends b2QueryCallback {
-    public m_particleSystem: b2ParticleSystem;
-
-    public m_shape: b2Shape;
-
-    public m_velocity: b2Vec2;
-
-    constructor(particleSystem: b2ParticleSystem, shape: b2Shape, velocity: b2Vec2) {
-        super();
-        this.m_particleSystem = particleSystem;
-        this.m_shape = shape;
-        this.m_velocity = velocity;
-    }
-
-    public ReportFixture(_fixture: b2Fixture): boolean {
-        return false;
-    }
-
-    public ReportParticle(particleSystem: b2ParticleSystem, index: number): boolean {
-        if (particleSystem !== this.m_particleSystem) {
-            return false;
-        }
-        const xf = b2Transform.IDENTITY;
-        const p = this.m_particleSystem.GetPositionBuffer()[index];
-        if (this.m_shape.TestPoint(xf, p)) {
-            const v = this.m_particleSystem.GetVelocityBuffer()[index];
-            v.Copy(this.m_velocity);
-        }
-        return true;
-    }
-}
 
 export class Test extends b2ContactListener {
     public static particleParameterSelectionEnabled: boolean;
@@ -563,12 +529,18 @@ export class Test extends b2ContactListener {
             shape.m_p.Copy(this.m_mouseTracerPosition);
             shape.m_radius = this.getParticleSelectionRadius();
             /// QueryCallback2 callback(m_particleSystem, &shape, m_mouseTracerVelocity);
-            const callback = new QueryCallback2(this.m_particleSystem, shape, this.m_mouseTracerVelocity);
             const aabb = new b2AABB();
             const xf = new b2Transform();
             xf.SetIdentity();
             shape.ComputeAABB(aabb, xf, 0);
-            this.m_world.QueryAABB(aabb, callback);
+            this.m_particleSystem.QueryAABB(aabb, (index) => {
+                const p = this.m_particleSystem.GetPositionBuffer()[index];
+                if (shape.TestPoint(b2Transform.IDENTITY, p)) {
+                    const v = this.m_particleSystem.GetVelocityBuffer()[index];
+                    v.Copy(this.m_mouseTracerVelocity);
+                }
+                return true;
+            });
         }
 
         if (this.m_bombSpawning) {

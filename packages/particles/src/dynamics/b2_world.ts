@@ -16,17 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import {
-    b2World,
-    b2_maxFloat,
-    b2Transform,
-    b2Body,
-    b2_augment,
-    b2QueryCallback,
-    b2RayCastCallback,
-    b2Writeable,
-    b2Assert,
-} from "@box2d/core";
+import { b2World, b2_maxFloat, b2Transform, b2Body, b2_augment, b2Writeable, b2Assert } from "@box2d/core";
 
 import { b2CalculateParticleIterations } from "../particle/b2_particle";
 import { b2ParticleSystem, b2ParticleSystemDef } from "../particle/b2_particle_system";
@@ -107,67 +97,6 @@ b2_augment(b2World.prototype, {
         const body: b2Body = original(def);
         (body as b2Writeable<b2Body>).m_xf0 = new b2Transform();
         return body;
-    },
-
-    QueryAABB(this: b2World, original, aabb, callback) {
-        original(aabb, callback);
-
-        if (callback instanceof b2QueryCallback) {
-            for (let p = this.m_particleSystemList; p; p = p.m_next) {
-                if (callback.ShouldQueryParticleSystem(p)) {
-                    p.QueryAABB(callback, aabb);
-                }
-            }
-        }
-    },
-
-    QueryPointAABB(this: b2World, original, point, callback) {
-        original(point, callback);
-        if (callback instanceof b2QueryCallback) {
-            for (let p = this.m_particleSystemList; p; p = p.m_next) {
-                if (callback.ShouldQueryParticleSystem(p)) {
-                    p.QueryPointAABB(callback, point);
-                }
-            }
-        }
-    },
-
-    QueryFixtureShape(this: b2World, original, shape, index, transform, callback) {
-        original(shape, index, transform, callback);
-        // eslint-disable-next-line dot-notation
-        const aabb = b2World["QueryFixtureShape_s_aabb"];
-
-        if (callback instanceof b2QueryCallback) {
-            for (let p = this.m_particleSystemList; p; p = p.m_next) {
-                if (callback.ShouldQueryParticleSystem(p)) {
-                    p.QueryAABB(callback, aabb);
-                }
-            }
-        }
-    },
-
-    QueryFixturePoint(this: b2World, original, point, callback) {
-        original(point, callback);
-
-        if (callback instanceof b2QueryCallback) {
-            for (let p = this.m_particleSystemList; p; p = p.m_next) {
-                if (callback.ShouldQueryParticleSystem(p)) {
-                    p.QueryPointAABB(callback, point);
-                }
-            }
-        }
-    },
-
-    RayCast(this: b2World, original, point1, point2, callback) {
-        original(point1, point2, callback);
-
-        if (callback instanceof b2RayCastCallback) {
-            for (let p = this.m_particleSystemList; p; p = p.m_next) {
-                if (callback.ShouldQueryParticleSystem(p)) {
-                    p.RayCast(callback, point1, point2);
-                }
-            }
-        }
     },
 
     Solve(this: b2World, original, step) {

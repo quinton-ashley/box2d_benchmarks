@@ -288,7 +288,7 @@ export class DynamicTreeTest extends Test {
         input.Copy(this.m_rayCastInput);
 
         // Ray cast against the dynamic tree.
-        this.m_tree.RayCast(input, (input2: b2RayCastInput, proxyId: b2TreeNode<DynamicTreeTest_Actor>): number => {
+        this.m_tree.RayCast(input, (input2, proxyId): number => {
             const actor = b2Verify(proxyId.userData);
 
             const output = new b2RayCastOutput();

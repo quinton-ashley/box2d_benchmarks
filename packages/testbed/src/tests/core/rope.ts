@@ -104,7 +104,7 @@ export class Rope extends Test {
         def.count = N;
         def.gravity.Set(0.0, -10.0);
         // def.masses = masses;
-        masses.forEach((value: number) => def.masses.push(value));
+        masses.forEach((value) => def.masses.push(value));
 
         def.position.Copy(this.m_position1);
         def.tuning.Copy(this.m_tuning1);

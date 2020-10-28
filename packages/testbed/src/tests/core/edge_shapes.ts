@@ -17,7 +17,6 @@
  */
 
 import {
-    b2RayCastCallback,
     b2Fixture,
     b2Vec2,
     b2Body,
@@ -33,21 +32,6 @@ import { Test } from "../../test";
 import { Settings } from "../../settings";
 import { g_debugDraw } from "../../utils/draw";
 import { hotKeyPress, HotKey } from "../../utils/hotkeys";
-
-export class EdgeShapesCallback extends b2RayCastCallback {
-    public m_fixture: b2Fixture | null = null;
-
-    public m_point = new b2Vec2();
-
-    public m_normal = new b2Vec2();
-
-    public ReportFixture(fixture: b2Fixture, point: b2Vec2, normal: b2Vec2, fraction: number): number {
-        this.m_fixture = fixture;
-        this.m_point.Copy(point);
-        this.m_normal.Copy(normal);
-        return fraction;
-    }
-}
 
 export class EdgeShapes extends Test {
     public static readonly e_maxBodies = 256;
@@ -198,18 +182,21 @@ export class EdgeShapes extends Test {
         const d = new b2Vec2(L * Math.cos(this.m_angle), -L * Math.abs(Math.sin(this.m_angle)));
         const point2 = b2Vec2.AddVV(point1, d, new b2Vec2());
 
-        const callback = new EdgeShapesCallback();
-        this.m_world.RayCast(point1, point2, callback);
+        let resultFixture: b2Fixture | null = null;
+        const resultPoint = new b2Vec2();
+        const resultNormal = new b2Vec2();
+        this.m_world.RayCast(point1, point2, (fixture, point, normal, fraction) => {
+            resultFixture = fixture;
+            resultPoint.Copy(point);
+            resultNormal.Copy(normal);
+            return fraction;
+        });
 
-        if (callback.m_fixture) {
-            g_debugDraw.DrawPoint(callback.m_point, 5.0, new b2Color(0.4, 0.9, 0.4));
-            g_debugDraw.DrawSegment(point1, callback.m_point, new b2Color(0.8, 0.8, 0.8));
-            const head = b2Vec2.AddVV(
-                callback.m_point,
-                b2Vec2.MulSV(0.5, callback.m_normal, b2Vec2.s_t0),
-                new b2Vec2(),
-            );
-            g_debugDraw.DrawSegment(callback.m_point, head, new b2Color(0.9, 0.9, 0.4));
+        if (resultFixture) {
+            g_debugDraw.DrawPoint(resultPoint, 5.0, new b2Color(0.4, 0.9, 0.4));
+            g_debugDraw.DrawSegment(point1, resultPoint, new b2Color(0.8, 0.8, 0.8));
+            const head = b2Vec2.AddVV(resultPoint, b2Vec2.MulSV(0.5, resultNormal, b2Vec2.s_t0), new b2Vec2());
+            g_debugDraw.DrawSegment(resultPoint, head, new b2Color(0.9, 0.9, 0.4));
         } else {
             g_debugDraw.DrawSegment(point1, point2, new b2Color(0.8, 0.8, 0.8));
         }

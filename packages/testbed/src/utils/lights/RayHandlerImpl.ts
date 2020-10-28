@@ -1,4 +1,4 @@
-import { b2World, b2Body, b2Fixture, b2Vec2 } from "@box2d/core";
+import { b2World, b2Body } from "@box2d/core";
 import { RayHandler, Light, XY } from "@box2d/lights";
 
 export class RayHandlerImpl extends RayHandler {
@@ -17,9 +17,10 @@ export class RayHandlerImpl extends RayHandler {
     }
 
     public createRayCastCallback(light: Light) {
-        const cb = (fixture: b2Fixture, point: b2Vec2, _normal: b2Vec2, fraction: number) =>
-            light.reportFixture(fixture.GetFilterData(), fixture.GetBody(), point, fraction);
-        return (point1: XY, point2: XY) => this.world.RayCast(point1, point2, cb);
+        return (point1: XY, point2: XY) =>
+            this.world.RayCast(point1, point2, (fixture, point, _normal, fraction) =>
+                light.reportFixture(fixture.GetFilterData(), fixture.GetBody(), point, fraction),
+            );
     }
 
     public getBodyPosition(body: any) {
