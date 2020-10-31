@@ -98,20 +98,21 @@ export class Rope extends Test {
         this.m_position1.Set(-5.0, 15.0);
         this.m_position2.Set(5.0, 15.0);
 
-        const def: b2RopeDef = new b2RopeDef();
-        // def.vertices = vertices;
-        vertices.forEach((value: b2Vec2) => def.vertices.push(value));
-        def.count = N;
-        def.gravity.Set(0.0, -10.0);
-        // def.masses = masses;
-        masses.forEach((value) => def.masses.push(value));
+        const def: b2RopeDef = {
+            position: this.m_position1,
+            vertices,
+            masses,
+            gravity: {
+                x: 0,
+                y: -10,
+            },
+            tuning: this.m_tuning1,
+        };
 
-        def.position.Copy(this.m_position1);
-        def.tuning.Copy(this.m_tuning1);
         this.m_rope1 = new b2Rope(def);
 
-        def.position.Copy(this.m_position2);
-        def.tuning.Copy(this.m_tuning2);
+        def.position = this.m_position2;
+        def.tuning = this.m_tuning2;
         this.m_rope2 = new b2Rope(def);
 
         this.m_iterations1 = 8;
