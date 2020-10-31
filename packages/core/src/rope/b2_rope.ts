@@ -22,6 +22,34 @@
 
 import { b2Vec2 } from "../common/b2_math";
 
+const temp = {
+    J1: new b2Vec2(),
+    J2: new b2Vec2(),
+    J3: new b2Vec2(),
+    r: new b2Vec2(),
+    e1: new b2Vec2(),
+    e2: new b2Vec2(),
+    Jd1: new b2Vec2(),
+    Jd2: new b2Vec2(),
+    p1: new b2Vec2(),
+    p2: new b2Vec2(),
+    p3: new b2Vec2(),
+    d: new b2Vec2(),
+    u: new b2Vec2(),
+    dp1: new b2Vec2(),
+    dp2: new b2Vec2(),
+    dp3: new b2Vec2(),
+    d1: new b2Vec2(),
+    d2: new b2Vec2(),
+    dHat: new b2Vec2(),
+};
+
+function make_array<T>(array: T[], count: number, make: (index: number) => T): void {
+    for (let index = 0; index < count; ++index) {
+        array[index] = make(index);
+    }
+}
+
 export enum b2StretchingModel {
     b2_pbdStretchingModel,
     b2_xpbdStretchingModel,
@@ -187,11 +215,6 @@ export class b2Rope {
         // b2Assert(def.count >= 3);
         this.m_position.Copy(def.position);
         this.m_count = def.count;
-        function make_array<T>(array: T[], count: number, make: (index: number) => T): void {
-            for (let index = 0; index < count; ++index) {
-                array[index] = make(index);
-            }
-        }
         // this.m_bindPositions = (b2Vec2*)b2Alloc(this.m_count * sizeof(b2Vec2));
         make_array(this.m_bindPositions, this.m_count, () => new b2Vec2());
         // this.m_ps = (b2Vec2*)b2Alloc(this.m_count * sizeof(b2Vec2));
@@ -243,6 +266,7 @@ export class b2Rope {
             c.spring = 0.0;
         }
 
+        const { J1, J2, r, e1, e2, Jd1, Jd2 } = temp;
         for (let i = 0; i < this.m_bendCount; ++i) {
             const c: b2RopeBend = this.m_bendConstraints[i];
 
@@ -262,8 +286,8 @@ export class b2Rope {
             c.lambda = 0.0;
 
             // Pre-compute effective mass (TODO use flattened config)
-            const e1: b2Vec2 = b2Vec2.Subtract(p2, p1, new b2Vec2());
-            const e2: b2Vec2 = b2Vec2.Subtract(p3, p2, new b2Vec2());
+            b2Vec2.Subtract(p2, p1, e1);
+            b2Vec2.Subtract(p3, p2, e2);
             const L1sqr: number = e1.LengthSquared();
             const L2sqr: number = e2.LengthSquared();
 
@@ -271,29 +295,21 @@ export class b2Rope {
                 continue;
             }
 
-            // b2Vec2 Jd1 = (-1.0 / L1sqr) * e1.Skew();
-            const Jd1: b2Vec2 = new b2Vec2()
-                .Copy(e1)
+            Jd1.Copy(e1)
                 .Skew()
                 .Scale(-1.0 / L1sqr);
-            // b2Vec2 Jd2 = (1.0 / L2sqr) * e2.Skew();
-            const Jd2: b2Vec2 = new b2Vec2()
-                .Copy(e2)
+            Jd2.Copy(e2)
                 .Skew()
                 .Scale(1.0 / L2sqr);
 
-            // b2Vec2 J1 = -Jd1;
-            const J1 = Jd1.Clone().Negate();
-            // b2Vec2 J2 = Jd1 - Jd2;
-            const J2 = Jd1.Clone().Subtract(Jd2);
-            // b2Vec2 J3 = Jd2;
-            const J3 = Jd2.Clone();
+            b2Vec2.Negate(Jd1, J1);
+            b2Vec2.Subtract(Jd1, Jd2, J2);
+            const J3 = Jd2;
 
             c.invEffectiveMass =
                 c.invMass1 * b2Vec2.Dot(J1, J1) + c.invMass2 * b2Vec2.Dot(J2, J2) + c.invMass3 * b2Vec2.Dot(J3, J3);
 
-            // b2Vec2 r = p3 - p1;
-            const r: b2Vec2 = b2Vec2.Subtract(p3, p1, new b2Vec2());
+            b2Vec2.Subtract(p3, p1, r);
 
             const rr: number = r.LengthSquared();
             if (rr === 0.0) {
@@ -459,14 +475,14 @@ export class b2Rope {
     private SolveStretch_PBD(): void {
         const stiffness: number = this.m_tuning.stretchStiffness;
 
+        const { p1, p2, d } = temp;
         for (let i = 0; i < this.m_stretchCount; ++i) {
             const c: b2RopeStretch = this.m_stretchConstraints[i];
 
-            const p1: b2Vec2 = this.m_ps[c.i1].Clone();
-            const p2: b2Vec2 = this.m_ps[c.i2].Clone();
+            p1.Copy(this.m_ps[c.i1]);
+            p2.Copy(this.m_ps[c.i2]);
 
-            // b2Vec2 d = p2 - p1;
-            const d: b2Vec2 = p2.Clone().Subtract(p1);
+            b2Vec2.Subtract(p2, p1, d);
             const L: number = d.Normalize();
 
             const sum: number = c.invMass1 + c.invMass2;
@@ -492,22 +508,21 @@ export class b2Rope {
     private SolveStretch_XPBD(dt: number): void {
         // 	b2Assert(dt > 0.0);
 
+        const { p1, p2, dp1, dp2, u, J1 } = temp;
         for (let i = 0; i < this.m_stretchCount; ++i) {
             const c: b2RopeStretch = this.m_stretchConstraints[i];
 
-            const p1: b2Vec2 = this.m_ps[c.i1].Clone();
-            const p2: b2Vec2 = this.m_ps[c.i2].Clone();
+            p1.Copy(this.m_ps[c.i1]);
+            p2.Copy(this.m_ps[c.i2]);
 
-            const dp1: b2Vec2 = p1.Clone().Subtract(this.m_p0s[c.i1]);
-            const dp2: b2Vec2 = p2.Clone().Subtract(this.m_p0s[c.i2]);
+            b2Vec2.Subtract(p1, this.m_p0s[c.i1], dp1);
+            b2Vec2.Subtract(p2, this.m_p0s[c.i2], dp2);
 
             // b2Vec2 u = p2 - p1;
-            const u: b2Vec2 = p2.Clone().Subtract(p1);
+            b2Vec2.Subtract(p2, p1, u);
             const L: number = u.Normalize();
 
-            // b2Vec2 J1 = -u;
-            const J1: b2Vec2 = u.Clone().Negate();
-            // b2Vec2 J2 = u;
+            b2Vec2.Negate(u, J1);
             const J2: b2Vec2 = u;
 
             const sum: number = c.invMass1 + c.invMass2;
@@ -544,6 +559,7 @@ export class b2Rope {
     private SolveBend_PBD_Angle(): void {
         const stiffness: number = this.m_tuning.bendStiffness;
 
+        const { Jd1, Jd2, J1, J2, d1, d2 } = temp;
         for (let i = 0; i < this.m_bendCount; ++i) {
             const c: b2RopeBend = this.m_bendConstraints[i];
 
@@ -551,10 +567,9 @@ export class b2Rope {
             const p2: b2Vec2 = this.m_ps[c.i2];
             const p3: b2Vec2 = this.m_ps[c.i3];
 
-            // b2Vec2 d1 = p2 - p1;
-            const d1 = p2.Clone().Subtract(p1);
+            b2Vec2.Subtract(p2, p1, d1);
             // b2Vec2 d2 = p3 - p2;
-            const d2 = p3.Clone().Subtract(p2);
+            b2Vec2.Subtract(p3, p2, d2);
             const a: number = b2Vec2.Cross(d1, d2);
             const b: number = b2Vec2.Dot(d1, d2);
 
@@ -576,21 +591,16 @@ export class b2Rope {
             }
 
             // b2Vec2 Jd1 = (-1.0 / L1sqr) * d1.Skew();
-            const Jd1: b2Vec2 = new b2Vec2()
-                .Copy(d1)
+            Jd1.Copy(d1)
                 .Skew()
                 .Scale(-1.0 / L1sqr);
             // b2Vec2 Jd2 = (1.0 / L2sqr) * d2.Skew();
-            const Jd2: b2Vec2 = new b2Vec2()
-                .Copy(d2)
+            Jd2.Copy(d2)
                 .Skew()
                 .Scale(1.0 / L2sqr);
 
-            // b2Vec2 J1 = -Jd1;
-            const J1 = Jd1.Clone().Negate();
-            // b2Vec2 J2 = Jd1 - Jd2;
-            const J2 = Jd1.Clone().Subtract(Jd2);
-            // b2Vec2 J3 = Jd2;
+            b2Vec2.Negate(Jd1, J1);
+            b2Vec2.Subtract(Jd1, Jd2, J2);
             const J3 = Jd2;
 
             let sum = 0.0;
@@ -626,6 +636,7 @@ export class b2Rope {
     private SolveBend_XPBD_Angle(dt: number): void {
         // b2Assert(dt > 0.0);
 
+        const { dp1, dp2, dp3, d1, d2, Jd1, Jd2, J1, J2 } = temp;
         for (let i = 0; i < this.m_bendCount; ++i) {
             const c: b2RopeBend = this.m_bendConstraints[i];
 
@@ -633,14 +644,12 @@ export class b2Rope {
             const p2: b2Vec2 = this.m_ps[c.i2];
             const p3: b2Vec2 = this.m_ps[c.i3];
 
-            const dp1: b2Vec2 = p1.Clone().Subtract(this.m_p0s[c.i1]);
-            const dp2: b2Vec2 = p2.Clone().Subtract(this.m_p0s[c.i2]);
-            const dp3: b2Vec2 = p3.Clone().Subtract(this.m_p0s[c.i3]);
+            b2Vec2.Subtract(p1, this.m_p0s[c.i1], dp1);
+            b2Vec2.Subtract(p2, this.m_p0s[c.i2], dp2);
+            b2Vec2.Subtract(p3, this.m_p0s[c.i3], dp3);
 
-            // b2Vec2 d1 = p2 - p1;
-            const d1 = p2.Clone().Subtract(p1);
-            // b2Vec2 d2 = p3 - p2;
-            const d2 = p3.Clone().Subtract(p2);
+            b2Vec2.Subtract(p2, p1, d1);
+            b2Vec2.Subtract(p3, p2, d2);
 
             let L1sqr: number;
             let L2sqr: number;
@@ -670,21 +679,16 @@ export class b2Rope {
             // b2Vec2 J3 = Jd2;
 
             // b2Vec2 Jd1 = (-1.0 / L1sqr) * d1.Skew();
-            const Jd1: b2Vec2 = new b2Vec2()
-                .Copy(d1)
+            Jd1.Copy(d1)
                 .Skew()
                 .Scale(-1.0 / L1sqr);
             // b2Vec2 Jd2 = (1.0 / L2sqr) * d2.Skew();
-            const Jd2: b2Vec2 = new b2Vec2()
-                .Copy(d2)
+            Jd2.Copy(d2)
                 .Skew()
                 .Scale(1.0 / L2sqr);
 
-            // b2Vec2 J1 = -Jd1;
-            const J1 = Jd1.Clone().Negate();
-            // b2Vec2 J2 = Jd1 - Jd2;
-            const J2 = Jd1.Clone().Subtract(Jd2);
-            // b2Vec2 J3 = Jd2;
+            b2Vec2.Negate(Jd1, J1);
+            b2Vec2.Subtract(Jd1, Jd2, J2);
             const J3 = Jd2;
 
             let sum: number;
@@ -732,17 +736,17 @@ export class b2Rope {
     private SolveBend_PBD_Distance(): void {
         const stiffness: number = this.m_tuning.bendStiffness;
 
+        const { p1, p2, d } = temp;
         for (let i = 0; i < this.m_bendCount; ++i) {
             const c: b2RopeBend = this.m_bendConstraints[i];
 
             const { i1 } = c;
             const i2: number = c.i3;
 
-            const p1: b2Vec2 = this.m_ps[i1].Clone();
-            const p2: b2Vec2 = this.m_ps[i2].Clone();
+            p1.Copy(this.m_ps[i1]);
+            p2.Copy(this.m_ps[i2]);
 
-            // b2Vec2 d = p2 - p1;
-            const d = p2.Clone().Subtract(p1);
+            b2Vec2.Subtract(p2, p1, d);
             const L: number = d.Normalize();
 
             const sum: number = c.invMass1 + c.invMass3;
@@ -768,16 +772,15 @@ export class b2Rope {
     private SolveBend_PBD_Height(): void {
         const stiffness: number = this.m_tuning.bendStiffness;
 
+        const { dHat, J1, J2, J3, d } = temp;
         for (let i = 0; i < this.m_bendCount; ++i) {
             const c: b2RopeBend = this.m_bendConstraints[i];
 
-            const p1: b2Vec2 = this.m_ps[c.i1].Clone();
-            const p2: b2Vec2 = this.m_ps[c.i2].Clone();
-            const p3: b2Vec2 = this.m_ps[c.i3].Clone();
+            const p1 = this.m_ps[c.i1];
+            const p2 = this.m_ps[c.i2];
+            const p3 = this.m_ps[c.i3];
 
             // Barycentric coordinates are held constant
-            const d = new b2Vec2();
-            // b2Vec2 d = c.alpha1 * p1 + c.alpha2 * p3 - p2;
             d.x = c.alpha1 * p1.x + c.alpha2 * p3.x - p2.x;
             d.y = c.alpha1 * p1.y + c.alpha2 * p3.y - p2.y;
             const dLen: number = d.Length();
@@ -786,15 +789,11 @@ export class b2Rope {
                 continue;
             }
 
-            // b2Vec2 dHat = (1.0 / dLen) * d;
-            const dHat = d.Clone().Scale(1.0 / dLen);
+            b2Vec2.Scale(1.0 / dLen, d, dHat);
 
-            // b2Vec2 J1 = c.alpha1 * dHat;
-            const J1 = dHat.Clone().Scale(c.alpha1);
-            // b2Vec2 J2 = -dHat;
-            const J2 = dHat.Clone().Negate();
-            // b2Vec2 J3 = c.alpha2 * dHat;
-            const J3 = dHat.Clone().Scale(c.alpha2);
+            b2Vec2.Scale(c.alpha1, dHat, J1);
+            b2Vec2.Negate(dHat, J2);
+            b2Vec2.Scale(c.alpha2, dHat, J3);
 
             const sum: number = c.invMass1 * c.alpha1 * c.alpha1 + c.invMass2 + c.invMass3 * c.alpha2 * c.alpha2;
 
@@ -815,10 +814,6 @@ export class b2Rope {
             // p3 += (c.invMass3 * impulse) * J3;
             p3.x += c.invMass3 * impulse * J3.x;
             p3.y += c.invMass3 * impulse * J3.y;
-
-            this.m_ps[c.i1].Copy(p1);
-            this.m_ps[c.i2].Copy(p2);
-            this.m_ps[c.i3].Copy(p3);
         }
     }
 
@@ -826,21 +821,20 @@ export class b2Rope {
         // omega = 2 * pi * hz
         const omega: number = 2.0 * Math.PI * this.m_tuning.bendHertz;
 
+        const { d1, d2, Jd1, Jd2, J1, J2 } = temp;
         for (let i = 0; i < this.m_bendCount; ++i) {
             const c: b2RopeBend = this.m_bendConstraints[i];
 
-            const p1: b2Vec2 = this.m_ps[c.i1].Clone();
-            const p2: b2Vec2 = this.m_ps[c.i2].Clone();
-            const p3: b2Vec2 = this.m_ps[c.i3].Clone();
+            const p1 = this.m_ps[c.i1];
+            const p2 = this.m_ps[c.i2];
+            const p3 = this.m_ps[c.i3];
 
-            const v1: b2Vec2 = this.m_vs[c.i1];
-            const v2: b2Vec2 = this.m_vs[c.i2];
-            const v3: b2Vec2 = this.m_vs[c.i3];
+            const v1 = this.m_vs[c.i1];
+            const v2 = this.m_vs[c.i2];
+            const v3 = this.m_vs[c.i3];
 
-            // b2Vec2 d1 = p2 - p1;
-            const d1 = p1.Clone().Subtract(p1);
-            // b2Vec2 d2 = p3 - p2;
-            const d2 = p3.Clone().Subtract(p2);
+            b2Vec2.Subtract(p2, p1, d1);
+            b2Vec2.Subtract(p3, p2, d2);
 
             let L1sqr: number;
             let L2sqr: number;
@@ -869,22 +863,15 @@ export class b2Rope {
             // b2Vec2 J2 = Jd1 - Jd2;
             // b2Vec2 J3 = Jd2;
 
-            // b2Vec2 Jd1 = (-1.0 / L1sqr) * d1.Skew();
-            const Jd1: b2Vec2 = new b2Vec2()
-                .Copy(d1)
+            Jd1.Copy(d1)
                 .Skew()
                 .Scale(-1.0 / L1sqr);
-            // b2Vec2 Jd2 = (1.0 / L2sqr) * d2.Skew();
-            const Jd2: b2Vec2 = new b2Vec2()
-                .Copy(d2)
+            Jd2.Copy(d2)
                 .Skew()
                 .Scale(1.0 / L2sqr);
 
-            // b2Vec2 J1 = -Jd1;
-            const J1 = Jd1.Clone().Negate();
-            // b2Vec2 J2 = Jd1 - Jd2;
-            const J2 = Jd1.Clone().Subtract(Jd2);
-            // b2Vec2 J3 = Jd2;
+            b2Vec2.Negate(Jd1, J1);
+            b2Vec2.Subtract(Jd1, Jd2, J2);
             const J3 = Jd2;
 
             let sum = 0.0;

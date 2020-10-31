@@ -235,9 +235,11 @@ export class CharacterCollision extends Test {
     }
 
     public Step(settings: Settings, timeStep: number): void {
-        const v = this.m_character.GetLinearVelocity().Clone();
-        v.x = -5.0;
-        this.m_character.SetLinearVelocity(v);
+        const v = this.m_character.GetLinearVelocity();
+        this.m_character.SetLinearVelocity({
+            x: -5,
+            y: v.y,
+        });
 
         super.Step(settings, timeStep);
         this.addText("This tests various character collision shapes");

@@ -21,6 +21,10 @@ import { b2Vec2, b2TimeStep, b2_epsilon } from "@box2d/core";
 import { b2Controller, b2ControllerEdge } from "./b2_controller";
 import { b2SubmergedAreaForShape } from "./b2_submerged_area";
 
+const temp = {
+    buoyancyForce: new b2Vec2(),
+};
+
 /**
  * Calculates buoyancy forces for fluids in the form of a half
  * plane.
@@ -79,6 +83,7 @@ export class b2BuoyancyController extends b2Controller {
         if (this.useWorldGravity) {
             this.gravity.Copy(this.m_bodyList.body.GetWorld().GetGravity());
         }
+        const { buoyancyForce } = temp;
         for (let i: b2ControllerEdge | null = this.m_bodyList; i; i = i.nextBody) {
             const { body } = i;
             if (!body.IsAwake()) {
@@ -122,7 +127,7 @@ export class b2BuoyancyController extends b2Controller {
                 continue;
             }
             // Buoyancy
-            const buoyancyForce = this.gravity.Clone().Negate();
+            b2Vec2.Negate(this.gravity, buoyancyForce);
             buoyancyForce.Scale(this.density * area);
             body.ApplyForce(buoyancyForce, massc);
             // Linear drag
