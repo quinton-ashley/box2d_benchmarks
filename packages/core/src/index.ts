@@ -77,7 +77,6 @@ export * from "./dynamics/b2_mouse_joint";
 export * from "./dynamics/b2_prismatic_joint";
 export * from "./dynamics/b2_pulley_joint";
 export * from "./dynamics/b2_revolute_joint";
-export * from "./dynamics/b2_rope_joint";
 export * from "./dynamics/b2_weld_joint";
 export * from "./dynamics/b2_wheel_joint";
 

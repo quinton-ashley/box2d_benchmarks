@@ -56,7 +56,6 @@ import { Pulleys } from "./pulleys";
 import { Pyramid } from "./pyramid";
 import { RayCast } from "./ray_cast";
 import { Revolute } from "./revolute";
-import { RopeJoint } from "./rope_joint";
 import { SensorTest } from "./sensor_test";
 import { ShapeCast } from "./shape_cast";
 import { ShapeEditing } from "./shape_editing";
@@ -128,7 +127,6 @@ export const coreTests: TestEntry[] = [
     ["Ray-Cast", RayCast],
     ["Revolute", Revolute],
     ["Rope", Rope],
-    ["RopeJoint", RopeJoint],
     ["Sensor Test", SensorTest],
     ["Shape Cast", ShapeCast],
     ["Shape Editing", ShapeEditing],

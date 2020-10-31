@@ -33,7 +33,6 @@ export enum b2JointType {
     e_wheelJoint,
     e_weldJoint,
     e_frictionJoint,
-    e_ropeJoint,
     e_motorJoint,
     e_areaJoint,
 }

@@ -34,7 +34,6 @@ import { b2MouseJoint, b2IMouseJointDef } from "./b2_mouse_joint";
 import { b2PrismaticJoint, b2IPrismaticJointDef } from "./b2_prismatic_joint";
 import { b2PulleyJoint, b2IPulleyJointDef } from "./b2_pulley_joint";
 import { b2RevoluteJoint, b2IRevoluteJointDef } from "./b2_revolute_joint";
-import { b2RopeJoint, b2IRopeJointDef } from "./b2_rope_joint";
 import { b2WeldJoint, b2IWeldJointDef } from "./b2_weld_joint";
 import { b2WheelJoint, b2IWheelJointDef } from "./b2_wheel_joint";
 import { b2Body, b2BodyDef, b2BodyType } from "./b2_body";
@@ -228,8 +227,6 @@ export class b2World {
                 return new b2WeldJoint(def as b2IWeldJointDef);
             case b2JointType.e_frictionJoint:
                 return new b2FrictionJoint(def as b2IFrictionJointDef);
-            case b2JointType.e_ropeJoint:
-                return new b2RopeJoint(def as b2IRopeJointDef);
             case b2JointType.e_motorJoint:
                 return new b2MotorJoint(def as b2IMotorJointDef);
             case b2JointType.e_areaJoint:
@@ -258,8 +255,6 @@ export class b2World {
     public CreateJoint(def: b2IPulleyJointDef): b2PulleyJoint;
 
     public CreateJoint(def: b2IRevoluteJointDef): b2RevoluteJoint;
-
-    public CreateJoint(def: b2IRopeJointDef): b2RopeJoint;
 
     public CreateJoint(def: b2IWeldJointDef): b2WeldJoint;
 
