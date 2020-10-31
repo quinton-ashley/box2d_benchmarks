@@ -116,5 +116,7 @@ export const b2_version = {
 };
 
 export function b2MakeNumberArray(length: number, init = 0): number[] {
-    return Array.from({ length }, () => init);
+    const result = new Array<number>(length);
+    for (let i = 0; i < length; i++) result[i] = init;
+    return result;
 }

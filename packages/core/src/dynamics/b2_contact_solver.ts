@@ -57,7 +57,9 @@ export class b2VelocityConstraintPoint {
     public velocityBias = 0;
 
     public static MakeArray(length: number): b2VelocityConstraintPoint[] {
-        return Array.from({ length }, () => new b2VelocityConstraintPoint());
+        const result = new Array<b2VelocityConstraintPoint>(length);
+        for (let i = 0; i < length; i++) result[i] = new b2VelocityConstraintPoint();
+        return result;
     }
 }
 
@@ -97,7 +99,9 @@ export class b2ContactVelocityConstraint {
     public contactIndex = 0;
 
     public static MakeArray(length: number): b2ContactVelocityConstraint[] {
-        return Array.from({ length }, () => new b2ContactVelocityConstraint());
+        const result = new Array<b2ContactVelocityConstraint>(length);
+        for (let i = 0; i < length; i++) result[i] = new b2ContactVelocityConstraint();
+        return result;
     }
 }
 
@@ -133,7 +137,9 @@ export class b2ContactPositionConstraint {
     public pointCount = 0;
 
     public static MakeArray(length: number): b2ContactPositionConstraint[] {
-        return Array.from({ length }, () => new b2ContactPositionConstraint());
+        const result = new Array<b2ContactPositionConstraint>(length);
+        for (let i = 0; i < length; i++) result[i] = new b2ContactPositionConstraint();
+        return result;
     }
 }
 

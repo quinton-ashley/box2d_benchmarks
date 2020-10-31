@@ -1,6 +1,6 @@
 import { Light, DebugDrawPolygon } from "./Light";
 import type { RayHandler } from "../RayHandler";
-import { DEG_TO_RAD, Spinor, Rectangle, Matrix3, Vector2, XY } from "../math";
+import { DEG_TO_RAD, Spinor, Rectangle, Matrix3, Vector2, XY, makeNumberArray } from "../math";
 import { RGBA } from "../utils";
 import { lightSettings } from "../settings";
 
@@ -110,10 +110,10 @@ export class ChainLight extends Light {
         this.rayStartOffset = ChainLight.defaultRayStartOffset;
         this.rayDirection = rayDirection;
         this.vertexNum = (this.vertexNum - 1) * 2;
-        this.endX = Array.from({ length: rays }, () => 0);
-        this.endY = Array.from({ length: rays }, () => 0);
-        this.startX = Array.from({ length: rays }, () => 0);
-        this.startY = Array.from({ length: rays }, () => 0);
+        this.endX = makeNumberArray(rays);
+        this.endY = makeNumberArray(rays);
+        this.startX = makeNumberArray(rays);
+        this.startY = makeNumberArray(rays);
         this.chain = chain ? chain.slice() : [];
 
         this.setMesh();

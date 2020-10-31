@@ -1181,10 +1181,8 @@ export class b2ParticleSystem {
         this.UpdateContacts(true);
         const particleCount = group.GetParticleCount();
         // We create several linked lists. Each list represents a set of connected particles.
-        const nodeBuffer: b2ParticleSystem_ParticleListNode[] = Array.from(
-            { length: particleCount },
-            () => new b2ParticleSystem_ParticleListNode(),
-        );
+        const nodeBuffer = new Array<b2ParticleSystem_ParticleListNode>(particleCount);
+        for (let i = 0; i < particleCount; i++) nodeBuffer[i] = new b2ParticleSystem_ParticleListNode();
         b2ParticleSystem.InitializeParticleLists(group, nodeBuffer);
         this.MergeParticleListsInContact(group, nodeBuffer);
         const survivingList = b2ParticleSystem.FindLongestParticleList(group, nodeBuffer);

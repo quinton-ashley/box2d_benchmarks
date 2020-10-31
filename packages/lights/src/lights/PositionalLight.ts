@@ -1,7 +1,7 @@
 import { Light, DebugDrawPolygon } from "./Light";
 import type { RayHandler } from "../RayHandler";
 import { RGBA } from "../utils";
-import { XY, RAD_TO_DEG, Vector2 } from "../math";
+import { XY, RAD_TO_DEG, Vector2, makeNumberArray } from "../math";
 
 /**
  * Abstract base class for all positional lights
@@ -181,10 +181,10 @@ export abstract class PositionalLight extends Light {
     protected setRayNum(rays: number, updateMesh = true) {
         super.setRayNum(rays, updateMesh);
 
-        this.sin = Array.from({ length: rays }, () => 0);
-        this.cos = Array.from({ length: rays }, () => 0);
-        this.endX = Array.from({ length: rays }, () => 0);
-        this.endY = Array.from({ length: rays }, () => 0);
+        this.sin = makeNumberArray(rays);
+        this.cos = makeNumberArray(rays);
+        this.endX = makeNumberArray(rays);
+        this.endY = makeNumberArray(rays);
     }
 
     protected cull() {

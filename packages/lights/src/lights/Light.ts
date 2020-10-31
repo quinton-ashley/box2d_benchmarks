@@ -1,7 +1,7 @@
 import type { RayHandler } from "../RayHandler";
 import { LightMesh } from "../LightMesh";
 import { LightColor, RGBA } from "../utils";
-import { XY, Vector2 } from "../math";
+import { XY, Vector2, makeNumberArray } from "../math";
 import { lightSettings } from "../settings";
 
 export type DebugDrawPolygon = (vertices: XY[], vertexCount: number, color: RGBA) => void;
@@ -426,9 +426,9 @@ export abstract class Light {
             this.lightMesh.setVertexNum(this.vertexNum);
             this.softShadowMesh?.setVertexNum(this.getSoftShadowVertexCount());
         }
-        this.mx = Array.from({ length: this.vertexNum }, () => 0);
-        this.my = Array.from({ length: this.vertexNum }, () => 0);
-        this.f = Array.from({ length: this.vertexNum }, () => 0);
+        this.mx = makeNumberArray(this.vertexNum);
+        this.my = makeNumberArray(this.vertexNum);
+        this.f = makeNumberArray(this.vertexNum);
     }
 
     /**

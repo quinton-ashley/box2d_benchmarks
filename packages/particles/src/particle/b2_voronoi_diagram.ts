@@ -37,7 +37,8 @@ export class b2VoronoiDiagram {
     public m_diagram: b2VoronoiDiagram_Generator[] = [];
 
     constructor(generatorCapacity: number) {
-        this.m_generatorBuffer = Array.from({ length: generatorCapacity }, () => new b2VoronoiDiagram_Generator());
+        this.m_generatorBuffer = new Array<b2VoronoiDiagram_Generator>(generatorCapacity);
+        for (let i = 0; i < generatorCapacity; i++) this.m_generatorBuffer[i] = new b2VoronoiDiagram_Generator();
         this.m_generatorCapacity = generatorCapacity;
     }
 

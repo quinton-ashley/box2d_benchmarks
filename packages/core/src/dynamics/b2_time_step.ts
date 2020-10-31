@@ -94,7 +94,9 @@ export class b2Position {
     public a = 0;
 
     public static MakeArray(length: number): b2Position[] {
-        return Array.from({ length }, () => new b2Position());
+        const result = new Array<b2Position>(length);
+        for (let i = 0; i < length; i++) result[i] = new b2Position();
+        return result;
     }
 }
 
@@ -105,7 +107,9 @@ export class b2Velocity {
     public w = 0;
 
     public static MakeArray(length: number): b2Velocity[] {
-        return Array.from({ length }, () => new b2Velocity());
+        const result = new Array<b2Velocity>(length);
+        for (let i = 0; i < length; i++) result[i] = new b2Velocity();
+        return result;
     }
 }
 

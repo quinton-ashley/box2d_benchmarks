@@ -142,7 +142,9 @@ export class b2ManifoldPoint {
     public readonly id: b2ContactID = new b2ContactID(); /// < uniquely identifies a contact point between two shapes
 
     public static MakeArray(length: number): b2ManifoldPoint[] {
-        return Array.from({ length }, () => new b2ManifoldPoint());
+        const result = new Array<b2ManifoldPoint>(length);
+        for (let i = 0; i < length; i++) result[i] = new b2ManifoldPoint();
+        return result;
     }
 
     public Reset(): void {
@@ -399,7 +401,9 @@ export class b2ClipVertex {
     public readonly id: b2ContactID = new b2ContactID();
 
     public static MakeArray(length: number): b2ClipVertex[] {
-        return Array.from({ length }, () => new b2ClipVertex());
+        const result = new Array<b2ClipVertex>(length);
+        for (let i = 0; i < length; i++) result[i] = new b2ClipVertex();
+        return result;
     }
 
     public Copy(other: b2ClipVertex): b2ClipVertex {

@@ -247,7 +247,9 @@ export class b2Vec2 implements XY {
     }
 
     public static MakeArray(length: number) {
-        return Array.from({ length }, () => new b2Vec2());
+        const result = new Array<b2Vec2>(length);
+        for (let i = 0; i < length; i++) result[i] = new b2Vec2();
+        return result;
     }
 
     public static Min<T extends XY>(a: XY, b: XY, out: T) {
