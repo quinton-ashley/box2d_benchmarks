@@ -59,7 +59,7 @@ export class ParticlesSurfaceTension extends Test {
             const pd = new b2ParticleGroupDef();
             pd.flags = b2ParticleFlag.b2_tensileParticle | b2ParticleFlag.b2_colorMixingParticle;
             pd.shape = shape;
-            pd.color.Set(1, 0, 0, 1);
+            pd.color.SetRGBA(1, 0, 0, 1);
             this.m_particleSystem.CreateParticleGroup(pd);
         }
 
@@ -70,7 +70,7 @@ export class ParticlesSurfaceTension extends Test {
             const pd = new b2ParticleGroupDef();
             pd.flags = b2ParticleFlag.b2_tensileParticle | b2ParticleFlag.b2_colorMixingParticle;
             pd.shape = shape;
-            pd.color.Set(0, 1, 0, 1);
+            pd.color.SetRGBA(0, 1, 0, 1);
             this.m_particleSystem.CreateParticleGroup(pd);
         }
 
@@ -81,7 +81,7 @@ export class ParticlesSurfaceTension extends Test {
             const pd = new b2ParticleGroupDef();
             pd.flags = b2ParticleFlag.b2_tensileParticle | b2ParticleFlag.b2_colorMixingParticle;
             pd.shape = shape;
-            pd.color.Set(0, 0, 1, 1);
+            pd.color.SetRGBA(0, 0, 1, 1);
             this.m_particleSystem.CreateParticleGroup(pd);
         }
 

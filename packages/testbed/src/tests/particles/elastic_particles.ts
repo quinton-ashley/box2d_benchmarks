@@ -59,7 +59,7 @@ export class ElasticParticles extends Test {
             pd.flags = b2ParticleFlag.b2_springParticle;
             pd.groupFlags = b2ParticleGroupFlag.b2_solidParticleGroup;
             pd.shape = shape;
-            pd.color.Set(1, 0, 0, 1);
+            pd.color.SetRGBA(1, 0, 0, 1);
             this.m_particleSystem.CreateParticleGroup(pd);
         }
 
@@ -71,7 +71,7 @@ export class ElasticParticles extends Test {
             pd.flags = b2ParticleFlag.b2_elasticParticle;
             pd.groupFlags = b2ParticleGroupFlag.b2_solidParticleGroup;
             pd.shape = shape;
-            pd.color.Set(0, 1, 0, 1);
+            pd.color.SetRGBA(0, 1, 0, 1);
             this.m_particleSystem.CreateParticleGroup(pd);
         }
 
@@ -85,7 +85,7 @@ export class ElasticParticles extends Test {
             pd.angle = -0.5;
             pd.angularVelocity = 2.0;
             pd.shape = shape;
-            pd.color.Set(0, 0, 1, 1);
+            pd.color.SetRGBA(0, 0, 1, 1);
             this.m_particleSystem.CreateParticleGroup(pd);
         }
 

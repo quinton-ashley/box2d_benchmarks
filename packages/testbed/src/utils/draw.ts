@@ -16,9 +16,11 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import { b2Vec2, b2Draw, b2Transform, b2Color, b2AABB, RGBA, XY } from "@box2d/core";
+import { b2Vec2, b2Draw, b2Transform, b2Color, b2AABB, RGBA, XY, b2Clamp } from "@box2d/core";
 
 import { g_camera } from "./camera";
+
+const COLOR_STRING_WORLD = new b2Color(0.5, 0.9, 0.5);
 
 // This class implements debug drawing callbacks that are invoked
 // inside b2World::Step.
@@ -50,7 +52,7 @@ export class DebugDraw implements b2Draw {
                 ctx.lineTo(vertices[i].x, vertices[i].y);
             }
             ctx.closePath();
-            ctx.strokeStyle = b2Color.MakeStyleString(color.r, color.g, color.b, 1);
+            ctx.strokeStyle = DebugDraw.MakeStyleString(color, 1);
             ctx.stroke();
         }
     }
@@ -64,9 +66,9 @@ export class DebugDraw implements b2Draw {
                 ctx.lineTo(vertices[i].x, vertices[i].y);
             }
             ctx.closePath();
-            ctx.fillStyle = b2Color.MakeStyleString(color.r, color.g, color.b, 0.5);
+            ctx.fillStyle = DebugDraw.MakeStyleString(color, 0.5);
             ctx.fill();
-            ctx.strokeStyle = b2Color.MakeStyleString(color.r, color.g, color.b, 1);
+            ctx.strokeStyle = DebugDraw.MakeStyleString(color, 1);
             ctx.stroke();
         }
     }
@@ -76,7 +78,7 @@ export class DebugDraw implements b2Draw {
         if (ctx) {
             ctx.beginPath();
             ctx.arc(center.x, center.y, radius, 0, Math.PI * 2, true);
-            ctx.strokeStyle = b2Color.MakeStyleString(color.r, color.g, color.b, 1);
+            ctx.strokeStyle = DebugDraw.MakeStyleString(color, 1);
             ctx.stroke();
         }
     }
@@ -90,9 +92,9 @@ export class DebugDraw implements b2Draw {
             ctx.arc(cx, cy, radius, 0, Math.PI * 2, true);
             ctx.moveTo(cx, cy);
             ctx.lineTo(cx + axis.x * radius, cy + axis.y * radius);
-            ctx.fillStyle = b2Color.MakeStyleString(color.r, color.g, color.b, 0.5);
+            ctx.fillStyle = DebugDraw.MakeStyleString(color, 0.5);
             ctx.fill();
-            ctx.strokeStyle = b2Color.MakeStyleString(color.r, color.g, color.b, 1);
+            ctx.strokeStyle = DebugDraw.MakeStyleString(color, 1);
             ctx.stroke();
         }
     }
@@ -104,7 +106,7 @@ export class DebugDraw implements b2Draw {
                 for (let i = 0; i < count; ++i) {
                     const center = centers[i];
                     const color = colors[i];
-                    ctx.fillStyle = b2Color.MakeStyleString(color.r, color.g, color.b);
+                    ctx.fillStyle = DebugDraw.MakeStyleString(color);
                     // ctx.fillRect(center.x - radius, center.y - radius, 2 * radius, 2 * radius);
                     ctx.beginPath();
                     ctx.arc(center.x, center.y, radius, 0, Math.PI * 2, true);
@@ -131,7 +133,7 @@ export class DebugDraw implements b2Draw {
             ctx.beginPath();
             ctx.moveTo(p1.x, p1.y);
             ctx.lineTo(p2.x, p2.y);
-            ctx.strokeStyle = b2Color.MakeStyleString(color.r, color.g, color.b, 1);
+            ctx.strokeStyle = DebugDraw.MakeStyleString(color, 1);
             ctx.stroke();
         }
     }
@@ -144,13 +146,13 @@ export class DebugDraw implements b2Draw {
             ctx.beginPath();
             ctx.moveTo(0, 0);
             ctx.lineTo(1, 0);
-            ctx.strokeStyle = b2Color.RED.MakeStyleString(1);
+            ctx.strokeStyle = DebugDraw.MakeStyleString(b2Color.RED);
             ctx.stroke();
 
             ctx.beginPath();
             ctx.moveTo(0, 0);
             ctx.lineTo(0, 1);
-            ctx.strokeStyle = b2Color.GREEN.MakeStyleString(1);
+            ctx.strokeStyle = DebugDraw.MakeStyleString(b2Color.GREEN);
             ctx.stroke();
 
             this.PopTransform(xf);
@@ -160,7 +162,7 @@ export class DebugDraw implements b2Draw {
     public DrawPoint(p: XY, size: number, color: RGBA): void {
         const ctx: CanvasRenderingContext2D | null = this.m_ctx;
         if (ctx) {
-            ctx.fillStyle = b2Color.MakeStyleString(color.r, color.g, color.b);
+            ctx.fillStyle = DebugDraw.MakeStyleString(color);
             size /= g_camera.getZoom();
             const hsize: number = size / 2;
             ctx.fillRect(p.x - hsize, p.y - hsize, size, size);
@@ -172,11 +174,11 @@ export class DebugDraw implements b2Draw {
         if (ctx) {
             ctx.font = "16px Open Sans";
             ctx.textAlign = align;
-            ctx.fillStyle = b2Color.MakeStyleString(1, 1, 1);
+            ctx.fillStyle = DebugDraw.MakeStyleString(b2Color.WHITE);
             // ctx.shadowOffsetX = 3;
             // ctx.shadowOffsetY = 3;
             // ctx.shadowBlur = 2;
-            // ctx.shadowColor = b2Color.MakeStyleString(0, 0, 0);
+            // ctx.shadowColor = DebugDraw.MakeStyleString(b2Color.BLACK);
             ctx.fillText(message, x, y);
         }
     }
@@ -201,7 +203,7 @@ export class DebugDraw implements b2Draw {
             ctx.save();
             ctx.setTransform(1, 0, 0, 1, 0, 0);
             ctx.font = "15px DroidSans";
-            ctx.fillStyle = b2Color.MakeStyleString(0.5, 0.9, 0.5);
+            ctx.fillStyle = DebugDraw.MakeStyleString(COLOR_STRING_WORLD);
             ctx.fillText(message, p.x, p.y);
             ctx.restore();
         }
@@ -210,13 +212,25 @@ export class DebugDraw implements b2Draw {
     public DrawAABB(aabb: b2AABB, color: RGBA): void {
         const ctx: CanvasRenderingContext2D | null = this.m_ctx;
         if (ctx) {
-            ctx.strokeStyle = b2Color.MakeStyleString(color.r, color.g, color.b);
+            ctx.strokeStyle = DebugDraw.MakeStyleString(color);
             const { x } = aabb.lowerBound;
             const { y } = aabb.lowerBound;
             const w: number = aabb.upperBound.x - aabb.lowerBound.x;
             const h: number = aabb.upperBound.y - aabb.lowerBound.y;
             ctx.strokeRect(x, y, w, h);
         }
+    }
+
+    public static MakeStyleString(color: RGBA, a = color.a): string {
+        let { r, g, b } = color;
+        r = b2Clamp(r * 255, 0, 255);
+        g = b2Clamp(g * 255, 0, 255);
+        b = b2Clamp(b * 255, 0, 255);
+        if (a < 1) {
+            a = b2Clamp(a, 0, 1);
+            return `rgba(${r},${g},${b},${a})`;
+        }
+        return `rgb(${r},${g},${b})`;
     }
 }
 

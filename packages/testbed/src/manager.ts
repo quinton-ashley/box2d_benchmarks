@@ -3,7 +3,7 @@ import { createContext, useContext } from "react";
 import { Signal } from "typed-signals";
 
 import { g_camera } from "./utils/camera";
-import { g_debugDraw } from "./utils/draw";
+import { DebugDraw, g_debugDraw } from "./utils/draw";
 import { hotKeyPress, HotKey, HotKeyMod } from "./utils/hotkeys";
 import { PreloadedTextures, preloadTextures } from "./utils/gl/preload";
 import { createDefaultShader } from "./utils/gl/defaultShader";
@@ -343,7 +343,7 @@ export class TestManager {
         ctx.save();
         ctx.translate(0, g_camera.getHeight());
         ctx.scale(1, -1);
-        ctx.fillStyle = b2Color.GREEN.MakeStyleString();
+        ctx.fillStyle = DebugDraw.MakeStyleString(b2Color.GREEN);
         let x = 5;
         for (const frameTime of this.m_fpsCalculator.getFrames()) {
             ctx.fillRect(x, 5, 1, frameTime);

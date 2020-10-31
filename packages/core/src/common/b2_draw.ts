@@ -38,6 +38,10 @@ export class b2Color implements RGBA {
 
     public static readonly BLUE: Readonly<b2Color> = new b2Color(0, 0, 1);
 
+    public static readonly WHITE: Readonly<b2Color> = new b2Color(1, 1, 1);
+
+    public static readonly BLACK: Readonly<b2Color> = new b2Color(0, 0, 0);
+
     public r: number;
 
     public g: number;
@@ -46,11 +50,11 @@ export class b2Color implements RGBA {
 
     public a: number;
 
-    constructor(rr = 0.5, gg = 0.5, bb = 0.5, aa = 1.0) {
-        this.r = rr;
-        this.g = gg;
-        this.b = bb;
-        this.a = aa;
+    constructor(r = 0.5, g = 0.5, b = 0.5, a = 1.0) {
+        this.r = r;
+        this.g = g;
+        this.b = b;
+        this.a = a;
     }
 
     public Clone(): b2Color {
@@ -73,10 +77,6 @@ export class b2Color implements RGBA {
         return this.r === 0 && this.g === 0 && this.b === 0 && this.a === 0;
     }
 
-    public Set(r: number, g: number, b: number, a: number = this.a): void {
-        this.SetRGBA(r, g, b, a);
-    }
-
     public SetByteRGB(r: number, g: number, b: number) {
         this.r = r / 0xff;
         this.g = g / 0xff;
@@ -92,18 +92,18 @@ export class b2Color implements RGBA {
         return this;
     }
 
-    public SetRGB(rr: number, gg: number, bb: number) {
-        this.r = rr;
-        this.g = gg;
-        this.b = bb;
+    public SetRGB(r: number, g: number, b: number) {
+        this.r = r;
+        this.g = g;
+        this.b = b;
         return this;
     }
 
-    public SetRGBA(rr: number, gg: number, bb: number, aa: number) {
-        this.r = rr;
-        this.g = gg;
-        this.b = bb;
-        this.a = aa;
+    public SetRGBA(r: number, g: number, b: number, a: number) {
+        this.r = r;
+        this.g = g;
+        this.b = b;
+        this.a = a;
         return this;
     }
 
@@ -133,10 +133,6 @@ export class b2Color implements RGBA {
 
     public Mix(mixColor: RGBA, strength: number): void {
         b2Color.MixColors(this, mixColor, strength);
-    }
-
-    public MakeStyleString(alpha: number = this.a): string {
-        return b2Color.MakeStyleString(this.r, this.g, this.b, alpha);
     }
 
     public static Add<T extends RGBA>(colorA: RGBA, colorB: RGBA, out: T): T {
@@ -176,18 +172,6 @@ export class b2Color implements RGBA {
         colorB.g -= dg;
         colorB.b -= db;
         colorB.a -= da;
-    }
-
-    public static MakeStyleString(r: number, g: number, b: number, a = 1.0): string {
-        // function clamp(x: number, lo: number, hi: number) { return x < lo ? lo : hi < x ? hi : x; }
-        r *= 255; // r = clamp(r, 0, 255);
-        g *= 255; // g = clamp(g, 0, 255);
-        b *= 255; // b = clamp(b, 0, 255);
-        // a = clamp(a, 0, 1);
-        if (a < 1) {
-            return `rgba(${r},${g},${b},${a})`;
-        }
-        return `rgb(${r},${g},${b})`;
     }
 }
 
