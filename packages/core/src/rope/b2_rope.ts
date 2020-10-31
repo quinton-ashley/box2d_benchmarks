@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+import { b2MakeNumberArray } from "../common/b2_common";
 import { b2Vec2 } from "../common/b2_math";
 
 const temp = {
@@ -43,12 +44,6 @@ const temp = {
     d2: new b2Vec2(),
     dHat: new b2Vec2(),
 };
-
-function make_array<T>(array: T[], count: number, make: (index: number) => T): void {
-    for (let index = 0; index < count; ++index) {
-        array[index] = make(index);
-    }
-}
 
 export enum b2StretchingModel {
     b2_pbdStretchingModel,
@@ -185,46 +180,33 @@ export class b2Rope {
 
     private m_bendCount = 0;
 
-    // b2RopeStretch* m_stretchConstraints;
-    private readonly m_stretchConstraints: b2RopeStretch[] = [];
+    private readonly m_stretchConstraints: b2RopeStretch[];
 
-    // b2RopeBend* m_bendConstraints;
-    private readonly m_bendConstraints: b2RopeBend[] = [];
+    private readonly m_bendConstraints: b2RopeBend[];
 
-    // b2Vec2* m_bindPositions;
-    private readonly m_bindPositions: b2Vec2[] = [];
+    private readonly m_bindPositions: b2Vec2[];
 
-    // b2Vec2* m_ps;
-    private readonly m_ps: b2Vec2[] = [];
+    private readonly m_ps: b2Vec2[];
 
-    // b2Vec2* m_p0s;
-    private readonly m_p0s: b2Vec2[] = [];
+    private readonly m_p0s: b2Vec2[];
 
-    // b2Vec2* m_vs;
-    private readonly m_vs: b2Vec2[] = [];
+    private readonly m_vs: b2Vec2[];
 
-    // float* m_invMasses;
     private readonly m_invMasses: number[] = [];
 
-    // b2Vec2 m_gravity;
     private readonly m_gravity: b2Vec2 = new b2Vec2();
 
     private readonly m_tuning: b2RopeTuning = new b2RopeTuning();
 
-    public Create(def: b2RopeDef): void {
+    public constructor(def: b2RopeDef) {
         // b2Assert(def.count >= 3);
         this.m_position.Copy(def.position);
         this.m_count = def.count;
-        // this.m_bindPositions = (b2Vec2*)b2Alloc(this.m_count * sizeof(b2Vec2));
-        make_array(this.m_bindPositions, this.m_count, () => new b2Vec2());
-        // this.m_ps = (b2Vec2*)b2Alloc(this.m_count * sizeof(b2Vec2));
-        make_array(this.m_ps, this.m_count, () => new b2Vec2());
-        // this.m_p0s = (b2Vec2*)b2Alloc(this.m_count * sizeof(b2Vec2));
-        make_array(this.m_p0s, this.m_count, () => new b2Vec2());
-        // this.m_vs = (b2Vec2*)b2Alloc(this.m_count * sizeof(b2Vec2));
-        make_array(this.m_vs, this.m_count, () => new b2Vec2());
-        // this.m_invMasses = (float*)b2Alloc(this.m_count * sizeof(float));
-        make_array(this.m_invMasses, this.m_count, () => 0.0);
+        this.m_bindPositions = b2Vec2.MakeArray(this.m_count);
+        this.m_ps = b2Vec2.MakeArray(this.m_count);
+        this.m_p0s = b2Vec2.MakeArray(this.m_count);
+        this.m_vs = b2Vec2.MakeArray(this.m_count);
+        this.m_invMasses = b2MakeNumberArray(this.m_count);
 
         for (let i = 0; i < this.m_count; ++i) {
             this.m_bindPositions[i].Copy(def.vertices[i]);
@@ -245,10 +227,10 @@ export class b2Rope {
         this.m_stretchCount = this.m_count - 1;
         this.m_bendCount = this.m_count - 2;
 
-        // this.m_stretchConstraints = (b2RopeStretch*)b2Alloc(this.m_stretchCount * sizeof(b2RopeStretch));
-        make_array(this.m_stretchConstraints, this.m_stretchCount, () => new b2RopeStretch());
-        // this.m_bendConstraints = (b2RopeBend*)b2Alloc(this.m_bendCount * sizeof(b2RopeBend));
-        make_array(this.m_bendConstraints, this.m_bendCount, () => new b2RopeBend());
+        this.m_stretchConstraints = new Array(this.m_stretchCount);
+        for(let i=0; i< this.m_stretchCount; i++) this.m_stretchConstraints[i] = new b2RopeStretch();
+        this.m_bendConstraints = new Array(this.m_bendCount);
+        for(let i=0; i< this.m_bendCount; i++) this.m_bendConstraints[i] = new b2RopeBend();
 
         for (let i = 0; i < this.m_stretchCount; ++i) {
             const c: b2RopeStretch = this.m_stretchConstraints[i];

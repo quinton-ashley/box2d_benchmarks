@@ -39,9 +39,9 @@ import { hotKey, HotKey } from "../../utils/hotkeys";
 
 ///
 export class Rope extends Test {
-    public readonly m_rope1: b2Rope = new b2Rope();
+    public readonly m_rope1: b2Rope;
 
-    public readonly m_rope2: b2Rope = new b2Rope();
+    public readonly m_rope2: b2Rope;
 
     public readonly m_tuning1: b2RopeTuning = new b2RopeTuning();
 
@@ -108,11 +108,11 @@ export class Rope extends Test {
 
         def.position.Copy(this.m_position1);
         def.tuning.Copy(this.m_tuning1);
-        this.m_rope1.Create(def);
+        this.m_rope1 = new b2Rope(def);
 
         def.position.Copy(this.m_position2);
         def.tuning.Copy(this.m_tuning2);
-        this.m_rope2.Create(def);
+        this.m_rope2 = new b2Rope(def);
 
         this.m_iterations1 = 8;
         this.m_iterations2 = 8;
