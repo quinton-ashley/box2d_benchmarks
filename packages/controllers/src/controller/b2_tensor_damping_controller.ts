@@ -58,12 +58,12 @@ export class b2TensorDampingController extends b2Controller {
                 continue;
             }
             body.GetWorldVector(
-                b2Mat22.MulMV(this.T, body.GetLocalVector(body.GetLinearVelocity(), b2Vec2.s_t0), b2Vec2.s_t1),
+                b2Mat22.MultiplyVec2(this.T, body.GetLocalVector(body.GetLinearVelocity(), b2Vec2.s_t0), b2Vec2.s_t1),
                 tempDamping,
             );
             //    body->SetLinearVelocity(body->GetLinearVelocity() + timestep * damping);
             body.SetLinearVelocity(
-                b2Vec2.AddVV(body.GetLinearVelocity(), b2Vec2.MulSV(timestep, tempDamping, b2Vec2.s_t0), b2Vec2.s_t1),
+                b2Vec2.Add(body.GetLinearVelocity(), b2Vec2.Scale(timestep, tempDamping, b2Vec2.s_t0), b2Vec2.s_t1),
             );
         }
     }

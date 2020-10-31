@@ -71,8 +71,8 @@ export class b2VoronoiDiagram {
         for (let k = 0; k < this.m_generatorCount; k++) {
             const g = this.m_generatorBuffer[k];
             if (g.necessary) {
-                b2Vec2.MinV(lower, g.center, lower);
-                b2Vec2.MaxV(upper, g.center, upper);
+                b2Vec2.Min(lower, g.center, lower);
+                b2Vec2.Max(upper, g.center, upper);
                 ++necessary_count;
             }
         }
@@ -96,7 +96,7 @@ export class b2VoronoiDiagram {
         for (let k = 0; k < this.m_generatorCount; k++) {
             const g = this.m_generatorBuffer[k];
             ///  g.center = inverseRadius * (g.center - lower);
-            g.center.SelfSub(lower).SelfMul(inverseRadius);
+            g.center.Subtract(lower).Scale(inverseRadius);
             const x = Math.floor(g.center.x);
             const y = Math.floor(g.center.y);
             if (x >= 0 && y >= 0 && x < this.m_countX && y < this.m_countY) {

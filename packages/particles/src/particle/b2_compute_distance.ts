@@ -50,35 +50,35 @@ const tempCenter = new b2Vec2();
 
 const implementations: Array<ComputeDistanceFn<any>> = [
     (shape: b2CircleShape, xf, p, normal) => {
-        const center = b2Transform.MulXV(xf, shape.m_p, tempCenter);
-        b2Vec2.SubVV(p, center, normal);
+        const center = b2Transform.MultiplyVec2(xf, shape.m_p, tempCenter);
+        b2Vec2.Subtract(p, center, normal);
         return normal.Normalize() - shape.m_radius;
     },
     (shape: b2EdgeShape, xf, p, normal) => {
-        const v1 = b2Transform.MulXV(xf, shape.m_vertex1, tempV1);
-        const v2 = b2Transform.MulXV(xf, shape.m_vertex2, tempV2);
+        const v1 = b2Transform.MultiplyVec2(xf, shape.m_vertex1, tempV1);
+        const v2 = b2Transform.MultiplyVec2(xf, shape.m_vertex2, tempV2);
 
-        const d = b2Vec2.SubVV(p, v1, tempD);
-        const s = b2Vec2.SubVV(v2, v1, tempS);
-        const ds = b2Vec2.DotVV(d, s);
+        const d = b2Vec2.Subtract(p, v1, tempD);
+        const s = b2Vec2.Subtract(v2, v1, tempS);
+        const ds = b2Vec2.Dot(d, s);
         if (ds > 0) {
-            const s2 = b2Vec2.DotVV(s, s);
+            const s2 = b2Vec2.Dot(s, s);
             if (ds > s2) {
-                b2Vec2.SubVV(p, v2, d);
+                b2Vec2.Subtract(p, v2, d);
             } else {
-                d.SelfMulSub(ds / s2, s);
+                d.SubtractScaled(ds / s2, s);
             }
         }
         normal.Copy(d);
         return normal.Normalize();
     },
     (shape: b2PolygonShape, xf, p, normal) => {
-        const pLocal = b2Transform.MulTXV(xf, p, tempLocal);
+        const pLocal = b2Transform.TransposeMultiplyVec2(xf, p, tempLocal);
         let maxDistance = -b2_maxFloat;
         const normalForMaxDistance = tempNormalForMaxDistance.Copy(pLocal);
 
         for (let i = 0; i < shape.m_count; ++i) {
-            const dot = b2Vec2.DotVV(shape.m_normals[i], b2Vec2.SubVV(pLocal, shape.m_vertices[i], b2Vec2.s_t0));
+            const dot = b2Vec2.Dot(shape.m_normals[i], b2Vec2.Subtract(pLocal, shape.m_vertices[i], b2Vec2.s_t0));
             if (dot > maxDistance) {
                 maxDistance = dot;
                 normalForMaxDistance.Copy(shape.m_normals[i]);
@@ -89,7 +89,7 @@ const implementations: Array<ComputeDistanceFn<any>> = [
             const minDistance = tempMinDistance.Copy(normalForMaxDistance);
             let minDistance2 = maxDistance * maxDistance;
             for (let i = 0; i < shape.m_count; ++i) {
-                const distance = b2Vec2.SubVV(pLocal, shape.m_vertices[i], tempDistance);
+                const distance = b2Vec2.Subtract(pLocal, shape.m_vertices[i], tempDistance);
                 const distance2 = distance.LengthSquared();
                 if (minDistance2 > distance2) {
                     minDistance.Copy(distance);
@@ -97,11 +97,11 @@ const implementations: Array<ComputeDistanceFn<any>> = [
                 }
             }
 
-            b2Rot.MulRV(xf.q, minDistance, normal);
+            b2Rot.MultiplyVec2(xf.q, minDistance, normal);
             normal.Normalize();
             return Math.sqrt(minDistance2);
         }
-        b2Rot.MulRV(xf.q, normalForMaxDistance, normal);
+        b2Rot.MultiplyVec2(xf.q, normalForMaxDistance, normal);
         return maxDistance;
     },
     (shape: b2ChainShape, xf, p, normal, childIndex) => {

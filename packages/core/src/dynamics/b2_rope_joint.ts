@@ -123,22 +123,22 @@ export class b2RopeJoint extends b2Joint {
         const vB: b2Vec2 = data.velocities[this.m_indexB].v;
         let wB: number = data.velocities[this.m_indexB].w;
 
-        const qA: b2Rot = this.m_qA.SetAngle(aA);
-        const qB: b2Rot = this.m_qB.SetAngle(aB);
+        const qA: b2Rot = this.m_qA.Set(aA);
+        const qB: b2Rot = this.m_qB.Set(aB);
 
         // this.m_rA = b2Mul(qA, this.m_localAnchorA - this.m_localCenterA);
-        b2Vec2.SubVV(this.m_localAnchorA, this.m_localCenterA, this.m_lalcA);
-        b2Rot.MulRV(qA, this.m_lalcA, this.m_rA);
+        b2Vec2.Subtract(this.m_localAnchorA, this.m_localCenterA, this.m_lalcA);
+        b2Rot.MultiplyVec2(qA, this.m_lalcA, this.m_rA);
         // this.m_rB = b2Mul(qB, this.m_localAnchorB - this.m_localCenterB);
-        b2Vec2.SubVV(this.m_localAnchorB, this.m_localCenterB, this.m_lalcB);
-        b2Rot.MulRV(qB, this.m_lalcB, this.m_rB);
+        b2Vec2.Subtract(this.m_localAnchorB, this.m_localCenterB, this.m_lalcB);
+        b2Rot.MultiplyVec2(qB, this.m_lalcB, this.m_rB);
         // this.m_u = cB + this.m_rB - cA - this.m_rA;
-        this.m_u.Copy(cB).SelfAdd(this.m_rB).SelfSub(cA).SelfSub(this.m_rA);
+        this.m_u.Copy(cB).Add(this.m_rB).Subtract(cA).Subtract(this.m_rA);
 
         this.m_length = this.m_u.Length();
 
         if (this.m_length > b2_linearSlop) {
-            this.m_u.SelfMul(1 / this.m_length);
+            this.m_u.Scale(1 / this.m_length);
         } else {
             this.m_u.SetZero();
             this.m_mass = 0;
@@ -147,8 +147,8 @@ export class b2RopeJoint extends b2Joint {
         }
 
         // Compute effective mass.
-        const crA: number = b2Vec2.CrossVV(this.m_rA, this.m_u);
-        const crB: number = b2Vec2.CrossVV(this.m_rB, this.m_u);
+        const crA: number = b2Vec2.Cross(this.m_rA, this.m_u);
+        const crB: number = b2Vec2.Cross(this.m_rB, this.m_u);
         const invMass: number = this.m_invMassA + this.m_invIA * crA * crA + this.m_invMassB + this.m_invIB * crB * crB;
 
         this.m_mass = invMass !== 0 ? 1 / invMass : 0;
@@ -158,13 +158,13 @@ export class b2RopeJoint extends b2Joint {
             this.m_impulse *= data.step.dtRatio;
 
             // b2Vec2 P = m_impulse * m_u;
-            const P: b2Vec2 = b2Vec2.MulSV(this.m_impulse, this.m_u, b2RopeJoint.InitVelocityConstraints_s_P);
+            const P: b2Vec2 = b2Vec2.Scale(this.m_impulse, this.m_u, b2RopeJoint.InitVelocityConstraints_s_P);
             // vA -= m_invMassA * P;
-            vA.SelfMulSub(this.m_invMassA, P);
-            wA -= this.m_invIA * b2Vec2.CrossVV(this.m_rA, P);
+            vA.SubtractScaled(this.m_invMassA, P);
+            wA -= this.m_invIA * b2Vec2.Cross(this.m_rA, P);
             // vB += m_invMassB * P;
-            vB.SelfMulAdd(this.m_invMassB, P);
-            wB += this.m_invIB * b2Vec2.CrossVV(this.m_rB, P);
+            vB.AddScaled(this.m_invMassB, P);
+            wB += this.m_invIB * b2Vec2.Cross(this.m_rB, P);
         } else {
             this.m_impulse = 0;
         }
@@ -189,13 +189,13 @@ export class b2RopeJoint extends b2Joint {
 
         // Cdot = dot(u, v + cross(w, r))
         // b2Vec2 vpA = vA + b2Cross(wA, m_rA);
-        const vpA: b2Vec2 = b2Vec2.AddVCrossSV(vA, wA, this.m_rA, b2RopeJoint.SolveVelocityConstraints_s_vpA);
+        const vpA: b2Vec2 = b2Vec2.AddCrossScalarVec2(vA, wA, this.m_rA, b2RopeJoint.SolveVelocityConstraints_s_vpA);
         // b2Vec2 vpB = vB + b2Cross(wB, m_rB);
-        const vpB: b2Vec2 = b2Vec2.AddVCrossSV(vB, wB, this.m_rB, b2RopeJoint.SolveVelocityConstraints_s_vpB);
+        const vpB: b2Vec2 = b2Vec2.AddCrossScalarVec2(vB, wB, this.m_rB, b2RopeJoint.SolveVelocityConstraints_s_vpB);
         // float32 C = m_length - m_maxLength;
         const C: number = this.m_length - this.m_maxLength;
         // float32 Cdot = b2Dot(m_u, vpB - vpA);
-        let Cdot: number = b2Vec2.DotVV(this.m_u, b2Vec2.SubVV(vpB, vpA, b2Vec2.s_t0));
+        let Cdot: number = b2Vec2.Dot(this.m_u, b2Vec2.Subtract(vpB, vpA, b2Vec2.s_t0));
 
         // Predictive constraint.
         if (C < 0) {
@@ -208,13 +208,13 @@ export class b2RopeJoint extends b2Joint {
         impulse = this.m_impulse - oldImpulse;
 
         // b2Vec2 P = impulse * m_u;
-        const P: b2Vec2 = b2Vec2.MulSV(impulse, this.m_u, b2RopeJoint.SolveVelocityConstraints_s_P);
+        const P: b2Vec2 = b2Vec2.Scale(impulse, this.m_u, b2RopeJoint.SolveVelocityConstraints_s_P);
         // vA -= m_invMassA * P;
-        vA.SelfMulSub(this.m_invMassA, P);
-        wA -= this.m_invIA * b2Vec2.CrossVV(this.m_rA, P);
+        vA.SubtractScaled(this.m_invMassA, P);
+        wA -= this.m_invIA * b2Vec2.Cross(this.m_rA, P);
         // vB += m_invMassB * P;
-        vB.SelfMulAdd(this.m_invMassB, P);
-        wB += this.m_invIB * b2Vec2.CrossVV(this.m_rB, P);
+        vB.AddScaled(this.m_invMassB, P);
+        wB += this.m_invIB * b2Vec2.Cross(this.m_rB, P);
 
         // data.velocities[this.m_indexA].v = vA;
         data.velocities[this.m_indexA].w = wA;
@@ -230,17 +230,17 @@ export class b2RopeJoint extends b2Joint {
         const cB: b2Vec2 = data.positions[this.m_indexB].c;
         let aB: number = data.positions[this.m_indexB].a;
 
-        const qA: b2Rot = this.m_qA.SetAngle(aA);
-        const qB: b2Rot = this.m_qB.SetAngle(aB);
+        const qA: b2Rot = this.m_qA.Set(aA);
+        const qB: b2Rot = this.m_qB.Set(aB);
 
         // b2Vec2 rA = b2Mul(qA, this.m_localAnchorA - this.m_localCenterA);
-        b2Vec2.SubVV(this.m_localAnchorA, this.m_localCenterA, this.m_lalcA);
-        const rA: b2Vec2 = b2Rot.MulRV(qA, this.m_lalcA, this.m_rA);
+        b2Vec2.Subtract(this.m_localAnchorA, this.m_localCenterA, this.m_lalcA);
+        const rA: b2Vec2 = b2Rot.MultiplyVec2(qA, this.m_lalcA, this.m_rA);
         // b2Vec2 rB = b2Mul(qB, this.m_localAnchorB - this.m_localCenterB);
-        b2Vec2.SubVV(this.m_localAnchorB, this.m_localCenterB, this.m_lalcB);
-        const rB: b2Vec2 = b2Rot.MulRV(qB, this.m_lalcB, this.m_rB);
+        b2Vec2.Subtract(this.m_localAnchorB, this.m_localCenterB, this.m_lalcB);
+        const rB: b2Vec2 = b2Rot.MultiplyVec2(qB, this.m_lalcB, this.m_rB);
         // b2Vec2 u = cB + rB - cA - rA;
-        const u: b2Vec2 = this.m_u.Copy(cB).SelfAdd(rB).SelfSub(cA).SelfSub(rA);
+        const u: b2Vec2 = this.m_u.Copy(cB).Add(rB).Subtract(cA).Subtract(rA);
 
         this.m_length = u.Normalize();
         let C: number = this.m_length - this.m_maxLength;
@@ -249,14 +249,14 @@ export class b2RopeJoint extends b2Joint {
 
         const impulse: number = -this.m_mass * C;
         // b2Vec2 P = impulse * u;
-        const P: b2Vec2 = b2Vec2.MulSV(impulse, u, b2RopeJoint.SolvePositionConstraints_s_P);
+        const P: b2Vec2 = b2Vec2.Scale(impulse, u, b2RopeJoint.SolvePositionConstraints_s_P);
 
         // cA -= m_invMassA * P;
-        cA.SelfMulSub(this.m_invMassA, P);
-        aA -= this.m_invIA * b2Vec2.CrossVV(rA, P);
+        cA.SubtractScaled(this.m_invMassA, P);
+        aA -= this.m_invIA * b2Vec2.Cross(rA, P);
         // cB += m_invMassB * P;
-        cB.SelfMulAdd(this.m_invMassB, P);
-        aB += this.m_invIB * b2Vec2.CrossVV(rB, P);
+        cB.AddScaled(this.m_invMassB, P);
+        aB += this.m_invIB * b2Vec2.Cross(rB, P);
 
         // data.positions[this.m_indexA].c = cA;
         data.positions[this.m_indexA].a = aA;
@@ -276,7 +276,7 @@ export class b2RopeJoint extends b2Joint {
 
     public GetReactionForce<T extends XY>(inv_dt: number, out: T): T {
         // return out.Set(inv_dt * this.m_linearImpulse.x, inv_dt * this.m_linearImpulse.y);
-        return b2Vec2.MulSV(inv_dt * this.m_impulse, this.m_u, out);
+        return b2Vec2.Scale(inv_dt * this.m_impulse, this.m_u, out);
     }
 
     public GetReactionTorque(_inv_dt: number): number {

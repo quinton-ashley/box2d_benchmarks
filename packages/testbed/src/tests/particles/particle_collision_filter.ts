@@ -16,7 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import { b2ContactFilter, b2Vec2, b2ChainShape, b2PolygonShape, b2Vec2_zero, XY } from "@box2d/core";
+import { b2ContactFilter, b2Vec2, b2ChainShape, b2PolygonShape, XY } from "@box2d/core";
 import { b2ParticleGroupDef, b2ParticleFlag, b2ParticleGroup } from "@box2d/particles";
 
 import { Test, RandomFloat } from "../../test";
@@ -42,7 +42,7 @@ export class ParticleContactDisabler extends b2ContactFilter {
 
 export class ParticleCollisionFilter extends Test {
     constructor() {
-        super(b2Vec2_zero);
+        super(b2Vec2.ZERO);
 
         // must also set b2_particleContactFilterParticle and
         // b2_fixtureContactFilterParticle flags for particle group
@@ -122,8 +122,8 @@ export class ParticleCollisionFilter extends Test {
             for (let i = 0; i < this.m_particleGroup.GetParticleCount(); ++i) {
                 const v: b2Vec2 = velocities[index + i];
                 v.Set(RandomFloat(), RandomFloat());
-                v.SelfNormalize();
-                v.SelfMul(ParticleCollisionFilter.kSpeedup);
+                v.Normalize();
+                v.Scale(ParticleCollisionFilter.kSpeedup);
             }
         }
     }
@@ -144,8 +144,8 @@ export class ParticleCollisionFilter extends Test {
         // }
         for (let i = 0; i < this.m_particleGroup.GetParticleCount(); ++i) {
             const v: b2Vec2 = velocities[index + i];
-            v.SelfNormalize();
-            v.SelfMul(ParticleCollisionFilter.kSpeedup);
+            v.Normalize();
+            v.Scale(ParticleCollisionFilter.kSpeedup);
         }
     }
 

@@ -94,7 +94,7 @@ export class Web extends Test {
             jd.localAnchorB.Set(-0.5, -0.5);
             p1 = jd.bodyA.GetWorldPoint(jd.localAnchorA, new b2Vec2());
             p2 = jd.bodyB.GetWorldPoint(jd.localAnchorB, new b2Vec2());
-            d = b2Vec2.SubVV(p2, p1, new b2Vec2());
+            d = b2Vec2.Subtract(p2, p1, new b2Vec2());
             jd.length = d.Length();
             this.m_joints[0] = this.m_world.CreateJoint(jd);
 
@@ -105,7 +105,7 @@ export class Web extends Test {
             jd.localAnchorB.Set(0.5, -0.5);
             p1 = jd.bodyA.GetWorldPoint(jd.localAnchorA, new b2Vec2());
             p2 = jd.bodyB.GetWorldPoint(jd.localAnchorB, new b2Vec2());
-            d = b2Vec2.SubVV(p2, p1, new b2Vec2());
+            d = b2Vec2.Subtract(p2, p1, new b2Vec2());
             jd.length = d.Length();
             this.m_joints[1] = this.m_world.CreateJoint(jd);
 
@@ -116,7 +116,7 @@ export class Web extends Test {
             jd.localAnchorB.Set(0.5, 0.5);
             p1 = jd.bodyA.GetWorldPoint(jd.localAnchorA, new b2Vec2());
             p2 = jd.bodyB.GetWorldPoint(jd.localAnchorB, new b2Vec2());
-            d = b2Vec2.SubVV(p2, p1, new b2Vec2());
+            d = b2Vec2.Subtract(p2, p1, new b2Vec2());
             jd.length = d.Length();
             this.m_joints[2] = this.m_world.CreateJoint(jd);
 
@@ -127,7 +127,7 @@ export class Web extends Test {
             jd.localAnchorB.Set(-0.5, 0.5);
             p1 = jd.bodyA.GetWorldPoint(jd.localAnchorA, new b2Vec2());
             p2 = jd.bodyB.GetWorldPoint(jd.localAnchorB, new b2Vec2());
-            d = b2Vec2.SubVV(p2, p1, new b2Vec2());
+            d = b2Vec2.Subtract(p2, p1, new b2Vec2());
             jd.length = d.Length();
             this.m_joints[3] = this.m_world.CreateJoint(jd);
 
@@ -138,7 +138,7 @@ export class Web extends Test {
             jd.localAnchorB.Set(-0.5, 0.0);
             p1 = jd.bodyA.GetWorldPoint(jd.localAnchorA, new b2Vec2());
             p2 = jd.bodyB.GetWorldPoint(jd.localAnchorB, new b2Vec2());
-            d = b2Vec2.SubVV(p2, p1, new b2Vec2());
+            d = b2Vec2.Subtract(p2, p1, new b2Vec2());
             jd.length = d.Length();
             this.m_joints[4] = this.m_world.CreateJoint(jd);
 
@@ -149,7 +149,7 @@ export class Web extends Test {
             jd.localAnchorB.Set(0.0, -0.5);
             p1 = jd.bodyA.GetWorldPoint(jd.localAnchorA, new b2Vec2());
             p2 = jd.bodyB.GetWorldPoint(jd.localAnchorB, new b2Vec2());
-            d = b2Vec2.SubVV(p2, p1, new b2Vec2());
+            d = b2Vec2.Subtract(p2, p1, new b2Vec2());
             jd.length = d.Length();
             this.m_joints[5] = this.m_world.CreateJoint(jd);
 
@@ -160,7 +160,7 @@ export class Web extends Test {
             jd.localAnchorB.Set(0.5, 0.0);
             p1 = jd.bodyA.GetWorldPoint(jd.localAnchorA, new b2Vec2());
             p2 = jd.bodyB.GetWorldPoint(jd.localAnchorB, new b2Vec2());
-            d = b2Vec2.SubVV(p2, p1, new b2Vec2());
+            d = b2Vec2.Subtract(p2, p1, new b2Vec2());
             jd.length = d.Length();
             this.m_joints[6] = this.m_world.CreateJoint(jd);
 
@@ -171,7 +171,7 @@ export class Web extends Test {
             jd.localAnchorB.Set(0.0, 0.5);
             p1 = jd.bodyA.GetWorldPoint(jd.localAnchorA, new b2Vec2());
             p2 = jd.bodyB.GetWorldPoint(jd.localAnchorB, new b2Vec2());
-            d = b2Vec2.SubVV(p2, p1, new b2Vec2());
+            d = b2Vec2.Subtract(p2, p1, new b2Vec2());
             jd.length = d.Length();
             this.m_joints[7] = this.m_world.CreateJoint(jd);
         }

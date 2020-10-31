@@ -160,13 +160,13 @@ export class SensorTest extends Test {
 
             const position = body.GetPosition();
 
-            const d = b2Vec2.SubVV(center, position, new b2Vec2());
+            const d = b2Vec2.Subtract(center, position, new b2Vec2());
             if (d.LengthSquared() < b2_epsilon_sq) {
                 continue;
             }
 
             d.Normalize();
-            const F = b2Vec2.MulSV(100.0, d, new b2Vec2());
+            const F = b2Vec2.Scale(100.0, d, new b2Vec2());
             body.ApplyForce(F, position);
         }
     }

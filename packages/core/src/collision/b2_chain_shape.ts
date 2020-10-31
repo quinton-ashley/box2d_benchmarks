@@ -72,7 +72,7 @@ export class b2ChainShape extends b2Shape {
         // DEBUG:   const v1 = vertices[start + i - 1];
         // DEBUG:   const v2 = vertices[start + i];
         // DEBUG:   // If the code crashes here, it means your vertices are too close together.
-        // DEBUG:   b2Assert(b2Vec2.DistanceSquaredVV(v1, v2) > b2_linearSlop * b2_linearSlop);
+        // DEBUG:   b2Assert(b2Vec2.DistanceSquared(v1, v2) > b2_linearSlop * b2_linearSlop);
         // DEBUG: }
 
         this.m_vertices.length = count + 1;
@@ -128,7 +128,7 @@ export class b2ChainShape extends b2Shape {
         // DEBUG:   const v1 = vertices[start + i - 1];
         // DEBUG:   const v2 = vertices[start + i];
         // DEBUG:   // If the code crashes here, it means your vertices are too close together.
-        // DEBUG:   b2Assert(b2Vec2.DistanceSquaredVV(v1, v2) > b2_linearSlop * b2_linearSlop);
+        // DEBUG:   b2Assert(b2Vec2.DistanceSquared(v1, v2) > b2_linearSlop * b2_linearSlop);
         // DEBUG: }
 
         this.m_vertices.length = count;
@@ -224,11 +224,11 @@ export class b2ChainShape extends b2Shape {
         const vertexi1: b2Vec2 = this.m_vertices[childIndex];
         const vertexi2: b2Vec2 = this.m_vertices[(childIndex + 1) % this.m_vertices.length];
 
-        const v1: b2Vec2 = b2Transform.MulXV(xf, vertexi1, b2ChainShape.ComputeAABB_s_v1);
-        const v2: b2Vec2 = b2Transform.MulXV(xf, vertexi2, b2ChainShape.ComputeAABB_s_v2);
+        const v1: b2Vec2 = b2Transform.MultiplyVec2(xf, vertexi1, b2ChainShape.ComputeAABB_s_v1);
+        const v2: b2Vec2 = b2Transform.MultiplyVec2(xf, vertexi2, b2ChainShape.ComputeAABB_s_v2);
 
-        const lower: b2Vec2 = b2Vec2.MinV(v1, v2, b2ChainShape.ComputeAABB_s_lower);
-        const upper: b2Vec2 = b2Vec2.MaxV(v1, v2, b2ChainShape.ComputeAABB_s_upper);
+        const lower: b2Vec2 = b2Vec2.Min(v1, v2, b2ChainShape.ComputeAABB_s_lower);
+        const upper: b2Vec2 = b2Vec2.Max(v1, v2, b2ChainShape.ComputeAABB_s_upper);
 
         aabb.lowerBound.x = lower.x - this.m_radius;
         aabb.lowerBound.y = lower.y - this.m_radius;

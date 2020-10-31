@@ -122,13 +122,13 @@ export class b2BuoyancyController extends b2Controller {
                 continue;
             }
             // Buoyancy
-            const buoyancyForce = this.gravity.Clone().SelfNeg();
-            buoyancyForce.SelfMul(this.density * area);
+            const buoyancyForce = this.gravity.Clone().Negate();
+            buoyancyForce.Scale(this.density * area);
             body.ApplyForce(buoyancyForce, massc);
             // Linear drag
             const dragForce = body.GetLinearVelocityFromWorldPoint(areac, new b2Vec2());
-            dragForce.SelfSub(this.velocity);
-            dragForce.SelfMul(-this.linearDrag * area);
+            dragForce.Subtract(this.velocity);
+            dragForce.Scale(-this.linearDrag * area);
             body.ApplyForce(dragForce, areac);
             // Angular drag
             // TODO: Something that makes more physical sense?

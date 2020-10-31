@@ -737,7 +737,7 @@ export class Fracker extends Test {
             Fracker.WorldToTile(playerPosition, playerX, playerY);
             // Move the player towards the mouse position, preferring to move
             // along the axis with the maximal distance from the cursor.
-            const distance = b2Vec2.SubVV(p, Fracker.CenteredPosition(playerPosition), new b2Vec2());
+            const distance = b2Vec2.Subtract(p, Fracker.CenteredPosition(playerPosition), new b2Vec2());
             const absDistX = Math.abs(distance.x);
             const absDistY = Math.abs(distance.y);
             if (absDistX > absDistY && absDistX >= FrackerSettings.k_tileHalfWidth) {
@@ -797,7 +797,7 @@ export class Fracker extends Test {
                 const particlePosition = positionBuffer[index + i];
                 // Distance from the well's bottom.
                 ///  const b2Vec2 distance = particlePosition - wellEnd;
-                const distance = b2Vec2.SubVV(particlePosition, wellEnd, new b2Vec2());
+                const distance = b2Vec2.Subtract(particlePosition, wellEnd, new b2Vec2());
                 // Distance from either well side wall.
                 const absDistX = Math.abs(distance.x);
                 if (
@@ -808,10 +808,10 @@ export class Fracker extends Test {
                 ) {
                     // Suck the particles towards the end of the well.
                     ///  b2Vec2 velocity = wellEnd - particlePosition;
-                    const velocity = b2Vec2.SubVV(wellEnd, particlePosition, new b2Vec2());
+                    const velocity = b2Vec2.Subtract(wellEnd, particlePosition, new b2Vec2());
                     velocity.Normalize();
                     ///  velocityBuffer[i] = velocity * FrackerSettings.k_wellSuckSpeedOutside;
-                    velocityBuffer[index + i].Copy(velocity.SelfMul(FrackerSettings.k_wellSuckSpeedOutside));
+                    velocityBuffer[index + i].Copy(velocity.Scale(FrackerSettings.k_wellSuckSpeedOutside));
                 } else if (absDistX <= FrackerSettings.k_tileHalfWidth && distance.y > 0.0) {
                     // Suck the particles up the well with a random
                     // x component moving them side to side in the well.
@@ -819,7 +819,7 @@ export class Fracker extends Test {
                     const velocity = new b2Vec2(randomX, FrackerSettings.k_tileHeight);
                     velocity.Normalize();
                     ///  velocityBuffer[i] = velocity * FrackerSettings.k_wellSuckSpeedInside;
-                    velocityBuffer[index + i].Copy(velocity.SelfMul(FrackerSettings.k_wellSuckSpeedInside));
+                    velocityBuffer[index + i].Copy(velocity.Scale(FrackerSettings.k_wellSuckSpeedInside));
                 }
             }
         }

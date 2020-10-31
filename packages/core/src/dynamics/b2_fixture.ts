@@ -26,6 +26,11 @@ import { b2Assert } from "../common/b2_common";
 import { b2_lengthUnitsPerMeter } from "../common/b2_settings";
 import { b2BroadPhase } from "../collision/b2_broad_phase";
 
+const temp = {
+    c1: new b2Vec2(),
+    c2: new b2Vec2(),
+};
+
 /// This holds contact filtering data.
 export interface b2Filter {
     /// The collision category bits. Normally you would just set one bit.
@@ -330,6 +335,7 @@ export class b2Fixture {
     }
 
     public Synchronize(broadPhase: b2BroadPhase<b2FixtureProxy>, transform1: b2Transform, transform2: b2Transform) {
+        const { c1, c2 } = temp;
         for (const proxy of this.m_proxies) {
             // Compute an AABB that covers the swept shape (may miss some rotation effect).
             const aabb1 = Synchronize_s_aabb1;
@@ -338,7 +344,7 @@ export class b2Fixture {
             this.m_shape.ComputeAABB(aabb2, transform2, proxy.childIndex);
             proxy.aabb.Combine2(aabb1, aabb2);
             const displacement = Synchronize_s_displacement;
-            b2Vec2.SubVV(aabb2.GetCenter(), aabb1.GetCenter(), displacement);
+            b2Vec2.Subtract(aabb2.GetCenter(c2), aabb1.GetCenter(c1), displacement);
             broadPhase.MoveProxy(proxy.treeNode, proxy.aabb, displacement);
         }
     }

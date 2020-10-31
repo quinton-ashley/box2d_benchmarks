@@ -93,7 +93,7 @@ export class b2MouseJoint extends b2Joint {
 
         this.m_targetA.Copy(def.target ?? b2Vec2.ZERO);
         // DEBUG: b2Assert(this.m_targetA.IsValid());
-        b2Transform.MulTXV(this.m_bodyB.GetTransform(), this.m_targetA, this.m_localAnchorB);
+        b2Transform.TransposeMultiplyVec2(this.m_bodyB.GetTransform(), this.m_targetA, this.m_localAnchorB);
 
         this.m_maxForce = def.maxForce ?? 0;
         // DEBUG: b2Assert(Number.isFinite(this.m_maxForce) && this.m_maxForce >= 0);
@@ -154,7 +154,7 @@ export class b2MouseJoint extends b2Joint {
         const vB: b2Vec2 = data.velocities[this.m_indexB].v;
         let wB: number = data.velocities[this.m_indexB].w;
 
-        const qB = this.m_qB.SetAngle(aB);
+        const qB = this.m_qB.Set(aB);
 
         const mass: number = this.m_bodyB.GetMass();
 
@@ -178,8 +178,8 @@ export class b2MouseJoint extends b2Joint {
         this.m_beta = h * k * this.m_gamma;
 
         // Compute the effective mass matrix.
-        b2Vec2.SubVV(this.m_localAnchorB, this.m_localCenterB, this.m_lalcB);
-        b2Rot.MulRV(qB, this.m_lalcB, this.m_rB);
+        b2Vec2.Subtract(this.m_localAnchorB, this.m_localCenterB, this.m_lalcB);
+        b2Rot.MultiplyVec2(qB, this.m_lalcB, this.m_rB);
 
         // K    = [(1/m1 + 1/m2) * eye(2) - skew(r1) * invI1 * skew(r1) - skew(r2) * invI2 * skew(r2)]
         //      = [1/m1+1/m2     0    ] + invI1 * [r1.y*r1.y -r1.x*r1.y] + invI2 * [r1.y*r1.y -r1.x*r1.y]
@@ -196,17 +196,17 @@ export class b2MouseJoint extends b2Joint {
         this.m_C.x = cB.x + this.m_rB.x - this.m_targetA.x;
         this.m_C.y = cB.y + this.m_rB.y - this.m_targetA.y;
         // m_C *= m_beta;
-        this.m_C.SelfMul(this.m_beta);
+        this.m_C.Scale(this.m_beta);
 
         // Cheat with some damping
         wB *= 0.98;
 
         if (data.step.warmStarting) {
-            this.m_impulse.SelfMul(data.step.dtRatio);
+            this.m_impulse.Scale(data.step.dtRatio);
             // vB += m_invMassB * m_impulse;
             vB.x += this.m_invMassB * this.m_impulse.x;
             vB.y += this.m_invMassB * this.m_impulse.y;
-            wB += this.m_invIB * b2Vec2.CrossVV(this.m_rB, this.m_impulse);
+            wB += this.m_invIB * b2Vec2.Cross(this.m_rB, this.m_impulse);
         } else {
             this.m_impulse.SetZero();
         }
@@ -227,34 +227,34 @@ export class b2MouseJoint extends b2Joint {
 
         // Cdot = v + cross(w, r)
         // b2Vec2 Cdot = vB + b2Cross(wB, m_rB);
-        const Cdot: b2Vec2 = b2Vec2.AddVCrossSV(vB, wB, this.m_rB, b2MouseJoint.SolveVelocityConstraints_s_Cdot);
+        const Cdot: b2Vec2 = b2Vec2.AddCrossScalarVec2(vB, wB, this.m_rB, b2MouseJoint.SolveVelocityConstraints_s_Cdot);
         //  b2Vec2 impulse = b2Mul(m_mass, -(Cdot + m_C + m_gamma * m_impulse));
-        const impulse: b2Vec2 = b2Mat22.MulMV(
+        const impulse: b2Vec2 = b2Mat22.MultiplyVec2(
             this.m_mass,
             b2Vec2
-                .AddVV(
+                .Add(
                     Cdot,
-                    b2Vec2.AddVV(this.m_C, b2Vec2.MulSV(this.m_gamma, this.m_impulse, b2Vec2.s_t0), b2Vec2.s_t0),
+                    b2Vec2.Add(this.m_C, b2Vec2.Scale(this.m_gamma, this.m_impulse, b2Vec2.s_t0), b2Vec2.s_t0),
                     b2Vec2.s_t0,
                 )
-                .SelfNeg(),
+                .Negate(),
             b2MouseJoint.SolveVelocityConstraints_s_impulse,
         );
 
         // b2Vec2 oldImpulse = m_impulse;
         const oldImpulse = b2MouseJoint.SolveVelocityConstraints_s_oldImpulse.Copy(this.m_impulse);
         // m_impulse += impulse;
-        this.m_impulse.SelfAdd(impulse);
+        this.m_impulse.Add(impulse);
         const maxImpulse: number = data.step.dt * this.m_maxForce;
         if (this.m_impulse.LengthSquared() > maxImpulse * maxImpulse) {
-            this.m_impulse.SelfMul(maxImpulse / this.m_impulse.Length());
+            this.m_impulse.Scale(maxImpulse / this.m_impulse.Length());
         }
         // impulse = m_impulse - oldImpulse;
-        b2Vec2.SubVV(this.m_impulse, oldImpulse, impulse);
+        b2Vec2.Subtract(this.m_impulse, oldImpulse, impulse);
 
         // vB += m_invMassB * impulse;
-        vB.SelfMulAdd(this.m_invMassB, impulse);
-        wB += this.m_invIB * b2Vec2.CrossVV(this.m_rB, impulse);
+        vB.AddScaled(this.m_invMassB, impulse);
+        wB += this.m_invIB * b2Vec2.Cross(this.m_rB, impulse);
 
         // data.velocities[this.m_indexB].v = vB;
         data.velocities[this.m_indexB].w = wB;
@@ -275,7 +275,7 @@ export class b2MouseJoint extends b2Joint {
     }
 
     public GetReactionForce<T extends XY>(inv_dt: number, out: T): T {
-        return b2Vec2.MulSV(inv_dt, this.m_impulse, out);
+        return b2Vec2.Scale(inv_dt, this.m_impulse, out);
     }
 
     public GetReactionTorque(_inv_dt: number): number {
@@ -283,6 +283,6 @@ export class b2MouseJoint extends b2Joint {
     }
 
     public ShiftOrigin(newOrigin: b2Vec2) {
-        this.m_targetA.SelfSub(newOrigin);
+        this.m_targetA.Subtract(newOrigin);
     }
 }

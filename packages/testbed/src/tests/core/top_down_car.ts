@@ -31,7 +31,6 @@ import {
     b2Joint,
     b2FixtureDef,
     b2Contact,
-    b2Vec2_zero,
 } from "@box2d/core";
 
 import { Test, DestructionListener } from "../../test";
@@ -157,21 +156,21 @@ export class TDTire {
 
     public getLateralVelocity(): b2Vec2 {
         const currentRightNormal = this.m_body.GetWorldVector(new b2Vec2(1, 0), new b2Vec2());
-        return currentRightNormal.SelfMul(b2Vec2.DotVV(currentRightNormal, this.m_body.GetLinearVelocity()));
+        return currentRightNormal.Scale(b2Vec2.Dot(currentRightNormal, this.m_body.GetLinearVelocity()));
     }
 
     public getForwardVelocity(): b2Vec2 {
         const currentForwardNormal = this.m_body.GetWorldVector(new b2Vec2(0, 1), new b2Vec2());
-        return currentForwardNormal.SelfMul(b2Vec2.DotVV(currentForwardNormal, this.m_body.GetLinearVelocity()));
+        return currentForwardNormal.Scale(b2Vec2.Dot(currentForwardNormal, this.m_body.GetLinearVelocity()));
     }
 
     public updateFriction(): void {
         // lateral linear velocity
-        const impulse = this.getLateralVelocity().SelfMul(-1.0 * this.m_body.GetMass());
+        const impulse = this.getLateralVelocity().Scale(-1.0 * this.m_body.GetMass());
         if (impulse.Length() > this.m_maxLateralImpulse) {
-            impulse.SelfMul(this.m_maxLateralImpulse / impulse.Length());
+            impulse.Scale(this.m_maxLateralImpulse / impulse.Length());
         }
-        this.m_body.ApplyLinearImpulse(impulse.SelfMul(this.m_currentTraction), this.m_body.GetWorldCenter());
+        this.m_body.ApplyLinearImpulse(impulse.Scale(this.m_currentTraction), this.m_body.GetWorldCenter());
 
         // angular velocity
         this.m_body.ApplyAngularImpulse(
@@ -183,7 +182,7 @@ export class TDTire {
         const currentForwardSpeed = currentForwardNormal.Normalize();
         const dragForceMagnitude = -2 * currentForwardSpeed;
         this.m_body.ApplyForce(
-            currentForwardNormal.SelfMul(this.m_currentTraction * dragForceMagnitude),
+            currentForwardNormal.Scale(this.m_currentTraction * dragForceMagnitude),
             this.m_body.GetWorldCenter(),
         );
     }
@@ -204,7 +203,7 @@ export class TDTire {
 
         // find current speed in forward direction
         const currentForwardNormal = this.m_body.GetWorldVector(new b2Vec2(0, 1), new b2Vec2());
-        const currentSpeed = b2Vec2.DotVV(this.getForwardVelocity(), currentForwardNormal);
+        const currentSpeed = b2Vec2.Dot(this.getForwardVelocity(), currentForwardNormal);
 
         // apply necessary force
         let force = 0;
@@ -216,7 +215,7 @@ export class TDTire {
             return;
         }
         this.m_body.ApplyForce(
-            currentForwardNormal.SelfMul(this.m_currentTraction * force),
+            currentForwardNormal.Scale(this.m_currentTraction * force),
             this.m_body.GetWorldCenter(),
         );
     }
@@ -369,7 +368,7 @@ export class TopdownCar extends Test {
     public m_controlState: number;
 
     constructor() {
-        super(b2Vec2_zero);
+        super(b2Vec2.ZERO);
 
         // this.m_destructionListener = new MyDestructionListener(this);
         this.m_world.SetDestructionListener(this.m_destructionListener);

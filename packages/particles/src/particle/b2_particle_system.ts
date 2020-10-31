@@ -31,7 +31,6 @@ import {
     b2EdgeShape,
     b2ShapeType,
     b2ChainShape,
-    b2InvSqrt,
     b2TimeStep,
     b2Clamp,
     b2Rot,
@@ -378,7 +377,7 @@ export class b2ParticleContact {
             this.indexB === rhs.indexB &&
             this.flags === rhs.flags &&
             Math.abs(this.weight - rhs.weight) < MAX_WEIGHT_DIFF &&
-            b2Vec2.DistanceSquaredVV(this.normal, rhs.normal) < MAX_NORMAL_DIFF_SQ
+            b2Vec2.DistanceSquared(this.normal, rhs.normal) < MAX_NORMAL_DIFF_SQ
         );
     }
 }
@@ -1644,8 +1643,8 @@ export class b2ParticleSystem {
             const b = contact.indexB;
             const n = contact.normal;
             /// b2Vec2 v = m_velocityBuffer.data[b] - m_velocityBuffer.data[a];
-            const v = b2Vec2.SubVV(vel_data[b], vel_data[a], s_v);
-            const vn = b2Vec2.DotVV(v, n);
+            const v = b2Vec2.Subtract(vel_data[b], vel_data[a], s_v);
+            const vn = b2Vec2.Dot(v, n);
             if (vn < 0) {
                 sum_v2 += vn * vn;
             }
@@ -1818,10 +1817,10 @@ export class b2ParticleSystem {
         const numParticles = lastIndex - firstIndex;
         const totalMass = numParticles * this.GetParticleMass();
         /// const b2Vec2 velocityDelta = impulse / totalMass;
-        const velocityDelta = new b2Vec2().Copy(impulse).SelfMul(1 / totalMass);
+        const velocityDelta = new b2Vec2().Copy(impulse).Scale(1 / totalMass);
         for (let i = firstIndex; i < lastIndex; i++) {
             /// m_velocityBuffer.data[i] += velocityDelta;
-            vel_data[i].SelfAdd(velocityDelta);
+            vel_data[i].Add(velocityDelta);
         }
     }
 
@@ -1839,7 +1838,7 @@ export class b2ParticleSystem {
         if (b2ParticleSystem.IsSignificantForce(force) && this.ForceCanBeApplied(this.m_flagsBuffer.data[index])) {
             this.PrepareForceBuffer();
             /// m_forceBuffer[index] += force;
-            this.m_forceBuffer[index].SelfAdd(force);
+            this.m_forceBuffer[index].Add(force);
         }
     }
 
@@ -1865,14 +1864,14 @@ export class b2ParticleSystem {
 
         // Early out if force does nothing (optimization).
         /// const b2Vec2 distributedForce = force / (float32)(lastIndex - firstIndex);
-        const distributedForce = new b2Vec2().Copy(force).SelfMul(1 / (lastIndex - firstIndex));
+        const distributedForce = new b2Vec2().Copy(force).Scale(1 / (lastIndex - firstIndex));
         if (b2ParticleSystem.IsSignificantForce(distributedForce)) {
             this.PrepareForceBuffer();
 
             // Distribute the force over all the particles.
             for (let i = firstIndex; i < lastIndex; i++) {
                 /// m_forceBuffer[i] += distributedForce;
-                this.m_forceBuffer[i].SelfAdd(distributedForce);
+                this.m_forceBuffer[i].Add(distributedForce);
             }
         }
     }
@@ -1991,24 +1990,24 @@ export class b2ParticleSystem {
         }
         const pos_data = this.m_positionBuffer.data;
         const aabb = s_aabb;
-        b2Vec2.MinV(point1, point2, aabb.lowerBound);
-        b2Vec2.MaxV(point1, point2, aabb.upperBound);
+        b2Vec2.Min(point1, point2, aabb.lowerBound);
+        b2Vec2.Max(point1, point2, aabb.upperBound);
         let fraction = 1;
         // solving the following equation:
         // ((1-t)*point1+t*point2-position)^2=diameter^2
         // where t is a potential fraction
         /// b2Vec2 v = point2 - point1;
-        const v = b2Vec2.SubVV(point2, point1, s_v);
-        const v2 = b2Vec2.DotVV(v, v);
+        const v = b2Vec2.Subtract(point2, point1, s_v);
+        const v2 = b2Vec2.Dot(v, v);
         const enumerator = this.GetInsideBoundsEnumerator(aabb);
 
         let i: number;
         // eslint-disable-next-line no-cond-assign
         while ((i = enumerator.GetNext()) >= 0) {
             /// b2Vec2 p = point1 - m_positionBuffer.data[i];
-            const p = b2Vec2.SubVV(point1, pos_data[i], s_p);
-            const pv = b2Vec2.DotVV(p, v);
-            const p2 = b2Vec2.DotVV(p, p);
+            const p = b2Vec2.Subtract(point1, pos_data[i], s_p);
+            const pv = b2Vec2.Dot(p, v);
+            const p2 = b2Vec2.Dot(p, p);
             const determinant = pv * pv - v2 * (p2 - this.m_squaredDiameter);
             if (determinant >= 0) {
                 const sqrtDeterminant = Math.sqrt(determinant);
@@ -2024,10 +2023,10 @@ export class b2ParticleSystem {
                     }
                 }
                 /// b2Vec2 n = p + t * v;
-                const n = b2Vec2.AddVMulSV(p, t, v, s_n);
+                const n = b2Vec2.AddScaled(p, t, v, s_n);
                 n.Normalize();
                 /// float32 f = callback(i, point1 + t * v, n, t);
-                const f = callback(i, b2Vec2.AddVMulSV(point1, t, v, s_point), n, t);
+                const f = callback(i, b2Vec2.AddScaled(point1, t, v, s_point), n, t);
                 fraction = Math.min(fraction, f);
                 if (fraction <= 0) {
                     break;
@@ -2062,8 +2061,8 @@ export class b2ParticleSystem {
         const pos_data = this.m_positionBuffer.data;
         for (let i = 0; i < particleCount; i++) {
             const p = pos_data[i];
-            b2Vec2.MinV(aabb.lowerBound, p, aabb.lowerBound);
-            b2Vec2.MaxV(aabb.upperBound, p, aabb.upperBound);
+            b2Vec2.Min(aabb.lowerBound, p, aabb.lowerBound);
+            b2Vec2.Max(aabb.upperBound, p, aabb.upperBound);
         }
         aabb.lowerBound.x -= this.m_particleDiameter;
         aabb.lowerBound.y -= this.m_particleDiameter;
@@ -2315,16 +2314,16 @@ export class b2ParticleSystem {
         const particleDef = new b2ParticleDef();
         particleDef.flags = groupDef.flags ?? 0;
         /// particleDef.position = b2Mul(xf, p);
-        b2Transform.MulXV(xf, p, particleDef.position);
+        b2Transform.MultiplyVec2(xf, p, particleDef.position);
         /// particleDef.velocity =
         ///  groupDef.linearVelocity +
         ///  b2Cross(groupDef.angularVelocity,
         ///      particleDef.position - groupDef.position);
-        b2Vec2.AddVV(
+        b2Vec2.Add(
             groupDef.linearVelocity ?? b2Vec2.ZERO,
-            b2Vec2.CrossSV(
+            b2Vec2.CrossScalarVec2(
                 groupDef.angularVelocity ?? 0,
-                b2Vec2.SubVV(particleDef.position, groupDef.position ?? b2Vec2.ZERO, b2Vec2.s_t0),
+                b2Vec2.Subtract(particleDef.position, groupDef.position ?? b2Vec2.ZERO, b2Vec2.s_t0),
                 b2Vec2.s_t0,
             ),
             particleDef.velocity,
@@ -2354,12 +2353,12 @@ export class b2ParticleSystem {
                 edge = s_edge;
                 (shape as b2ChainShape).GetChildEdge(edge, childIndex);
             }
-            const d = b2Vec2.SubVV(edge.m_vertex2, edge.m_vertex1, s_d);
+            const d = b2Vec2.Subtract(edge.m_vertex2, edge.m_vertex1, s_d);
             const edgeLength = d.Length();
 
             while (positionOnEdge < edgeLength) {
                 /// b2Vec2 p = edge.m_vertex1 + positionOnEdge / edgeLength * d;
-                const p = b2Vec2.AddVMulSV(edge.m_vertex1, positionOnEdge / edgeLength, d, s_p);
+                const p = b2Vec2.AddScaled(edge.m_vertex1, positionOnEdge / edgeLength, d, s_p);
                 this.CreateParticleForGroup(groupDef, xf, p);
                 positionOnEdge += stride;
             }
@@ -2565,7 +2564,7 @@ export class b2ParticleSystem {
                     pair.flags = contact.flags;
                     pair.strength = Math.min(groupA ? groupA.m_strength : 1, groupB ? groupB.m_strength : 1);
                     /// pair.distance = b2Distance(pos_data[a], pos_data[b]); // TODO: this was wrong!
-                    pair.distance = b2Vec2.DistanceVV(pos_data[a], pos_data[b]);
+                    pair.distance = b2Vec2.Distance(pos_data[a], pos_data[b]);
                 }
                 /// std::stable_sort(m_pairBuffer.Begin(), m_pairBuffer.End(), ComparePairIndices);
                 std_stable_sort(
@@ -2610,14 +2609,14 @@ export class b2ParticleSystem {
                     const pa = pos_data[a];
                     const pb = pos_data[b];
                     const pc = pos_data[c];
-                    const dab = b2Vec2.SubVV(pa, pb, s_dab);
-                    const dbc = b2Vec2.SubVV(pb, pc, s_dbc);
-                    const dca = b2Vec2.SubVV(pc, pa, s_dca);
+                    const dab = b2Vec2.Subtract(pa, pb, s_dab);
+                    const dbc = b2Vec2.Subtract(pb, pc, s_dbc);
+                    const dca = b2Vec2.Subtract(pc, pa, s_dca);
                     const maxDistanceSquared = b2_maxTriadDistanceSquared * this.m_squaredDiameter;
                     if (
-                        b2Vec2.DotVV(dab, dab) > maxDistanceSquared ||
-                        b2Vec2.DotVV(dbc, dbc) > maxDistanceSquared ||
-                        b2Vec2.DotVV(dca, dca) > maxDistanceSquared
+                        b2Vec2.Dot(dab, dab) > maxDistanceSquared ||
+                        b2Vec2.Dot(dbc, dbc) > maxDistanceSquared ||
+                        b2Vec2.Dot(dca, dca) > maxDistanceSquared
                     ) {
                         return;
                     }
@@ -2634,22 +2633,22 @@ export class b2ParticleSystem {
                         Math.min(groupA ? groupA.m_strength : 1, groupB ? groupB.m_strength : 1),
                         groupC ? groupC.m_strength : 1,
                     );
-                    /// let midPoint = b2Vec2.MulSV(1.0 / 3.0, b2Vec2.AddVV(pa, b2Vec2.AddVV(pb, pc, new b2Vec2()), new b2Vec2()), new b2Vec2());
+                    /// let midPoint = b2Vec2.Scale(1.0 / 3.0, b2Vec2.Add(pa, b2Vec2.Add(pb, pc, new b2Vec2()), new b2Vec2()), new b2Vec2());
                     const midPoint_x = (pa.x + pb.x + pc.x) / 3.0;
                     const midPoint_y = (pa.y + pb.y + pc.y) / 3.0;
-                    /// triad.pa = b2Vec2.SubVV(pa, midPoint, new b2Vec2());
+                    /// triad.pa = b2Vec2.Subtract(pa, midPoint, new b2Vec2());
                     triad.pa.x = pa.x - midPoint_x;
                     triad.pa.y = pa.y - midPoint_y;
-                    /// triad.pb = b2Vec2.SubVV(pb, midPoint, new b2Vec2());
+                    /// triad.pb = b2Vec2.Subtract(pb, midPoint, new b2Vec2());
                     triad.pb.x = pb.x - midPoint_x;
                     triad.pb.y = pb.y - midPoint_y;
-                    /// triad.pc = b2Vec2.SubVV(pc, midPoint, new b2Vec2());
+                    /// triad.pc = b2Vec2.Subtract(pc, midPoint, new b2Vec2());
                     triad.pc.x = pc.x - midPoint_x;
                     triad.pc.y = pc.y - midPoint_y;
-                    triad.ka = -b2Vec2.DotVV(dca, dab);
-                    triad.kb = -b2Vec2.DotVV(dab, dbc);
-                    triad.kc = -b2Vec2.DotVV(dbc, dca);
-                    triad.s = b2Vec2.CrossVV(pa, pb) + b2Vec2.CrossVV(pb, pc) + b2Vec2.CrossVV(pc, pa);
+                    triad.ka = -b2Vec2.Dot(dca, dab);
+                    triad.kb = -b2Vec2.Dot(dab, dbc);
+                    triad.kc = -b2Vec2.Dot(dbc, dca);
+                    triad.s = b2Vec2.Cross(pa, pb) + b2Vec2.Cross(pb, pc) + b2Vec2.Cross(pc, pa);
                 }
             });
             /// std::stable_sort(m_triadBuffer.Begin(), m_triadBuffer.End(), CompareTriadIndices);
@@ -2738,7 +2737,7 @@ export class b2ParticleSystem {
             if (listA.count < listB.count) {
                 const tmp = listA;
                 listA = listB;
-                listB = tmp; /// b2Swap(listA, listB);
+                listB = tmp;
             }
             // DEBUG: b2Assert(listA.count >= listB.count);
             b2ParticleSystem.MergeParticleLists(listA, listB);
@@ -3033,10 +3032,10 @@ export class b2ParticleSystem {
         const flags_data = this.m_flagsBuffer.data;
         const pos_data = this.m_positionBuffer.data;
         /// b2Vec2 d = m_positionBuffer.data[b] - m_positionBuffer.data[a];
-        const d = b2Vec2.SubVV(pos_data[b], pos_data[a], b2ParticleSystem.AddContact_s_d);
-        const distBtParticlesSq = b2Vec2.DotVV(d, d);
+        const d = b2Vec2.Subtract(pos_data[b], pos_data[a], b2ParticleSystem.AddContact_s_d);
+        const distBtParticlesSq = b2Vec2.Dot(d, d);
         if (distBtParticlesSq > 0 && distBtParticlesSq < this.m_squaredDiameter) {
-            const invD = b2InvSqrt(distBtParticlesSq);
+            const invD = 1 / Math.sqrt(distBtParticlesSq);
             const contact = this.m_contactBuffer.data[this.m_contactBuffer.Append()];
             contact.indexA = a;
             contact.indexB = b;
@@ -3399,7 +3398,7 @@ export class b2ParticleSystem {
             // The particle positions can be updated only at the end of substep.
             for (let i = 0; i < this.m_count; i++) {
                 /// m_positionBuffer.data[i] += subStep.dt * m_velocityBuffer.data[i];
-                this.m_positionBuffer.data[i].SelfMulAdd(subStep.dt, this.m_velocityBuffer.data[i]);
+                this.m_positionBuffer.data[i].AddScaled(subStep.dt, this.m_velocityBuffer.data[i]);
             }
         }
     }
@@ -3447,10 +3446,10 @@ export class b2ParticleSystem {
         const criticalVelocitySquared = this.GetCriticalVelocitySquared(step);
         for (let i = 0; i < this.m_count; i++) {
             const v = vel_data[i];
-            const v2 = b2Vec2.DotVV(v, v);
+            const v2 = b2Vec2.Dot(v, v);
             if (v2 > criticalVelocitySquared) {
                 /// v *= Math.sqrt(criticalVelocitySquared / v2);
-                v.SelfMul(Math.sqrt(criticalVelocitySquared / v2));
+                v.Scale(Math.sqrt(criticalVelocitySquared / v2));
             }
         }
     }
@@ -3459,9 +3458,9 @@ export class b2ParticleSystem {
         const s_gravity = b2ParticleSystem.SolveGravity_s_gravity;
         const vel_data = this.m_velocityBuffer.data;
         /// b2Vec2 gravity = step.dt * m_def.gravityScale * m_world.GetGravity();
-        const gravity = b2Vec2.MulSV(step.dt * this.m_def.gravityScale, this.m_world.GetGravity(), s_gravity);
+        const gravity = b2Vec2.Scale(step.dt * this.m_def.gravityScale, this.m_world.GetGravity(), s_gravity);
         for (let i = 0; i < this.m_count; i++) {
-            vel_data[i].SelfAdd(gravity);
+            vel_data[i].Add(gravity);
         }
     }
 
@@ -3503,9 +3502,9 @@ export class b2ParticleSystem {
                 /// b2AABB aabb;
                 const aabb = s_aabb;
                 /// aabb.lowerBound = Math.min(pa, pb);
-                b2Vec2.MinV(pa, pb, aabb.lowerBound);
+                b2Vec2.Min(pa, pb, aabb.lowerBound);
                 /// aabb.upperBound = Math.max(pa, pb);
-                b2Vec2.MaxV(pa, pb, aabb.upperBound);
+                b2Vec2.Max(pa, pb, aabb.upperBound);
                 const aGroup = this.m_groupBuffer[a];
                 const bGroup = this.m_groupBuffer[b];
                 /// b2Vec2 va = GetLinearVelocity(aGroup, a, pa);
@@ -3513,9 +3512,9 @@ export class b2ParticleSystem {
                 /// b2Vec2 vb = GetLinearVelocity(bGroup, b, pb);
                 const vb = this.GetLinearVelocity(bGroup, b, pb, s_vb);
                 /// b2Vec2 pba = pb - pa;
-                const pba = b2Vec2.SubVV(pb, pa, s_pba);
+                const pba = b2Vec2.Subtract(pb, pa, s_pba);
                 /// b2Vec2 vba = vb - va;
-                const vba = b2Vec2.SubVV(vb, va, s_vba);
+                const vba = b2Vec2.Subtract(vb, va, s_vba);
                 /// InsideBoundsEnumerator enumerator = GetInsideBoundsEnumerator(aabb);
                 const enumerator = this.GetInsideBoundsEnumerator(aabb);
                 let c: number;
@@ -3532,12 +3531,12 @@ export class b2ParticleSystem {
                         // connecting the particles a and b at the time of t.
                         // if s is between 0 and 1, c will pass between a and b.
                         /// b2Vec2 pca = pc - pa;
-                        const pca = b2Vec2.SubVV(pc, pa, s_pca);
+                        const pca = b2Vec2.Subtract(pc, pa, s_pca);
                         /// b2Vec2 vca = vc - va;
-                        const vca = b2Vec2.SubVV(vc, va, s_vca);
-                        const e2 = b2Vec2.CrossVV(vba, vca);
-                        const e1 = b2Vec2.CrossVV(pba, vca) - b2Vec2.CrossVV(pca, vba);
-                        const e0 = b2Vec2.CrossVV(pba, pca);
+                        const vca = b2Vec2.Subtract(vc, va, s_vca);
+                        const e2 = b2Vec2.Cross(vba, vca);
+                        const e1 = b2Vec2.Cross(pba, vca) - b2Vec2.Cross(pca, vba);
+                        const e0 = b2Vec2.Cross(pba, pca);
                         let s: number;
                         let t: number;
                         /// b2Vec2 qba, qca;
@@ -3552,10 +3551,10 @@ export class b2ParticleSystem {
                                 continue;
                             }
                             /// qba = pba + t * vba;
-                            b2Vec2.AddVMulSV(pba, t, vba, qba);
+                            b2Vec2.AddScaled(pba, t, vba, qba);
                             /// qca = pca + t * vca;
-                            b2Vec2.AddVMulSV(pca, t, vca, qca);
-                            s = b2Vec2.DotVV(qba, qca) / b2Vec2.DotVV(qba, qba);
+                            b2Vec2.AddScaled(pca, t, vca, qca);
+                            s = b2Vec2.Dot(qba, qca) / b2Vec2.Dot(qba, qba);
                             if (!(s >= 0 && s <= 1)) {
                                 continue;
                             }
@@ -3567,7 +3566,6 @@ export class b2ParticleSystem {
                             const sqrtDet = Math.sqrt(det);
                             let t1 = (-e1 - sqrtDet) / (2 * e2);
                             let t2 = (-e1 + sqrtDet) / (2 * e2);
-                            /// if (t1 > t2) b2Swap(t1, t2);
                             if (t1 > t2) {
                                 const tmp = t1;
                                 t1 = t2;
@@ -3575,22 +3573,22 @@ export class b2ParticleSystem {
                             }
                             t = t1;
                             /// qba = pba + t * vba;
-                            b2Vec2.AddVMulSV(pba, t, vba, qba);
+                            b2Vec2.AddScaled(pba, t, vba, qba);
                             /// qca = pca + t * vca;
-                            b2Vec2.AddVMulSV(pca, t, vca, qca);
+                            b2Vec2.AddScaled(pca, t, vca, qca);
                             /// s = b2Dot(qba, qca) / b2Dot(qba, qba);
-                            s = b2Vec2.DotVV(qba, qca) / b2Vec2.DotVV(qba, qba);
+                            s = b2Vec2.Dot(qba, qca) / b2Vec2.Dot(qba, qba);
                             if (!(t >= 0 && t < tmax && s >= 0 && s <= 1)) {
                                 t = t2;
                                 if (!(t >= 0 && t < tmax)) {
                                     continue;
                                 }
                                 /// qba = pba + t * vba;
-                                b2Vec2.AddVMulSV(pba, t, vba, qba);
+                                b2Vec2.AddScaled(pba, t, vba, qba);
                                 /// qca = pca + t * vca;
-                                b2Vec2.AddVMulSV(pca, t, vca, qca);
+                                b2Vec2.AddScaled(pca, t, vca, qca);
                                 /// s = b2Dot(qba, qca) / b2Dot(qba, qba);
-                                s = b2Vec2.DotVV(qba, qca) / b2Vec2.DotVV(qba, qba);
+                                s = b2Vec2.Dot(qba, qca) / b2Vec2.Dot(qba, qba);
                                 if (!(s >= 0 && s <= 1)) {
                                     continue;
                                 }
@@ -3603,7 +3601,7 @@ export class b2ParticleSystem {
                         dv.x = va.x + s * vba.x - vc.x;
                         dv.y = va.y + s * vba.y - vc.y;
                         /// b2Vec2 f = GetParticleMass() * dv;
-                        const f = b2Vec2.MulSV(mass, dv, s_f);
+                        const f = b2Vec2.Scale(mass, dv, s_f);
                         if (cGroup && this.IsRigidGroup(cGroup)) {
                             // If c belongs to a rigid group, the force will be
                             // distributed in the group.
@@ -3611,21 +3609,21 @@ export class b2ParticleSystem {
                             const inertia = cGroup.GetInertia();
                             if (groupMass > 0) {
                                 /// cGroup.m_linearVelocity += 1 / mass * f;
-                                cGroup.m_linearVelocity.SelfMulAdd(1 / groupMass, f);
+                                cGroup.m_linearVelocity.AddScaled(1 / groupMass, f);
                             }
                             if (inertia > 0) {
                                 /// cGroup.m_angularVelocity += b2Cross(pc - cGroup.GetCenter(), f) / inertia;
                                 cGroup.m_angularVelocity +=
-                                    b2Vec2.CrossVV(b2Vec2.SubVV(pc, cGroup.GetCenter(), b2Vec2.s_t0), f) / inertia;
+                                    b2Vec2.Cross(b2Vec2.Subtract(pc, cGroup.GetCenter(), b2Vec2.s_t0), f) / inertia;
                             }
                         } else {
                             /// m_velocityBuffer.data[c] += dv;
-                            vel_data[c].SelfAdd(dv);
+                            vel_data[c].Add(dv);
                         }
                         // Apply a reversed force to particle c after particle
                         // movement so that momentum will be preserved.
                         /// ParticleApplyForce(c, -step.inv_dt * f);
-                        this.ParticleApplyForce(c, f.SelfMul(-step.inv_dt));
+                        this.ParticleApplyForce(c, f.Scale(-step.inv_dt));
                     }
                 }
             }
@@ -3766,9 +3764,9 @@ export class b2ParticleSystem {
             const p = pos_data[a];
             const h = this.m_accumulationBuffer[a] + pressurePerWeight * w;
             /// b2Vec2 f = velocityPerPressure * w * m * h * n;
-            const f = b2Vec2.MulSV(velocityPerPressure * w * m * h, n, s_f);
+            const f = b2Vec2.Scale(velocityPerPressure * w * m * h, n, s_f);
             /// m_velocityBuffer.data[a] -= GetParticleInvMass() * f;
-            vel_data[a].SelfMulSub(inv_mass, f);
+            vel_data[a].SubtractScaled(inv_mass, f);
             b.ApplyLinearImpulse(f, p, true);
         }
         for (let k = 0; k < this.m_contactBuffer.count; k++) {
@@ -3779,11 +3777,11 @@ export class b2ParticleSystem {
             const n = contact.normal;
             const h = this.m_accumulationBuffer[a] + this.m_accumulationBuffer[b];
             /// b2Vec2 f = velocityPerPressure * w * h * n;
-            const f = b2Vec2.MulSV(velocityPerPressure * w * h, n, s_f);
+            const f = b2Vec2.Scale(velocityPerPressure * w * h, n, s_f);
             /// m_velocityBuffer.data[a] -= f;
-            vel_data[a].SelfSub(f);
+            vel_data[a].Subtract(f);
             /// m_velocityBuffer.data[b] += f;
-            vel_data[b].SelfAdd(f);
+            vel_data[b].Add(f);
         }
     }
 
@@ -3807,16 +3805,16 @@ export class b2ParticleSystem {
             const n = contact.normal;
             const p = pos_data[a];
             /// b2Vec2 v = b.GetLinearVelocityFromWorldPoint(p) - m_velocityBuffer.data[a];
-            const v = b2Vec2.SubVV(b.GetLinearVelocityFromWorldPoint(p, b2Vec2.s_t0), vel_data[a], s_v);
-            const vn = b2Vec2.DotVV(v, n);
+            const v = b2Vec2.Subtract(b.GetLinearVelocityFromWorldPoint(p, b2Vec2.s_t0), vel_data[a], s_v);
+            const vn = b2Vec2.Dot(v, n);
             if (vn < 0) {
                 const damping = Math.max(linearDamping * w, Math.min(-quadraticDamping * vn, 0.5));
                 /// b2Vec2 f = damping * m * vn * n;
-                const f = b2Vec2.MulSV(damping * m * vn, n, s_f);
+                const f = b2Vec2.Scale(damping * m * vn, n, s_f);
                 /// m_velocityBuffer.data[a] += GetParticleInvMass() * f;
-                vel_data[a].SelfMulAdd(inv_mass, f);
+                vel_data[a].AddScaled(inv_mass, f);
                 /// b.ApplyLinearImpulse(-f, p, true);
-                b.ApplyLinearImpulse(f.SelfNeg(), p, true);
+                b.ApplyLinearImpulse(f.Negate(), p, true);
             }
         }
         for (let k = 0; k < this.m_contactBuffer.count; k++) {
@@ -3826,17 +3824,17 @@ export class b2ParticleSystem {
             const w = contact.weight;
             const n = contact.normal;
             /// b2Vec2 v = m_velocityBuffer.data[b] - m_velocityBuffer.data[a];
-            const v = b2Vec2.SubVV(vel_data[b], vel_data[a], s_v);
-            const vn = b2Vec2.DotVV(v, n);
+            const v = b2Vec2.Subtract(vel_data[b], vel_data[a], s_v);
+            const vn = b2Vec2.Dot(v, n);
             if (vn < 0) {
                 /// float32 damping = Math.max(linearDamping * w, Math.min(- quadraticDamping * vn, 0.5f));
                 const damping = Math.max(linearDamping * w, Math.min(-quadraticDamping * vn, 0.5));
                 /// b2Vec2 f = damping * vn * n;
-                const f = b2Vec2.MulSV(damping * vn, n, s_f);
+                const f = b2Vec2.Scale(damping * vn, n, s_f);
                 /// this.m_velocityBuffer.data[a] += f;
-                vel_data[a].SelfAdd(f);
+                vel_data[a].Add(f);
                 /// this.m_velocityBuffer.data[b] -= f;
-                vel_data[b].SelfSub(f);
+                vel_data[b].Subtract(f);
             }
         }
     }
@@ -3870,12 +3868,12 @@ export class b2ParticleSystem {
                 const w = contact.weight;
                 const p = pos_data[a];
                 /// b2Vec2 v = b.GetLinearVelocityFromWorldPoint(p) - aGroup.GetLinearVelocityFromWorldPoint(p);
-                const v = b2Vec2.SubVV(
+                const v = b2Vec2.Subtract(
                     b.GetLinearVelocityFromWorldPoint(p, s_t0),
                     aGroup.GetLinearVelocityFromWorldPoint(p, s_t1),
                     s_v,
                 );
-                const vn = b2Vec2.DotVV(v, n);
+                const vn = b2Vec2.Dot(v, n);
                 if (vn < 0) {
                     // The group's average velocity at particle position 'p' is pushing
                     // the particle into the body.
@@ -3918,7 +3916,7 @@ export class b2ParticleSystem {
                     /// this.ApplyDamping(invMassA, invInertiaA, tangentDistanceA, true, aGroup, a, f, n);
                     this.ApplyDamping(invMassA[0], invInertiaA[0], tangentDistanceA[0], true, aGroup, a, f, n);
                     /// b.ApplyLinearImpulse(-f * n, p, true);
-                    b.ApplyLinearImpulse(b2Vec2.MulSV(-f, n, b2Vec2.s_t0), p, true);
+                    b.ApplyLinearImpulse(b2Vec2.Scale(-f, n, b2Vec2.s_t0), p, true);
                 }
             }
         }
@@ -3934,14 +3932,14 @@ export class b2ParticleSystem {
             const bRigid = this.IsRigidGroup(bGroup);
             if (aGroup !== bGroup && (aRigid || bRigid)) {
                 /// b2Vec2 p = 0.5f * (this.m_positionBuffer.data[a] + this.m_positionBuffer.data[b]);
-                const p = b2Vec2.MidVV(pos_data[a], pos_data[b], s_p);
+                const p = b2Vec2.Mid(pos_data[a], pos_data[b], s_p);
                 /// b2Vec2 v = GetLinearVelocity(bGroup, b, p) - GetLinearVelocity(aGroup, a, p);
-                const v = b2Vec2.SubVV(
+                const v = b2Vec2.Subtract(
                     this.GetLinearVelocity(bGroup, b, p, s_t0),
                     this.GetLinearVelocity(aGroup, a, p, s_t1),
                     s_v,
                 );
-                const vn = b2Vec2.DotVV(v, n);
+                const vn = b2Vec2.Dot(v, n);
                 if (vn < 0) {
                     /// this.InitDampingParameterWithRigidGroupOrParticle(&invMassA, &invInertiaA, &tangentDistanceA, aRigid, aGroup, a, p, n);
                     this.InitDampingParameterWithRigidGroupOrParticle(
@@ -4013,16 +4011,16 @@ export class b2ParticleSystem {
                 const n = contact.normal;
                 const p = pos_data[a];
                 /// b2Vec2 v = b.GetLinearVelocityFromWorldPoint(p) - m_velocityBuffer.data[a];
-                const v = b2Vec2.SubVV(b.GetLinearVelocityFromWorldPoint(p, b2Vec2.s_t0), vel_data[a], s_v);
+                const v = b2Vec2.Subtract(b.GetLinearVelocityFromWorldPoint(p, b2Vec2.s_t0), vel_data[a], s_v);
                 /// float32 vn = b2Dot(v, n);
-                const vn = b2Vec2.DotVV(v, n);
+                const vn = b2Vec2.Dot(v, n);
                 if (vn < 0) {
                     /// b2Vec2 f = 0.5f * m * vn * n;
-                    const f = b2Vec2.MulSV(0.5 * m * vn, n, s_f);
+                    const f = b2Vec2.Scale(0.5 * m * vn, n, s_f);
                     /// m_velocityBuffer.data[a] += GetParticleInvMass() * f;
-                    vel_data[a].SelfMulAdd(inv_mass, f);
+                    vel_data[a].AddScaled(inv_mass, f);
                     /// b.ApplyLinearImpulse(-f, p, true);
-                    b.ApplyLinearImpulse(f.SelfNeg(), p, true);
+                    b.ApplyLinearImpulse(f.Negate(), p, true);
                 }
             }
         }
@@ -4053,13 +4051,13 @@ export class b2ParticleSystem {
                 group.UpdateStatistics();
                 /// b2Rot rotation(step.dt * group.m_angularVelocity);
                 const rotation = s_rotation;
-                rotation.SetAngle(step.dt * group.m_angularVelocity);
+                rotation.Set(step.dt * group.m_angularVelocity);
                 /// b2Transform transform(group.m_center + step.dt * group.m_linearVelocity - b2Mul(rotation, group.m_center), rotation);
-                const position = b2Vec2.AddVV(
+                const position = b2Vec2.Add(
                     group.m_center,
-                    b2Vec2.SubVV(
-                        b2Vec2.MulSV(step.dt, group.m_linearVelocity, b2Vec2.s_t0),
-                        b2Rot.MulRV(rotation, group.m_center, b2Vec2.s_t1),
+                    b2Vec2.Subtract(
+                        b2Vec2.Scale(step.dt, group.m_linearVelocity, b2Vec2.s_t0),
+                        b2Rot.MultiplyVec2(rotation, group.m_center, b2Vec2.s_t1),
                         b2Vec2.s_t0,
                     ),
                     s_position,
@@ -4067,7 +4065,7 @@ export class b2ParticleSystem {
                 const transform = s_transform;
                 transform.SetPositionRotation(position, rotation);
                 /// group.m_transform = b2Mul(transform, group.m_transform);
-                b2Transform.MulXX(transform, group.m_transform, group.m_transform);
+                b2Transform.Multiply(transform, group.m_transform, group.m_transform);
                 const velocityTransform = s_velocityTransform;
                 velocityTransform.p.x = step.inv_dt * transform.p.x;
                 velocityTransform.p.y = step.inv_dt * transform.p.y;
@@ -4075,7 +4073,7 @@ export class b2ParticleSystem {
                 velocityTransform.q.c = step.inv_dt * (transform.q.c - 1);
                 for (let i = group.m_firstIndex; i < group.m_lastIndex; i++) {
                     /// m_velocityBuffer.data[i] = b2Mul(velocityTransform, m_positionBuffer.data[i]);
-                    b2Transform.MulXV(velocityTransform, pos_data[i], vel_data[i]);
+                    b2Transform.MultiplyVec2(velocityTransform, pos_data[i], vel_data[i]);
                 }
             }
         }
@@ -4117,11 +4115,11 @@ export class b2ParticleSystem {
                 const vb = vel_data[b];
                 const vc = vel_data[c];
                 /// pa += step.dt * va;
-                pa.SelfMulAdd(step.dt, va);
+                pa.AddScaled(step.dt, va);
                 /// pb += step.dt * vb;
-                pb.SelfMulAdd(step.dt, vb);
+                pb.AddScaled(step.dt, vb);
                 /// pc += step.dt * vc;
-                pc.SelfMulAdd(step.dt, vc);
+                pc.AddScaled(step.dt, vc);
                 /// b2Vec2 midPoint = (float32) 1 / 3 * (pa + pb + pc);
                 const midPoint_x = (pa.x + pb.x + pc.x) / 3.0;
                 const midPoint_y = (pa.y + pb.y + pc.y) / 3.0;
@@ -4136,10 +4134,10 @@ export class b2ParticleSystem {
                 pc.y -= midPoint_y;
                 /// b2Rot r;
                 const r = s_r;
-                r.s = b2Vec2.CrossVV(oa, pa) + b2Vec2.CrossVV(ob, pb) + b2Vec2.CrossVV(oc, pc);
-                r.c = b2Vec2.DotVV(oa, pa) + b2Vec2.DotVV(ob, pb) + b2Vec2.DotVV(oc, pc);
+                r.s = b2Vec2.Cross(oa, pa) + b2Vec2.Cross(ob, pb) + b2Vec2.Cross(oc, pc);
+                r.c = b2Vec2.Dot(oa, pa) + b2Vec2.Dot(ob, pb) + b2Vec2.Dot(oc, pc);
                 const r2 = r.s * r.s + r.c * r.c;
-                let invR = b2InvSqrt(r2);
+                let invR = 1 / Math.sqrt(r2);
                 if (!Number.isFinite(invR)) {
                     invR = 1.98177537e19;
                 }
@@ -4148,20 +4146,20 @@ export class b2ParticleSystem {
                 /// r.angle = Math.atan2(r.s, r.c); // TODO: optimize
                 const strength = elasticStrength * triad.strength;
                 /// va += strength * (b2Mul(r, oa) - pa);
-                b2Rot.MulRV(r, oa, s_t0);
-                b2Vec2.SubVV(s_t0, pa, s_t0);
-                b2Vec2.MulSV(strength, s_t0, s_t0);
-                va.SelfAdd(s_t0);
+                b2Rot.MultiplyVec2(r, oa, s_t0);
+                b2Vec2.Subtract(s_t0, pa, s_t0);
+                b2Vec2.Scale(strength, s_t0, s_t0);
+                va.Add(s_t0);
                 /// vb += strength * (b2Mul(r, ob) - pb);
-                b2Rot.MulRV(r, ob, s_t0);
-                b2Vec2.SubVV(s_t0, pb, s_t0);
-                b2Vec2.MulSV(strength, s_t0, s_t0);
-                vb.SelfAdd(s_t0);
+                b2Rot.MultiplyVec2(r, ob, s_t0);
+                b2Vec2.Subtract(s_t0, pb, s_t0);
+                b2Vec2.Scale(strength, s_t0, s_t0);
+                vb.Add(s_t0);
                 /// vc += strength * (b2Mul(r, oc) - pc);
-                b2Rot.MulRV(r, oc, s_t0);
-                b2Vec2.SubVV(s_t0, pc, s_t0);
-                b2Vec2.MulSV(strength, s_t0, s_t0);
-                vc.SelfAdd(s_t0);
+                b2Rot.MultiplyVec2(r, oc, s_t0);
+                b2Vec2.Subtract(s_t0, pc, s_t0);
+                b2Vec2.Scale(strength, s_t0, s_t0);
+                vc.Add(s_t0);
             }
         }
     }
@@ -4200,11 +4198,11 @@ export class b2ParticleSystem {
                 /// b2Vec2& vb = m_velocityBuffer.data[b];
                 const vb = vel_data[b];
                 /// pa += step.dt * va;
-                pa.SelfMulAdd(step.dt, va);
+                pa.AddScaled(step.dt, va);
                 /// pb += step.dt * vb;
-                pb.SelfMulAdd(step.dt, vb);
+                pb.AddScaled(step.dt, vb);
                 /// b2Vec2 d = pb - pa;
-                const d = b2Vec2.SubVV(pb, pa, s_d);
+                const d = b2Vec2.Subtract(pb, pa, s_d);
                 /// float32 r0 = pair.distance;
                 const r0 = pair.distance;
                 /// float32 r1 = d.Length();
@@ -4212,11 +4210,11 @@ export class b2ParticleSystem {
                 /// float32 strength = springStrength * pair.strength;
                 const strength = springStrength * pair.strength;
                 /// b2Vec2 f = strength * (r0 - r1) / r1 * d;
-                const f = b2Vec2.MulSV((strength * (r0 - r1)) / r1, d, s_f);
+                const f = b2Vec2.Scale((strength * (r0 - r1)) / r1, d, s_f);
                 /// va -= f;
-                va.SelfSub(f);
+                va.Subtract(f);
                 /// vb += f;
-                vb.SelfAdd(f);
+                vb.Add(f);
             }
         }
     }
@@ -4247,11 +4245,11 @@ export class b2ParticleSystem {
                 const w = contact.weight;
                 const n = contact.normal;
                 /// b2Vec2 weightedNormal = (1 - w) * w * n;
-                const weightedNormal = b2Vec2.MulSV((1 - w) * w, n, s_weightedNormal);
+                const weightedNormal = b2Vec2.Scale((1 - w) * w, n, s_weightedNormal);
                 /// m_accumulation2Buffer[a] -= weightedNormal;
-                this.m_accumulation2Buffer[a].SelfSub(weightedNormal);
+                this.m_accumulation2Buffer[a].Subtract(weightedNormal);
                 /// m_accumulation2Buffer[b] += weightedNormal;
-                this.m_accumulation2Buffer[b].SelfAdd(weightedNormal);
+                this.m_accumulation2Buffer[b].Add(weightedNormal);
             }
         }
         const criticalVelocity = this.GetCriticalVelocity(step);
@@ -4267,16 +4265,15 @@ export class b2ParticleSystem {
                 const n = contact.normal;
                 const h = this.m_weightBuffer[a] + this.m_weightBuffer[b];
                 /// b2Vec2 s = m_accumulation2Buffer[b] - m_accumulation2Buffer[a];
-                const s = b2Vec2.SubVV(this.m_accumulation2Buffer[b], this.m_accumulation2Buffer[a], s_s);
+                const s = b2Vec2.Subtract(this.m_accumulation2Buffer[b], this.m_accumulation2Buffer[a], s_s);
                 const fn =
-                    Math.min(pressureStrength * (h - 2) + normalStrength * b2Vec2.DotVV(s, n), maxVelocityVariation) *
-                    w;
+                    Math.min(pressureStrength * (h - 2) + normalStrength * b2Vec2.Dot(s, n), maxVelocityVariation) * w;
                 /// b2Vec2 f = fn * n;
-                const f = b2Vec2.MulSV(fn, n, s_f);
+                const f = b2Vec2.Scale(fn, n, s_f);
                 /// m_velocityBuffer.data[a] -= f;
-                vel_data[a].SelfSub(f);
+                vel_data[a].Subtract(f);
                 /// m_velocityBuffer.data[b] += f;
-                vel_data[b].SelfAdd(f);
+                vel_data[b].Add(f);
             }
         }
     }
@@ -4303,13 +4300,13 @@ export class b2ParticleSystem {
                 const m = contact.mass;
                 const p = pos_data[a];
                 /// b2Vec2 v = b.GetLinearVelocityFromWorldPoint(p) - m_velocityBuffer.data[a];
-                const v = b2Vec2.SubVV(b.GetLinearVelocityFromWorldPoint(p, b2Vec2.s_t0), vel_data[a], s_v);
+                const v = b2Vec2.Subtract(b.GetLinearVelocityFromWorldPoint(p, b2Vec2.s_t0), vel_data[a], s_v);
                 /// b2Vec2 f = viscousStrength * m * w * v;
-                const f = b2Vec2.MulSV(viscousStrength * m * w, v, s_f);
+                const f = b2Vec2.Scale(viscousStrength * m * w, v, s_f);
                 /// m_velocityBuffer.data[a] += GetParticleInvMass() * f;
-                vel_data[a].SelfMulAdd(inv_mass, f);
+                vel_data[a].AddScaled(inv_mass, f);
                 /// b.ApplyLinearImpulse(-f, p, true);
-                b.ApplyLinearImpulse(f.SelfNeg(), p, true);
+                b.ApplyLinearImpulse(f.Negate(), p, true);
             }
         }
         for (let k = 0; k < this.m_contactBuffer.count; k++) {
@@ -4319,13 +4316,13 @@ export class b2ParticleSystem {
                 const b = contact.indexB;
                 const w = contact.weight;
                 /// b2Vec2 v = m_velocityBuffer.data[b] - m_velocityBuffer.data[a];
-                const v = b2Vec2.SubVV(vel_data[b], vel_data[a], s_v);
+                const v = b2Vec2.Subtract(vel_data[b], vel_data[a], s_v);
                 /// b2Vec2 f = viscousStrength * w * v;
-                const f = b2Vec2.MulSV(viscousStrength * w, v, s_f);
+                const f = b2Vec2.Scale(viscousStrength * w, v, s_f);
                 /// m_velocityBuffer.data[a] += f;
-                vel_data[a].SelfAdd(f);
+                vel_data[a].Add(f);
                 /// m_velocityBuffer.data[b] -= f;
-                vel_data[b].SelfSub(f);
+                vel_data[b].Subtract(f);
             }
         }
     }
@@ -4347,11 +4344,11 @@ export class b2ParticleSystem {
                     const w = contact.weight;
                     const n = contact.normal;
                     /// b2Vec2 f = repulsiveStrength * w * n;
-                    const f = b2Vec2.MulSV(repulsiveStrength * w, n, s_f);
+                    const f = b2Vec2.Scale(repulsiveStrength * w, n, s_f);
                     /// m_velocityBuffer.data[a] -= f;
-                    vel_data[a].SelfSub(f);
+                    vel_data[a].Subtract(f);
                     /// m_velocityBuffer.data[b] += f;
-                    vel_data[b].SelfAdd(f);
+                    vel_data[b].Add(f);
                 }
             }
         }
@@ -4376,8 +4373,8 @@ export class b2ParticleSystem {
                     const m = contact.mass;
                     const p = pos_data[a];
                     const n = contact.normal;
-                    const f = b2Vec2.MulSV(powderStrength * m * (w - minWeight), n, s_f);
-                    vel_data[a].SelfMulSub(inv_mass, f);
+                    const f = b2Vec2.Scale(powderStrength * m * (w - minWeight), n, s_f);
+                    vel_data[a].SubtractScaled(inv_mass, f);
                     b.ApplyLinearImpulse(f, p, true);
                 }
             }
@@ -4390,9 +4387,9 @@ export class b2ParticleSystem {
                     const a = contact.indexA;
                     const b = contact.indexB;
                     const n = contact.normal;
-                    const f = b2Vec2.MulSV(powderStrength * (w - minWeight), n, s_f);
-                    vel_data[a].SelfSub(f);
-                    vel_data[b].SelfAdd(f);
+                    const f = b2Vec2.Scale(powderStrength * (w - minWeight), n, s_f);
+                    vel_data[a].Subtract(f);
+                    vel_data[b].Add(f);
                 }
             }
         }
@@ -4414,9 +4411,9 @@ export class b2ParticleSystem {
                 const w = contact.weight;
                 const n = contact.normal;
                 const h = this.m_depthBuffer[a] + this.m_depthBuffer[b];
-                const f = b2Vec2.MulSV(ejectionStrength * h * w, n, s_f);
-                vel_data[a].SelfSub(f);
-                vel_data[b].SelfAdd(f);
+                const f = b2Vec2.Scale(ejectionStrength * h * w, n, s_f);
+                vel_data[a].Subtract(f);
+                vel_data[b].Add(f);
             }
         }
     }
@@ -4428,7 +4425,7 @@ export class b2ParticleSystem {
         const velocityPerForce = step.dt * this.GetParticleInvMass();
         for (let i = 0; i < this.m_count; i++) {
             /// m_velocityBuffer.data[i] += velocityPerForce * m_forceBuffer[i];
-            vel_data[i].SelfMulAdd(velocityPerForce, this.m_forceBuffer[i]);
+            vel_data[i].AddScaled(velocityPerForce, this.m_forceBuffer[i]);
         }
         this.m_hasForce = false;
     }
@@ -5005,9 +5002,9 @@ export class b2ParticleSystem {
             const n = s_n.Copy(contact.normal);
             // weight is 1-(inv(diameter) * distance)
             /// n *= system.m_particleDiameter * (1 - contact.weight);
-            n.SelfMul(this.m_particleDiameter * (1 - contact.weight));
+            n.Scale(this.m_particleDiameter * (1 - contact.weight));
             /// b2Vec2 pos = system.m_positionBuffer.data[contact.index] + n;
-            const pos = b2Vec2.AddVV(this.m_positionBuffer.data[contact.index], n, s_pos);
+            const pos = b2Vec2.Add(this.m_positionBuffer.data[contact.index], n, s_pos);
 
             // pos is now a point projected back along the contact normal to the
             // contact distance. If the surface makes sense for a contact, pos will
@@ -5152,7 +5149,7 @@ export class b2ParticleSystem {
         /// *invInertia = inertia > 0 ? 1 / inertia : 0;
         invInertia[0] = inertia > 0 ? 1 / inertia : 0;
         /// *tangentDistance = b2Cross(point - center, normal);
-        tangentDistance[0] = b2Vec2.CrossVV(b2Vec2.SubVV(point, center, b2Vec2.s_t0), normal);
+        tangentDistance[0] = b2Vec2.Cross(b2Vec2.Subtract(point, center, b2Vec2.s_t0), normal);
     }
 
     public InitDampingParameterWithRigidGroupOrParticle(
@@ -5220,12 +5217,12 @@ export class b2ParticleSystem {
     ): void {
         if (group && isRigidGroup) {
             /// group.m_linearVelocity += impulse * invMass * normal;
-            group.m_linearVelocity.SelfMulAdd(impulse * invMass, normal);
+            group.m_linearVelocity.AddScaled(impulse * invMass, normal);
             /// group.m_angularVelocity += impulse * tangentDistance * invInertia;
             group.m_angularVelocity += impulse * tangentDistance * invInertia;
         } else {
             /// m_velocityBuffer.data[particleIndex] += impulse * invMass * normal;
-            this.m_velocityBuffer.data[particleIndex].SelfMulAdd(impulse * invMass, normal);
+            this.m_velocityBuffer.data[particleIndex].AddScaled(impulse * invMass, normal);
         }
     }
 }

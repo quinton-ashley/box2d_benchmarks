@@ -55,10 +55,10 @@ export class Pyramid extends Test {
                     });
                     body.CreateFixture(shape, 5.0);
 
-                    y.SelfAdd(deltaY);
+                    y.Add(deltaY);
                 }
 
-                x.SelfAdd(deltaX);
+                x.Add(deltaX);
             }
         }
     }

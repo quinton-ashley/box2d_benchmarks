@@ -62,7 +62,7 @@ export class b2RopeTuning {
 
     public warmStart = false;
 
-    public Copy(other: Readonly<b2RopeTuning>): this {
+    public Copy(other: Readonly<b2RopeTuning>) {
         this.stretchingModel = other.stretchingModel;
         this.bendingModel = other.bendingModel;
         this.damping = other.damping;
@@ -206,9 +206,9 @@ export class b2Rope {
         for (let i = 0; i < this.m_count; ++i) {
             this.m_bindPositions[i].Copy(def.vertices[i]);
             // this.m_ps[i] = def.vertices[i] + this.m_position;
-            this.m_ps[i].Copy(def.vertices[i]).SelfAdd(this.m_position);
+            this.m_ps[i].Copy(def.vertices[i]).Add(this.m_position);
             // this.m_p0s[i] = def.vertices[i] + this.m_position;
-            this.m_p0s[i].Copy(def.vertices[i]).SelfAdd(this.m_position);
+            this.m_p0s[i].Copy(def.vertices[i]).Add(this.m_position);
             this.m_vs[i].SetZero();
 
             const m: number = def.masses[i];
@@ -235,7 +235,7 @@ export class b2Rope {
 
             c.i1 = i;
             c.i2 = i + 1;
-            c.L = b2Vec2.DistanceVV(p1, p2);
+            c.L = b2Vec2.Distance(p1, p2);
             c.invMass1 = this.m_invMasses[i];
             c.invMass2 = this.m_invMasses[i + 1];
             c.lambda = 0.0;
@@ -257,13 +257,13 @@ export class b2Rope {
             c.invMass2 = this.m_invMasses[i + 1];
             c.invMass3 = this.m_invMasses[i + 2];
             c.invEffectiveMass = 0.0;
-            c.L1 = b2Vec2.DistanceVV(p1, p2);
-            c.L2 = b2Vec2.DistanceVV(p2, p3);
+            c.L1 = b2Vec2.Distance(p1, p2);
+            c.L2 = b2Vec2.Distance(p2, p3);
             c.lambda = 0.0;
 
             // Pre-compute effective mass (TODO use flattened config)
-            const e1: b2Vec2 = b2Vec2.SubVV(p2, p1, new b2Vec2());
-            const e2: b2Vec2 = b2Vec2.SubVV(p3, p2, new b2Vec2());
+            const e1: b2Vec2 = b2Vec2.Subtract(p2, p1, new b2Vec2());
+            const e2: b2Vec2 = b2Vec2.Subtract(p3, p2, new b2Vec2());
             const L1sqr: number = e1.LengthSquared();
             const L2sqr: number = e2.LengthSquared();
 
@@ -274,28 +274,26 @@ export class b2Rope {
             // b2Vec2 Jd1 = (-1.0 / L1sqr) * e1.Skew();
             const Jd1: b2Vec2 = new b2Vec2()
                 .Copy(e1)
-                .SelfSkew()
-                .SelfMul(-1.0 / L1sqr);
+                .Skew()
+                .Scale(-1.0 / L1sqr);
             // b2Vec2 Jd2 = (1.0 / L2sqr) * e2.Skew();
             const Jd2: b2Vec2 = new b2Vec2()
                 .Copy(e2)
-                .SelfSkew()
-                .SelfMul(1.0 / L2sqr);
+                .Skew()
+                .Scale(1.0 / L2sqr);
 
             // b2Vec2 J1 = -Jd1;
-            const J1 = Jd1.Clone().SelfNeg();
+            const J1 = Jd1.Clone().Negate();
             // b2Vec2 J2 = Jd1 - Jd2;
-            const J2 = Jd1.Clone().SelfSub(Jd2);
+            const J2 = Jd1.Clone().Subtract(Jd2);
             // b2Vec2 J3 = Jd2;
             const J3 = Jd2.Clone();
 
             c.invEffectiveMass =
-                c.invMass1 * b2Vec2.DotVV(J1, J1) +
-                c.invMass2 * b2Vec2.DotVV(J2, J2) +
-                c.invMass3 * b2Vec2.DotVV(J3, J3);
+                c.invMass1 * b2Vec2.Dot(J1, J1) + c.invMass2 * b2Vec2.Dot(J2, J2) + c.invMass3 * b2Vec2.Dot(J3, J3);
 
             // b2Vec2 r = p3 - p1;
-            const r: b2Vec2 = b2Vec2.SubVV(p3, p1, new b2Vec2());
+            const r: b2Vec2 = b2Vec2.Subtract(p3, p1, new b2Vec2());
 
             const rr: number = r.LengthSquared();
             if (rr === 0.0) {
@@ -304,8 +302,8 @@ export class b2Rope {
 
             // a1 = h2 / (h1 + h2)
             // a2 = h1 / (h1 + h2)
-            c.alpha1 = b2Vec2.DotVV(e2, r) / rr;
-            c.alpha2 = b2Vec2.DotVV(e1, r) / rr;
+            c.alpha1 = b2Vec2.Dot(e2, r) / rr;
+            c.alpha2 = b2Vec2.Dot(e1, r) / rr;
         }
 
         this.m_gravity.Copy(def.gravity);
@@ -468,7 +466,7 @@ export class b2Rope {
             const p2: b2Vec2 = this.m_ps[c.i2].Clone();
 
             // b2Vec2 d = p2 - p1;
-            const d: b2Vec2 = p2.Clone().SelfSub(p1);
+            const d: b2Vec2 = p2.Clone().Subtract(p1);
             const L: number = d.Normalize();
 
             const sum: number = c.invMass1 + c.invMass2;
@@ -500,15 +498,15 @@ export class b2Rope {
             const p1: b2Vec2 = this.m_ps[c.i1].Clone();
             const p2: b2Vec2 = this.m_ps[c.i2].Clone();
 
-            const dp1: b2Vec2 = p1.Clone().SelfSub(this.m_p0s[c.i1]);
-            const dp2: b2Vec2 = p2.Clone().SelfSub(this.m_p0s[c.i2]);
+            const dp1: b2Vec2 = p1.Clone().Subtract(this.m_p0s[c.i1]);
+            const dp2: b2Vec2 = p2.Clone().Subtract(this.m_p0s[c.i2]);
 
             // b2Vec2 u = p2 - p1;
-            const u: b2Vec2 = p2.Clone().SelfSub(p1);
+            const u: b2Vec2 = p2.Clone().Subtract(p1);
             const L: number = u.Normalize();
 
             // b2Vec2 J1 = -u;
-            const J1: b2Vec2 = u.Clone().SelfNeg();
+            const J1: b2Vec2 = u.Clone().Negate();
             // b2Vec2 J2 = u;
             const J2: b2Vec2 = u;
 
@@ -523,7 +521,7 @@ export class b2Rope {
             const C: number = L - c.L;
 
             // This is using the initial velocities
-            const Cdot: number = b2Vec2.DotVV(J1, dp1) + b2Vec2.DotVV(J2, dp2);
+            const Cdot: number = b2Vec2.Dot(J1, dp1) + b2Vec2.Dot(J2, dp2);
 
             const B: number = C + alpha * c.lambda + sigma * Cdot;
             const sum2: number = (1.0 + sigma) * sum + alpha;
@@ -554,11 +552,11 @@ export class b2Rope {
             const p3: b2Vec2 = this.m_ps[c.i3];
 
             // b2Vec2 d1 = p2 - p1;
-            const d1 = p2.Clone().SelfSub(p1);
+            const d1 = p2.Clone().Subtract(p1);
             // b2Vec2 d2 = p3 - p2;
-            const d2 = p3.Clone().SelfSub(p2);
-            const a: number = b2Vec2.CrossVV(d1, d2);
-            const b: number = b2Vec2.DotVV(d1, d2);
+            const d2 = p3.Clone().Subtract(p2);
+            const a: number = b2Vec2.Cross(d1, d2);
+            const b: number = b2Vec2.Dot(d1, d2);
 
             const angle: number = Math.atan2(a, b);
 
@@ -580,18 +578,18 @@ export class b2Rope {
             // b2Vec2 Jd1 = (-1.0 / L1sqr) * d1.Skew();
             const Jd1: b2Vec2 = new b2Vec2()
                 .Copy(d1)
-                .SelfSkew()
-                .SelfMul(-1.0 / L1sqr);
+                .Skew()
+                .Scale(-1.0 / L1sqr);
             // b2Vec2 Jd2 = (1.0 / L2sqr) * d2.Skew();
             const Jd2: b2Vec2 = new b2Vec2()
                 .Copy(d2)
-                .SelfSkew()
-                .SelfMul(1.0 / L2sqr);
+                .Skew()
+                .Scale(1.0 / L2sqr);
 
             // b2Vec2 J1 = -Jd1;
-            const J1 = Jd1.Clone().SelfNeg();
+            const J1 = Jd1.Clone().Negate();
             // b2Vec2 J2 = Jd1 - Jd2;
-            const J2 = Jd1.Clone().SelfSub(Jd2);
+            const J2 = Jd1.Clone().Subtract(Jd2);
             // b2Vec2 J3 = Jd2;
             const J3 = Jd2;
 
@@ -600,9 +598,7 @@ export class b2Rope {
                 sum = c.invEffectiveMass;
             } else {
                 sum =
-                    c.invMass1 * b2Vec2.DotVV(J1, J1) +
-                    c.invMass2 * b2Vec2.DotVV(J2, J2) +
-                    c.invMass3 * b2Vec2.DotVV(J3, J3);
+                    c.invMass1 * b2Vec2.Dot(J1, J1) + c.invMass2 * b2Vec2.Dot(J2, J2) + c.invMass3 * b2Vec2.Dot(J3, J3);
             }
 
             if (sum === 0.0) {
@@ -637,14 +633,14 @@ export class b2Rope {
             const p2: b2Vec2 = this.m_ps[c.i2];
             const p3: b2Vec2 = this.m_ps[c.i3];
 
-            const dp1: b2Vec2 = p1.Clone().SelfSub(this.m_p0s[c.i1]);
-            const dp2: b2Vec2 = p2.Clone().SelfSub(this.m_p0s[c.i2]);
-            const dp3: b2Vec2 = p3.Clone().SelfSub(this.m_p0s[c.i3]);
+            const dp1: b2Vec2 = p1.Clone().Subtract(this.m_p0s[c.i1]);
+            const dp2: b2Vec2 = p2.Clone().Subtract(this.m_p0s[c.i2]);
+            const dp3: b2Vec2 = p3.Clone().Subtract(this.m_p0s[c.i3]);
 
             // b2Vec2 d1 = p2 - p1;
-            const d1 = p2.Clone().SelfSub(p1);
+            const d1 = p2.Clone().Subtract(p1);
             // b2Vec2 d2 = p3 - p2;
-            const d2 = p3.Clone().SelfSub(p2);
+            const d2 = p3.Clone().Subtract(p2);
 
             let L1sqr: number;
             let L2sqr: number;
@@ -661,8 +657,8 @@ export class b2Rope {
                 continue;
             }
 
-            const a: number = b2Vec2.CrossVV(d1, d2);
-            const b: number = b2Vec2.DotVV(d1, d2);
+            const a: number = b2Vec2.Cross(d1, d2);
+            const b: number = b2Vec2.Dot(d1, d2);
 
             const angle: number = Math.atan2(a, b);
 
@@ -676,18 +672,18 @@ export class b2Rope {
             // b2Vec2 Jd1 = (-1.0 / L1sqr) * d1.Skew();
             const Jd1: b2Vec2 = new b2Vec2()
                 .Copy(d1)
-                .SelfSkew()
-                .SelfMul(-1.0 / L1sqr);
+                .Skew()
+                .Scale(-1.0 / L1sqr);
             // b2Vec2 Jd2 = (1.0 / L2sqr) * d2.Skew();
             const Jd2: b2Vec2 = new b2Vec2()
                 .Copy(d2)
-                .SelfSkew()
-                .SelfMul(1.0 / L2sqr);
+                .Skew()
+                .Scale(1.0 / L2sqr);
 
             // b2Vec2 J1 = -Jd1;
-            const J1 = Jd1.Clone().SelfNeg();
+            const J1 = Jd1.Clone().Negate();
             // b2Vec2 J2 = Jd1 - Jd2;
-            const J2 = Jd1.Clone().SelfSub(Jd2);
+            const J2 = Jd1.Clone().Subtract(Jd2);
             // b2Vec2 J3 = Jd2;
             const J3 = Jd2;
 
@@ -696,9 +692,7 @@ export class b2Rope {
                 sum = c.invEffectiveMass;
             } else {
                 sum =
-                    c.invMass1 * b2Vec2.DotVV(J1, J1) +
-                    c.invMass2 * b2Vec2.DotVV(J2, J2) +
-                    c.invMass3 * b2Vec2.DotVV(J3, J3);
+                    c.invMass1 * b2Vec2.Dot(J1, J1) + c.invMass2 * b2Vec2.Dot(J2, J2) + c.invMass3 * b2Vec2.Dot(J3, J3);
             }
 
             if (sum === 0.0) {
@@ -711,7 +705,7 @@ export class b2Rope {
             const C: number = angle;
 
             // This is using the initial velocities
-            const Cdot: number = b2Vec2.DotVV(J1, dp1) + b2Vec2.DotVV(J2, dp2) + b2Vec2.DotVV(J3, dp3);
+            const Cdot: number = b2Vec2.Dot(J1, dp1) + b2Vec2.Dot(J2, dp2) + b2Vec2.Dot(J3, dp3);
 
             const B: number = C + alpha * c.lambda + sigma * Cdot;
             const sum2: number = (1.0 + sigma) * sum + alpha;
@@ -748,7 +742,7 @@ export class b2Rope {
             const p2: b2Vec2 = this.m_ps[i2].Clone();
 
             // b2Vec2 d = p2 - p1;
-            const d = p2.Clone().SelfSub(p1);
+            const d = p2.Clone().Subtract(p1);
             const L: number = d.Normalize();
 
             const sum: number = c.invMass1 + c.invMass3;
@@ -793,14 +787,14 @@ export class b2Rope {
             }
 
             // b2Vec2 dHat = (1.0 / dLen) * d;
-            const dHat = d.Clone().SelfMul(1.0 / dLen);
+            const dHat = d.Clone().Scale(1.0 / dLen);
 
             // b2Vec2 J1 = c.alpha1 * dHat;
-            const J1 = dHat.Clone().SelfMul(c.alpha1);
+            const J1 = dHat.Clone().Scale(c.alpha1);
             // b2Vec2 J2 = -dHat;
-            const J2 = dHat.Clone().SelfNeg();
+            const J2 = dHat.Clone().Negate();
             // b2Vec2 J3 = c.alpha2 * dHat;
-            const J3 = dHat.Clone().SelfMul(c.alpha2);
+            const J3 = dHat.Clone().Scale(c.alpha2);
 
             const sum: number = c.invMass1 * c.alpha1 * c.alpha1 + c.invMass2 + c.invMass3 * c.alpha2 * c.alpha2;
 
@@ -844,9 +838,9 @@ export class b2Rope {
             const v3: b2Vec2 = this.m_vs[c.i3];
 
             // b2Vec2 d1 = p2 - p1;
-            const d1 = p1.Clone().SelfSub(p1);
+            const d1 = p1.Clone().Subtract(p1);
             // b2Vec2 d2 = p3 - p2;
-            const d2 = p3.Clone().SelfSub(p2);
+            const d2 = p3.Clone().Subtract(p2);
 
             let L1sqr: number;
             let L2sqr: number;
@@ -863,8 +857,8 @@ export class b2Rope {
                 continue;
             }
 
-            const a: number = b2Vec2.CrossVV(d1, d2);
-            const b: number = b2Vec2.DotVV(d1, d2);
+            const a: number = b2Vec2.Cross(d1, d2);
+            const b: number = b2Vec2.Dot(d1, d2);
 
             const angle: number = Math.atan2(a, b);
 
@@ -878,18 +872,18 @@ export class b2Rope {
             // b2Vec2 Jd1 = (-1.0 / L1sqr) * d1.Skew();
             const Jd1: b2Vec2 = new b2Vec2()
                 .Copy(d1)
-                .SelfSkew()
-                .SelfMul(-1.0 / L1sqr);
+                .Skew()
+                .Scale(-1.0 / L1sqr);
             // b2Vec2 Jd2 = (1.0 / L2sqr) * d2.Skew();
             const Jd2: b2Vec2 = new b2Vec2()
                 .Copy(d2)
-                .SelfSkew()
-                .SelfMul(1.0 / L2sqr);
+                .Skew()
+                .Scale(1.0 / L2sqr);
 
             // b2Vec2 J1 = -Jd1;
-            const J1 = Jd1.Clone().SelfNeg();
+            const J1 = Jd1.Clone().Negate();
             // b2Vec2 J2 = Jd1 - Jd2;
-            const J2 = Jd1.Clone().SelfSub(Jd2);
+            const J2 = Jd1.Clone().Subtract(Jd2);
             // b2Vec2 J3 = Jd2;
             const J3 = Jd2;
 
@@ -898,9 +892,7 @@ export class b2Rope {
                 sum = c.invEffectiveMass;
             } else {
                 sum =
-                    c.invMass1 * b2Vec2.DotVV(J1, J1) +
-                    c.invMass2 * b2Vec2.DotVV(J2, J2) +
-                    c.invMass3 * b2Vec2.DotVV(J3, J3);
+                    c.invMass1 * b2Vec2.Dot(J1, J1) + c.invMass2 * b2Vec2.Dot(J2, J2) + c.invMass3 * b2Vec2.Dot(J3, J3);
             }
 
             if (sum === 0.0) {
@@ -913,7 +905,7 @@ export class b2Rope {
             const damper: number = 2.0 * mass * this.m_tuning.bendDamping * omega;
 
             const C: number = angle;
-            const Cdot: number = b2Vec2.DotVV(J1, v1) + b2Vec2.DotVV(J2, v2) + b2Vec2.DotVV(J3, v3);
+            const Cdot: number = b2Vec2.Dot(J1, v1) + b2Vec2.Dot(J2, v2) + b2Vec2.Dot(J3, v3);
 
             const impulse: number = -dt * (spring * C + damper * Cdot);
 

@@ -168,7 +168,7 @@ export class b2Body {
         this.m_world = world;
 
         this.m_xf.p.Copy(bd.position ?? b2Vec2.ZERO);
-        this.m_xf.q.SetAngle(bd.angle ?? 0);
+        this.m_xf.q.Set(bd.angle ?? 0);
 
         this.m_sweep.localCenter.SetZero();
         this.m_sweep.c0.Copy(this.m_xf.p);
@@ -337,10 +337,10 @@ export class b2Body {
     public SetTransformXY(x: number, y: number, angle: number): void {
         b2Assert(!this.m_world.IsLocked());
 
-        this.m_xf.q.SetAngle(angle);
+        this.m_xf.q.Set(angle);
         this.m_xf.p.Set(x, y);
 
-        b2Transform.MulXV(this.m_xf, this.m_sweep.localCenter, this.m_sweep.c);
+        b2Transform.MultiplyVec2(this.m_xf, this.m_sweep.localCenter, this.m_sweep.c);
         this.m_sweep.a = angle;
 
         this.m_sweep.c0.Copy(this.m_sweep.c);
@@ -406,7 +406,7 @@ export class b2Body {
             return;
         }
 
-        if (b2Vec2.DotVV(v, v) > 0) {
+        if (b2Vec2.Dot(v, v) > 0) {
             this.SetAwake(true);
         }
 
@@ -588,14 +588,14 @@ export class b2Body {
     /// Get the rotational inertia of the body about the local origin.
     /// @return the rotational inertia, usually in kg-m^2.
     public GetInertia(): number {
-        return this.m_I + this.m_mass * b2Vec2.DotVV(this.m_sweep.localCenter, this.m_sweep.localCenter);
+        return this.m_I + this.m_mass * b2Vec2.Dot(this.m_sweep.localCenter, this.m_sweep.localCenter);
     }
 
     /// Get the mass data of the body.
     /// @return a struct containing the mass, inertia and center of the body.
     public GetMassData(data: b2MassData): b2MassData {
         data.mass = this.m_mass;
-        data.I = this.m_I + this.m_mass * b2Vec2.DotVV(this.m_sweep.localCenter, this.m_sweep.localCenter);
+        data.I = this.m_I + this.m_mass * b2Vec2.Dot(this.m_sweep.localCenter, this.m_sweep.localCenter);
         data.center.Copy(this.m_sweep.localCenter);
         return data;
     }
@@ -626,7 +626,7 @@ export class b2Body {
         this.m_invMass = 1 / this.m_mass;
 
         if (massData.I > 0 && !this.m_fixedRotationFlag) {
-            this.m_I = massData.I - this.m_mass * b2Vec2.DotVV(massData.center, massData.center);
+            this.m_I = massData.I - this.m_mass * b2Vec2.Dot(massData.center, massData.center);
             // DEBUG: b2Assert(this.m_I > 0);
             this.m_invI = 1 / this.m_I;
         }
@@ -634,14 +634,14 @@ export class b2Body {
         // Move center of mass.
         const oldCenter: b2Vec2 = b2Body.SetMassData_s_oldCenter.Copy(this.m_sweep.c);
         this.m_sweep.localCenter.Copy(massData.center);
-        b2Transform.MulXV(this.m_xf, this.m_sweep.localCenter, this.m_sweep.c);
+        b2Transform.MultiplyVec2(this.m_xf, this.m_sweep.localCenter, this.m_sweep.c);
         this.m_sweep.c0.Copy(this.m_sweep.c);
 
         // Update center of mass velocity.
-        b2Vec2.AddVCrossSV(
+        b2Vec2.AddCrossScalarVec2(
             this.m_linearVelocity,
             this.m_angularVelocity,
-            b2Vec2.SubVV(this.m_sweep.c, oldCenter, b2Vec2.s_t0),
+            b2Vec2.Subtract(this.m_sweep.c, oldCenter, b2Vec2.s_t0),
             this.m_linearVelocity,
         );
     }
@@ -696,7 +696,7 @@ export class b2Body {
 
         if (this.m_I > 0 && !this.m_fixedRotationFlag) {
             // Center the inertia about the center of mass.
-            this.m_I -= this.m_mass * b2Vec2.DotVV(localCenter, localCenter);
+            this.m_I -= this.m_mass * b2Vec2.Dot(localCenter, localCenter);
             // DEBUG: b2Assert(this.m_I > 0);
             this.m_invI = 1 / this.m_I;
         } else {
@@ -707,14 +707,14 @@ export class b2Body {
         // Move center of mass.
         const oldCenter: b2Vec2 = b2Body.ResetMassData_s_oldCenter.Copy(this.m_sweep.c);
         this.m_sweep.localCenter.Copy(localCenter);
-        b2Transform.MulXV(this.m_xf, this.m_sweep.localCenter, this.m_sweep.c);
+        b2Transform.MultiplyVec2(this.m_xf, this.m_sweep.localCenter, this.m_sweep.c);
         this.m_sweep.c0.Copy(this.m_sweep.c);
 
         // Update center of mass velocity.
-        b2Vec2.AddVCrossSV(
+        b2Vec2.AddCrossScalarVec2(
             this.m_linearVelocity,
             this.m_angularVelocity,
-            b2Vec2.SubVV(this.m_sweep.c, oldCenter, b2Vec2.s_t0),
+            b2Vec2.Subtract(this.m_sweep.c, oldCenter, b2Vec2.s_t0),
             this.m_linearVelocity,
         );
     }
@@ -723,38 +723,38 @@ export class b2Body {
     /// @param localPoint a point on the body measured relative the the body's origin.
     /// @return the same point expressed in world coordinates.
     public GetWorldPoint<T extends XY>(localPoint: Readonly<XY>, out: T): T {
-        return b2Transform.MulXV(this.m_xf, localPoint, out);
+        return b2Transform.MultiplyVec2(this.m_xf, localPoint, out);
     }
 
     /// Get the world coordinates of a vector given the local coordinates.
     /// @param localVector a vector fixed in the body.
     /// @return the same vector expressed in world coordinates.
     public GetWorldVector<T extends XY>(localVector: Readonly<XY>, out: T): T {
-        return b2Rot.MulRV(this.m_xf.q, localVector, out);
+        return b2Rot.MultiplyVec2(this.m_xf.q, localVector, out);
     }
 
     /// Gets a local point relative to the body's origin given a world point.
     /// @param a point in world coordinates.
     /// @return the corresponding local point relative to the body's origin.
     public GetLocalPoint<T extends XY>(worldPoint: Readonly<XY>, out: T): T {
-        return b2Transform.MulTXV(this.m_xf, worldPoint, out);
+        return b2Transform.TransposeMultiplyVec2(this.m_xf, worldPoint, out);
     }
 
     /// Gets a local vector given a world vector.
     /// @param a vector in world coordinates.
     /// @return the corresponding local vector.
     public GetLocalVector<T extends XY>(worldVector: Readonly<XY>, out: T): T {
-        return b2Rot.MulTRV(this.m_xf.q, worldVector, out);
+        return b2Rot.TransposeMultiplyVec2(this.m_xf.q, worldVector, out);
     }
 
     /// Get the world linear velocity of a world point attached to this body.
     /// @param a point in world coordinates.
     /// @return the world velocity of a point.
     public GetLinearVelocityFromWorldPoint<T extends XY>(worldPoint: Readonly<XY>, out: T): T {
-        return b2Vec2.AddVCrossSV(
+        return b2Vec2.AddCrossScalarVec2(
             this.m_linearVelocity,
             this.m_angularVelocity,
-            b2Vec2.SubVV(worldPoint, this.m_sweep.c, b2Vec2.s_t0),
+            b2Vec2.Subtract(worldPoint, this.m_sweep.c, b2Vec2.s_t0),
             out,
         );
     }
@@ -1005,9 +1005,9 @@ export class b2Body {
         const broadPhase = this.m_world.m_contactManager.m_broadPhase;
         if (this.m_awakeFlag) {
             const xf1: b2Transform = b2Body.SynchronizeFixtures_s_xf1;
-            xf1.q.SetAngle(this.m_sweep.a0);
-            b2Rot.MulRV(xf1.q, this.m_sweep.localCenter, xf1.p);
-            b2Vec2.SubVV(this.m_sweep.c0, xf1.p, xf1.p);
+            xf1.q.Set(this.m_sweep.a0);
+            b2Rot.MultiplyVec2(xf1.q, this.m_sweep.localCenter, xf1.p);
+            b2Vec2.Subtract(this.m_sweep.c0, xf1.p, xf1.p);
 
             for (let f: b2Fixture | null = this.m_fixtureList; f; f = f.m_next) {
                 f.Synchronize(broadPhase, xf1, this.m_xf);
@@ -1020,9 +1020,9 @@ export class b2Body {
     }
 
     public SynchronizeTransform(): void {
-        this.m_xf.q.SetAngle(this.m_sweep.a);
-        b2Rot.MulRV(this.m_xf.q, this.m_sweep.localCenter, this.m_xf.p);
-        b2Vec2.SubVV(this.m_sweep.c, this.m_xf.p, this.m_xf.p);
+        this.m_xf.q.Set(this.m_sweep.a);
+        b2Rot.MultiplyVec2(this.m_xf.q, this.m_sweep.localCenter, this.m_xf.p);
+        b2Vec2.Subtract(this.m_sweep.c, this.m_xf.p, this.m_xf.p);
     }
 
     // This is used to prevent connected bodies from colliding.
@@ -1053,8 +1053,8 @@ export class b2Body {
         this.m_sweep.Advance(alpha);
         this.m_sweep.c.Copy(this.m_sweep.c0);
         this.m_sweep.a = this.m_sweep.a0;
-        this.m_xf.q.SetAngle(this.m_sweep.a);
-        b2Rot.MulRV(this.m_xf.q, this.m_sweep.localCenter, this.m_xf.p);
-        b2Vec2.SubVV(this.m_sweep.c, this.m_xf.p, this.m_xf.p);
+        this.m_xf.q.Set(this.m_sweep.a);
+        b2Rot.MultiplyVec2(this.m_xf.q, this.m_sweep.localCenter, this.m_xf.p);
+        b2Vec2.Subtract(this.m_sweep.c, this.m_xf.p, this.m_xf.p);
     }
 }

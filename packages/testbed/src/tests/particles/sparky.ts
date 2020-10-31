@@ -117,9 +117,9 @@ class ParticleVFX {
         const vel = this.m_particleSystem.GetVelocityBuffer();
         for (let i = bufferIndex; i < bufferIndex + this.m_pg.GetParticleCount(); i++) {
             ///  vel[i] = pos[i] - origin;
-            b2Vec2.SubVV(pos[i], origin, vel[i]);
+            b2Vec2.Subtract(pos[i], origin, vel[i]);
             ///  vel[i] *= speed;
-            b2Vec2.MulVS(vel[i], speed, vel[i]);
+            vel[i].Scale(speed);
         }
     }
 
@@ -147,7 +147,7 @@ class ParticleVFX {
             for (let i = bufferIndex; i < bufferIndex + this.m_pg.GetParticleCount(); i++) {
                 const c = colors[i];
                 // c *= coeff;
-                // c.SelfMul(coeff);
+                // c.Scale(coeff);
                 // c.a = this.m_origColor.a;
                 c.a *= coeff;
             }

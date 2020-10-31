@@ -21,7 +21,6 @@ import {
     b2Body,
     b2RevoluteJoint,
     b2PolygonShape,
-    b2Vec2_zero,
     b2BodyType,
     b2DistanceJointDef,
     b2LinearStiffness,
@@ -126,7 +125,7 @@ export class TheoJansen extends Test {
 
         {
             const jd = new b2RevoluteJointDef();
-            jd.Initialize(this.m_wheel, this.m_chassis, b2Vec2.AddVV(pivot, this.m_offset, new b2Vec2()));
+            jd.Initialize(this.m_wheel, this.m_chassis, b2Vec2.Add(pivot, this.m_offset, new b2Vec2()));
             jd.collideConnected = false;
             jd.motorSpeed = this.m_motorSpeed;
             jd.maxMotorTorque = 400.0;
@@ -134,7 +133,7 @@ export class TheoJansen extends Test {
             this.m_motorJoint = this.m_world.CreateJoint(jd);
         }
 
-        const wheelAnchor = b2Vec2.AddVV(pivot, new b2Vec2(0.0, -0.8), new b2Vec2());
+        const wheelAnchor = b2Vec2.Add(pivot, new b2Vec2(0.0, -0.8), new b2Vec2());
 
         this.CreateLeg(-1.0, wheelAnchor);
         this.CreateLeg(1.0, wheelAnchor);
@@ -167,9 +166,9 @@ export class TheoJansen extends Test {
             vertices[2] = p3;
             poly1.Set(vertices);
 
-            vertices[0] = b2Vec2_zero;
-            vertices[1] = b2Vec2.SubVV(p5, p4, new b2Vec2());
-            vertices[2] = b2Vec2.SubVV(p6, p4, new b2Vec2());
+            vertices[0] = b2Vec2.ZERO;
+            vertices[1] = b2Vec2.Subtract(p5, p4, new b2Vec2());
+            vertices[2] = b2Vec2.Subtract(p6, p4, new b2Vec2());
             poly2.Set(vertices);
         } else {
             const vertices = [];
@@ -179,9 +178,9 @@ export class TheoJansen extends Test {
             vertices[2] = p2;
             poly1.Set(vertices);
 
-            vertices[0] = b2Vec2_zero;
-            vertices[1] = b2Vec2.SubVV(p6, p4, new b2Vec2());
-            vertices[2] = b2Vec2.SubVV(p5, p4, new b2Vec2());
+            vertices[0] = b2Vec2.ZERO;
+            vertices[1] = b2Vec2.Subtract(p6, p4, new b2Vec2());
+            vertices[2] = b2Vec2.Subtract(p5, p4, new b2Vec2());
             poly2.Set(vertices);
         }
 
@@ -192,7 +191,7 @@ export class TheoJansen extends Test {
         });
         const body2 = this.m_world.CreateBody({
             type: b2BodyType.b2_dynamicBody,
-            position: b2Vec2.AddVV(p4, this.m_offset, new b2Vec2()),
+            position: b2Vec2.Add(p4, this.m_offset, new b2Vec2()),
             angularDamping: 10.0,
         });
 
@@ -219,8 +218,8 @@ export class TheoJansen extends Test {
             jd.Initialize(
                 body1,
                 body2,
-                b2Vec2.AddVV(p2, this.m_offset, new b2Vec2()),
-                b2Vec2.AddVV(p5, this.m_offset, new b2Vec2()),
+                b2Vec2.Add(p2, this.m_offset, new b2Vec2()),
+                b2Vec2.Add(p5, this.m_offset, new b2Vec2()),
             );
             b2LinearStiffness(jd, frequencyHz, dampingRatio, jd.bodyA, jd.bodyB);
             this.m_world.CreateJoint(jd);
@@ -228,8 +227,8 @@ export class TheoJansen extends Test {
             jd.Initialize(
                 body1,
                 body2,
-                b2Vec2.AddVV(p3, this.m_offset, new b2Vec2()),
-                b2Vec2.AddVV(p4, this.m_offset, new b2Vec2()),
+                b2Vec2.Add(p3, this.m_offset, new b2Vec2()),
+                b2Vec2.Add(p4, this.m_offset, new b2Vec2()),
             );
             b2LinearStiffness(jd, frequencyHz, dampingRatio, jd.bodyA, jd.bodyB);
             this.m_world.CreateJoint(jd);
@@ -237,8 +236,8 @@ export class TheoJansen extends Test {
             jd.Initialize(
                 body1,
                 this.m_wheel,
-                b2Vec2.AddVV(p3, this.m_offset, new b2Vec2()),
-                b2Vec2.AddVV(wheelAnchor, this.m_offset, new b2Vec2()),
+                b2Vec2.Add(p3, this.m_offset, new b2Vec2()),
+                b2Vec2.Add(wheelAnchor, this.m_offset, new b2Vec2()),
             );
             b2LinearStiffness(jd, frequencyHz, dampingRatio, jd.bodyA, jd.bodyB);
             this.m_world.CreateJoint(jd);
@@ -246,8 +245,8 @@ export class TheoJansen extends Test {
             jd.Initialize(
                 body2,
                 this.m_wheel,
-                b2Vec2.AddVV(p6, this.m_offset, new b2Vec2()),
-                b2Vec2.AddVV(wheelAnchor, this.m_offset, new b2Vec2()),
+                b2Vec2.Add(p6, this.m_offset, new b2Vec2()),
+                b2Vec2.Add(wheelAnchor, this.m_offset, new b2Vec2()),
             );
             b2LinearStiffness(jd, frequencyHz, dampingRatio, jd.bodyA, jd.bodyB);
             this.m_world.CreateJoint(jd);
@@ -256,7 +255,7 @@ export class TheoJansen extends Test {
         {
             const jd = new b2RevoluteJointDef();
 
-            jd.Initialize(body2, this.m_chassis, b2Vec2.AddVV(p4, this.m_offset, new b2Vec2()));
+            jd.Initialize(body2, this.m_chassis, b2Vec2.Add(p4, this.m_offset, new b2Vec2()));
             this.m_world.CreateJoint(jd);
         }
     }

@@ -131,17 +131,17 @@ export class Breakable extends Test {
         const center2 = body2.GetWorldCenter();
 
         /* b2Vec2 */
-        const velocity1 = b2Vec2.AddVCrossSV(
+        const velocity1 = b2Vec2.AddCrossScalarVec2(
             this.m_velocity,
             this.m_angularVelocity,
-            b2Vec2.SubVV(center1, center, b2Vec2.s_t0),
+            b2Vec2.Subtract(center1, center, b2Vec2.s_t0),
             new b2Vec2(),
         );
         /* b2Vec2 */
-        const velocity2 = b2Vec2.AddVCrossSV(
+        const velocity2 = b2Vec2.AddCrossScalarVec2(
             this.m_velocity,
             this.m_angularVelocity,
-            b2Vec2.SubVV(center2, center, b2Vec2.s_t0),
+            b2Vec2.Subtract(center2, center, b2Vec2.s_t0),
             new b2Vec2(),
         );
 

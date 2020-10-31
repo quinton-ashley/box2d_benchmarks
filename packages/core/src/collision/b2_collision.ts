@@ -255,81 +255,85 @@ export class b2WorldManifold {
         switch (manifold.type) {
             case b2ManifoldType.e_circles: {
                 this.normal.Set(1, 0);
-                const pointA: b2Vec2 = b2Transform.MulXV(xfA, manifold.localPoint, b2WorldManifold.Initialize_s_pointA);
-                const pointB: b2Vec2 = b2Transform.MulXV(
+                const pointA: b2Vec2 = b2Transform.MultiplyVec2(
+                    xfA,
+                    manifold.localPoint,
+                    b2WorldManifold.Initialize_s_pointA,
+                );
+                const pointB: b2Vec2 = b2Transform.MultiplyVec2(
                     xfB,
                     manifold.points[0].localPoint,
                     b2WorldManifold.Initialize_s_pointB,
                 );
-                if (b2Vec2.DistanceSquaredVV(pointA, pointB) > b2_epsilon_sq) {
-                    b2Vec2.SubVV(pointB, pointA, this.normal).SelfNormalize();
+                if (b2Vec2.DistanceSquared(pointA, pointB) > b2_epsilon_sq) {
+                    b2Vec2.Subtract(pointB, pointA, this.normal).Normalize();
                 }
 
-                const cA: b2Vec2 = b2Vec2.AddVMulSV(pointA, radiusA, this.normal, b2WorldManifold.Initialize_s_cA);
-                const cB: b2Vec2 = b2Vec2.SubVMulSV(pointB, radiusB, this.normal, b2WorldManifold.Initialize_s_cB);
-                b2Vec2.MidVV(cA, cB, this.points[0]);
-                this.separations[0] = b2Vec2.DotVV(b2Vec2.SubVV(cB, cA, b2Vec2.s_t0), this.normal);
+                const cA: b2Vec2 = b2Vec2.AddScaled(pointA, radiusA, this.normal, b2WorldManifold.Initialize_s_cA);
+                const cB: b2Vec2 = b2Vec2.SubtractScaled(pointB, radiusB, this.normal, b2WorldManifold.Initialize_s_cB);
+                b2Vec2.Mid(cA, cB, this.points[0]);
+                this.separations[0] = b2Vec2.Dot(b2Vec2.Subtract(cB, cA, b2Vec2.s_t0), this.normal);
                 break;
             }
 
             case b2ManifoldType.e_faceA: {
-                b2Rot.MulRV(xfA.q, manifold.localNormal, this.normal);
-                const planePoint: b2Vec2 = b2Transform.MulXV(
+                b2Rot.MultiplyVec2(xfA.q, manifold.localNormal, this.normal);
+                const planePoint: b2Vec2 = b2Transform.MultiplyVec2(
                     xfA,
                     manifold.localPoint,
                     b2WorldManifold.Initialize_s_planePoint,
                 );
 
                 for (let i = 0; i < manifold.pointCount; ++i) {
-                    const clipPoint: b2Vec2 = b2Transform.MulXV(
+                    const clipPoint: b2Vec2 = b2Transform.MultiplyVec2(
                         xfB,
                         manifold.points[i].localPoint,
                         b2WorldManifold.Initialize_s_clipPoint,
                     );
                     const s: number =
-                        radiusA - b2Vec2.DotVV(b2Vec2.SubVV(clipPoint, planePoint, b2Vec2.s_t0), this.normal);
-                    const cA: b2Vec2 = b2Vec2.AddVMulSV(clipPoint, s, this.normal, b2WorldManifold.Initialize_s_cA);
-                    const cB: b2Vec2 = b2Vec2.SubVMulSV(
+                        radiusA - b2Vec2.Dot(b2Vec2.Subtract(clipPoint, planePoint, b2Vec2.s_t0), this.normal);
+                    const cA: b2Vec2 = b2Vec2.AddScaled(clipPoint, s, this.normal, b2WorldManifold.Initialize_s_cA);
+                    const cB: b2Vec2 = b2Vec2.SubtractScaled(
                         clipPoint,
                         radiusB,
                         this.normal,
                         b2WorldManifold.Initialize_s_cB,
                     );
-                    b2Vec2.MidVV(cA, cB, this.points[i]);
-                    this.separations[i] = b2Vec2.DotVV(b2Vec2.SubVV(cB, cA, b2Vec2.s_t0), this.normal);
+                    b2Vec2.Mid(cA, cB, this.points[i]);
+                    this.separations[i] = b2Vec2.Dot(b2Vec2.Subtract(cB, cA, b2Vec2.s_t0), this.normal);
                 }
                 break;
             }
 
             case b2ManifoldType.e_faceB: {
-                b2Rot.MulRV(xfB.q, manifold.localNormal, this.normal);
-                const planePoint: b2Vec2 = b2Transform.MulXV(
+                b2Rot.MultiplyVec2(xfB.q, manifold.localNormal, this.normal);
+                const planePoint: b2Vec2 = b2Transform.MultiplyVec2(
                     xfB,
                     manifold.localPoint,
                     b2WorldManifold.Initialize_s_planePoint,
                 );
 
                 for (let i = 0; i < manifold.pointCount; ++i) {
-                    const clipPoint: b2Vec2 = b2Transform.MulXV(
+                    const clipPoint: b2Vec2 = b2Transform.MultiplyVec2(
                         xfA,
                         manifold.points[i].localPoint,
                         b2WorldManifold.Initialize_s_clipPoint,
                     );
                     const s: number =
-                        radiusB - b2Vec2.DotVV(b2Vec2.SubVV(clipPoint, planePoint, b2Vec2.s_t0), this.normal);
-                    const cB: b2Vec2 = b2Vec2.AddVMulSV(clipPoint, s, this.normal, b2WorldManifold.Initialize_s_cB);
-                    const cA: b2Vec2 = b2Vec2.SubVMulSV(
+                        radiusB - b2Vec2.Dot(b2Vec2.Subtract(clipPoint, planePoint, b2Vec2.s_t0), this.normal);
+                    const cB: b2Vec2 = b2Vec2.AddScaled(clipPoint, s, this.normal, b2WorldManifold.Initialize_s_cB);
+                    const cA: b2Vec2 = b2Vec2.SubtractScaled(
                         clipPoint,
                         radiusA,
                         this.normal,
                         b2WorldManifold.Initialize_s_cA,
                     );
-                    b2Vec2.MidVV(cA, cB, this.points[i]);
-                    this.separations[i] = b2Vec2.DotVV(b2Vec2.SubVV(cA, cB, b2Vec2.s_t0), this.normal);
+                    b2Vec2.Mid(cA, cB, this.points[i]);
+                    this.separations[i] = b2Vec2.Dot(b2Vec2.Subtract(cA, cB, b2Vec2.s_t0), this.normal);
                 }
 
                 // Ensure normal points from A to B.
-                this.normal.SelfNeg();
+                this.normal.Negate();
                 break;
             }
         }
@@ -441,10 +445,6 @@ export class b2AABB {
 
     public readonly upperBound: b2Vec2 = new b2Vec2(); /// < the upper vertex
 
-    private readonly m_cache_center: b2Vec2 = new b2Vec2(); // access using GetCenter()
-
-    private readonly m_cache_extent: b2Vec2 = new b2Vec2(); // access using GetExtents()
-
     public Copy(o: b2AABB): b2AABB {
         this.lowerBound.Copy(o.lowerBound);
         this.upperBound.Copy(o.upperBound);
@@ -462,13 +462,13 @@ export class b2AABB {
     }
 
     /// Get the center of the AABB.
-    public GetCenter(): b2Vec2 {
-        return b2Vec2.MidVV(this.lowerBound, this.upperBound, this.m_cache_center);
+    public GetCenter(out: XY) {
+        return b2Vec2.Mid(this.lowerBound, this.upperBound, out);
     }
 
     /// Get the extents of the AABB (half-widths).
-    public GetExtents(): b2Vec2 {
-        return b2Vec2.ExtVV(this.lowerBound, this.upperBound, this.m_cache_extent);
+    public GetExtents(out: XY) {
+        return b2Vec2.Extents(this.lowerBound, this.upperBound, out);
     }
 
     /// Get the perimeter length
@@ -646,8 +646,8 @@ export function b2ClipSegmentToLine(
     let count = 0;
 
     // Calculate the distance of end points to the line
-    const distance0: number = b2Vec2.DotVV(normal, vIn0.v) - offset;
-    const distance1: number = b2Vec2.DotVV(normal, vIn1.v) - offset;
+    const distance0: number = b2Vec2.Dot(normal, vIn0.v) - offset;
+    const distance1: number = b2Vec2.Dot(normal, vIn1.v) - offset;
 
     // If the points are behind the plane
     if (distance0 <= 0) vOut[count++].Copy(vIn0);

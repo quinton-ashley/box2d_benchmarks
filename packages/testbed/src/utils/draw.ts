@@ -192,11 +192,11 @@ export class DebugDraw implements b2Draw {
 
             // world -> viewport
             const vt = g_camera.getCenter();
-            b2Vec2.SubVV(p, vt, p);
-            b2Vec2.MulSV(g_camera.getZoom(), p, p);
+            b2Vec2.Subtract(p, vt, p);
+            b2Vec2.Scale(g_camera.getZoom(), p, p);
             p.y *= -1;
             const cc: b2Vec2 = DebugDraw.DrawStringWorld_s_cc.Set(0.5 * ctx.canvas.width, 0.5 * ctx.canvas.height);
-            b2Vec2.AddVV(p, cc, p);
+            b2Vec2.Add(p, cc, p);
 
             ctx.save();
             ctx.setTransform(1, 0, 0, 1, 0, 0);

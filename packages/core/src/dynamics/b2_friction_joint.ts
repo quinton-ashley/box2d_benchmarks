@@ -136,16 +136,16 @@ export class b2FrictionJoint extends b2Joint {
         let wB: number = data.velocities[this.m_indexB].w;
 
         // const qA: b2Rot = new b2Rot(aA), qB: b2Rot = new b2Rot(aB);
-        const qA: b2Rot = this.m_qA.SetAngle(aA);
-        const qB: b2Rot = this.m_qB.SetAngle(aB);
+        const qA: b2Rot = this.m_qA.Set(aA);
+        const qB: b2Rot = this.m_qB.Set(aB);
 
         // Compute the effective mass matrix.
         // m_rA = b2Mul(qA, m_localAnchorA - m_localCenterA);
-        b2Vec2.SubVV(this.m_localAnchorA, this.m_localCenterA, this.m_lalcA);
-        const rA: b2Vec2 = b2Rot.MulRV(qA, this.m_lalcA, this.m_rA);
+        b2Vec2.Subtract(this.m_localAnchorA, this.m_localCenterA, this.m_lalcA);
+        const rA: b2Vec2 = b2Rot.MultiplyVec2(qA, this.m_lalcA, this.m_rA);
         // m_rB = b2Mul(qB, m_localAnchorB - m_localCenterB);
-        b2Vec2.SubVV(this.m_localAnchorB, this.m_localCenterB, this.m_lalcB);
-        const rB: b2Vec2 = b2Rot.MulRV(qB, this.m_lalcB, this.m_rB);
+        b2Vec2.Subtract(this.m_localAnchorB, this.m_localCenterB, this.m_lalcB);
+        const rB: b2Vec2 = b2Rot.MultiplyVec2(qB, this.m_lalcB, this.m_rB);
 
         // J = [-I -r1_skew I r2_skew]
         //     [ 0       -1 0       1]
@@ -177,20 +177,20 @@ export class b2FrictionJoint extends b2Joint {
         if (data.step.warmStarting) {
             // Scale impulses to support a variable time step.
             // m_linearImpulse *= data.step.dtRatio;
-            this.m_linearImpulse.SelfMul(data.step.dtRatio);
+            this.m_linearImpulse.Scale(data.step.dtRatio);
             this.m_angularImpulse *= data.step.dtRatio;
 
             // const P: b2Vec2(m_linearImpulse.x, m_linearImpulse.y);
             const P: b2Vec2 = this.m_linearImpulse;
 
             // vA -= mA * P;
-            vA.SelfMulSub(mA, P);
+            vA.SubtractScaled(mA, P);
             // wA -= iA * (b2Cross(m_rA, P) + m_angularImpulse);
-            wA -= iA * (b2Vec2.CrossVV(this.m_rA, P) + this.m_angularImpulse);
+            wA -= iA * (b2Vec2.Cross(this.m_rA, P) + this.m_angularImpulse);
             // vB += mB * P;
-            vB.SelfMulAdd(mB, P);
+            vB.AddScaled(mB, P);
             // wB += iB * (b2Cross(m_rB, P) + m_angularImpulse);
-            wB += iB * (b2Vec2.CrossVV(this.m_rB, P) + this.m_angularImpulse);
+            wB += iB * (b2Vec2.Cross(this.m_rB, P) + this.m_angularImpulse);
         } else {
             this.m_linearImpulse.SetZero();
             this.m_angularImpulse = 0;
@@ -238,40 +238,40 @@ export class b2FrictionJoint extends b2Joint {
         // Solve linear friction
         {
             // b2Vec2 Cdot = vB + b2Cross(wB, m_rB) - vA - b2Cross(wA, m_rA);
-            const Cdot_v2: b2Vec2 = b2Vec2.SubVV(
-                b2Vec2.AddVCrossSV(vB, wB, this.m_rB, b2Vec2.s_t0),
-                b2Vec2.AddVCrossSV(vA, wA, this.m_rA, b2Vec2.s_t1),
+            const Cdot_v2: b2Vec2 = b2Vec2.Subtract(
+                b2Vec2.AddCrossScalarVec2(vB, wB, this.m_rB, b2Vec2.s_t0),
+                b2Vec2.AddCrossScalarVec2(vA, wA, this.m_rA, b2Vec2.s_t1),
                 b2FrictionJoint.SolveVelocityConstraints_s_Cdot_v2,
             );
 
             // b2Vec2 impulse = -b2Mul(m_linearMass, Cdot);
             const impulseV: b2Vec2 = b2Mat22
-                .MulMV(this.m_linearMass, Cdot_v2, b2FrictionJoint.SolveVelocityConstraints_s_impulseV)
-                .SelfNeg();
+                .MultiplyVec2(this.m_linearMass, Cdot_v2, b2FrictionJoint.SolveVelocityConstraints_s_impulseV)
+                .Negate();
             // b2Vec2 oldImpulse = m_linearImpulse;
             const oldImpulseV = b2FrictionJoint.SolveVelocityConstraints_s_oldImpulseV.Copy(this.m_linearImpulse);
             // m_linearImpulse += impulse;
-            this.m_linearImpulse.SelfAdd(impulseV);
+            this.m_linearImpulse.Add(impulseV);
 
             const maxImpulse: number = h * this.m_maxForce;
 
             if (this.m_linearImpulse.LengthSquared() > maxImpulse * maxImpulse) {
                 this.m_linearImpulse.Normalize();
-                this.m_linearImpulse.SelfMul(maxImpulse);
+                this.m_linearImpulse.Scale(maxImpulse);
             }
 
             // impulse = m_linearImpulse - oldImpulse;
-            b2Vec2.SubVV(this.m_linearImpulse, oldImpulseV, impulseV);
+            b2Vec2.Subtract(this.m_linearImpulse, oldImpulseV, impulseV);
 
             // vA -= mA * impulse;
-            vA.SelfMulSub(mA, impulseV);
+            vA.SubtractScaled(mA, impulseV);
             // wA -= iA * b2Cross(m_rA, impulse);
-            wA -= iA * b2Vec2.CrossVV(this.m_rA, impulseV);
+            wA -= iA * b2Vec2.Cross(this.m_rA, impulseV);
 
             // vB += mB * impulse;
-            vB.SelfMulAdd(mB, impulseV);
+            vB.AddScaled(mB, impulseV);
             // wB += iB * b2Cross(m_rB, impulse);
-            wB += iB * b2Vec2.CrossVV(this.m_rB, impulseV);
+            wB += iB * b2Vec2.Cross(this.m_rB, impulseV);
         }
 
         // data.velocities[this.m_indexA].v = vA;

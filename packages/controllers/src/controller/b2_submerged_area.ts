@@ -20,8 +20,8 @@ function submergedAreaForPolygon(shape: b2Shape, normal: b2Vec2, offset: number,
     const polygon = shape as b2PolygonShape;
 
     // Transform plane into shape co-ordinates
-    const normalL: b2Vec2 = b2Rot.MulTRV(xf.q, normal, ComputeSubmergedArea_s_normalL);
-    const offsetL: number = offset - b2Vec2.DotVV(normal, xf.p);
+    const normalL: b2Vec2 = b2Rot.TransposeMultiplyVec2(xf.q, normal, ComputeSubmergedArea_s_normalL);
+    const offsetL: number = offset - b2Vec2.Dot(normal, xf.p);
 
     const depths: number[] = [];
     let diveCount = 0;
@@ -30,7 +30,7 @@ function submergedAreaForPolygon(shape: b2Shape, normal: b2Vec2, offset: number,
 
     let lastSubmerged = false;
     for (let i = 0; i < polygon.m_count; ++i) {
-        depths[i] = b2Vec2.DotVV(normalL, polygon.m_vertices[i]) - offsetL;
+        depths[i] = b2Vec2.Dot(normalL, polygon.m_vertices[i]) - offsetL;
         const isSubmerged: boolean = depths[i] < -b2_epsilon;
         if (i > 0) {
             if (isSubmerged) {
@@ -51,7 +51,7 @@ function submergedAreaForPolygon(shape: b2Shape, normal: b2Vec2, offset: number,
                 // Completely submerged
                 const md: b2MassData = ComputeSubmergedArea_s_md;
                 polygon.ComputeMass(md, 1);
-                b2Transform.MulXV(xf, md.center, c);
+                b2Transform.MultiplyVec2(xf, md.center, c);
                 return md.mass;
             }
             // Completely dry
@@ -106,8 +106,8 @@ function submergedAreaForPolygon(shape: b2Shape, normal: b2Vec2, offset: number,
     }
 
     // Normalize and transform centroid
-    center.SelfMul(1 / area);
-    b2Transform.MulXV(xf, center, c);
+    center.Scale(1 / area);
+    b2Transform.MultiplyVec2(xf, center, c);
 
     return area;
 }
@@ -124,8 +124,8 @@ function submergedAreaForChain(shape: b2Shape, _normal: b2Vec2, _offset: number,
 
 function submergedAreaForCircle(shape: b2Shape, normal: b2Vec2, offset: number, xf: b2Transform, c: b2Vec2): number {
     const circle = shape as b2CircleShape;
-    const p: b2Vec2 = b2Transform.MulXV(xf, circle.m_p, new b2Vec2());
-    const l: number = -(b2Vec2.DotVV(normal, p) - offset);
+    const p: b2Vec2 = b2Transform.MultiplyVec2(xf, circle.m_p, new b2Vec2());
+    const l: number = -(b2Vec2.Dot(normal, p) - offset);
 
     if (l < -circle.m_radius + b2_epsilon) {
         // Completely dry

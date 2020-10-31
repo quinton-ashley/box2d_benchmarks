@@ -284,8 +284,8 @@ export class Test extends b2ContactListener {
         }
 
         const multiplier = 30;
-        const vel: b2Vec2 = b2Vec2.SubVV(this.m_bombSpawnPoint, p, new b2Vec2());
-        vel.SelfMul(multiplier);
+        const vel: b2Vec2 = b2Vec2.Subtract(this.m_bombSpawnPoint, p, new b2Vec2());
+        vel.Scale(multiplier);
         this.LaunchBombAt(this.m_bombSpawnPoint, vel);
         this.m_bombSpawning = false;
     }
@@ -323,7 +323,7 @@ export class Test extends b2ContactListener {
 
     public LaunchBomb(): void {
         const p: b2Vec2 = new b2Vec2(b2RandomRange(-15, 15), 30);
-        const v: b2Vec2 = b2Vec2.MulSV(-5, p, new b2Vec2());
+        const v: b2Vec2 = b2Vec2.Scale(-5, p, new b2Vec2());
         this.LaunchBombAt(p, v);
     }
 
@@ -522,9 +522,9 @@ export class Test extends b2ContactListener {
                 (2 / delay) *
                 ((1 / delay) * (this.m_mouseWorld.y - this.m_mouseTracerPosition.y) - this.m_mouseTracerVelocity.y);
             /// m_mouseTracerVelocity += timeStep * acceleration;
-            this.m_mouseTracerVelocity.SelfMulAdd(timeStep, acceleration);
+            this.m_mouseTracerVelocity.AddScaled(timeStep, acceleration);
             /// m_mouseTracerPosition += timeStep * m_mouseTracerVelocity;
-            this.m_mouseTracerPosition.SelfMulAdd(timeStep, this.m_mouseTracerVelocity);
+            this.m_mouseTracerPosition.AddScaled(timeStep, this.m_mouseTracerVelocity);
             const shape = new b2CircleShape();
             shape.m_p.Copy(this.m_mouseTracerPosition);
             shape.m_radius = this.getParticleSelectionRadius();
@@ -568,15 +568,15 @@ export class Test extends b2ContactListener {
 
                 if (settings.m_drawContactNormals) {
                     const p1 = point.position;
-                    const p2: b2Vec2 = b2Vec2.AddVV(
+                    const p2: b2Vec2 = b2Vec2.Add(
                         p1,
-                        b2Vec2.MulSV(k_axisScale, point.normal, b2Vec2.s_t0),
+                        b2Vec2.Scale(k_axisScale, point.normal, b2Vec2.s_t0),
                         new b2Vec2(),
                     );
                     g_debugDraw.DrawSegment(p1, p2, new b2Color(0.9, 0.9, 0.9));
                 } else if (settings.m_drawContactImpulse) {
                     const p1 = point.position;
-                    const p2: b2Vec2 = b2Vec2.AddVMulSV(
+                    const p2: b2Vec2 = b2Vec2.AddScaled(
                         p1,
                         k_impulseScale * point.normalImpulse,
                         point.normal,
@@ -586,9 +586,9 @@ export class Test extends b2ContactListener {
                 }
 
                 if (settings.m_drawFrictionImpulse) {
-                    const tangent: b2Vec2 = b2Vec2.CrossVOne(point.normal, new b2Vec2());
+                    const tangent: b2Vec2 = b2Vec2.CrossVec2One(point.normal, new b2Vec2());
                     const p1 = point.position;
-                    const p2: b2Vec2 = b2Vec2.AddVMulSV(
+                    const p2: b2Vec2 = b2Vec2.AddScaled(
                         p1,
                         k_impulseScale * point.tangentImpulse,
                         tangent,

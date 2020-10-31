@@ -756,9 +756,9 @@ export class b2World {
         b2Assert(!this.IsLocked());
 
         for (let b = this.m_bodyList; b; b = b.m_next) {
-            b.m_xf.p.SelfSub(newOrigin);
-            b.m_sweep.c0.SelfSub(newOrigin);
-            b.m_sweep.c.SelfSub(newOrigin);
+            b.m_xf.p.Subtract(newOrigin);
+            b.m_sweep.c0.Subtract(newOrigin);
+            b.m_sweep.c.Subtract(newOrigin);
         }
 
         for (let j = this.m_jointList; j; j = j.m_next) {

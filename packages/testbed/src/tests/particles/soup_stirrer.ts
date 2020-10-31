@@ -124,7 +124,7 @@ export class SoupStirrer extends Soup {
 
         // Calculate the force vector.
         const forceAngle = this.m_oscillationOffset * k_forceOscillationPerSecond * 2.0 * Math.PI;
-        const forceVector = new b2Vec2(Math.sin(forceAngle), Math.cos(forceAngle)).SelfMul(k_forceMagnitude);
+        const forceVector = new b2Vec2(Math.sin(forceAngle), Math.cos(forceAngle)).Scale(k_forceMagnitude);
 
         // Only apply force to the body when it's within the soup.
         if (this.InSoup(this.m_stirrer.GetPosition()) && this.m_stirrer.GetLinearVelocity().Length() < k_maxSpeed) {

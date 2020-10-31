@@ -66,7 +66,7 @@ export class ParticleParameterValue {
      */
     public name = "";
 
-    public Copy(other: ParticleParameterValue): this {
+    public Copy(other: ParticleParameterValue) {
         this.value = other.value;
         this.options = other.options;
         this.name = other.name;

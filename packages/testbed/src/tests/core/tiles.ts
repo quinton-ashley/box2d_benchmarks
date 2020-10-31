@@ -119,10 +119,10 @@ export class Tiles extends Test {
                     });
                     body.CreateFixture(shape, 5.0);
                     ++this.m_fixtureCount;
-                    y.SelfAdd(deltaY);
+                    y.Add(deltaY);
                 }
 
-                x.SelfAdd(deltaX);
+                x.Add(deltaX);
             }
         }
 

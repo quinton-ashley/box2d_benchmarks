@@ -88,9 +88,9 @@ export class b2AreaJoint extends b2Joint {
             const body_c: b2Vec2 = body.GetWorldCenter();
             const next_c: b2Vec2 = next.GetWorldCenter();
 
-            this.m_targetLengths[i] = b2Vec2.DistanceVV(body_c, next_c);
+            this.m_targetLengths[i] = b2Vec2.Distance(body_c, next_c);
 
-            this.m_targetArea += b2Vec2.CrossVV(body_c, next_c);
+            this.m_targetArea += b2Vec2.Cross(body_c, next_c);
 
             djd.Initialize(body, next, body_c, next_c);
             this.m_joints[i] = body.GetWorld().CreateJoint(djd);
@@ -147,7 +147,7 @@ export class b2AreaJoint extends b2Joint {
             const next_c: b2Vec2 = data.positions[next.m_islandIndex].c;
             const delta: b2Vec2 = this.m_deltas[i];
 
-            b2Vec2.SubVV(next_c, prev_c, delta);
+            b2Vec2.Subtract(next_c, prev_c, delta);
         }
 
         if (data.step.warmStarting) {
@@ -176,7 +176,7 @@ export class b2AreaJoint extends b2Joint {
             const delta: b2Vec2 = this.m_deltas[i];
 
             dotMassSum += delta.LengthSquared() / body.GetMass();
-            crossMassSum += b2Vec2.CrossVV(body_v, delta);
+            crossMassSum += b2Vec2.Cross(body_v, delta);
         }
 
         const lambda: number = (-2 * crossMassSum) / dotMassSum;
@@ -204,7 +204,7 @@ export class b2AreaJoint extends b2Joint {
             const body_c: b2Vec2 = data.positions[body.m_islandIndex].c;
             const next_c: b2Vec2 = data.positions[next.m_islandIndex].c;
 
-            const delta: b2Vec2 = b2Vec2.SubVV(next_c, body_c, this.m_delta);
+            const delta: b2Vec2 = b2Vec2.Subtract(next_c, body_c, this.m_delta);
 
             let dist: number = delta.Length();
             if (dist < b2_epsilon) {
@@ -216,7 +216,7 @@ export class b2AreaJoint extends b2Joint {
 
             perimeter += dist;
 
-            area += b2Vec2.CrossVV(body_c, next_c);
+            area += b2Vec2.Cross(body_c, next_c);
         }
 
         area *= 0.5;
@@ -230,12 +230,12 @@ export class b2AreaJoint extends b2Joint {
             const body_c: b2Vec2 = data.positions[body.m_islandIndex].c;
             const next_i: number = (i + 1) % this.m_bodies.length;
 
-            const delta: b2Vec2 = b2Vec2.AddVV(this.m_normals[i], this.m_normals[next_i], this.m_delta);
-            delta.SelfMul(toExtrude);
+            const delta: b2Vec2 = b2Vec2.Add(this.m_normals[i], this.m_normals[next_i], this.m_delta);
+            delta.Scale(toExtrude);
 
             const norm_sq: number = delta.LengthSquared();
             if (norm_sq > b2_maxLinearCorrection ** 2) {
-                delta.SelfMul(b2_maxLinearCorrection / Math.sqrt(norm_sq));
+                delta.Scale(b2_maxLinearCorrection / Math.sqrt(norm_sq));
             }
             if (norm_sq > b2_linearSlop ** 2) {
                 done = false;

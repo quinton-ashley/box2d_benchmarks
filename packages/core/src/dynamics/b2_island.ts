@@ -292,7 +292,7 @@ export class b2Island {
                 // v2 = exp(-c * dt) * v1
                 // Pade approximation:
                 // v2 = v1 * 1 / (1 + c * dt)
-                v.SelfMul(1 / (1 + h * b.m_linearDamping));
+                v.Scale(1 / (1 + h * b.m_linearDamping));
                 w *= 1 / (1 + h * b.m_angularDamping);
             }
 
@@ -351,10 +351,10 @@ export class b2Island {
             let { w } = this.m_velocities[i];
 
             // Check for large velocities
-            const translation = b2Vec2.MulSV(h, v, b2Island.s_translation);
-            if (b2Vec2.DotVV(translation, translation) > b2_maxTranslationSquared) {
+            const translation = b2Vec2.Scale(h, v, b2Island.s_translation);
+            if (b2Vec2.Dot(translation, translation) > b2_maxTranslationSquared) {
                 const ratio = b2_maxTranslation / translation.Length();
-                v.SelfMul(ratio);
+                v.Scale(ratio);
             }
 
             const rotation = h * w;
@@ -420,7 +420,7 @@ export class b2Island {
                 if (
                     !b.m_autoSleepFlag ||
                     b.m_angularVelocity * b.m_angularVelocity > angTolSqr ||
-                    b2Vec2.DotVV(b.m_linearVelocity, b.m_linearVelocity) > linTolSqr
+                    b2Vec2.Dot(b.m_linearVelocity, b.m_linearVelocity) > linTolSqr
                 ) {
                     b.m_sleepTime = 0;
                     minSleepTime = 0;
@@ -529,10 +529,10 @@ export class b2Island {
             let { w } = this.m_velocities[i];
 
             // Check for large velocities
-            const translation = b2Vec2.MulSV(h, v, b2Island.s_translation);
-            if (b2Vec2.DotVV(translation, translation) > b2_maxTranslationSquared) {
+            const translation = b2Vec2.Scale(h, v, b2Island.s_translation);
+            if (b2Vec2.Dot(translation, translation) > b2_maxTranslationSquared) {
                 const ratio = b2_maxTranslation / translation.Length();
-                v.SelfMul(ratio);
+                v.Scale(ratio);
             }
 
             const rotation = h * w;
@@ -542,7 +542,7 @@ export class b2Island {
             }
 
             // Integrate
-            c.SelfMulAdd(h, v);
+            c.AddScaled(h, v);
             a += h * w;
 
             this.m_positions[i].a = a;

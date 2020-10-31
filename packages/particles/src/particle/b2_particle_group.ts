@@ -208,10 +208,10 @@ export class b2ParticleGroup {
         const s_t0 = b2ParticleGroup.GetLinearVelocityFromWorldPoint_s_t0;
         this.UpdateStatistics();
         ///  return m_linearVelocity + b2Cross(m_angularVelocity, worldPoint - m_center);
-        return b2Vec2.AddVCrossSV(
+        return b2Vec2.AddCrossScalarVec2(
             this.m_linearVelocity,
             this.m_angularVelocity,
-            b2Vec2.SubVV(worldPoint, this.m_center, s_t0),
+            b2Vec2.Subtract(worldPoint, this.m_center, s_t0),
             out,
         );
     }
@@ -256,26 +256,26 @@ export class b2ParticleGroup {
             for (let i = this.m_firstIndex; i < this.m_lastIndex; i++) {
                 ///  this.m_mass += m;
                 ///  this.m_center += m * this.m_system.m_positionBuffer.data[i];
-                this.m_center.SelfMulAdd(m, this.m_system.m_positionBuffer.data[i]);
+                this.m_center.AddScaled(m, this.m_system.m_positionBuffer.data[i]);
                 ///  this.m_linearVelocity += m * this.m_system.m_velocityBuffer.data[i];
-                this.m_linearVelocity.SelfMulAdd(m, this.m_system.m_velocityBuffer.data[i]);
+                this.m_linearVelocity.AddScaled(m, this.m_system.m_velocityBuffer.data[i]);
             }
             if (this.m_mass > 0) {
                 const inv_mass = 1 / this.m_mass;
                 /// this.m_center *= 1 / this.m_mass;
-                this.m_center.SelfMul(inv_mass);
+                this.m_center.Scale(inv_mass);
                 /// this.m_linearVelocity *= 1 / this.m_mass;
-                this.m_linearVelocity.SelfMul(inv_mass);
+                this.m_linearVelocity.Scale(inv_mass);
             }
             this.m_inertia = 0;
             this.m_angularVelocity = 0;
             for (let i = this.m_firstIndex; i < this.m_lastIndex; i++) {
                 /// b2Vec2 p = this.m_system.m_positionBuffer.data[i] - this.m_center;
-                b2Vec2.SubVV(this.m_system.m_positionBuffer.data[i], this.m_center, p);
+                b2Vec2.Subtract(this.m_system.m_positionBuffer.data[i], this.m_center, p);
                 /// b2Vec2 v = this.m_system.m_velocityBuffer.data[i] - this.m_linearVelocity;
-                b2Vec2.SubVV(this.m_system.m_velocityBuffer.data[i], this.m_linearVelocity, v);
-                this.m_inertia += m * b2Vec2.DotVV(p, p);
-                this.m_angularVelocity += m * b2Vec2.CrossVV(p, v);
+                b2Vec2.Subtract(this.m_system.m_velocityBuffer.data[i], this.m_linearVelocity, v);
+                this.m_inertia += m * b2Vec2.Dot(p, p);
+                this.m_angularVelocity += m * b2Vec2.Cross(p, v);
             }
             if (this.m_inertia > 0) {
                 this.m_angularVelocity *= 1 / this.m_inertia;

@@ -16,7 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import { b2EdgeShape, b2Vec2, b2CircleShape, b2FixtureDef, b2BodyType, b2Random, b2Vec2_zero, XY } from "@box2d/core";
+import { b2EdgeShape, b2Vec2, b2CircleShape, b2FixtureDef, b2BodyType, b2Random, XY } from "@box2d/core";
 
 import { Test } from "../../test";
 import { Settings } from "../../settings";
@@ -28,7 +28,7 @@ export class Confined extends Test {
     public static readonly e_rowCount = 0;
 
     constructor() {
-        super(b2Vec2_zero);
+        super(b2Vec2.ZERO);
 
         {
             const ground = this.m_world.CreateBody();

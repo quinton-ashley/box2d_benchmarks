@@ -16,7 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import { b2Body, b2Vec2, b2ChainShape, b2PolygonShape, b2Clamp, b2Vec2_zero, XY } from "@box2d/core";
+import { b2Body, b2Vec2, b2ChainShape, b2PolygonShape, b2Clamp, XY } from "@box2d/core";
 import { b2ParticleGroup, b2ParticleGroupDef, b2ParticleFlag } from "@box2d/particles";
 
 import { Test, RandomFloat } from "../../test";
@@ -75,7 +75,7 @@ export class Maxwell extends Test {
     public static readonly k_temperatureDefault = 5.0;
 
     constructor() {
-        super(b2Vec2_zero);
+        super(b2Vec2.ZERO);
 
         // Create the container.
         {
@@ -177,7 +177,7 @@ export class Maxwell extends Test {
                 v.Set(RandomFloat() + 1.0, RandomFloat() + 1.0);
                 v.Normalize();
                 ///  v *= this.m_temperature;
-                v.SelfMul(this.m_temperature);
+                v.Scale(this.m_temperature);
             }
         }
     }
@@ -261,7 +261,7 @@ export class Maxwell extends Test {
                 const v = velocities[index + i];
                 v.Normalize();
                 ///  v *= this.m_temperature;
-                v.SelfMul(this.m_temperature);
+                v.Scale(this.m_temperature);
 
                 // Keep track of the number of particles above / below the
                 // divider / barrier position.

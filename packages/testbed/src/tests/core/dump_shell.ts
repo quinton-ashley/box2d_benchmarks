@@ -23,7 +23,6 @@ import {
     b2PolygonShape,
     b2RevoluteJointDef,
     b2PrismaticJointDef,
-    b2Vec2_zero,
     XY,
 } from "@box2d/core";
 
@@ -31,7 +30,7 @@ import { Test } from "../../test";
 
 export class DumpShell extends Test {
     constructor() {
-        super(b2Vec2_zero);
+        super(b2Vec2.ZERO);
 
         // dump begin
         /* b2Body */

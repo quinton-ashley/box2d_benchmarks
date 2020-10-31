@@ -100,7 +100,7 @@ export class ShapeCast extends Test {
         const transformB2 = new b2Transform();
         transformB2.q.Copy(transformB.q);
         // transformB2.p = transformB.p + output.lambda * input.translationB;
-        transformB2.p.Copy(transformB.p).SelfMulAdd(output.lambda, input.translationB);
+        transformB2.p.Copy(transformB.p).AddScaled(output.lambda, input.translationB);
 
         const distanceInput = new b2DistanceInput();
         distanceInput.proxyA.SetVerticesRadius(this.m_vAs, this.m_countA, this.m_radiusA);
@@ -138,7 +138,7 @@ export class ShapeCast extends Test {
             const p1 = output.point;
             g_debugDraw.DrawPoint(p1, 10.0, new b2Color(0.9, 0.3, 0.3));
             // b2Vec2 p2 = p1 + output.normal;
-            const p2 = b2Vec2.AddVV(p1, output.normal, new b2Vec2());
+            const p2 = b2Vec2.Add(p1, output.normal, new b2Vec2());
             g_debugDraw.DrawSegment(p1, p2, new b2Color(0.9, 0.3, 0.3));
         }
     }

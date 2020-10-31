@@ -57,12 +57,12 @@ export class PyramidTopple extends Test {
                     (i + 0.5) * (HEIGHT + 2 * WIDTH) - WIDTH - 240,
                 );
                 add_domino(world, offset, false);
-                add_domino(world, b2Vec2.AddVV(offset, new b2Vec2(0, (HEIGHT + WIDTH) / 2), new b2Vec2()), true);
+                add_domino(world, b2Vec2.Add(offset, new b2Vec2(0, (HEIGHT + WIDTH) / 2), new b2Vec2()), true);
 
                 if (j === 0) {
                     add_domino(
                         world,
-                        b2Vec2.AddVV(offset, new b2Vec2(0.5 * (WIDTH - HEIGHT), HEIGHT + WIDTH), new b2Vec2()),
+                        b2Vec2.Add(offset, new b2Vec2(0.5 * (WIDTH - HEIGHT), HEIGHT + WIDTH), new b2Vec2()),
                         false,
                     );
                 }
@@ -70,13 +70,13 @@ export class PyramidTopple extends Test {
                 if (j !== n - i - 1) {
                     add_domino(
                         world,
-                        b2Vec2.AddVV(offset, new b2Vec2(HEIGHT * 0.75, (HEIGHT + 3 * WIDTH) / 2), new b2Vec2()),
+                        b2Vec2.Add(offset, new b2Vec2(HEIGHT * 0.75, (HEIGHT + 3 * WIDTH) / 2), new b2Vec2()),
                         true,
                     );
                 } else {
                     add_domino(
                         world,
-                        b2Vec2.AddVV(offset, new b2Vec2(0.5 * (HEIGHT - WIDTH), HEIGHT + WIDTH), new b2Vec2()),
+                        b2Vec2.Add(offset, new b2Vec2(0.5 * (HEIGHT - WIDTH), HEIGHT + WIDTH), new b2Vec2()),
                         false,
                     );
                 }

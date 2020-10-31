@@ -154,7 +154,7 @@ export class b2MotorJoint extends b2Joint {
 
     public GetReactionForce<T extends XY>(inv_dt: number, out: T): T {
         // return inv_dt * m_linearImpulse;
-        return b2Vec2.MulSV(inv_dt, this.m_linearImpulse, out);
+        return b2Vec2.Scale(inv_dt, this.m_linearImpulse, out);
     }
 
     public GetReactionTorque(inv_dt: number): number {
@@ -162,7 +162,7 @@ export class b2MotorJoint extends b2Joint {
     }
 
     public SetLinearOffset(linearOffset: b2Vec2): void {
-        if (!b2Vec2.IsEqualToV(linearOffset, this.m_linearOffset)) {
+        if (!b2Vec2.Equals(linearOffset, this.m_linearOffset)) {
             this.m_bodyA.SetAwake(true);
             this.m_bodyB.SetAwake(true);
             this.m_linearOffset.Copy(linearOffset);
@@ -223,18 +223,18 @@ export class b2MotorJoint extends b2Joint {
         const vB: b2Vec2 = data.velocities[this.m_indexB].v;
         let wB: number = data.velocities[this.m_indexB].w;
 
-        const qA: b2Rot = this.m_qA.SetAngle(aA);
-        const qB: b2Rot = this.m_qB.SetAngle(aB);
+        const qA: b2Rot = this.m_qA.Set(aA);
+        const qB: b2Rot = this.m_qB.Set(aB);
 
         // Compute the effective mass matrix.
         // this.m_rA = b2Mul(qA, m_linearOffset - this.m_localCenterA);
-        const rA: b2Vec2 = b2Rot.MulRV(
+        const rA: b2Vec2 = b2Rot.MultiplyVec2(
             qA,
-            b2Vec2.SubVV(this.m_linearOffset, this.m_localCenterA, b2Vec2.s_t0),
+            b2Vec2.Subtract(this.m_linearOffset, this.m_localCenterA, b2Vec2.s_t0),
             this.m_rA,
         );
         // this.m_rB = b2Mul(qB, -this.m_localCenterB);
-        const rB: b2Vec2 = b2Rot.MulRV(qB, b2Vec2.NegV(this.m_localCenterB, b2Vec2.s_t0), this.m_rB);
+        const rB: b2Vec2 = b2Rot.MultiplyVec2(qB, b2Vec2.Negate(this.m_localCenterB, b2Vec2.s_t0), this.m_rB);
 
         // J = [-I -r1_skew I r2_skew]
         // r_skew = [-ry; rx]
@@ -265,23 +265,23 @@ export class b2MotorJoint extends b2Joint {
         }
 
         // this.m_linearError = cB + rB - cA - rA;
-        b2Vec2.SubVV(b2Vec2.AddVV(cB, rB, b2Vec2.s_t0), b2Vec2.AddVV(cA, rA, b2Vec2.s_t1), this.m_linearError);
+        b2Vec2.Subtract(b2Vec2.Add(cB, rB, b2Vec2.s_t0), b2Vec2.Add(cA, rA, b2Vec2.s_t1), this.m_linearError);
         this.m_angularError = aB - aA - this.m_angularOffset;
 
         if (data.step.warmStarting) {
             // Scale impulses to support a variable time step.
             // this.m_linearImpulse *= data.step.dtRatio;
-            this.m_linearImpulse.SelfMul(data.step.dtRatio);
+            this.m_linearImpulse.Scale(data.step.dtRatio);
             this.m_angularImpulse *= data.step.dtRatio;
 
             // b2Vec2 P(this.m_linearImpulse.x, this.m_linearImpulse.y);
             const P: b2Vec2 = this.m_linearImpulse;
             // vA -= mA * P;
-            vA.SelfMulSub(mA, P);
-            wA -= iA * (b2Vec2.CrossVV(rA, P) + this.m_angularImpulse);
+            vA.SubtractScaled(mA, P);
+            wA -= iA * (b2Vec2.Cross(rA, P) + this.m_angularImpulse);
             // vB += mB * P;
-            vB.SelfMulAdd(mB, P);
-            wB += iB * (b2Vec2.CrossVV(rB, P) + this.m_angularImpulse);
+            vB.AddScaled(mB, P);
+            wB += iB * (b2Vec2.Cross(rB, P) + this.m_angularImpulse);
         } else {
             this.m_linearImpulse.SetZero();
             this.m_angularImpulse = 0;
@@ -332,46 +332,46 @@ export class b2MotorJoint extends b2Joint {
             const rA = this.m_rA;
             const rB = this.m_rB;
 
-            // b2Vec2 Cdot = vB + b2Vec2.CrossSV(wB, rB) - vA - b2Vec2.CrossSV(wA, rA) + inv_h * this.m_correctionFactor * this.m_linearError;
-            const Cdot_v2 = b2Vec2.AddVV(
-                b2Vec2.SubVV(
-                    b2Vec2.AddVV(vB, b2Vec2.CrossSV(wB, rB, b2Vec2.s_t0), b2Vec2.s_t0),
-                    b2Vec2.AddVV(vA, b2Vec2.CrossSV(wA, rA, b2Vec2.s_t1), b2Vec2.s_t1),
+            // b2Vec2 Cdot = vB + b2Vec2.CrossScalarVec2(wB, rB) - vA - b2Vec2.CrossScalarVec2(wA, rA) + inv_h * this.m_correctionFactor * this.m_linearError;
+            const Cdot_v2 = b2Vec2.Add(
+                b2Vec2.Subtract(
+                    b2Vec2.Add(vB, b2Vec2.CrossScalarVec2(wB, rB, b2Vec2.s_t0), b2Vec2.s_t0),
+                    b2Vec2.Add(vA, b2Vec2.CrossScalarVec2(wA, rA, b2Vec2.s_t1), b2Vec2.s_t1),
                     b2Vec2.s_t2,
                 ),
-                b2Vec2.MulSV(inv_h * this.m_correctionFactor, this.m_linearError, b2Vec2.s_t3),
+                b2Vec2.Scale(inv_h * this.m_correctionFactor, this.m_linearError, b2Vec2.s_t3),
                 b2MotorJoint.SolveVelocityConstraints_s_Cdot_v2,
             );
 
             // b2Vec2 impulse = -b2Mul(this.m_linearMass, Cdot);
             const impulse_v2: b2Vec2 = b2Mat22
-                .MulMV(this.m_linearMass, Cdot_v2, b2MotorJoint.SolveVelocityConstraints_s_impulse_v2)
-                .SelfNeg();
+                .MultiplyVec2(this.m_linearMass, Cdot_v2, b2MotorJoint.SolveVelocityConstraints_s_impulse_v2)
+                .Negate();
             // b2Vec2 oldImpulse = this.m_linearImpulse;
             const oldImpulse_v2 = b2MotorJoint.SolveVelocityConstraints_s_oldImpulse_v2.Copy(this.m_linearImpulse);
             // this.m_linearImpulse += impulse;
-            this.m_linearImpulse.SelfAdd(impulse_v2);
+            this.m_linearImpulse.Add(impulse_v2);
 
             const maxImpulse: number = h * this.m_maxForce;
 
             if (this.m_linearImpulse.LengthSquared() > maxImpulse * maxImpulse) {
                 this.m_linearImpulse.Normalize();
                 // this.m_linearImpulse *= maxImpulse;
-                this.m_linearImpulse.SelfMul(maxImpulse);
+                this.m_linearImpulse.Scale(maxImpulse);
             }
 
             // impulse = this.m_linearImpulse - oldImpulse;
-            b2Vec2.SubVV(this.m_linearImpulse, oldImpulse_v2, impulse_v2);
+            b2Vec2.Subtract(this.m_linearImpulse, oldImpulse_v2, impulse_v2);
 
             // vA -= mA * impulse;
-            vA.SelfMulSub(mA, impulse_v2);
-            // wA -= iA * b2Vec2.CrossVV(rA, impulse);
-            wA -= iA * b2Vec2.CrossVV(rA, impulse_v2);
+            vA.SubtractScaled(mA, impulse_v2);
+            // wA -= iA * b2Vec2.Cross(rA, impulse);
+            wA -= iA * b2Vec2.Cross(rA, impulse_v2);
 
             // vB += mB * impulse;
-            vB.SelfMulAdd(mB, impulse_v2);
-            // wB += iB * b2Vec2.CrossVV(rB, impulse);
-            wB += iB * b2Vec2.CrossVV(rB, impulse_v2);
+            vB.AddScaled(mB, impulse_v2);
+            // wB += iB * b2Vec2.Cross(rB, impulse);
+            wB += iB * b2Vec2.Cross(rB, impulse_v2);
         }
 
         // data.velocities[this.m_indexA].v = vA; // vA is a reference

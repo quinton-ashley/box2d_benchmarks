@@ -55,12 +55,12 @@ export class b2GravityController extends b2Controller {
                     if (r2 < b2_epsilon) {
                         continue;
                     }
-                    tempF.Set(dx, dy).SelfMul((this.G / r2 / Math.sqrt(r2)) * mass1 * mass2);
+                    tempF.Set(dx, dy).Scale((this.G / r2 / Math.sqrt(r2)) * mass1 * mass2);
                     if (body1.IsAwake()) {
                         body1.ApplyForce(tempF, p1);
                     }
                     if (body2.IsAwake()) {
-                        body2.ApplyForce(tempF.SelfMul(-1), p2);
+                        body2.ApplyForce(tempF.Scale(-1), p2);
                     }
                 }
             }
@@ -79,12 +79,12 @@ export class b2GravityController extends b2Controller {
                     if (r2 < b2_epsilon) {
                         continue;
                     }
-                    tempF.Set(dx, dy).SelfMul((this.G / r2) * mass1 * mass2);
+                    tempF.Set(dx, dy).Scale((this.G / r2) * mass1 * mass2);
                     if (body1.IsAwake()) {
                         body1.ApplyForce(tempF, p1);
                     }
                     if (body2.IsAwake()) {
-                        body2.ApplyForce(tempF.SelfMul(-1), p2);
+                        body2.ApplyForce(tempF.Scale(-1), p2);
                     }
                 }
             }

@@ -16,7 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import { b2Vec2, b2Vec2_zero, b2RevoluteJointDef, b2Body, b2BodyType, b2PolygonShape, XY } from "@box2d/core";
+import { b2Vec2, b2RevoluteJointDef, b2Body, b2BodyType, b2PolygonShape, XY } from "@box2d/core";
 
 import { Test } from "../../test";
 
@@ -34,7 +34,7 @@ export class MobileBalanced extends Test {
         const /* float32 */ a = 0.5;
         const /* b2Vec2 */ h = new b2Vec2(0.0, a);
 
-        const /* b2Body */ root = this.AddNode(ground, b2Vec2_zero, 0, 3.0, a);
+        const /* b2Body */ root = this.AddNode(ground, b2Vec2.ZERO, 0, 3.0, a);
 
         const /* b2RevoluteJointDef */ jointDef = new b2RevoluteJointDef();
         jointDef.bodyA = ground;
@@ -60,7 +60,7 @@ export class MobileBalanced extends Test {
         const /* b2Vec2 */ h = new b2Vec2(0.0, a);
 
         //  b2Vec2 p = parent->GetPosition() + localAnchor - h;
-        const /* b2Vec2 */ p = parent.GetPosition().Clone().SelfAdd(localAnchor).SelfSub(h);
+        const /* b2Vec2 */ p = parent.GetPosition().Clone().Add(localAnchor).Subtract(h);
 
         const /* b2Body */ body = this.m_world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,

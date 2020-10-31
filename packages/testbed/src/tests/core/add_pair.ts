@@ -16,13 +16,13 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import { b2Vec2, b2CircleShape, b2BodyType, b2RandomRange, b2PolygonShape, b2Vec2_zero, XY } from "@box2d/core";
+import { b2Vec2, b2CircleShape, b2BodyType, b2RandomRange, b2PolygonShape, XY } from "@box2d/core";
 
 import { Test } from "../../test";
 
 export class AddPair extends Test {
     constructor() {
-        super(b2Vec2_zero);
+        super(b2Vec2.ZERO);
 
         {
             // const a = 0.1;

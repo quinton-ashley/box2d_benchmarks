@@ -16,17 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import {
-    b2Body,
-    b2EdgeShape,
-    b2Vec2,
-    b2PolygonShape,
-    b2BodyType,
-    b2Vec2_zero,
-    b2RandomRange,
-    b2Gjk,
-    b2Toi,
-} from "@box2d/core";
+import { b2Body, b2EdgeShape, b2Vec2, b2PolygonShape, b2BodyType, b2RandomRange, b2Gjk, b2Toi } from "@box2d/core";
 
 import { Test } from "../../test";
 import { Settings } from "../../settings";
@@ -95,7 +85,7 @@ export class BulletTest extends Test {
 
     public Launch() {
         this.m_body.SetTransformVec(new b2Vec2(0.0, 4.0), 0.0);
-        this.m_body.SetLinearVelocity(b2Vec2_zero);
+        this.m_body.SetLinearVelocity(b2Vec2.ZERO);
         this.m_body.SetAngularVelocity(0.0);
 
         this.m_x = b2RandomRange(-1.0, 1.0);

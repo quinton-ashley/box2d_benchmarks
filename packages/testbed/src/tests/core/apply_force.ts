@@ -26,7 +26,6 @@ import {
     b2PolygonShape,
     b2BodyType,
     b2FrictionJointDef,
-    b2Vec2_zero,
     XY,
 } from "@box2d/core";
 
@@ -37,7 +36,7 @@ export class ApplyForce extends Test {
     public m_body: b2Body;
 
     constructor() {
-        super(b2Vec2_zero);
+        super(b2Vec2.ZERO);
 
         /* float32 */
         const k_restitution = 0.4;
@@ -81,14 +80,14 @@ export class ApplyForce extends Test {
         {
             /* b2Transform */
             const xf1 = new b2Transform();
-            xf1.q.SetAngle(0.3524 * Math.PI);
-            xf1.p.Copy(b2Rot.MulRV(xf1.q, new b2Vec2(1.0, 0.0), new b2Vec2()));
+            xf1.q.Set(0.3524 * Math.PI);
+            xf1.p.Copy(b2Rot.MultiplyVec2(xf1.q, new b2Vec2(1.0, 0.0), new b2Vec2()));
 
             /* b2Vec2[] */
             const vertices = [];
-            vertices[0] = b2Transform.MulXV(xf1, new b2Vec2(-1.0, 0.0), new b2Vec2());
-            vertices[1] = b2Transform.MulXV(xf1, new b2Vec2(1.0, 0.0), new b2Vec2());
-            vertices[2] = b2Transform.MulXV(xf1, new b2Vec2(0.0, 0.5), new b2Vec2());
+            vertices[0] = b2Transform.MultiplyVec2(xf1, new b2Vec2(-1.0, 0.0), new b2Vec2());
+            vertices[1] = b2Transform.MultiplyVec2(xf1, new b2Vec2(1.0, 0.0), new b2Vec2());
+            vertices[2] = b2Transform.MultiplyVec2(xf1, new b2Vec2(0.0, 0.5), new b2Vec2());
 
             /* b2PolygonShape */
             const poly1 = new b2PolygonShape();
@@ -96,12 +95,12 @@ export class ApplyForce extends Test {
 
             /* b2Transform */
             const xf2 = new b2Transform();
-            xf2.q.SetAngle(-0.3524 * Math.PI);
-            xf2.p.Copy(b2Rot.MulRV(xf2.q, new b2Vec2(-1.0, 0.0), new b2Vec2()));
+            xf2.q.Set(-0.3524 * Math.PI);
+            xf2.p.Copy(b2Rot.MultiplyVec2(xf2.q, new b2Vec2(-1.0, 0.0), new b2Vec2()));
 
-            vertices[0] = b2Transform.MulXV(xf2, new b2Vec2(-1.0, 0.0), new b2Vec2());
-            vertices[1] = b2Transform.MulXV(xf2, new b2Vec2(1.0, 0.0), new b2Vec2());
-            vertices[2] = b2Transform.MulXV(xf2, new b2Vec2(0.0, 0.5), new b2Vec2());
+            vertices[0] = b2Transform.MultiplyVec2(xf2, new b2Vec2(-1.0, 0.0), new b2Vec2());
+            vertices[1] = b2Transform.MultiplyVec2(xf2, new b2Vec2(1.0, 0.0), new b2Vec2());
+            vertices[2] = b2Transform.MultiplyVec2(xf2, new b2Vec2(0.0, 0.5), new b2Vec2());
 
             /* b2PolygonShape */
             const poly2 = new b2PolygonShape();

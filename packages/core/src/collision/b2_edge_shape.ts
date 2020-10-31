@@ -114,26 +114,27 @@ export class b2EdgeShape extends b2Shape {
 
     public RayCast(output: b2RayCastOutput, input: b2RayCastInput, xf: b2Transform, _childIndex: number): boolean {
         // Put the ray into the edge's frame of reference.
-        const p1 = b2Transform.MulTXV(xf, input.p1, b2EdgeShape.RayCast_s_p1);
-        const p2 = b2Transform.MulTXV(xf, input.p2, b2EdgeShape.RayCast_s_p2);
-        const d = b2Vec2.SubVV(p2, p1, b2EdgeShape.RayCast_s_d);
+        const p1 = b2Transform.TransposeMultiplyVec2(xf, input.p1, b2EdgeShape.RayCast_s_p1);
+        const p2 = b2Transform.TransposeMultiplyVec2(xf, input.p2, b2EdgeShape.RayCast_s_p2);
+        const d = b2Vec2.Subtract(p2, p1, b2EdgeShape.RayCast_s_d);
 
         const v1 = this.m_vertex1;
         const v2 = this.m_vertex2;
-        const e = b2Vec2.SubVV(v2, v1, b2EdgeShape.RayCast_s_e);
+        const e = b2Vec2.Subtract(v2, v1, b2EdgeShape.RayCast_s_e);
 
         // Normal points to the right, looking from v1 at v2
-        const normal = output.normal.Set(e.y, -e.x).SelfNormalize();
+        const { normal } = output;
+        normal.Set(e.y, -e.x).Normalize();
 
         // q = p1 + t * d
         // dot(normal, q - v1) = 0
         // dot(normal, p1 - v1) + t * dot(normal, d) = 0
-        const numerator = b2Vec2.DotVV(normal, b2Vec2.SubVV(v1, p1, b2Vec2.s_t0));
+        const numerator = b2Vec2.Dot(normal, b2Vec2.Subtract(v1, p1, b2Vec2.s_t0));
         if (this.m_oneSided && numerator > 0) {
             return false;
         }
 
-        const denominator = b2Vec2.DotVV(normal, d);
+        const denominator = b2Vec2.Dot(normal, d);
 
         if (denominator === 0) {
             return false;
@@ -144,25 +145,25 @@ export class b2EdgeShape extends b2Shape {
             return false;
         }
 
-        const q = b2Vec2.AddVMulSV(p1, t, d, b2EdgeShape.RayCast_s_q);
+        const q = b2Vec2.AddScaled(p1, t, d, b2EdgeShape.RayCast_s_q);
 
         // q = v1 + s * r
         // s = dot(q - v1, r) / dot(r, r)
-        const r = b2Vec2.SubVV(v2, v1, b2EdgeShape.RayCast_s_r);
-        const rr = b2Vec2.DotVV(r, r);
+        const r = b2Vec2.Subtract(v2, v1, b2EdgeShape.RayCast_s_r);
+        const rr = b2Vec2.Dot(r, r);
         if (rr === 0) {
             return false;
         }
 
-        const s = b2Vec2.DotVV(b2Vec2.SubVV(q, v1, b2Vec2.s_t0), r) / rr;
+        const s = b2Vec2.Dot(b2Vec2.Subtract(q, v1, b2Vec2.s_t0), r) / rr;
         if (s < 0 || s > 1) {
             return false;
         }
 
         output.fraction = t;
-        b2Rot.MulRV(xf.q, output.normal, output.normal);
+        b2Rot.MultiplyVec2(xf.q, output.normal, output.normal);
         if (numerator > 0) {
-            output.normal.SelfNeg();
+            output.normal.Negate();
         }
         return true;
     }
@@ -173,21 +174,21 @@ export class b2EdgeShape extends b2Shape {
     private static ComputeAABB_s_v2 = new b2Vec2();
 
     public ComputeAABB(aabb: b2AABB, xf: b2Transform, _childIndex: number): void {
-        const v1: b2Vec2 = b2Transform.MulXV(xf, this.m_vertex1, b2EdgeShape.ComputeAABB_s_v1);
-        const v2: b2Vec2 = b2Transform.MulXV(xf, this.m_vertex2, b2EdgeShape.ComputeAABB_s_v2);
+        const v1: b2Vec2 = b2Transform.MultiplyVec2(xf, this.m_vertex1, b2EdgeShape.ComputeAABB_s_v1);
+        const v2: b2Vec2 = b2Transform.MultiplyVec2(xf, this.m_vertex2, b2EdgeShape.ComputeAABB_s_v2);
 
-        b2Vec2.MinV(v1, v2, aabb.lowerBound);
-        b2Vec2.MaxV(v1, v2, aabb.upperBound);
+        b2Vec2.Min(v1, v2, aabb.lowerBound);
+        b2Vec2.Max(v1, v2, aabb.upperBound);
 
         const r: number = this.m_radius;
-        aabb.lowerBound.SelfSubXY(r, r);
-        aabb.upperBound.SelfAddXY(r, r);
+        aabb.lowerBound.SubtractXY(r, r);
+        aabb.upperBound.AddXY(r, r);
     }
 
     /// @see b2Shape::ComputeMass
     public ComputeMass(massData: b2MassData, _density: number): void {
         massData.mass = 0;
-        b2Vec2.MidVV(this.m_vertex1, this.m_vertex2, massData.center);
+        b2Vec2.Mid(this.m_vertex1, this.m_vertex2, massData.center);
         massData.I = 0;
     }
 

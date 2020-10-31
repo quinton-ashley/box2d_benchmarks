@@ -180,7 +180,7 @@ export class EdgeShapes extends Test {
         const L = 25.0;
         const point1 = new b2Vec2(0.0, 10.0);
         const d = new b2Vec2(L * Math.cos(this.m_angle), -L * Math.abs(Math.sin(this.m_angle)));
-        const point2 = b2Vec2.AddVV(point1, d, new b2Vec2());
+        const point2 = b2Vec2.Add(point1, d, new b2Vec2());
 
         let resultFixture: b2Fixture | null = null;
         const resultPoint = new b2Vec2();
@@ -195,7 +195,7 @@ export class EdgeShapes extends Test {
         if (resultFixture) {
             g_debugDraw.DrawPoint(resultPoint, 5.0, new b2Color(0.4, 0.9, 0.4));
             g_debugDraw.DrawSegment(point1, resultPoint, new b2Color(0.8, 0.8, 0.8));
-            const head = b2Vec2.AddVV(resultPoint, b2Vec2.MulSV(0.5, resultNormal, b2Vec2.s_t0), new b2Vec2());
+            const head = b2Vec2.Add(resultPoint, b2Vec2.Scale(0.5, resultNormal, b2Vec2.s_t0), new b2Vec2());
             g_debugDraw.DrawSegment(resultPoint, head, new b2Color(0.9, 0.9, 0.4));
         } else {
             g_debugDraw.DrawSegment(point1, point2, new b2Color(0.8, 0.8, 0.8));

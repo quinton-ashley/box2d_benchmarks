@@ -22,7 +22,6 @@ import {
     b2PolygonShape,
     b2FixtureDef,
     b2BodyType,
-    b2Vec2_zero,
     b2RevoluteJointDef,
     b2DistanceJointDef,
     b2CircleShape,
@@ -75,7 +74,7 @@ export class Dominos extends Test {
 
         {
             const shape = new b2PolygonShape();
-            shape.SetAsBox(7.0, 0.25, b2Vec2_zero, 0.3);
+            shape.SetAsBox(7.0, 0.25, b2Vec2.ZERO, 0.3);
 
             const ground = this.m_world.CreateBody({
                 position: { x: 1.0, y: 6.0 },
@@ -192,7 +191,7 @@ export class Dominos extends Test {
         djd.bodyB = b7;
         djd.localAnchorA.Set(6.0, 0.0);
         djd.localAnchorB.Set(0.0, -1.0);
-        const d = b2Vec2.SubVV(
+        const d = b2Vec2.Subtract(
             djd.bodyB.GetWorldPoint(djd.localAnchorB, new b2Vec2()),
             djd.bodyA.GetWorldPoint(djd.localAnchorA, new b2Vec2()),
             new b2Vec2(),

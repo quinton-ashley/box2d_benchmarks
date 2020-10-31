@@ -90,9 +90,9 @@ export class CollisionFiltering extends Test {
         body1.CreateFixture(triangleShapeDef);
 
         // Large triangle (recycle definitions)
-        vertices[0].SelfMul(2.0);
-        vertices[1].SelfMul(2.0);
-        vertices[2].SelfMul(2.0);
+        vertices[0].Scale(2.0);
+        vertices[1].Scale(2.0);
+        vertices[2].Scale(2.0);
         polygon.Set(vertices, 3);
         triangleFilter.groupIndex = CollisionFiltering.k_largeGroup;
 

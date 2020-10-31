@@ -32,22 +32,22 @@ export function b2CollideEdgeAndCircle(
     manifold.pointCount = 0;
 
     // Compute circle in frame of edge
-    const Q: b2Vec2 = b2Transform.MulTXV(
+    const Q: b2Vec2 = b2Transform.TransposeMultiplyVec2(
         xfA,
-        b2Transform.MulXV(xfB, circleB.m_p, b2Vec2.s_t0),
+        b2Transform.MultiplyVec2(xfB, circleB.m_p, b2Vec2.s_t0),
         b2CollideEdgeAndCircle_s_Q,
     );
 
     const A: b2Vec2 = edgeA.m_vertex1;
     const B: b2Vec2 = edgeA.m_vertex2;
-    const e: b2Vec2 = b2Vec2.SubVV(B, A, b2CollideEdgeAndCircle_s_e);
+    const e: b2Vec2 = b2Vec2.Subtract(B, A, b2CollideEdgeAndCircle_s_e);
 
     // Normal points to the right for a CCW winding
     // b2Vec2 n(e.y, -e.x);
     // const n: b2Vec2 = b2CollideEdgeAndCircle_s_n.Set(-e.y, e.x);
     const n: b2Vec2 = b2CollideEdgeAndCircle_s_n.Set(e.y, -e.x);
     // float offset = b2Dot(n, Q - A);
-    const offset: number = b2Vec2.DotVV(n, b2Vec2.SubVV(Q, A, b2Vec2.s_t0));
+    const offset: number = b2Vec2.Dot(n, b2Vec2.Subtract(Q, A, b2Vec2.s_t0));
 
     const oneSided: boolean = edgeA.m_oneSided;
     if (oneSided && offset < 0.0) {
@@ -55,8 +55,8 @@ export function b2CollideEdgeAndCircle(
     }
 
     // Barycentric coordinates
-    const u: number = b2Vec2.DotVV(e, b2Vec2.SubVV(B, Q, b2Vec2.s_t0));
-    const v: number = b2Vec2.DotVV(e, b2Vec2.SubVV(Q, A, b2Vec2.s_t0));
+    const u: number = b2Vec2.Dot(e, b2Vec2.Subtract(B, Q, b2Vec2.s_t0));
+    const v: number = b2Vec2.Dot(e, b2Vec2.Subtract(Q, A, b2Vec2.s_t0));
 
     const radius: number = edgeA.m_radius + circleB.m_radius;
 
@@ -68,8 +68,8 @@ export function b2CollideEdgeAndCircle(
     // Region A
     if (v <= 0) {
         const P: b2Vec2 = A;
-        const d: b2Vec2 = b2Vec2.SubVV(Q, P, b2CollideEdgeAndCircle_s_d);
-        const dd: number = b2Vec2.DotVV(d, d);
+        const d: b2Vec2 = b2Vec2.Subtract(Q, P, b2CollideEdgeAndCircle_s_d);
+        const dd: number = b2Vec2.Dot(d, d);
         if (dd > radius * radius) {
             return;
         }
@@ -78,8 +78,8 @@ export function b2CollideEdgeAndCircle(
         if (edgeA.m_oneSided) {
             const A1: b2Vec2 = edgeA.m_vertex0;
             const B1: b2Vec2 = A;
-            const e1: b2Vec2 = b2Vec2.SubVV(B1, A1, b2CollideEdgeAndCircle_s_e1);
-            const u1: number = b2Vec2.DotVV(e1, b2Vec2.SubVV(B1, Q, b2Vec2.s_t0));
+            const e1: b2Vec2 = b2Vec2.Subtract(B1, A1, b2CollideEdgeAndCircle_s_e1);
+            const u1: number = b2Vec2.Dot(e1, b2Vec2.Subtract(B1, Q, b2Vec2.s_t0));
 
             // Is the circle in Region AB of the previous edge?
             if (u1 > 0) {
@@ -103,8 +103,8 @@ export function b2CollideEdgeAndCircle(
     // Region B
     if (u <= 0) {
         const P: b2Vec2 = B;
-        const d: b2Vec2 = b2Vec2.SubVV(Q, P, b2CollideEdgeAndCircle_s_d);
-        const dd: number = b2Vec2.DotVV(d, d);
+        const d: b2Vec2 = b2Vec2.Subtract(Q, P, b2CollideEdgeAndCircle_s_d);
+        const dd: number = b2Vec2.Dot(d, d);
         if (dd > radius * radius) {
             return;
         }
@@ -113,8 +113,8 @@ export function b2CollideEdgeAndCircle(
         if (edgeA.m_oneSided) {
             const B2: b2Vec2 = edgeA.m_vertex3;
             const A2: b2Vec2 = B;
-            const e2: b2Vec2 = b2Vec2.SubVV(B2, A2, b2CollideEdgeAndCircle_s_e2);
-            const v2: number = b2Vec2.DotVV(e2, b2Vec2.SubVV(Q, A2, b2Vec2.s_t0));
+            const e2: b2Vec2 = b2Vec2.Subtract(B2, A2, b2CollideEdgeAndCircle_s_e2);
+            const v2: number = b2Vec2.Dot(e2, b2Vec2.Subtract(Q, A2, b2Vec2.s_t0));
 
             // Is the circle in Region AB of the next edge?
             if (v2 > 0) {
@@ -136,13 +136,13 @@ export function b2CollideEdgeAndCircle(
     }
 
     // Region AB
-    const den: number = b2Vec2.DotVV(e, e);
+    const den: number = b2Vec2.Dot(e, e);
     // DEBUG: b2Assert(den > 0);
     const P: b2Vec2 = b2CollideEdgeAndCircle_s_P;
     P.x = (1 / den) * (u * A.x + v * B.x);
     P.y = (1 / den) * (u * A.y + v * B.y);
-    const d: b2Vec2 = b2Vec2.SubVV(Q, P, b2CollideEdgeAndCircle_s_d);
-    const dd: number = b2Vec2.DotVV(d, d);
+    const d: b2Vec2 = b2Vec2.Subtract(Q, P, b2CollideEdgeAndCircle_s_d);
+    const dd: number = b2Vec2.Dot(d, d);
     if (dd > radius * radius) {
         return;
     }
@@ -226,7 +226,7 @@ function b2ComputeEdgeSeparation(
     // b2Vec2 axes[2] = { normal1, -normal1 };
     const axes: [b2Vec2, b2Vec2] = b2ComputeEdgeSeparation_s_axes;
     axes[0].Copy(normal1);
-    axes[1].Copy(normal1).SelfNeg();
+    axes[1].Copy(normal1).Negate();
 
     // Find axis with least overlap (min-max problem)
     for (let j = 0; j < 2; ++j) {
@@ -235,7 +235,7 @@ function b2ComputeEdgeSeparation(
         // Find deepest polygon vertex along axis j
         for (let i = 0; i < polygonB.count; ++i) {
             // float si = b2Dot(axes[j], polygonB.vertices[i] - v1);
-            const si: number = b2Vec2.DotVV(axes[j], b2Vec2.SubVV(polygonB.vertices[i], v1, b2Vec2.s_t0));
+            const si: number = b2Vec2.Dot(axes[j], b2Vec2.Subtract(polygonB.vertices[i], v1, b2Vec2.s_t0));
             if (si < sj) {
                 sj = si;
             }
@@ -267,12 +267,12 @@ function b2ComputePolygonSeparation(
 
     for (let i = 0; i < polygonB.count; ++i) {
         // b2Vec2 n = -polygonB.normals[i];
-        const n: b2Vec2 = b2Vec2.NegV(polygonB.normals[i], b2ComputePolygonSeparation_s_n);
+        const n: b2Vec2 = b2Vec2.Negate(polygonB.normals[i], b2ComputePolygonSeparation_s_n);
 
         // float s1 = b2Dot(n, polygonB.vertices[i] - v1);
-        const s1: number = b2Vec2.DotVV(n, b2Vec2.SubVV(polygonB.vertices[i], v1, b2Vec2.s_t0));
+        const s1: number = b2Vec2.Dot(n, b2Vec2.Subtract(polygonB.vertices[i], v1, b2Vec2.s_t0));
         // float s2 = b2Dot(n, polygonB.vertices[i] - v2);
-        const s2: number = b2Vec2.DotVV(n, b2Vec2.SubVV(polygonB.vertices[i], v2, b2Vec2.s_t0));
+        const s2: number = b2Vec2.Dot(n, b2Vec2.Subtract(polygonB.vertices[i], v2, b2Vec2.s_t0));
         // float s = Math.min(s1, s2);
         const s: number = Math.min(s1, s2);
 
@@ -310,10 +310,10 @@ export function b2CollideEdgeAndPolygon(
     manifold.pointCount = 0;
 
     // b2Transform xf = b2MulT(xfA, xfB);
-    const xf = b2Transform.MulTXX(xfA, xfB, b2CollideEdgeAndPolygon_s_xf);
+    const xf = b2Transform.TransposeMultiply(xfA, xfB, b2CollideEdgeAndPolygon_s_xf);
 
     // b2Vec2 centroidB = b2Mul(xf, polygonB.m_centroid);
-    const centroidB: b2Vec2 = b2Transform.MulXV(xf, polygonB.m_centroid, b2CollideEdgeAndPolygon_s_centroidB);
+    const centroidB: b2Vec2 = b2Transform.MultiplyVec2(xf, polygonB.m_centroid, b2CollideEdgeAndPolygon_s_centroidB);
 
     // b2Vec2 v1 = edgeA.m_vertex1;
     const v1: b2Vec2 = edgeA.m_vertex1;
@@ -321,14 +321,14 @@ export function b2CollideEdgeAndPolygon(
     const v2: b2Vec2 = edgeA.m_vertex2;
 
     // b2Vec2 edge1 = v2 - v1;
-    const edge1: b2Vec2 = b2Vec2.SubVV(v2, v1, b2CollideEdgeAndPolygon_s_edge1);
+    const edge1: b2Vec2 = b2Vec2.Subtract(v2, v1, b2CollideEdgeAndPolygon_s_edge1);
     edge1.Normalize();
 
     // Normal points to the right for a CCW winding
     // b2Vec2 normal1(edge1.y, -edge1.x);
     const normal1 = b2CollideEdgeAndPolygon_s_normal1.Set(edge1.y, -edge1.x);
     // float offset1 = b2Dot(normal1, centroidB - v1);
-    const offset1: number = b2Vec2.DotVV(normal1, b2Vec2.SubVV(centroidB, v1, b2Vec2.s_t0));
+    const offset1: number = b2Vec2.Dot(normal1, b2Vec2.Subtract(centroidB, v1, b2Vec2.s_t0));
 
     const oneSided: boolean = edgeA.m_oneSided;
     if (oneSided && offset1 < 0.0) {
@@ -347,9 +347,9 @@ export function b2CollideEdgeAndPolygon(
             tempPolygonB.normals.push(new b2Vec2());
         }
         // tempPolygonB.vertices[i] = b2Mul(xf, polygonB.m_vertices[i]);
-        b2Transform.MulXV(xf, polygonB.m_vertices[i], tempPolygonB.vertices[i]);
+        b2Transform.MultiplyVec2(xf, polygonB.m_vertices[i], tempPolygonB.vertices[i]);
         // tempPolygonB.normals[i] = b2Mul(xf.q, polygonB.m_normals[i]);
-        b2Rot.MulRV(xf.q, polygonB.m_normals[i], tempPolygonB.normals[i]);
+        b2Rot.MultiplyVec2(xf.q, polygonB.m_normals[i], tempPolygonB.normals[i]);
     }
 
     const radius: number = polygonB.m_radius + edgeA.m_radius;
@@ -383,26 +383,26 @@ export function b2CollideEdgeAndPolygon(
         // See https://box2d.org/posts/2020/06/ghost-collisions/
 
         // b2Vec2 edge0 = v1 - edgeA.m_vertex0;
-        const edge0: b2Vec2 = b2Vec2.SubVV(v1, edgeA.m_vertex0, b2CollideEdgeAndPolygon_s_edge0);
+        const edge0: b2Vec2 = b2Vec2.Subtract(v1, edgeA.m_vertex0, b2CollideEdgeAndPolygon_s_edge0);
         edge0.Normalize();
         // b2Vec2 normal0(edge0.y, -edge0.x);
         const normal0: b2Vec2 = b2CollideEdgeAndPolygon_s_normal0.Set(edge0.y, -edge0.x);
-        const convex1: boolean = b2Vec2.CrossVV(edge0, edge1) >= 0.0;
+        const convex1: boolean = b2Vec2.Cross(edge0, edge1) >= 0.0;
 
         // b2Vec2 edge2 = edgeA.m_vertex3 - v2;
-        const edge2: b2Vec2 = b2Vec2.SubVV(edgeA.m_vertex3, v2, b2CollideEdgeAndPolygon_s_edge2);
+        const edge2: b2Vec2 = b2Vec2.Subtract(edgeA.m_vertex3, v2, b2CollideEdgeAndPolygon_s_edge2);
         edge2.Normalize();
         // b2Vec2 normal2(edge2.y, -edge2.x);
         const normal2: b2Vec2 = b2CollideEdgeAndPolygon_s_normal2.Set(edge2.y, -edge2.x);
-        const convex2: boolean = b2Vec2.CrossVV(edge1, edge2) >= 0.0;
+        const convex2: boolean = b2Vec2.Cross(edge1, edge2) >= 0.0;
 
         const sinTol = 0.1;
-        const side1: boolean = b2Vec2.DotVV(primaryAxis.normal, edge1) <= 0.0;
+        const side1: boolean = b2Vec2.Dot(primaryAxis.normal, edge1) <= 0.0;
 
         // Check Gauss Map
         if (side1) {
             if (convex1) {
-                if (b2Vec2.CrossVV(primaryAxis.normal, normal0) > sinTol) {
+                if (b2Vec2.Cross(primaryAxis.normal, normal0) > sinTol) {
                     // Skip region
                     return;
                 }
@@ -413,7 +413,7 @@ export function b2CollideEdgeAndPolygon(
                 primaryAxis = edgeAxis;
             }
         } else if (convex2) {
-            if (b2Vec2.CrossVV(normal2, primaryAxis.normal) > sinTol) {
+            if (b2Vec2.Cross(normal2, primaryAxis.normal) > sinTol) {
                 // Skip region
                 return;
             }
@@ -434,9 +434,9 @@ export function b2CollideEdgeAndPolygon(
 
         // Search for the polygon normal that is most anti-parallel to the edge normal.
         let bestIndex = 0;
-        let bestValue: number = b2Vec2.DotVV(primaryAxis.normal, tempPolygonB.normals[0]);
+        let bestValue: number = b2Vec2.Dot(primaryAxis.normal, tempPolygonB.normals[0]);
         for (let i = 1; i < tempPolygonB.count; ++i) {
-            const value: number = b2Vec2.DotVV(primaryAxis.normal, tempPolygonB.normals[i]);
+            const value: number = b2Vec2.Dot(primaryAxis.normal, tempPolygonB.normals[i]);
             if (value < bestValue) {
                 bestValue = value;
                 bestIndex = i;
@@ -463,7 +463,7 @@ export function b2CollideEdgeAndPolygon(
         ref.v1.Copy(v1);
         ref.v2.Copy(v2);
         ref.normal.Copy(primaryAxis.normal);
-        ref.sideNormal1.Copy(edge1).SelfNeg(); // ref.sideNormal1 = -edge1;
+        ref.sideNormal1.Copy(edge1).Negate(); // ref.sideNormal1 = -edge1;
         ref.sideNormal2.Copy(edge1);
     } else {
         manifold.type = b2ManifoldType.e_faceB;
@@ -488,11 +488,11 @@ export function b2CollideEdgeAndPolygon(
 
         // CCW winding
         ref.sideNormal1.Set(ref.normal.y, -ref.normal.x);
-        ref.sideNormal2.Copy(ref.sideNormal1).SelfNeg(); // ref.sideNormal2 = -ref.sideNormal1;
+        ref.sideNormal2.Copy(ref.sideNormal1).Negate(); // ref.sideNormal2 = -ref.sideNormal1;
     }
 
-    ref.sideOffset1 = b2Vec2.DotVV(ref.sideNormal1, ref.v1);
-    ref.sideOffset2 = b2Vec2.DotVV(ref.sideNormal2, ref.v2);
+    ref.sideOffset1 = b2Vec2.Dot(ref.sideNormal1, ref.v1);
+    ref.sideOffset2 = b2Vec2.Dot(ref.sideNormal2, ref.v2);
 
     // Clip incident edge against reference face side planes
     // b2ClipVertex clipPoints1[2];
@@ -527,13 +527,13 @@ export function b2CollideEdgeAndPolygon(
 
     let pointCount = 0;
     for (let i = 0; i < b2_maxManifoldPoints; ++i) {
-        const separation: number = b2Vec2.DotVV(ref.normal, b2Vec2.SubVV(clipPoints2[i].v, ref.v1, b2Vec2.s_t0));
+        const separation: number = b2Vec2.Dot(ref.normal, b2Vec2.Subtract(clipPoints2[i].v, ref.v1, b2Vec2.s_t0));
 
         if (separation <= radius) {
             const cp: b2ManifoldPoint = manifold.points[pointCount];
 
             if (primaryAxis.type === b2EPAxisType.e_edgeA) {
-                b2Transform.MulTXV(xf, clipPoints2[i].v, cp.localPoint); // cp.localPoint = b2MulT(xf, clipPoints2[i].v);
+                b2Transform.TransposeMultiplyVec2(xf, clipPoints2[i].v, cp.localPoint); // cp.localPoint = b2MulT(xf, clipPoints2[i].v);
                 cp.id.Copy(clipPoints2[i].id);
             } else {
                 cp.localPoint.Copy(clipPoints2[i].v);

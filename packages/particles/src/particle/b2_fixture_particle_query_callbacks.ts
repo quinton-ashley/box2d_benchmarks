@@ -79,8 +79,8 @@ export class b2ParticleSystem_UpdateBodyContactsCallback extends b2FixturePartic
                     ? 0
                     : this.m_system.GetParticleInvMass();
             /// b2Vec2 rp = ap - bp;
-            const rp = b2Vec2.SubVV(ap, bp, s_rp);
-            const rpn = b2Vec2.CrossVV(rp, n);
+            const rp = b2Vec2.Subtract(ap, bp, s_rp);
+            const rpn = b2Vec2.Cross(rp, n);
             const invM = invAm + invBm + invBI * rpn * rpn;
 
             /// b2ParticleBodyContact& contact = m_system.m_bodyContactBuffer.Append();
@@ -90,7 +90,7 @@ export class b2ParticleSystem_UpdateBodyContactsCallback extends b2FixturePartic
             contact.fixture = fixture;
             contact.weight = 1 - d * this.m_system.m_inverseDiameter;
             /// contact.normal = -n;
-            contact.normal.Copy(n.SelfNeg());
+            contact.normal.Copy(n.Negate());
             contact.mass = invM > 0 ? 1 / invM : 0;
             this.m_system.DetectStuckParticle(a);
         }
@@ -120,24 +120,24 @@ export class b2ParticleSystem_SolveCollisionCallback extends b2FixtureParticleQu
         if (this.m_system.m_iterationIndex === 0) {
             // Put 'ap' in the local space of the previous frame
             /// b2Vec2 p1 = b2MulT(body.m_xf0, ap);
-            const p1 = b2Transform.MulTXV(body.m_xf0, ap, s_p1);
+            const p1 = b2Transform.TransposeMultiplyVec2(body.m_xf0, ap, s_p1);
             if (fixture.GetShape().GetType() === b2ShapeType.e_circle) {
                 // Make relative to the center of the circle
                 /// p1 -= body.GetLocalCenter();
-                p1.SelfSub(body.GetLocalCenter());
+                p1.Subtract(body.GetLocalCenter());
                 // Re-apply rotation about the center of the circle
                 /// p1 = b2Mul(body.m_xf0.q, p1);
-                b2Rot.MulRV(body.m_xf0.q, p1, p1);
+                b2Rot.MultiplyVec2(body.m_xf0.q, p1, p1);
                 // Subtract rotation of the current frame
                 /// p1 = b2MulT(body.m_xf.q, p1);
-                b2Rot.MulTRV(body.m_xf.q, p1, p1);
+                b2Rot.TransposeMultiplyVec2(body.m_xf.q, p1, p1);
                 // Return to local space
                 /// p1 += body.GetLocalCenter();
-                p1.SelfAdd(body.GetLocalCenter());
+                p1.Add(body.GetLocalCenter());
             }
             // Return to global space and apply rotation of current frame
             /// input.p1 = b2Mul(body.m_xf, p1);
-            b2Transform.MulXV(body.m_xf, p1, input.p1);
+            b2Transform.MultiplyVec2(body.m_xf, p1, input.p1);
         } else {
             /// input.p1 = ap;
             input.p1.Copy(ap);
@@ -145,7 +145,7 @@ export class b2ParticleSystem_SolveCollisionCallback extends b2FixtureParticleQu
 
         const step = b2Verify(this.m_step);
         /// input.p2 = ap + m_step.dt * av;
-        b2Vec2.AddVMulSV(ap, step.dt, av, input.p2);
+        b2Vec2.AddScaled(ap, step.dt, av, input.p2);
         input.maxFraction = 1;
         if (fixture.RayCast(output, input, childIndex)) {
             const n = output.normal;

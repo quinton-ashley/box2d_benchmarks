@@ -124,9 +124,9 @@ export class BuoyancyTest extends Test {
                 array[2] = new b2Vec2(-0.5 - Math.random() * 1.0, -1.0 - Math.random() * 1.0);
                 array[3] = new b2Vec2(0.5 + Math.random() * 1.0, -1.0 - Math.random() * 1.0);
                 array[1] = new b2Vec2(array[0].x + array[2].x, array[0].y + array[2].y);
-                array[1].SelfMul(Math.random() / 2 + 0.8);
+                array[1].Scale(Math.random() / 2 + 0.8);
                 array[4] = new b2Vec2(array[3].x + array[0].x, array[3].y + array[0].y);
-                array[4].SelfMul(Math.random() / 2 + 0.8);
+                array[4].Scale(Math.random() / 2 + 0.8);
                 polygon.Set(array);
             } else {
                 polygon.Set([

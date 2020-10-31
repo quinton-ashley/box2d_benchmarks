@@ -79,7 +79,7 @@ export class Impulse extends Test {
                 0.5 * (Impulse.kBoxLeft + Impulse.kBoxRight),
                 0.5 * (Impulse.kBoxBottom + Impulse.kBoxTop),
             );
-            const direction = b2Vec2.SubVV(p, kBoxCenter, new b2Vec2());
+            const direction = b2Vec2.Subtract(p, kBoxCenter, new b2Vec2());
             direction.Normalize();
             this.ApplyImpulseOrForce(direction);
         }
@@ -106,12 +106,12 @@ export class Impulse extends Test {
         if (this.m_useLinearImpulse) {
             const kImpulseMagnitude = 0.005;
             ///  const b2Vec2 impulse = kImpulseMagnitude * direction * (float32)numParticles;
-            const impulse = b2Vec2.MulSV(kImpulseMagnitude * numParticles, direction, new b2Vec2());
+            const impulse = b2Vec2.Scale(kImpulseMagnitude * numParticles, direction, new b2Vec2());
             particleGroup.ApplyLinearImpulse(impulse);
         } else {
             const kForceMagnitude = 1.0;
             ///  const b2Vec2 force = kForceMagnitude * direction * (float32)numParticles;
-            const force = b2Vec2.MulSV(kForceMagnitude * numParticles, direction, new b2Vec2());
+            const force = b2Vec2.Scale(kForceMagnitude * numParticles, direction, new b2Vec2());
             particleGroup.ApplyForce(force);
         }
     }

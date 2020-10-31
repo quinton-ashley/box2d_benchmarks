@@ -57,7 +57,7 @@ export class b2Color implements RGBA {
         return new b2Color().Copy(this);
     }
 
-    public Copy(other: RGBA): this {
+    public Copy(other: RGBA) {
         this.r = other.r;
         this.g = other.g;
         this.b = other.b;
@@ -77,14 +77,14 @@ export class b2Color implements RGBA {
         this.SetRGBA(r, g, b, a);
     }
 
-    public SetByteRGB(r: number, g: number, b: number): this {
+    public SetByteRGB(r: number, g: number, b: number) {
         this.r = r / 0xff;
         this.g = g / 0xff;
         this.b = b / 0xff;
         return this;
     }
 
-    public SetByteRGBA(r: number, g: number, b: number, a: number): this {
+    public SetByteRGBA(r: number, g: number, b: number, a: number) {
         this.r = r / 0xff;
         this.g = g / 0xff;
         this.b = b / 0xff;
@@ -92,14 +92,14 @@ export class b2Color implements RGBA {
         return this;
     }
 
-    public SetRGB(rr: number, gg: number, bb: number): this {
+    public SetRGB(rr: number, gg: number, bb: number) {
         this.r = rr;
         this.g = gg;
         this.b = bb;
         return this;
     }
 
-    public SetRGBA(rr: number, gg: number, bb: number, aa: number): this {
+    public SetRGBA(rr: number, gg: number, bb: number, aa: number) {
         this.r = rr;
         this.g = gg;
         this.b = bb;
@@ -107,7 +107,7 @@ export class b2Color implements RGBA {
         return this;
     }
 
-    public SelfAdd(color: RGBA): this {
+    public Add(color: RGBA) {
         this.r += color.r;
         this.g += color.g;
         this.b += color.b;
@@ -115,15 +115,7 @@ export class b2Color implements RGBA {
         return this;
     }
 
-    public Add<T extends RGBA>(color: RGBA, out: T): T {
-        out.r = this.r + color.r;
-        out.g = this.g + color.g;
-        out.b = this.b + color.b;
-        out.a = this.a + color.a;
-        return out;
-    }
-
-    public SelfSub(color: RGBA): this {
+    public Subtract(color: RGBA) {
         this.r -= color.r;
         this.g -= color.g;
         this.b -= color.b;
@@ -131,15 +123,7 @@ export class b2Color implements RGBA {
         return this;
     }
 
-    public Sub<T extends RGBA>(color: RGBA, out: T): T {
-        out.r = this.r - color.r;
-        out.g = this.g - color.g;
-        out.b = this.b - color.b;
-        out.a = this.a - color.a;
-        return out;
-    }
-
-    public SelfMul(s: number): this {
+    public Scale(s: number) {
         this.r *= s;
         this.g *= s;
         this.b *= s;
@@ -147,16 +131,36 @@ export class b2Color implements RGBA {
         return this;
     }
 
-    public Mul<T extends RGBA>(s: number, out: T): T {
-        out.r = this.r * s;
-        out.g = this.g * s;
-        out.b = this.b * s;
-        out.a = this.a * s;
+    public Mix(mixColor: RGBA, strength: number): void {
+        b2Color.MixColors(this, mixColor, strength);
+    }
+
+    public MakeStyleString(alpha: number = this.a): string {
+        return b2Color.MakeStyleString(this.r, this.g, this.b, alpha);
+    }
+
+    public static Add<T extends RGBA>(colorA: RGBA, colorB: RGBA, out: T): T {
+        out.r = colorA.r + colorB.r;
+        out.g = colorA.g + colorB.g;
+        out.b = colorA.b + colorB.b;
+        out.a = colorA.a + colorB.a;
         return out;
     }
 
-    public Mix(mixColor: RGBA, strength: number): void {
-        b2Color.MixColors(this, mixColor, strength);
+    public static Subtract<T extends RGBA>(colorA: RGBA, colorB: RGBA, out: T): T {
+        out.r = colorA.r - colorB.r;
+        out.g = colorA.g - colorB.g;
+        out.b = colorA.b - colorB.b;
+        out.a = colorA.a - colorB.a;
+        return out;
+    }
+
+    public static Scale<T extends RGBA>(color: RGBA, s: number, out: T): T {
+        out.r = color.r * s;
+        out.g = color.g * s;
+        out.b = color.b * s;
+        out.a = color.a * s;
+        return out;
     }
 
     public static MixColors(colorA: RGBA, colorB: RGBA, strength: number): void {
@@ -172,10 +176,6 @@ export class b2Color implements RGBA {
         colorB.g -= dg;
         colorB.b -= db;
         colorB.a -= da;
-    }
-
-    public MakeStyleString(alpha: number = this.a): string {
-        return b2Color.MakeStyleString(this.r, this.g, this.b, alpha);
     }
 
     public static MakeStyleString(r: number, g: number, b: number, a = 1.0): string {

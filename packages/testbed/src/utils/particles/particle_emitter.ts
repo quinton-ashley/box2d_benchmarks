@@ -120,14 +120,14 @@ export class RadialEmitter {
      * Set the size of the circle which emits particles.
      */
     public SetSize(size: b2Vec2): void {
-        this.m_halfSize.Copy(size).SelfMul(0.5);
+        this.m_halfSize.Copy(size).Scale(0.5);
     }
 
     /**
      * Get the size of the circle which emits particles.
      */
     public GetSize(out: b2Vec2): b2Vec2 {
-        return out.Copy(this.m_halfSize).SelfMul(2.0);
+        return out.Copy(this.m_halfSize).Scale(2.0);
     }
 
     /**
@@ -298,7 +298,7 @@ export class RadialEmitter {
             pd.velocity.Copy(this.m_startingVelocity);
             if (this.m_speed !== 0.0) {
                 ///  pd.velocity += positionOnUnitCircle * m_speed;
-                pd.velocity.SelfMulAdd(this.m_speed, positionOnUnitCircle);
+                pd.velocity.AddScaled(this.m_speed, positionOnUnitCircle);
             }
 
             const particleIndex = this.m_particleSystem.CreateParticle(pd);

@@ -110,12 +110,12 @@ export class DistanceTest extends Test {
             const color = new b2Color(0.9, 0.9, 0.9);
             const v = [];
             for (let i = 0; i < this.m_polygonA.m_count; ++i) {
-                v[i] = b2Transform.MulXV(this.m_transformA, this.m_polygonA.m_vertices[i], new b2Vec2());
+                v[i] = b2Transform.MultiplyVec2(this.m_transformA, this.m_polygonA.m_vertices[i], new b2Vec2());
             }
             g_debugDraw.DrawPolygon(v, this.m_polygonA.m_count, color);
 
             for (let i = 0; i < this.m_polygonB.m_count; ++i) {
-                v[i] = b2Transform.MulXV(this.m_transformB, this.m_polygonB.m_vertices[i], new b2Vec2());
+                v[i] = b2Transform.MultiplyVec2(this.m_transformB, this.m_polygonB.m_vertices[i], new b2Vec2());
             }
             g_debugDraw.DrawPolygon(v, this.m_polygonB.m_count, color);
         }

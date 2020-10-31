@@ -32,13 +32,13 @@ export class b2ConstantAccelController extends b2Controller {
     public readonly A = new b2Vec2(0, 0);
 
     public Step(step: b2TimeStep) {
-        b2Vec2.MulSV(step.dt, this.A, tempDta);
+        b2Vec2.Scale(step.dt, this.A, tempDta);
         for (let i = this.m_bodyList; i; i = i.nextBody) {
             const { body } = i;
             if (!body.IsAwake()) {
                 continue;
             }
-            body.SetLinearVelocity(b2Vec2.AddVV(body.GetLinearVelocity(), tempDta, b2Vec2.s_t0));
+            body.SetLinearVelocity(b2Vec2.Add(body.GetLinearVelocity(), tempDta, b2Vec2.s_t0));
         }
     }
 }

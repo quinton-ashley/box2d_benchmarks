@@ -34,6 +34,12 @@ import { Settings } from "../../settings";
 import { g_debugDraw } from "../../utils/draw";
 import { hotKeyPress, HotKey } from "../../utils/hotkeys";
 
+const temp = {
+    aabb0: new b2AABB(),
+    c0: new b2Vec2(),
+    c1: new b2Vec2(),
+};
+
 export class DynamicTreeTest extends Test {
     public static readonly e_actorCount = 128;
 
@@ -142,11 +148,11 @@ export class DynamicTreeTest extends Test {
         if (this.m_rayActor) {
             const cr = new b2Color(0.2, 0.2, 0.9);
             // b2Vec2 p = this.m_rayCastInput.p1 + this.m_rayActor.fraction * (this.m_rayCastInput.p2 - this.m_rayCastInput.p1);
-            const p = b2Vec2.AddVV(
+            const p = b2Vec2.Add(
                 this.m_rayCastInput.p1,
-                b2Vec2.MulSV(
+                b2Vec2.Scale(
                     this.m_rayActor.fraction,
-                    b2Vec2.SubVV(this.m_rayCastInput.p2, this.m_rayCastInput.p1, new b2Vec2()),
+                    b2Vec2.Subtract(this.m_rayCastInput.p2, this.m_rayCastInput.p1, new b2Vec2()),
                     new b2Vec2(),
                 ),
                 new b2Vec2(),
@@ -178,7 +184,7 @@ export class DynamicTreeTest extends Test {
         aabb.lowerBound.x = b2RandomRange(-this.m_worldExtent, this.m_worldExtent);
         aabb.lowerBound.y = b2RandomRange(0.0, 2.0 * this.m_worldExtent);
         aabb.upperBound.Copy(aabb.lowerBound);
-        aabb.upperBound.SelfAdd(w);
+        aabb.upperBound.Add(w);
     }
 
     public MoveAABB(aabb: b2AABB): void {
@@ -187,17 +193,17 @@ export class DynamicTreeTest extends Test {
         d.y = b2RandomRange(-0.5, 0.5);
         // d.x = 2.0;
         // d.y = 0.0;
-        aabb.lowerBound.SelfAdd(d);
-        aabb.upperBound.SelfAdd(d);
+        aabb.lowerBound.Add(d);
+        aabb.upperBound.Add(d);
 
         // b2Vec2 c0 = 0.5 * (aabb.lowerBound + aabb.upperBound);
-        const c0 = b2Vec2.MulSV(0.5, b2Vec2.AddVV(aabb.lowerBound, aabb.upperBound, b2Vec2.s_t0), new b2Vec2());
+        const c0 = b2Vec2.Scale(0.5, b2Vec2.Add(aabb.lowerBound, aabb.upperBound, b2Vec2.s_t0), new b2Vec2());
         const min = new b2Vec2(-this.m_worldExtent, 0.0);
         const max = new b2Vec2(this.m_worldExtent, 2.0 * this.m_worldExtent);
-        const c = b2Vec2.ClampV(c0, min, max, new b2Vec2());
+        const c = b2Vec2.Clamp(c0, min, max, new b2Vec2());
 
-        aabb.lowerBound.SelfAdd(b2Vec2.SubVV(c, c0, new b2Vec2()));
-        aabb.upperBound.SelfAdd(b2Vec2.SubVV(c, c0, new b2Vec2()));
+        aabb.lowerBound.Add(b2Vec2.Subtract(c, c0, new b2Vec2()));
+        aabb.upperBound.Add(b2Vec2.Subtract(c, c0, new b2Vec2()));
     }
 
     public CreateProxy(): void {
@@ -225,6 +231,8 @@ export class DynamicTreeTest extends Test {
     }
 
     public MoveProxy(): void {
+        const { aabb0, c0, c1 } = temp;
+
         for (let i = 0; i < DynamicTreeTest.e_actorCount; ++i) {
             const j = 0 | b2RandomRange(0, DynamicTreeTest.e_actorCount);
             const actor = this.m_actors[j];
@@ -232,10 +240,9 @@ export class DynamicTreeTest extends Test {
                 continue;
             }
 
-            const aabb0 = new b2AABB();
             aabb0.Copy(actor.aabb);
             this.MoveAABB(actor.aabb);
-            const displacement = b2Vec2.SubVV(actor.aabb.GetCenter(), aabb0.GetCenter(), new b2Vec2());
+            const displacement = b2Vec2.Subtract(actor.aabb.GetCenter(c1), aabb0.GetCenter(c0), new b2Vec2());
             this.m_tree.MoveProxy(actor.proxyId, actor.aabb, displacement);
             return;
         }

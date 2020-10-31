@@ -31,7 +31,7 @@ export class b2CircleShape extends b2Shape {
         super(b2ShapeType.e_circle, radius);
     }
 
-    public Set(position: XY, radius: number = this.m_radius): this {
+    public Set(position: XY, radius: number = this.m_radius) {
         this.m_p.Copy(position);
         this.m_radius = radius;
         return this;
@@ -62,9 +62,9 @@ export class b2CircleShape extends b2Shape {
     private static TestPoint_s_d = new b2Vec2();
 
     public TestPoint(transform: b2Transform, p: XY): boolean {
-        const center: b2Vec2 = b2Transform.MulXV(transform, this.m_p, b2CircleShape.TestPoint_s_center);
-        const d: b2Vec2 = b2Vec2.SubVV(p, center, b2CircleShape.TestPoint_s_d);
-        return b2Vec2.DotVV(d, d) <= this.m_radius ** 2;
+        const center: b2Vec2 = b2Transform.MultiplyVec2(transform, this.m_p, b2CircleShape.TestPoint_s_center);
+        const d: b2Vec2 = b2Vec2.Subtract(p, center, b2CircleShape.TestPoint_s_d);
+        return b2Vec2.Dot(d, d) <= this.m_radius ** 2;
     }
 
     /// Implement b2Shape.
@@ -86,14 +86,14 @@ export class b2CircleShape extends b2Shape {
         transform: b2Transform,
         _childIndex: number,
     ): boolean {
-        const position: b2Vec2 = b2Transform.MulXV(transform, this.m_p, b2CircleShape.RayCast_s_position);
-        const s: b2Vec2 = b2Vec2.SubVV(input.p1, position, b2CircleShape.RayCast_s_s);
-        const b: number = b2Vec2.DotVV(s, s) - this.m_radius ** 2;
+        const position: b2Vec2 = b2Transform.MultiplyVec2(transform, this.m_p, b2CircleShape.RayCast_s_position);
+        const s: b2Vec2 = b2Vec2.Subtract(input.p1, position, b2CircleShape.RayCast_s_s);
+        const b: number = b2Vec2.Dot(s, s) - this.m_radius ** 2;
 
         // Solve quadratic equation.
-        const r: b2Vec2 = b2Vec2.SubVV(input.p2, input.p1, b2CircleShape.RayCast_s_r);
-        const c: number = b2Vec2.DotVV(s, r);
-        const rr: number = b2Vec2.DotVV(r, r);
+        const r: b2Vec2 = b2Vec2.Subtract(input.p2, input.p1, b2CircleShape.RayCast_s_r);
+        const c: number = b2Vec2.Dot(s, r);
+        const rr: number = b2Vec2.Dot(r, r);
         const sigma = c * c - rr * b;
 
         // Check for negative discriminant and short segment.
@@ -108,7 +108,7 @@ export class b2CircleShape extends b2Shape {
         if (a >= 0 && a <= input.maxFraction * rr) {
             a /= rr;
             output.fraction = a;
-            b2Vec2.AddVMulSV(s, a, r, output.normal).SelfNormalize();
+            b2Vec2.AddScaled(s, a, r, output.normal).Normalize();
             return true;
         }
 
@@ -119,7 +119,7 @@ export class b2CircleShape extends b2Shape {
     private static ComputeAABB_s_p = new b2Vec2();
 
     public ComputeAABB(aabb: b2AABB, transform: b2Transform, _childIndex: number): void {
-        const p: b2Vec2 = b2Transform.MulXV(transform, this.m_p, b2CircleShape.ComputeAABB_s_p);
+        const p: b2Vec2 = b2Transform.MultiplyVec2(transform, this.m_p, b2CircleShape.ComputeAABB_s_p);
         aabb.lowerBound.Set(p.x - this.m_radius, p.y - this.m_radius);
         aabb.upperBound.Set(p.x + this.m_radius, p.y + this.m_radius);
     }
@@ -131,7 +131,7 @@ export class b2CircleShape extends b2Shape {
         massData.center.Copy(this.m_p);
 
         // inertia about the local origin
-        massData.I = massData.mass * (0.5 * radius_sq + b2Vec2.DotVV(this.m_p, this.m_p));
+        massData.I = massData.mass * (0.5 * radius_sq + b2Vec2.Dot(this.m_p, this.m_p));
     }
 
     public SetupDistanceProxy(proxy: b2DistanceProxy, _index: number): void {

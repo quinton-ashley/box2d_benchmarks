@@ -33,6 +33,8 @@ const temp = {
     aabb: new b2AABB(),
     fatAABB: new b2AABB(),
     hugeAABB: new b2AABB(),
+    c: new b2Vec2(),
+    h: new b2Vec2(),
 };
 
 let nextNodeid = 0;
@@ -103,8 +105,8 @@ export class b2TreeNode<T> {
         b2Verify(this.child1).ShiftOrigin(newOrigin);
         b2Verify(this.child2).ShiftOrigin(newOrigin);
 
-        this.aabb.lowerBound.SelfSub(newOrigin);
-        this.aabb.upperBound.SelfSub(newOrigin);
+        this.aabb.lowerBound.Subtract(newOrigin);
+        this.aabb.upperBound.Subtract(newOrigin);
     }
 }
 
@@ -169,13 +171,13 @@ export class b2DynamicTree<T> {
 
     public RayCast(input: b2RayCastInput, callback: (input: b2RayCastInput, node: b2TreeNode<T>) => number): void {
         const { p1, p2 } = input;
-        const r = b2Vec2.SubVV(p2, p1, temp.r);
+        const r = b2Vec2.Subtract(p2, p1, temp.r);
         // DEBUG: b2Assert(r.LengthSquared() > 0);
         r.Normalize();
 
         // v is perpendicular to the segment.
-        const v = b2Vec2.CrossOneV(r, temp.v);
-        const abs_v = b2Vec2.AbsV(v, temp.abs_v);
+        const v = b2Vec2.CrossOneVec2(r, temp.v);
+        const abs_v = v.GetAbs(temp.abs_v);
 
         // Separating axis for segment (Gino, p80).
         // |dot(v, p1 - c)| > dot(|v|, h)
@@ -183,10 +185,10 @@ export class b2DynamicTree<T> {
         let { maxFraction } = input;
 
         // Build a bounding box for the segment.
-        const { segmentAABB, subInput } = temp;
+        const { segmentAABB, subInput, c, h } = temp;
         const t = temp.t.Set(p1.x + maxFraction * (p2.x - p1.x), p1.y + maxFraction * (p2.y - p1.y));
-        b2Vec2.MinV(p1, t, segmentAABB.lowerBound);
-        b2Vec2.MaxV(p1, t, segmentAABB.upperBound);
+        b2Vec2.Min(p1, t, segmentAABB.lowerBound);
+        b2Vec2.Max(p1, t, segmentAABB.upperBound);
 
         const stack = temp.stack as Array<b2TreeNode<T> | null>;
         stack.length = 0;
@@ -200,9 +202,9 @@ export class b2DynamicTree<T> {
 
             // Separating axis for segment (Gino, p80).
             // |dot(v, p1 - c)| > dot(|v|, h)
-            const c = node.aabb.GetCenter();
-            const h = node.aabb.GetExtents();
-            const separation = Math.abs(b2Vec2.DotVV(v, b2Vec2.SubVV(p1, c, b2Vec2.s_t0))) - b2Vec2.DotVV(abs_v, h);
+            node.aabb.GetCenter(c);
+            node.aabb.GetExtents(h);
+            const separation = Math.abs(b2Vec2.Dot(v, b2Vec2.Subtract(p1, c, b2Vec2.s_t0))) - b2Vec2.Dot(abs_v, h);
             if (separation > 0) {
                 node = stack.pop();
                 continue;
@@ -224,8 +226,8 @@ export class b2DynamicTree<T> {
                     // Update segment bounding box.
                     maxFraction = value;
                     t.Set(p1.x + maxFraction * (p2.x - p1.x), p1.y + maxFraction * (p2.y - p1.y));
-                    b2Vec2.MinV(p1, t, segmentAABB.lowerBound);
-                    b2Vec2.MaxV(p1, t, segmentAABB.upperBound);
+                    b2Vec2.Min(p1, t, segmentAABB.lowerBound);
+                    b2Vec2.Max(p1, t, segmentAABB.upperBound);
                 }
             } else {
                 stack.push(node.child1);
