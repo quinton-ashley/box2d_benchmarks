@@ -857,23 +857,8 @@ export class b2Mat33 {
     }
 
     /// Multiply a matrix times a vector.
-    public static MultiplyXYZ<T extends XYZ>(A: b2Mat33, x: number, y: number, z: number, out: T) {
-        out.x = A.ex.x * x + A.ey.x * y + A.ez.x * z;
-        out.y = A.ex.y * x + A.ey.y * y + A.ez.y * z;
-        out.z = A.ex.z * x + A.ey.z * y + A.ez.z * z;
-        return out;
-    }
-
-    /// Multiply a matrix times a vector.
     public static MultiplyVec2<T extends XY>(A: b2Mat33, v: XY, out: T) {
         const { x, y } = v;
-        out.x = A.ex.x * x + A.ey.x * y;
-        out.y = A.ex.y * x + A.ey.y * y;
-        return out;
-    }
-
-    /// Multiply a matrix times a vector.
-    public static MultiplyXY<T extends XY>(A: b2Mat33, x: number, y: number, out: T) {
         out.x = A.ex.x * x + A.ey.x * y;
         out.y = A.ex.y * x + A.ey.y * y;
         return out;
