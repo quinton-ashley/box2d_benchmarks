@@ -21,6 +21,16 @@ import { b2Joint, b2JointDef, b2JointType, b2IJointDef } from "./b2_joint";
 import { b2SolverData } from "./b2_time_step";
 import { b2Body } from "./b2_body";
 
+const temp = {
+    qA: new b2Rot(),
+    qB: new b2Rot(),
+    lalcA: new b2Vec2(),
+    lalcB: new b2Vec2(),
+    Cdot: new b2Vec2(),
+    impulse: new b2Vec2(),
+    oldImpulse: new b2Vec2(),
+};
+
 export interface b2IFrictionJointDef extends b2IJointDef {
     localAnchorA: XY;
 
@@ -92,16 +102,6 @@ export class b2FrictionJoint extends b2Joint {
 
     public m_angularMass = 0;
 
-    public readonly m_qA: b2Rot = new b2Rot();
-
-    public readonly m_qB: b2Rot = new b2Rot();
-
-    public readonly m_lalcA: b2Vec2 = new b2Vec2();
-
-    public readonly m_lalcB: b2Vec2 = new b2Vec2();
-
-    public readonly m_K: b2Mat22 = new b2Mat22();
-
     constructor(def: b2IFrictionJointDef) {
         super(def);
 
@@ -111,8 +111,6 @@ export class b2FrictionJoint extends b2Joint {
         this.m_linearImpulse.SetZero();
         this.m_maxForce = def.maxForce ?? 0;
         this.m_maxTorque = def.maxTorque ?? 0;
-
-        this.m_linearMass.SetZero();
     }
 
     public InitVelocityConstraints(data: b2SolverData): void {
@@ -125,27 +123,21 @@ export class b2FrictionJoint extends b2Joint {
         this.m_invIA = this.m_bodyA.m_invI;
         this.m_invIB = this.m_bodyB.m_invI;
 
-        // const cA: b2Vec2 = data.positions[this.m_indexA].c;
-        const aA: number = data.positions[this.m_indexA].a;
-        const vA: b2Vec2 = data.velocities[this.m_indexA].v;
-        let wA: number = data.velocities[this.m_indexA].w;
+        const aA = data.positions[this.m_indexA].a;
+        const vA = data.velocities[this.m_indexA].v;
+        let wA = data.velocities[this.m_indexA].w;
 
-        // const cB: b2Vec2 = data.positions[this.m_indexB].c;
-        const aB: number = data.positions[this.m_indexB].a;
-        const vB: b2Vec2 = data.velocities[this.m_indexB].v;
-        let wB: number = data.velocities[this.m_indexB].w;
+        const aB = data.positions[this.m_indexB].a;
+        const vB = data.velocities[this.m_indexB].v;
+        let wB = data.velocities[this.m_indexB].w;
 
-        // const qA: b2Rot = new b2Rot(aA), qB: b2Rot = new b2Rot(aB);
-        const qA: b2Rot = this.m_qA.Set(aA);
-        const qB: b2Rot = this.m_qB.Set(aB);
+        const { qA, qB, lalcA, lalcB } = temp;
+        qA.Set(aA);
+        qB.Set(aB);
 
         // Compute the effective mass matrix.
-        // m_rA = b2Mul(qA, m_localAnchorA - m_localCenterA);
-        b2Vec2.Subtract(this.m_localAnchorA, this.m_localCenterA, this.m_lalcA);
-        const rA: b2Vec2 = b2Rot.MultiplyVec2(qA, this.m_lalcA, this.m_rA);
-        // m_rB = b2Mul(qB, m_localAnchorB - m_localCenterB);
-        b2Vec2.Subtract(this.m_localAnchorB, this.m_localCenterB, this.m_lalcB);
-        const rB: b2Vec2 = b2Rot.MultiplyVec2(qB, this.m_lalcB, this.m_rB);
+        const rA = b2Rot.MultiplyVec2(qA, b2Vec2.Subtract(this.m_localAnchorA, this.m_localCenterA, lalcA), this.m_rA);
+        const rB = b2Rot.MultiplyVec2(qB, b2Vec2.Subtract(this.m_localAnchorB, this.m_localCenterB, lalcB), this.m_rB);
 
         // J = [-I -r1_skew I r2_skew]
         //     [ 0       -1 0       1]
@@ -156,18 +148,18 @@ export class b2FrictionJoint extends b2Joint {
         //     [  -r1y*iA*r1x-r2y*iB*r2x, mA+r1x^2*iA+mB+r2x^2*iB,           r1x*iA+r2x*iB]
         //     [          -r1y*iA-r2y*iB,           r1x*iA+r2x*iB,                   iA+iB]
 
-        const mA: number = this.m_invMassA;
-        const mB: number = this.m_invMassB;
-        const iA: number = this.m_invIA;
-        const iB: number = this.m_invIB;
+        const mA = this.m_invMassA;
+        const mB = this.m_invMassB;
+        const iA = this.m_invIA;
+        const iB = this.m_invIB;
 
-        const K: b2Mat22 = this.m_K; // new b2Mat22();
+        const K = this.m_linearMass;
         K.ex.x = mA + mB + iA * rA.y * rA.y + iB * rB.y * rB.y;
         K.ex.y = -iA * rA.x * rA.y - iB * rB.x * rB.y;
         K.ey.x = K.ex.y;
         K.ey.y = mA + mB + iA * rA.x * rA.x + iB * rB.x * rB.x;
 
-        K.GetInverse(this.m_linearMass);
+        K.Inverse();
 
         this.m_angularMass = iA + iB;
         if (this.m_angularMass > 0) {
@@ -176,58 +168,43 @@ export class b2FrictionJoint extends b2Joint {
 
         if (data.step.warmStarting) {
             // Scale impulses to support a variable time step.
-            // m_linearImpulse *= data.step.dtRatio;
             this.m_linearImpulse.Scale(data.step.dtRatio);
             this.m_angularImpulse *= data.step.dtRatio;
 
-            // const P: b2Vec2(m_linearImpulse.x, m_linearImpulse.y);
-            const P: b2Vec2 = this.m_linearImpulse;
-
-            // vA -= mA * P;
+            const P = this.m_linearImpulse;
             vA.SubtractScaled(mA, P);
-            // wA -= iA * (b2Cross(m_rA, P) + m_angularImpulse);
             wA -= iA * (b2Vec2.Cross(this.m_rA, P) + this.m_angularImpulse);
-            // vB += mB * P;
             vB.AddScaled(mB, P);
-            // wB += iB * (b2Cross(m_rB, P) + m_angularImpulse);
             wB += iB * (b2Vec2.Cross(this.m_rB, P) + this.m_angularImpulse);
         } else {
             this.m_linearImpulse.SetZero();
             this.m_angularImpulse = 0;
         }
 
-        // data.velocities[this.m_indexA].v = vA;
         data.velocities[this.m_indexA].w = wA;
-        // data.velocities[this.m_indexB].v = vB;
         data.velocities[this.m_indexB].w = wB;
     }
 
-    private static SolveVelocityConstraints_s_Cdot_v2 = new b2Vec2();
-
-    private static SolveVelocityConstraints_s_impulseV = new b2Vec2();
-
-    private static SolveVelocityConstraints_s_oldImpulseV = new b2Vec2();
-
     public SolveVelocityConstraints(data: b2SolverData): void {
-        const vA: b2Vec2 = data.velocities[this.m_indexA].v;
-        let wA: number = data.velocities[this.m_indexA].w;
-        const vB: b2Vec2 = data.velocities[this.m_indexB].v;
-        let wB: number = data.velocities[this.m_indexB].w;
+        const vA = data.velocities[this.m_indexA].v;
+        let wA = data.velocities[this.m_indexA].w;
+        const vB = data.velocities[this.m_indexB].v;
+        let wB = data.velocities[this.m_indexB].w;
 
-        const mA: number = this.m_invMassA;
-        const mB: number = this.m_invMassB;
-        const iA: number = this.m_invIA;
-        const iB: number = this.m_invIB;
+        const mA = this.m_invMassA;
+        const mB = this.m_invMassB;
+        const iA = this.m_invIA;
+        const iB = this.m_invIB;
 
-        const h: number = data.step.dt;
+        const h = data.step.dt;
 
         // Solve angular friction
         {
-            const Cdot: number = wB - wA;
-            let impulse: number = -this.m_angularMass * Cdot;
+            const Cdot = wB - wA;
+            let impulse = -this.m_angularMass * Cdot;
 
-            const oldImpulse: number = this.m_angularImpulse;
-            const maxImpulse: number = h * this.m_maxTorque;
+            const oldImpulse = this.m_angularImpulse;
+            const maxImpulse = h * this.m_maxTorque;
             this.m_angularImpulse = b2Clamp(this.m_angularImpulse + impulse, -maxImpulse, maxImpulse);
             impulse = this.m_angularImpulse - oldImpulse;
 
@@ -237,46 +214,34 @@ export class b2FrictionJoint extends b2Joint {
 
         // Solve linear friction
         {
-            // b2Vec2 Cdot = vB + b2Cross(wB, m_rB) - vA - b2Cross(wA, m_rA);
-            const Cdot_v2: b2Vec2 = b2Vec2.Subtract(
+            const { Cdot, impulse, oldImpulse } = temp;
+            b2Vec2.Subtract(
                 b2Vec2.AddCrossScalarVec2(vB, wB, this.m_rB, b2Vec2.s_t0),
                 b2Vec2.AddCrossScalarVec2(vA, wA, this.m_rA, b2Vec2.s_t1),
-                b2FrictionJoint.SolveVelocityConstraints_s_Cdot_v2,
+                Cdot,
             );
 
-            // b2Vec2 impulse = -b2Mul(m_linearMass, Cdot);
-            const impulseV: b2Vec2 = b2Mat22
-                .MultiplyVec2(this.m_linearMass, Cdot_v2, b2FrictionJoint.SolveVelocityConstraints_s_impulseV)
-                .Negate();
-            // b2Vec2 oldImpulse = m_linearImpulse;
-            const oldImpulseV = b2FrictionJoint.SolveVelocityConstraints_s_oldImpulseV.Copy(this.m_linearImpulse);
-            // m_linearImpulse += impulse;
-            this.m_linearImpulse.Add(impulseV);
+            b2Mat22.MultiplyVec2(this.m_linearMass, Cdot, impulse).Negate();
+            oldImpulse.Copy(this.m_linearImpulse);
+            this.m_linearImpulse.Add(impulse);
 
-            const maxImpulse: number = h * this.m_maxForce;
+            const maxImpulse = h * this.m_maxForce;
 
             if (this.m_linearImpulse.LengthSquared() > maxImpulse * maxImpulse) {
                 this.m_linearImpulse.Normalize();
                 this.m_linearImpulse.Scale(maxImpulse);
             }
 
-            // impulse = m_linearImpulse - oldImpulse;
-            b2Vec2.Subtract(this.m_linearImpulse, oldImpulseV, impulseV);
+            b2Vec2.Subtract(this.m_linearImpulse, oldImpulse, impulse);
 
-            // vA -= mA * impulse;
-            vA.SubtractScaled(mA, impulseV);
-            // wA -= iA * b2Cross(m_rA, impulse);
-            wA -= iA * b2Vec2.Cross(this.m_rA, impulseV);
+            vA.SubtractScaled(mA, impulse);
+            wA -= iA * b2Vec2.Cross(this.m_rA, impulse);
 
-            // vB += mB * impulse;
-            vB.AddScaled(mB, impulseV);
-            // wB += iB * b2Cross(m_rB, impulse);
-            wB += iB * b2Vec2.Cross(this.m_rB, impulseV);
+            vB.AddScaled(mB, impulse);
+            wB += iB * b2Vec2.Cross(this.m_rB, impulse);
         }
 
-        // data.velocities[this.m_indexA].v = vA;
         data.velocities[this.m_indexA].w = wA;
-        // data.velocities[this.m_indexB].v = vB;
         data.velocities[this.m_indexB].w = wB;
     }
 
