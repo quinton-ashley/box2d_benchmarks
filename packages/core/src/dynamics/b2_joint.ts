@@ -17,7 +17,7 @@
  */
 
 // DEBUG: import { b2Assert } from "../common/b2_common";
-import { b2Vec2, XY } from "../common/b2_math";
+import { XY } from "../common/b2_math";
 import { b2Assert } from "../common/b2_common";
 import type { b2Body } from "./b2_body";
 import { b2SolverData } from "./b2_time_step";
@@ -35,28 +35,6 @@ export enum b2JointType {
     e_frictionJoint,
     e_motorJoint,
     e_areaJoint,
-}
-
-export class b2Jacobian {
-    public readonly linear: b2Vec2 = new b2Vec2();
-
-    public angularA = 0;
-
-    public angularB = 0;
-
-    public SetZero(): b2Jacobian {
-        this.linear.SetZero();
-        this.angularA = 0;
-        this.angularB = 0;
-        return this;
-    }
-
-    public Set(x: XY, a1: number, a2: number): b2Jacobian {
-        this.linear.Copy(x);
-        this.angularA = a1;
-        this.angularB = a2;
-        return this;
-    }
 }
 
 /// A joint edge is used to connect bodies and joints together
@@ -145,20 +123,20 @@ export function b2LinearStiffness(
     bodyA: b2Body,
     bodyB: b2Body,
 ): void {
-    const massA: number = bodyA.GetMass();
-    const massB: number = bodyB.GetMass();
+    const massA = bodyA.GetMass();
+    const massB = bodyB.GetMass();
     let mass: number;
-    if (massA > 0.0 && massB > 0.0) {
+    if (massA > 0 && massB > 0) {
         mass = (massA * massB) / (massA + massB);
-    } else if (massA > 0.0) {
+    } else if (massA > 0) {
         mass = massA;
     } else {
         mass = massB;
     }
 
-    const omega: number = 2.0 * Math.PI * frequencyHertz;
+    const omega = 2 * Math.PI * frequencyHertz;
     def.stiffness = mass * omega * omega;
-    def.damping = 2.0 * mass * dampingRatio * omega;
+    def.damping = 2 * mass * dampingRatio * omega;
 }
 
 /// Utility to compute rotational stiffness values frequency and damping ratio
@@ -172,20 +150,20 @@ export function b2AngularStiffness(
     bodyA: b2Body,
     bodyB: b2Body,
 ): void {
-    const IA: number = bodyA.GetInertia();
-    const IB: number = bodyB.GetInertia();
+    const IA = bodyA.GetInertia();
+    const IB = bodyB.GetInertia();
     let I: number;
-    if (IA > 0.0 && IB > 0.0) {
+    if (IA > 0.0 && IB > 0) {
         I = (IA * IB) / (IA + IB);
-    } else if (IA > 0.0) {
+    } else if (IA > 0) {
         I = IA;
     } else {
         I = IB;
     }
 
-    const omega: number = 2.0 * Math.PI * frequencyHertz;
+    const omega = 2 * Math.PI * frequencyHertz;
     def.stiffness = I * omega * omega;
-    def.damping = 2.0 * I * dampingRatio * omega;
+    def.damping = 2 * I * dampingRatio * omega;
 }
 
 /// The base joint class. Joints are used to constraint two bodies together in
@@ -217,8 +195,8 @@ export abstract class b2Joint {
         // DEBUG: b2Assert(def.bodyA !== def.bodyB);
 
         this.m_type = def.type;
-        this.m_edgeA.other = def.bodyB;
-        this.m_edgeB.other = def.bodyA;
+        this.m_edgeA.other = def.bodyB; // nope
+        this.m_edgeB.other = def.bodyA; // nope
         this.m_bodyA = def.bodyA;
         this.m_bodyB = def.bodyB;
 

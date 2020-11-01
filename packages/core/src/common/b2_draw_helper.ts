@@ -35,6 +35,7 @@ import { b2PulleyJoint } from "../dynamics/b2_pulley_joint";
 import { b2MouseJoint } from "../dynamics/b2_mouse_joint";
 import { b2DistanceJoint } from "../dynamics/b2_distance_joint";
 import { b2Rope } from "../rope/b2_rope";
+// import { b2_linearSlop, b2_maxFloat } from "./b2_common";
 
 const debugColors = {
     badBody: new b2Color(1.0, 0.0, 0.0),
@@ -71,6 +72,12 @@ const temp = {
     lower: new b2Vec2(),
     upper: new b2Vec2(),
     perp: new b2Vec2(),
+    p1: new b2Vec2(),
+    p2: new b2Vec2(),
+    rlo: new b2Vec2(),
+    rhi: new b2Vec2(),
+    r: new b2Vec2(),
+    pRest: new b2Vec2(),
 };
 
 export function GetShapeColor(b: b2Body) {
@@ -207,55 +214,35 @@ export function DrawShape(draw: b2Draw, fixture: b2Fixture, color: b2Color): voi
     }
 }
 
-export function DrawPrismaticJoint(draw: b2Draw, joint: b2PrismaticJoint): void {
-    const xfA: Readonly<b2Transform> = joint.m_bodyA.GetTransform();
-    const xfB: Readonly<b2Transform> = joint.m_bodyB.GetTransform();
-    const pA = b2Transform.MultiplyVec2(xfA, joint.m_localAnchorA, temp.pA);
-    const pB = b2Transform.MultiplyVec2(xfB, joint.m_localAnchorB, temp.pB);
+export function DrawWheelOrPrismaticJoint(draw: b2Draw, joint: b2PrismaticJoint | b2WheelJoint): void {
+    const { p1, p2, pA, pB, axis } = temp;
+    const xfA = joint.m_bodyA.GetTransform();
+    const xfB = joint.m_bodyB.GetTransform();
+    b2Transform.MultiplyVec2(xfA, joint.m_localAnchorA, pA);
+    b2Transform.MultiplyVec2(xfB, joint.m_localAnchorB, pB);
 
-    // b2Vec2 axis = b2Mul(xfA.q, m_localXAxisA);
-    const axis: b2Vec2 = b2Rot.MultiplyVec2(xfA.q, joint.m_localXAxisA, temp.axis);
+    b2Rot.MultiplyVec2(xfA.q, joint.m_localXAxisA, axis);
 
     draw.DrawSegment(pA, pB, debugColors.joint5);
 
     if (joint.m_enableLimit) {
-        const { lower, upper } = temp;
-        // b2Vec2 lower = pA + m_lowerTranslation * axis;
-        lower.Copy(pA).Add(b2Vec2.Scale(joint.m_lowerTranslation, axis, b2Vec2.s_t0));
-        // b2Vec2 upper = pA + m_upperTranslation * axis;
-        upper.Copy(pA).Add(b2Vec2.Scale(joint.m_upperTranslation, axis, b2Vec2.s_t0));
-        // b2Vec2 perp = b2Mul(xfA.q, m_localYAxisA);
-        // const perp = b2Rot.MultiplyVec2(xfA.q, m_localYAxisA, tempPerp);
+        const { lower, upper, perp } = temp;
+        b2Vec2.AddScaled(pA, joint.m_lowerTranslation, axis, lower);
+        b2Vec2.AddScaled(pA, joint.m_upperTranslation, axis, upper);
+        b2Rot.MultiplyVec2(xfA.q, joint.m_localYAxisA, perp);
         draw.DrawSegment(lower, upper, debugColors.joint1);
-        // draw.DrawSegment(lower - 0.5 * perp, lower + 0.5 * perp, debugColors.joint2);
-        // draw.DrawSegment(upper - 0.5 * perp, upper + 0.5 * perp, debugColors.joint3);
+        draw.DrawSegment(
+            b2Vec2.SubtractScaled(lower, 0.5, perp, p1),
+            b2Vec2.AddScaled(lower, 0.5, perp, p2),
+            debugColors.joint2,
+        );
+        draw.DrawSegment(
+            b2Vec2.SubtractScaled(upper, 0.5, perp, p1),
+            b2Vec2.AddScaled(upper, 0.5, perp, p2),
+            debugColors.joint3,
+        );
     } else {
-        // draw.DrawSegment(pA - 1.0 * axis, pA + 1.0 * axis, debugColors.joint1);
-    }
-
-    draw.DrawPoint(pA, 5.0, debugColors.joint1);
-    draw.DrawPoint(pB, 5.0, debugColors.joint4);
-}
-
-export function DrawWheelJoint(draw: b2Draw, joint: b2WheelJoint): void {
-    const xfA: Readonly<b2Transform> = joint.m_bodyA.GetTransform();
-    const xfB: Readonly<b2Transform> = joint.m_bodyB.GetTransform();
-    const pA = b2Transform.MultiplyVec2(xfA, joint.m_localAnchorA, temp.pA);
-    const pB = b2Transform.MultiplyVec2(xfB, joint.m_localAnchorB, temp.pB);
-
-    // b2Vec2 axis = b2Mul(xfA.q, m_localXAxisA);
-
-    draw.DrawSegment(pA, pB, debugColors.joint5);
-
-    if (joint.m_enableLimit) {
-        // b2Vec2 lower = pA + m_lowerTranslation * axis;
-        // b2Vec2 upper = pA + m_upperTranslation * axis;
-        // b2Vec2 perp = b2Mul(xfA.q, m_localYAxisA);
-        // draw.DrawSegment(lower, upper, c1);
-        // draw.DrawSegment(lower - 0.5f * perp, lower + 0.5f * perp, debugColors.joint2);
-        // draw.DrawSegment(upper - 0.5f * perp, upper + 0.5f * perp, debugColors.joint3);
-    } else {
-        // draw.DrawSegment(pA - 1.0f * axis, pA + 1.0f * axis, debugColors.joint1);
+        draw.DrawSegment(b2Vec2.Subtract(pA, axis, p1), b2Vec2.Add(pA, axis, p2), debugColors.joint1);
     }
 
     draw.DrawPoint(pA, 5.0, debugColors.joint1);
@@ -263,58 +250,78 @@ export function DrawWheelJoint(draw: b2Draw, joint: b2WheelJoint): void {
 }
 
 export function DrawRevoluteJoint(draw: b2Draw, joint: b2RevoluteJoint): void {
-    const xfA: Readonly<b2Transform> = joint.m_bodyA.GetTransform();
-    const xfB: Readonly<b2Transform> = joint.m_bodyB.GetTransform();
-    const pA = b2Transform.MultiplyVec2(xfA, joint.m_localAnchorA, temp.pA);
-    const pB = b2Transform.MultiplyVec2(xfB, joint.m_localAnchorB, temp.pB);
+    const { p2, r, pA, pB } = temp;
+    const xfA = joint.m_bodyA.GetTransform();
+    const xfB = joint.m_bodyB.GetTransform();
+    b2Transform.MultiplyVec2(xfA, joint.m_localAnchorA, pA);
+    b2Transform.MultiplyVec2(xfB, joint.m_localAnchorB, pB);
 
     draw.DrawPoint(pA, 5.0, debugColors.joint4);
     draw.DrawPoint(pB, 5.0, debugColors.joint5);
 
-    // const aA: number = joint.m_bodyA.GetAngle();
-    // const aB: number = joint.m_bodyB.GetAngle();
-    // const angle: number = aB - aA - joint.m_referenceAngle;
+    const aA = joint.m_bodyA.GetAngle();
+    const aB = joint.m_bodyB.GetAngle();
+    const angle = aB - aA - joint.m_referenceAngle;
 
     const L = 0.5;
 
-    // b2Vec2 r = L * b2Vec2(Math.cos(angle), Math.sin(angle));
-    // draw.DrawSegment(pB, pB + r, debugColors.joint1);
+    r.Set(Math.cos(angle), Math.sin(angle)).Scale(L);
+    draw.DrawSegment(pB, b2Vec2.Add(pB, r, p2), debugColors.joint1);
     draw.DrawCircle(pB, L, debugColors.joint1);
 
     if (joint.m_enableLimit) {
-        // b2Vec2 rlo = L * b2Vec2(Math.cos(m_lowerAngle), Math.sin(m_lowerAngle));
-        // b2Vec2 rhi = L * b2Vec2(Math.cos(m_upperAngle), Math.sin(m_upperAngle));
-        // draw.DrawSegment(pB, pB + rlo, debugColors.joint2);
-        // draw.DrawSegment(pB, pB + rhi, debugColors.joint3);
+        const { rlo, rhi } = temp;
+        rlo.Set(Math.cos(joint.m_lowerAngle), Math.sin(joint.m_lowerAngle)).Scale(L);
+        rhi.Set(Math.cos(joint.m_upperAngle), Math.sin(joint.m_upperAngle)).Scale(L);
+        draw.DrawSegment(pB, b2Vec2.Add(pB, rlo, p2), debugColors.joint2);
+        draw.DrawSegment(pB, b2Vec2.Add(pB, rhi, p2), debugColors.joint3);
     }
 
-    // draw.DrawSegment(xfA.p, pA, debugColors.joint6);
-    // draw.DrawSegment(pA, pB, debugColors.joint6);
-    // draw.DrawSegment(xfB.p, pB, debugColors.joint6);
+    draw.DrawSegment(xfA.p, pA, debugColors.joint6);
+    draw.DrawSegment(pA, pB, debugColors.joint6);
+    draw.DrawSegment(xfB.p, pB, debugColors.joint6);
 }
 
 export function DrawMouseJoint(draw: b2Draw, joint: b2MouseJoint): void {
-    const p1: b2Vec2 = joint.GetAnchorA(temp.pA);
-    const p2: b2Vec2 = joint.GetAnchorB(temp.pB);
-    draw.DrawPoint(p1, 4.0, debugColors.joint7);
-    draw.DrawPoint(p2, 4.0, debugColors.joint7);
+    const p1 = joint.GetAnchorA(temp.pA);
+    const p2 = joint.GetAnchorB(temp.pB);
+    draw.DrawPoint(p1, 4, debugColors.joint7);
+    draw.DrawPoint(p2, 4, debugColors.joint7);
     draw.DrawSegment(p1, p2, debugColors.joint8);
 }
 
 export function DrawPulleyJoint(draw: b2Draw, joint: b2PulleyJoint): void {
-    const p1: b2Vec2 = joint.GetAnchorA(temp.pA);
-    const p2: b2Vec2 = joint.GetAnchorB(temp.pB);
-    const s1: b2Vec2 = joint.GetGroundAnchorA();
-    const s2: b2Vec2 = joint.GetGroundAnchorB();
+    const p1 = joint.GetAnchorA(temp.pA);
+    const p2 = joint.GetAnchorB(temp.pB);
+    const s1 = joint.GetGroundAnchorA();
+    const s2 = joint.GetGroundAnchorB();
     draw.DrawSegment(s1, p1, debugColors.joint6);
     draw.DrawSegment(s2, p2, debugColors.joint6);
     draw.DrawSegment(s1, s2, debugColors.joint6);
 }
 
-export function DrawDistanceJoint(draw: b2Draw, joint: b2DistanceJoint): void {
-    const p1: b2Vec2 = joint.GetAnchorA(temp.pA);
-    const p2: b2Vec2 = joint.GetAnchorB(temp.pB);
-    draw.DrawSegment(p1, p2, debugColors.joint6);
+export function DrawDistanceJoint(_draw: b2Draw, _joint: b2DistanceJoint): void {
+    // fixme:
+    // const { pA, pB, axis, pRest } = temp;
+    // const xfA = joint.m_bodyA.GetTransform();
+    // const xfB = joint.m_bodyB.GetTransform();
+    // b2Transform.MultiplyVec2(xfA, joint.m_localAnchorA, pA);
+    // b2Transform.MultiplyVec2(xfB, joint.m_localAnchorB, pB);
+    // b2Vec2.Subtract(pB, pA, axis);
+    // axis.Normalize();
+    // draw.DrawSegment(pA, pB, debugColors.joint5);
+    // b2Vec2.AddScaled(pA, joint.m_length, axis, pRest);
+    // draw.DrawPoint(pRest, 8.0, debugColors.joint1);
+    // if (joint.m_minLength !== joint.m_maxLength) {
+    //     if (joint.m_minLength > b2_linearSlop) {
+    //         const pMin = b2Vec2.AddScaled(pA, joint.m_minLength, axis);
+    //         draw.DrawPoint(pMin, 4.0, debugColors.joint2);
+    //     }
+    //     if (joint.m_maxLength < b2_maxFloat) {
+    //         const pMax = b2Vec2.AddScaled(pA, joint.m_maxLength, axis);
+    //         draw.DrawPoint(pMax, 4.0, debugColors.joint3);
+    //     }
+    // }
 }
 
 export function DrawJointFallback(draw: b2Draw, joint: b2Joint): void {
@@ -330,10 +337,8 @@ export function DrawJointFallback(draw: b2Draw, joint: b2Joint): void {
 export function DrawJoint(draw: b2Draw, joint: b2Joint): void {
     switch (joint.m_type) {
         case b2JointType.e_prismaticJoint:
-            DrawPrismaticJoint(draw, joint as b2PrismaticJoint);
-            break;
         case b2JointType.e_wheelJoint:
-            DrawWheelJoint(draw, joint as b2WheelJoint);
+            DrawWheelOrPrismaticJoint(draw, joint as b2PrismaticJoint | b2WheelJoint);
             break;
         case b2JointType.e_revoluteJoint:
             DrawRevoluteJoint(draw, joint as b2RevoluteJoint);
