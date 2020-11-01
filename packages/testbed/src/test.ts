@@ -26,6 +26,7 @@ import {
     DrawAABBs,
     DrawCenterOfMasses,
     XY,
+    b2LinearStiffness,
 } from "@box2d/core";
 import { b2ParticleGroup, b2ParticleSystem, b2ParticleSystemDef, DrawParticleSystems } from "@box2d/particles";
 import { DrawControllers } from "@box2d/controllers";
@@ -262,12 +263,17 @@ export class Test extends b2ContactListener {
         });
 
         if (hit_fixture) {
+            const frequencyHz = 5.0;
+            const dampingRatio = 0.7;
+
             const body = hit_fixture.GetBody();
             const md: b2MouseJointDef = new b2MouseJointDef();
             md.bodyA = this.m_groundBody;
             md.bodyB = body;
             md.target.Copy(p);
             md.maxForce = 1000 * body.GetMass();
+            b2LinearStiffness(md, frequencyHz, dampingRatio, md.bodyA, md.bodyB);
+
             this.m_mouseJoint = this.m_world.CreateJoint(md) as b2MouseJoint;
             body.SetAwake(true);
         }
