@@ -35,7 +35,7 @@ import { b2PulleyJoint } from "../dynamics/b2_pulley_joint";
 import { b2MouseJoint } from "../dynamics/b2_mouse_joint";
 import { b2DistanceJoint } from "../dynamics/b2_distance_joint";
 import { b2Rope } from "../rope/b2_rope";
-// import { b2_linearSlop, b2_maxFloat } from "./b2_common";
+import { b2_linearSlop, b2_maxFloat } from "./b2_common";
 
 const debugColors = {
     badBody: new b2Color(1.0, 0.0, 0.0),
@@ -300,28 +300,27 @@ export function DrawPulleyJoint(draw: b2Draw, joint: b2PulleyJoint): void {
     draw.DrawSegment(s1, s2, debugColors.joint6);
 }
 
-export function DrawDistanceJoint(_draw: b2Draw, _joint: b2DistanceJoint): void {
-    // fixme:
-    // const { pA, pB, axis, pRest } = temp;
-    // const xfA = joint.m_bodyA.GetTransform();
-    // const xfB = joint.m_bodyB.GetTransform();
-    // b2Transform.MultiplyVec2(xfA, joint.m_localAnchorA, pA);
-    // b2Transform.MultiplyVec2(xfB, joint.m_localAnchorB, pB);
-    // b2Vec2.Subtract(pB, pA, axis);
-    // axis.Normalize();
-    // draw.DrawSegment(pA, pB, debugColors.joint5);
-    // b2Vec2.AddScaled(pA, joint.m_length, axis, pRest);
-    // draw.DrawPoint(pRest, 8.0, debugColors.joint1);
-    // if (joint.m_minLength !== joint.m_maxLength) {
-    //     if (joint.m_minLength > b2_linearSlop) {
-    //         const pMin = b2Vec2.AddScaled(pA, joint.m_minLength, axis);
-    //         draw.DrawPoint(pMin, 4.0, debugColors.joint2);
-    //     }
-    //     if (joint.m_maxLength < b2_maxFloat) {
-    //         const pMax = b2Vec2.AddScaled(pA, joint.m_maxLength, axis);
-    //         draw.DrawPoint(pMax, 4.0, debugColors.joint3);
-    //     }
-    // }
+export function DrawDistanceJoint(draw: b2Draw, joint: b2DistanceJoint): void {
+    const { pA, pB, axis, pRest } = temp;
+    const xfA = joint.m_bodyA.GetTransform();
+    const xfB = joint.m_bodyB.GetTransform();
+    b2Transform.MultiplyVec2(xfA, joint.m_localAnchorA, pA);
+    b2Transform.MultiplyVec2(xfB, joint.m_localAnchorB, pB);
+    b2Vec2.Subtract(pB, pA, axis);
+    axis.Normalize();
+    draw.DrawSegment(pA, pB, debugColors.joint5);
+    b2Vec2.AddScaled(pA, joint.m_length, axis, pRest);
+    draw.DrawPoint(pRest, 8.0, debugColors.joint1);
+    if (joint.m_minLength !== joint.m_maxLength) {
+        if (joint.m_minLength > b2_linearSlop) {
+            const pMin = b2Vec2.AddScaled(pA, joint.m_minLength, axis, temp.p1);
+            draw.DrawPoint(pMin, 4.0, debugColors.joint2);
+        }
+        if (joint.m_maxLength < b2_maxFloat) {
+            const pMax = b2Vec2.AddScaled(pA, joint.m_maxLength, axis, temp.p1);
+            draw.DrawPoint(pMax, 4.0, debugColors.joint3);
+        }
+    }
 }
 
 export function DrawJointFallback(draw: b2Draw, joint: b2Joint): void {

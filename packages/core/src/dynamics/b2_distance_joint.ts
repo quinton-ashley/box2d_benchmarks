@@ -16,35 +16,59 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import { b2_linearSlop, b2_maxLinearCorrection } from "../common/b2_common";
+import { b2_linearSlop, b2_maxFloat } from "../common/b2_common";
 import { b2Clamp, b2Vec2, b2Rot, XY } from "../common/b2_math";
 import { b2Joint, b2JointDef, b2JointType, b2IJointDef } from "./b2_joint";
 import { b2SolverData } from "./b2_time_step";
 import type { b2Body } from "./b2_body";
 
+const temp = {
+    worldPointA: new b2Vec2(),
+    worldPointB: new b2Vec2(),
+    vpA: new b2Vec2(),
+    vpB: new b2Vec2(),
+    vpBA: new b2Vec2(),
+    P: new b2Vec2(),
+    qA: new b2Rot(),
+    qB: new b2Rot(),
+    lalcA: new b2Vec2(),
+    lalcB: new b2Vec2(),
+};
+
 export interface b2IDistanceJointDef extends b2IJointDef {
     localAnchorA: XY;
     localAnchorB: XY;
     length: number;
+    minLength: number;
+    maxLength: number;
     stiffness?: number;
     damping?: number;
 }
 
-/// Distance joint definition. This requires defining an
-/// anchor point on both bodies and the non-zero length of the
-/// distance joint. The definition uses local anchor points
-/// so that the initial configuration can violate the constraint
-/// slightly. This helps when saving and loading a game.
-/// @warning Do not use a zero or short length.
+/// Distance joint definition. This requires defining an anchor point on both
+/// bodies and the non-zero distance of the distance joint. The definition uses
+/// local anchor points so that the initial configuration can violate the
+/// constraint slightly. This helps when saving and loading a game.
 export class b2DistanceJointDef extends b2JointDef implements b2IDistanceJointDef {
-    public readonly localAnchorA: b2Vec2 = new b2Vec2();
+    /// The local anchor point relative to bodyA's origin.
+    public readonly localAnchorA = new b2Vec2();
 
-    public readonly localAnchorB: b2Vec2 = new b2Vec2();
+    /// The local anchor point relative to bodyB's origin.
+    public readonly localAnchorB = new b2Vec2();
 
+    /// The rest length of this joint. Clamped to a stable minimum value.
     public length = 1;
 
+    /// Minimum length. Clamped to a stable minimum value.
+    public minLength = 0;
+
+    /// Maximum length. Must be greater than or equal to the minimum length.
+    public maxLength = b2_maxFloat;
+
+    /// The linear stiffness in N/m.
     public stiffness = 0;
 
+    /// The linear damping in N*s/m.
     public damping = 0;
 
     constructor() {
@@ -56,44 +80,56 @@ export class b2DistanceJointDef extends b2JointDef implements b2IDistanceJointDe
         this.bodyB = b2;
         this.bodyA.GetLocalPoint(anchor1, this.localAnchorA);
         this.bodyB.GetLocalPoint(anchor2, this.localAnchorB);
-        this.length = b2Vec2.Distance(anchor1, anchor2);
-        this.stiffness = 0;
-        this.damping = 0;
+        this.length = Math.max(b2Vec2.Distance(anchor1, anchor2), b2_linearSlop);
+        this.minLength = this.length;
+        this.maxLength = this.length;
     }
 }
 
+/// A distance joint constrains two points on two bodies to remain at a fixed
+/// distance from each other. You can view this as a massless, rigid rod.
 export class b2DistanceJoint extends b2Joint {
-    public m_stiffness = 0;
+    public m_stiffness: number;
 
-    public m_damping = 0;
+    public m_damping: number;
 
     public m_bias = 0;
 
-    // Solver shared
-    public readonly m_localAnchorA: b2Vec2 = new b2Vec2();
+    public m_length: number;
 
-    public readonly m_localAnchorB: b2Vec2 = new b2Vec2();
+    public m_minLength: number;
+
+    public m_maxLength: number;
+
+    // Solver shared
+    public readonly m_localAnchorA = new b2Vec2();
+
+    public readonly m_localAnchorB = new b2Vec2();
 
     public m_gamma = 0;
 
     public m_impulse = 0;
 
-    public m_length = 0;
+    public m_lowerImpulse = 0;
+
+    public m_upperImpulse = 0;
 
     // Solver temp
     public m_indexA = 0;
 
     public m_indexB = 0;
 
-    public readonly m_u: b2Vec2 = new b2Vec2();
+    public readonly m_u = new b2Vec2();
 
-    public readonly m_rA: b2Vec2 = new b2Vec2();
+    public readonly m_rA = new b2Vec2();
 
-    public readonly m_rB: b2Vec2 = new b2Vec2();
+    public readonly m_rB = new b2Vec2();
 
-    public readonly m_localCenterA: b2Vec2 = new b2Vec2();
+    public readonly m_localCenterA = new b2Vec2();
 
-    public readonly m_localCenterB: b2Vec2 = new b2Vec2();
+    public readonly m_localCenterB = new b2Vec2();
+
+    public m_currentLength = 0;
 
     public m_invMassA = 0;
 
@@ -103,25 +139,20 @@ export class b2DistanceJoint extends b2Joint {
 
     public m_invIB = 0;
 
+    public m_softMass = 0;
+
     public m_mass = 0;
-
-    public readonly m_qA: b2Rot = new b2Rot();
-
-    public readonly m_qB: b2Rot = new b2Rot();
-
-    public readonly m_lalcA: b2Vec2 = new b2Vec2();
-
-    public readonly m_lalcB: b2Vec2 = new b2Vec2();
 
     constructor(def: b2IDistanceJointDef) {
         super(def);
 
-        this.m_stiffness = def.stiffness ?? 0;
-        this.m_damping = def.damping ?? 0;
-
         this.m_localAnchorA.Copy(def.localAnchorA);
         this.m_localAnchorB.Copy(def.localAnchorB);
-        this.m_length = def.length;
+        this.m_length = Math.max(def.length, b2_linearSlop);
+        this.m_minLength = Math.max(def.minLength, b2_linearSlop);
+        this.m_maxLength = Math.max(def.maxLength, this.m_minLength);
+        this.m_stiffness = def.stiffness ?? 0;
+        this.m_damping = def.damping ?? 0;
     }
 
     public GetAnchorA<T extends XY>(out: T): T {
@@ -133,8 +164,9 @@ export class b2DistanceJoint extends b2Joint {
     }
 
     public GetReactionForce<T extends XY>(inv_dt: number, out: T): T {
-        out.x = inv_dt * this.m_impulse * this.m_u.x;
-        out.y = inv_dt * this.m_impulse * this.m_u.y;
+        const f = inv_dt * (this.m_impulse + this.m_lowerImpulse - this.m_upperImpulse);
+        out.x = f * this.m_u.x;
+        out.y = f * this.m_u.y;
         return out;
     }
 
@@ -151,11 +183,36 @@ export class b2DistanceJoint extends b2Joint {
     }
 
     public SetLength(length: number): void {
-        this.m_length = length;
+        this.m_impulse = 0;
+        this.m_length = Math.max(b2_linearSlop, length);
     }
 
-    public Length() {
+    public GetLength() {
         return this.m_length;
+    }
+
+    public SetMinLength(minLength: number) {
+        this.m_lowerImpulse = 0;
+        this.m_minLength = b2Clamp(minLength, b2_linearSlop, this.m_maxLength);
+    }
+
+    public GetMinLength() {
+        return this.m_minLength;
+    }
+
+    public SetMaxLength(maxLength: number) {
+        this.m_upperImpulse = 0;
+        this.m_maxLength = Math.max(maxLength, this.m_minLength);
+    }
+
+    public GetMaxLength() {
+        return this.m_maxLength;
+    }
+
+    public GetCurrentLength() {
+        const pA = this.m_bodyA.GetWorldPoint(this.m_localAnchorA, temp.worldPointA);
+        const pB = this.m_bodyB.GetWorldPoint(this.m_localAnchorB, temp.worldPointB);
+        return b2Vec2.Distance(pB, pA);
     }
 
     public SetStiffness(stiffness: number): void {
@@ -174,8 +231,6 @@ export class b2DistanceJoint extends b2Joint {
         return this.m_damping;
     }
 
-    private static InitVelocityConstraints_s_P = new b2Vec2();
-
     public InitVelocityConstraints(data: b2SolverData): void {
         this.m_indexA = this.m_bodyA.m_islandIndex;
         this.m_indexB = this.m_bodyB.m_islandIndex;
@@ -186,189 +241,212 @@ export class b2DistanceJoint extends b2Joint {
         this.m_invIA = this.m_bodyA.m_invI;
         this.m_invIB = this.m_bodyB.m_invI;
 
-        const cA: b2Vec2 = data.positions[this.m_indexA].c;
-        const aA: number = data.positions[this.m_indexA].a;
-        const vA: b2Vec2 = data.velocities[this.m_indexA].v;
-        let wA: number = data.velocities[this.m_indexA].w;
+        const cA = data.positions[this.m_indexA].c;
+        const aA = data.positions[this.m_indexA].a;
+        const vA = data.velocities[this.m_indexA].v;
+        let wA = data.velocities[this.m_indexA].w;
 
-        const cB: b2Vec2 = data.positions[this.m_indexB].c;
-        const aB: number = data.positions[this.m_indexB].a;
-        const vB: b2Vec2 = data.velocities[this.m_indexB].v;
-        let wB: number = data.velocities[this.m_indexB].w;
+        const cB = data.positions[this.m_indexB].c;
+        const aB = data.positions[this.m_indexB].a;
+        const vB = data.velocities[this.m_indexB].v;
+        let wB = data.velocities[this.m_indexB].w;
 
-        // const qA: b2Rot = new b2Rot(aA), qB: b2Rot = new b2Rot(aB);
-        const qA: b2Rot = this.m_qA.Set(aA);
-        const qB: b2Rot = this.m_qB.Set(aB);
+        const { qA, qB, lalcA, lalcB } = temp;
+        qA.Set(aA);
+        qB.Set(aB);
 
-        // m_rA = b2Mul(qA, m_localAnchorA - m_localCenterA);
-        b2Vec2.Subtract(this.m_localAnchorA, this.m_localCenterA, this.m_lalcA);
-        b2Rot.MultiplyVec2(qA, this.m_lalcA, this.m_rA);
-        // m_rB = b2Mul(qB, m_localAnchorB - m_localCenterB);
-        b2Vec2.Subtract(this.m_localAnchorB, this.m_localCenterB, this.m_lalcB);
-        b2Rot.MultiplyVec2(qB, this.m_lalcB, this.m_rB);
-        // m_u = cB + m_rB - cA - m_rA;
+        b2Rot.MultiplyVec2(qA, b2Vec2.Subtract(this.m_localAnchorA, this.m_localCenterA, lalcA), this.m_rA);
+        b2Rot.MultiplyVec2(qB, b2Vec2.Subtract(this.m_localAnchorB, this.m_localCenterB, lalcB), this.m_rB);
         this.m_u.x = cB.x + this.m_rB.x - cA.x - this.m_rA.x;
         this.m_u.y = cB.y + this.m_rB.y - cA.y - this.m_rA.y;
 
         // Handle singularity.
-        const length: number = this.m_u.Length();
-        if (length > b2_linearSlop) {
-            this.m_u.Scale(1 / length);
+        this.m_currentLength = this.m_u.Length();
+        if (this.m_currentLength > b2_linearSlop) {
+            this.m_u.Scale(1 / this.m_currentLength);
         } else {
             this.m_u.SetZero();
+            this.m_mass = 0;
+            this.m_impulse = 0;
+            this.m_lowerImpulse = 0;
+            this.m_upperImpulse = 0;
         }
 
-        // float32 crAu = b2Cross(m_rA, m_u);
-        const crAu: number = b2Vec2.Cross(this.m_rA, this.m_u);
-        // float32 crBu = b2Cross(m_rB, m_u);
-        const crBu: number = b2Vec2.Cross(this.m_rB, this.m_u);
-        // float32 invMass = m_invMassA + m_invIA * crAu * crAu + m_invMassB + m_invIB * crBu * crBu;
-        let invMass: number =
-            this.m_invMassA + this.m_invIA * crAu * crAu + this.m_invMassB + this.m_invIB * crBu * crBu;
+        const crAu = b2Vec2.Cross(this.m_rA, this.m_u);
+        const crBu = b2Vec2.Cross(this.m_rB, this.m_u);
+        let invMass = this.m_invMassA + this.m_invIA * crAu * crAu + this.m_invMassB + this.m_invIB * crBu * crBu;
+        this.m_mass = invMass !== 0 ? 1 / invMass : 0;
 
-        if (this.m_stiffness > 0) {
-            const C: number = length - this.m_length;
+        if (this.m_stiffness > 0 && this.m_minLength < this.m_maxLength) {
+            // soft
+            const C = this.m_currentLength - this.m_length;
 
-            const d: number = this.m_damping;
-            const k: number = this.m_stiffness;
+            const d = this.m_damping;
+            const k = this.m_stiffness;
 
             // magic formulas
-            const h: number = data.step.dt;
+            const h = data.step.dt;
+
+            // gamma = 1 / (h * (d + h * k))
+            // the extra factor of h in the denominator is since the lambda is an impulse, not a force
             this.m_gamma = h * (d + h * k);
             this.m_gamma = this.m_gamma !== 0 ? 1 / this.m_gamma : 0;
             this.m_bias = C * h * k * this.m_gamma;
 
             invMass += this.m_gamma;
-            this.m_mass = invMass !== 0 ? 1 / invMass : 0;
+            this.m_softMass = invMass !== 0 ? 1 / invMass : 0;
         } else {
+            // rigid
             this.m_gamma = 0;
             this.m_bias = 0;
-            this.m_mass = invMass !== 0 ? 1 / invMass : 0;
+            this.m_softMass = this.m_mass;
         }
 
         if (data.step.warmStarting) {
             // Scale the impulse to support a variable time step.
             this.m_impulse *= data.step.dtRatio;
+            this.m_lowerImpulse *= data.step.dtRatio;
+            this.m_upperImpulse *= data.step.dtRatio;
 
-            // b2Vec2 P = m_impulse * m_u;
-            const P: b2Vec2 = b2Vec2.Scale(this.m_impulse, this.m_u, b2DistanceJoint.InitVelocityConstraints_s_P);
+            const { P } = temp;
+            b2Vec2.Scale(this.m_impulse + this.m_lowerImpulse - this.m_upperImpulse, this.m_u, P);
 
-            // vA -= m_invMassA * P;
             vA.SubtractScaled(this.m_invMassA, P);
-            // wA -= m_invIA * b2Cross(m_rA, P);
             wA -= this.m_invIA * b2Vec2.Cross(this.m_rA, P);
-            // vB += m_invMassB * P;
             vB.AddScaled(this.m_invMassB, P);
-            // wB += m_invIB * b2Cross(m_rB, P);
             wB += this.m_invIB * b2Vec2.Cross(this.m_rB, P);
         } else {
             this.m_impulse = 0;
         }
 
-        // data.velocities[this.m_indexA].v = vA;
         data.velocities[this.m_indexA].w = wA;
-        // data.velocities[this.m_indexB].v = vB;
         data.velocities[this.m_indexB].w = wB;
     }
-
-    private static SolveVelocityConstraints_s_vpA = new b2Vec2();
-
-    private static SolveVelocityConstraints_s_vpB = new b2Vec2();
-
-    private static SolveVelocityConstraints_s_P = new b2Vec2();
 
     public SolveVelocityConstraints(data: b2SolverData): void {
-        const vA: b2Vec2 = data.velocities[this.m_indexA].v;
-        let wA: number = data.velocities[this.m_indexA].w;
-        const vB: b2Vec2 = data.velocities[this.m_indexB].v;
-        let wB: number = data.velocities[this.m_indexB].w;
+        const vA = data.velocities[this.m_indexA].v;
+        let wA = data.velocities[this.m_indexA].w;
+        const vB = data.velocities[this.m_indexB].v;
+        let wB = data.velocities[this.m_indexB].w;
 
-        // b2Vec2 vpA = vA + b2Cross(wA, m_rA);
-        const vpA: b2Vec2 = b2Vec2.AddCrossScalarVec2(
-            vA,
-            wA,
-            this.m_rA,
-            b2DistanceJoint.SolveVelocityConstraints_s_vpA,
-        );
-        // b2Vec2 vpB = vB + b2Cross(wB, m_rB);
-        const vpB: b2Vec2 = b2Vec2.AddCrossScalarVec2(
-            vB,
-            wB,
-            this.m_rB,
-            b2DistanceJoint.SolveVelocityConstraints_s_vpB,
-        );
-        // float32 Cdot = b2Dot(m_u, vpB - vpA);
-        const Cdot: number = b2Vec2.Dot(this.m_u, b2Vec2.Subtract(vpB, vpA, b2Vec2.s_t0));
+        if (this.m_minLength < this.m_maxLength) {
+            if (this.m_stiffness > 0) {
+                // Cdot = dot(u, v + cross(w, r))
 
-        const impulse: number = -this.m_mass * (Cdot + this.m_bias + this.m_gamma * this.m_impulse);
-        this.m_impulse += impulse;
+                const vpA = b2Vec2.AddCrossScalarVec2(vA, wA, this.m_rA, temp.vpA);
+                const vpB = b2Vec2.AddCrossScalarVec2(vB, wB, this.m_rB, temp.vpB);
 
-        // b2Vec2 P = impulse * m_u;
-        const P: b2Vec2 = b2Vec2.Scale(impulse, this.m_u, b2DistanceJoint.SolveVelocityConstraints_s_P);
+                const Cdot = b2Vec2.Dot(this.m_u, b2Vec2.Subtract(vpB, vpA, temp.vpBA));
 
-        // vA -= m_invMassA * P;
-        vA.SubtractScaled(this.m_invMassA, P);
-        // wA -= m_invIA * b2Cross(m_rA, P);
-        wA -= this.m_invIA * b2Vec2.Cross(this.m_rA, P);
-        // vB += m_invMassB * P;
-        vB.AddScaled(this.m_invMassB, P);
-        // wB += m_invIB * b2Cross(m_rB, P);
-        wB += this.m_invIB * b2Vec2.Cross(this.m_rB, P);
+                const impulse = -this.m_softMass * (Cdot + this.m_bias + this.m_gamma * this.m_impulse);
+                this.m_impulse += impulse;
 
-        // data.velocities[this.m_indexA].v = vA;
+                const P = b2Vec2.Scale(impulse, this.m_u, temp.P);
+                vA.SubtractScaled(this.m_invMassA, P);
+                wA -= this.m_invIA * b2Vec2.Cross(this.m_rA, P);
+                vB.AddScaled(this.m_invMassB, P);
+                wB += this.m_invIB * b2Vec2.Cross(this.m_rB, P);
+            }
+
+            // lower
+            {
+                const C = this.m_currentLength - this.m_minLength;
+                const bias = Math.max(0, C) * data.step.inv_dt;
+
+                const vpA = b2Vec2.AddCrossScalarVec2(vA, wA, this.m_rA, temp.vpA);
+                const vpB = b2Vec2.AddCrossScalarVec2(vB, wB, this.m_rB, temp.vpB);
+                const Cdot = b2Vec2.Dot(this.m_u, b2Vec2.Subtract(vpB, vpA, temp.vpBA));
+
+                let impulse = -this.m_mass * (Cdot + bias);
+                const oldImpulse = this.m_lowerImpulse;
+                this.m_lowerImpulse = Math.max(0, this.m_lowerImpulse + impulse);
+                impulse = this.m_lowerImpulse - oldImpulse;
+                const P = b2Vec2.Scale(impulse, this.m_u, temp.P);
+
+                vA.SubtractScaled(this.m_invMassA, P);
+                wA -= this.m_invIA * b2Vec2.Cross(this.m_rA, P);
+                vB.AddScaled(this.m_invMassB, P);
+                wB += this.m_invIB * b2Vec2.Cross(this.m_rB, P);
+            }
+
+            // upper
+            {
+                const C = this.m_maxLength - this.m_currentLength;
+                const bias = Math.max(0, C) * data.step.inv_dt;
+
+                const vpA = b2Vec2.AddCrossScalarVec2(vA, wA, this.m_rA, temp.vpA);
+                const vpB = b2Vec2.AddCrossScalarVec2(vB, wB, this.m_rB, temp.vpB);
+                const Cdot = b2Vec2.Dot(this.m_u, b2Vec2.Subtract(vpA, vpB, temp.vpBA));
+
+                let impulse = -this.m_mass * (Cdot + bias);
+                const oldImpulse = this.m_upperImpulse;
+                this.m_upperImpulse = Math.max(0, this.m_upperImpulse + impulse);
+                impulse = this.m_upperImpulse - oldImpulse;
+                const P = b2Vec2.Scale(-impulse, this.m_u, temp.P);
+
+                vA.SubtractScaled(this.m_invMassA, P);
+                wA -= this.m_invIA * b2Vec2.Cross(this.m_rA, P);
+                vB.AddScaled(this.m_invMassB, P);
+                wB += this.m_invIB * b2Vec2.Cross(this.m_rB, P);
+            }
+        } else {
+            // Equal limits
+
+            // Cdot = dot(u, v + cross(w, r))
+            const vpA = b2Vec2.AddCrossScalarVec2(vA, wA, this.m_rA, temp.vpA);
+            const vpB = b2Vec2.AddCrossScalarVec2(vB, wB, this.m_rB, temp.vpB);
+            const Cdot = b2Vec2.Dot(this.m_u, b2Vec2.Subtract(vpB, vpA, temp.vpBA));
+
+            const impulse = -this.m_mass * Cdot;
+            this.m_impulse += impulse;
+
+            const P = b2Vec2.Scale(impulse, this.m_u, temp.P);
+            vA.SubtractScaled(this.m_invMassA, P);
+            wA -= this.m_invIA * b2Vec2.Cross(this.m_rA, P);
+            vB.AddScaled(this.m_invMassB, P);
+            wB += this.m_invIB * b2Vec2.Cross(this.m_rB, P);
+        }
+
         data.velocities[this.m_indexA].w = wA;
-        // data.velocities[this.m_indexB].v = vB;
         data.velocities[this.m_indexB].w = wB;
     }
 
-    private static SolvePositionConstraints_s_P = new b2Vec2();
-
     public SolvePositionConstraints(data: b2SolverData): boolean {
-        if (this.m_stiffness > 0) {
-            // There is no position correction for soft distance constraints.
+        const cA = data.positions[this.m_indexA].c;
+        let aA = data.positions[this.m_indexA].a;
+        const cB = data.positions[this.m_indexB].c;
+        let aB = data.positions[this.m_indexB].a;
+
+        const { qA, qB, lalcA, lalcB, P } = temp;
+        qA.Set(aA);
+        qB.Set(aB);
+
+        const rA = b2Rot.MultiplyVec2(qA, b2Vec2.Subtract(this.m_localAnchorA, this.m_localCenterA, lalcA), this.m_rA);
+        const rB = b2Rot.MultiplyVec2(qB, b2Vec2.Subtract(this.m_localAnchorB, this.m_localCenterB, lalcB), this.m_rB);
+        this.m_u.x = cB.x + rB.x - cA.x - rA.x;
+        this.m_u.y = cB.y + rB.y - cA.y - rA.y;
+
+        const length = this.m_u.Normalize();
+        let C: number;
+        if (this.m_minLength === this.m_maxLength) {
+            C = length - this.m_minLength;
+        } else if (length < this.m_minLength) {
+            C = length - this.m_minLength;
+        } else if (this.m_maxLength < length) {
+            C = length - this.m_maxLength;
+        } else {
             return true;
         }
 
-        const cA: b2Vec2 = data.positions[this.m_indexA].c;
-        let aA: number = data.positions[this.m_indexA].a;
-        const cB: b2Vec2 = data.positions[this.m_indexB].c;
-        let aB: number = data.positions[this.m_indexB].a;
+        const impulse = -this.m_mass * C;
+        b2Vec2.Scale(impulse, this.m_u, P);
 
-        // const qA: b2Rot = new b2Rot(aA), qB: b2Rot = new b2Rot(aB);
-        const qA: b2Rot = this.m_qA.Set(aA);
-        const qB: b2Rot = this.m_qB.Set(aB);
-
-        // b2Vec2 rA = b2Mul(qA, m_localAnchorA - m_localCenterA);
-        const rA: b2Vec2 = b2Rot.MultiplyVec2(qA, this.m_lalcA, this.m_rA); // use m_rA
-        // b2Vec2 rB = b2Mul(qB, m_localAnchorB - m_localCenterB);
-        const rB: b2Vec2 = b2Rot.MultiplyVec2(qB, this.m_lalcB, this.m_rB); // use m_rB
-        // b2Vec2 u = cB + rB - cA - rA;
-        const u: b2Vec2 = this.m_u; // use m_u
-        u.x = cB.x + rB.x - cA.x - rA.x;
-        u.y = cB.y + rB.y - cA.y - rA.y;
-
-        // float32 length = u.Normalize();
-        const length: number = this.m_u.Normalize();
-        // float32 C = length - m_length;
-        let C: number = length - this.m_length;
-        C = b2Clamp(C, -b2_maxLinearCorrection, b2_maxLinearCorrection);
-
-        const impulse: number = -this.m_mass * C;
-        // b2Vec2 P = impulse * u;
-        const P: b2Vec2 = b2Vec2.Scale(impulse, u, b2DistanceJoint.SolvePositionConstraints_s_P);
-
-        // cA -= m_invMassA * P;
         cA.SubtractScaled(this.m_invMassA, P);
-        // aA -= m_invIA * b2Cross(rA, P);
         aA -= this.m_invIA * b2Vec2.Cross(rA, P);
-        // cB += m_invMassB * P;
         cB.AddScaled(this.m_invMassB, P);
-        // aB += m_invIB * b2Cross(rB, P);
         aB += this.m_invIB * b2Vec2.Cross(rB, P);
 
-        // data.positions[this.m_indexA].c = cA;
         data.positions[this.m_indexA].a = aA;
-        // data.positions[this.m_indexB].c = cB;
         data.positions[this.m_indexB].a = aB;
 
         return Math.abs(C) < b2_linearSlop;

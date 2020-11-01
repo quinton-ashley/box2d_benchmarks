@@ -79,6 +79,7 @@ import { TestStack } from "./test_stack";
 import { PyramidTopple } from "./pyramid_topple";
 import { DominoTower } from "./domino_tower";
 import { TopdownCar } from "./top_down_car";
+import { DistanceJoint } from "./distance_joint";
 
 export const coreTests: TestEntry[] = [
     ["Add Pair Stress Test", AddPair],
@@ -102,6 +103,7 @@ export const coreTests: TestEntry[] = [
     ["Convex Hull", ConvexHull],
     ["Conveyor Belt", ConveyorBelt],
     ["Distance Test", DistanceTest],
+    ["Distance Joint", DistanceJoint],
     ["Domino Tower", DominoTower],
     ["Dominos", Dominos],
     ["Dump Shell", DumpShell],

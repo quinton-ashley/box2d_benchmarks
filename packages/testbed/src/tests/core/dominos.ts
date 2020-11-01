@@ -26,6 +26,7 @@ import {
     b2DistanceJointDef,
     b2CircleShape,
     XY,
+    b2LinearStiffness,
 } from "@box2d/core";
 
 import { Test } from "../../test";
@@ -197,6 +198,7 @@ export class Dominos extends Test {
             new b2Vec2(),
         );
         djd.length = d.Length();
+        b2LinearStiffness(djd, 1, 1, djd.bodyA, djd.bodyB);
         this.m_world.CreateJoint(djd);
 
         {
