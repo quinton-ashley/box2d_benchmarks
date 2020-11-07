@@ -11,6 +11,7 @@ Some performance notes:
 Style notes:
 - move out parameter of math functions to the start to have a = b + c order. i.e. add(out,a,b) rather than add(a,b,out)
 - Make attributes and methods private or protected again as in the original.
+- Make b2Mat22.Solve XY instead of 2 numbers?
 
 Other notes:
 - temporary variables should not be used from outside of their files.
