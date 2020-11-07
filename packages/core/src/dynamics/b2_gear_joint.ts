@@ -18,12 +18,30 @@
 
 // DEBUG: import { b2Assert } from "../common/b2_common";
 import { b2_linearSlop } from "../common/b2_common";
-import { b2Vec2, b2Rot, b2Transform, XY } from "../common/b2_math";
+import { b2Vec2, b2Rot, XY } from "../common/b2_math";
 import { b2Joint, b2JointDef, b2JointType, b2IJointDef } from "./b2_joint";
 import { b2PrismaticJoint } from "./b2_prismatic_joint";
 import { b2RevoluteJoint } from "./b2_revolute_joint";
 import { b2SolverData } from "./b2_time_step";
 import { b2Body } from "./b2_body";
+
+const temp = {
+    qA: new b2Rot(),
+    qB: new b2Rot(),
+    qC: new b2Rot(),
+    qD: new b2Rot(),
+    lalcA: new b2Vec2(),
+    lalcB: new b2Vec2(),
+    lalcC: new b2Vec2(),
+    lalcD: new b2Vec2(),
+    u: new b2Vec2(),
+    rA: new b2Vec2(),
+    rB: new b2Vec2(),
+    rC: new b2Vec2(),
+    rD: new b2Vec2(),
+    JvAC: new b2Vec2(),
+    JvBD: new b2Vec2(),
+};
 
 export interface b2IGearJointDef extends b2IJointDef {
     joint1: b2RevoluteJoint | b2PrismaticJoint;
@@ -35,11 +53,16 @@ export interface b2IGearJointDef extends b2IJointDef {
 
 /// Gear joint definition. This definition requires two existing
 /// revolute or prismatic joints (any combination will work).
+/// @warning bodyB on the input joints must both be dynamic
 export class b2GearJointDef extends b2JointDef implements b2IGearJointDef {
+    /// The first revolute/prismatic joint attached to the gear joint.
     public joint1!: b2RevoluteJoint | b2PrismaticJoint;
 
+    /// The second revolute/prismatic joint attached to the gear joint.
     public joint2!: b2RevoluteJoint | b2PrismaticJoint;
 
+    /// The gear ratio.
+    /// @see b2GearJoint for explanation.
     public ratio = 1;
 
     constructor() {
@@ -47,6 +70,15 @@ export class b2GearJointDef extends b2JointDef implements b2IGearJointDef {
     }
 }
 
+/// A gear joint is used to connect two joints together. Either joint
+/// can be a revolute or prismatic joint. You specify a gear ratio
+/// to bind the motions together:
+/// coordinate1 + ratio * coordinate2 = constant
+/// The ratio can be negative or positive. If one joint is a revolute joint
+/// and the other joint is a prismatic joint, then the ratio will have units
+/// of length or units of 1/length.
+/// @warning You have to manually destroy the gear joint if joint1 or joint2
+/// is destroyed.
 export class b2GearJoint extends b2Joint {
     public m_joint1: b2RevoluteJoint | b2PrismaticJoint;
 
@@ -132,22 +164,6 @@ export class b2GearJoint extends b2Joint {
 
     public m_mass = 0;
 
-    public readonly m_qA: b2Rot = new b2Rot();
-
-    public readonly m_qB: b2Rot = new b2Rot();
-
-    public readonly m_qC: b2Rot = new b2Rot();
-
-    public readonly m_qD: b2Rot = new b2Rot();
-
-    public readonly m_lalcA: b2Vec2 = new b2Vec2();
-
-    public readonly m_lalcB: b2Vec2 = new b2Vec2();
-
-    public readonly m_lalcC: b2Vec2 = new b2Vec2();
-
-    public readonly m_lalcD: b2Vec2 = new b2Vec2();
-
     constructor(def: b2IGearJointDef) {
         super(def);
 
@@ -168,14 +184,17 @@ export class b2GearJoint extends b2Joint {
         this.m_bodyC = this.m_joint1.GetBodyA();
         this.m_bodyA = this.m_joint1.GetBodyB();
 
+        // Body B on joint1 must be dynamic
+        // DEBUG: b2Assert(this.m_bodyA.m_type === b2BodyType.b2_dynamicBody);
+
         // Get geometry of joint1
-        const xfA: b2Transform = this.m_bodyA.m_xf;
-        const aA: number = this.m_bodyA.m_sweep.a;
-        const xfC: b2Transform = this.m_bodyC.m_xf;
-        const aC: number = this.m_bodyC.m_sweep.a;
+        const xfA = this.m_bodyA.m_xf;
+        const aA = this.m_bodyA.m_sweep.a;
+        const xfC = this.m_bodyC.m_xf;
+        const aC = this.m_bodyC.m_sweep.a;
 
         if (this.m_typeA === b2JointType.e_revoluteJoint) {
-            const revolute: b2RevoluteJoint = def.joint1 as b2RevoluteJoint;
+            const revolute = def.joint1 as b2RevoluteJoint;
             this.m_localAnchorC.Copy(revolute.m_localAnchorA);
             this.m_localAnchorA.Copy(revolute.m_localAnchorB);
             this.m_referenceAngleA = revolute.m_referenceAngle;
@@ -183,39 +202,32 @@ export class b2GearJoint extends b2Joint {
 
             coordinateA = aA - aC - this.m_referenceAngleA;
         } else {
-            const prismatic: b2PrismaticJoint = def.joint1 as b2PrismaticJoint;
+            const prismatic = def.joint1 as b2PrismaticJoint;
             this.m_localAnchorC.Copy(prismatic.m_localAnchorA);
             this.m_localAnchorA.Copy(prismatic.m_localAnchorB);
             this.m_referenceAngleA = prismatic.m_referenceAngle;
             this.m_localAxisC.Copy(prismatic.m_localXAxisA);
 
-            // b2Vec2 pC = m_localAnchorC;
             const pC = this.m_localAnchorC;
-            // b2Vec2 pA = b2MulT(xfC.q, b2Mul(xfA.q, m_localAnchorA) + (xfA.p - xfC.p));
-            const pA: b2Vec2 = b2Rot.TransposeMultiplyVec2(
+            const pA = b2Rot.MultiplyVec2(
                 xfC.q,
-                b2Vec2.Add(
-                    b2Rot.MultiplyVec2(xfA.q, this.m_localAnchorA, b2Vec2.s_t0),
-                    b2Vec2.Subtract(xfA.p, xfC.p, b2Vec2.s_t1),
-                    b2Vec2.s_t0,
-                ),
+                b2Rot.MultiplyVec2(xfA.q, this.m_localAnchorA, b2Vec2.s_t0).Add(xfA.p).Subtract(xfC.p),
                 b2Vec2.s_t0,
-            ); // pA uses s_t0
-            // coordinateA = b2Dot(pA - pC, m_localAxisC);
-            coordinateA = b2Vec2.Dot(b2Vec2.Subtract(pA, pC, b2Vec2.s_t0), this.m_localAxisC);
+            );
+            coordinateA = b2Vec2.Dot(pA.Subtract(pC), this.m_localAxisC);
         }
 
         this.m_bodyD = this.m_joint2.GetBodyA();
         this.m_bodyB = this.m_joint2.GetBodyB();
 
         // Get geometry of joint2
-        const xfB: b2Transform = this.m_bodyB.m_xf;
-        const aB: number = this.m_bodyB.m_sweep.a;
-        const xfD: b2Transform = this.m_bodyD.m_xf;
-        const aD: number = this.m_bodyD.m_sweep.a;
+        const xfB = this.m_bodyB.m_xf;
+        const aB = this.m_bodyB.m_sweep.a;
+        const xfD = this.m_bodyD.m_xf;
+        const aD = this.m_bodyD.m_sweep.a;
 
         if (this.m_typeB === b2JointType.e_revoluteJoint) {
-            const revolute: b2RevoluteJoint = def.joint2 as b2RevoluteJoint;
+            const revolute = def.joint2 as b2RevoluteJoint;
             this.m_localAnchorD.Copy(revolute.m_localAnchorA);
             this.m_localAnchorB.Copy(revolute.m_localAnchorB);
             this.m_referenceAngleB = revolute.m_referenceAngle;
@@ -223,26 +235,19 @@ export class b2GearJoint extends b2Joint {
 
             coordinateB = aB - aD - this.m_referenceAngleB;
         } else {
-            const prismatic: b2PrismaticJoint = def.joint2 as b2PrismaticJoint;
+            const prismatic = def.joint2 as b2PrismaticJoint;
             this.m_localAnchorD.Copy(prismatic.m_localAnchorA);
             this.m_localAnchorB.Copy(prismatic.m_localAnchorB);
             this.m_referenceAngleB = prismatic.m_referenceAngle;
             this.m_localAxisD.Copy(prismatic.m_localXAxisA);
 
-            // b2Vec2 pD = m_localAnchorD;
             const pD = this.m_localAnchorD;
-            // b2Vec2 pB = b2MulT(xfD.q, b2Mul(xfB.q, m_localAnchorB) + (xfB.p - xfD.p));
-            const pB: b2Vec2 = b2Rot.TransposeMultiplyVec2(
+            const pB = b2Rot.TransposeMultiplyVec2(
                 xfD.q,
-                b2Vec2.Add(
-                    b2Rot.MultiplyVec2(xfB.q, this.m_localAnchorB, b2Vec2.s_t0),
-                    b2Vec2.Subtract(xfB.p, xfD.p, b2Vec2.s_t1),
-                    b2Vec2.s_t0,
-                ),
+                b2Rot.MultiplyVec2(xfB.q, this.m_localAnchorB, b2Vec2.s_t0).Add(xfB.p).Subtract(xfD.p),
                 b2Vec2.s_t0,
-            ); // pB uses s_t0
-            // coordinateB = b2Dot(pB - pD, m_localAxisD);
-            coordinateB = b2Vec2.Dot(b2Vec2.Subtract(pB, pD, b2Vec2.s_t0), this.m_localAxisD);
+            );
+            coordinateB = b2Vec2.Dot(pB.Subtract(pD), this.m_localAxisD);
         }
 
         this.m_ratio = def.ratio ?? 1;
@@ -251,16 +256,6 @@ export class b2GearJoint extends b2Joint {
 
         this.m_impulse = 0;
     }
-
-    private static InitVelocityConstraints_s_u = new b2Vec2();
-
-    private static InitVelocityConstraints_s_rA = new b2Vec2();
-
-    private static InitVelocityConstraints_s_rB = new b2Vec2();
-
-    private static InitVelocityConstraints_s_rC = new b2Vec2();
-
-    private static InitVelocityConstraints_s_rD = new b2Vec2();
 
     public InitVelocityConstraints(data: b2SolverData): void {
         this.m_indexA = this.m_bodyA.m_islandIndex;
@@ -280,27 +275,27 @@ export class b2GearJoint extends b2Joint {
         this.m_iC = this.m_bodyC.m_invI;
         this.m_iD = this.m_bodyD.m_invI;
 
-        const aA: number = data.positions[this.m_indexA].a;
-        const vA: b2Vec2 = data.velocities[this.m_indexA].v;
-        let wA: number = data.velocities[this.m_indexA].w;
+        const aA = data.positions[this.m_indexA].a;
+        const vA = data.velocities[this.m_indexA].v;
+        let wA = data.velocities[this.m_indexA].w;
 
-        const aB: number = data.positions[this.m_indexB].a;
-        const vB: b2Vec2 = data.velocities[this.m_indexB].v;
-        let wB: number = data.velocities[this.m_indexB].w;
+        const aB = data.positions[this.m_indexB].a;
+        const vB = data.velocities[this.m_indexB].v;
+        let wB = data.velocities[this.m_indexB].w;
 
-        const aC: number = data.positions[this.m_indexC].a;
-        const vC: b2Vec2 = data.velocities[this.m_indexC].v;
-        let wC: number = data.velocities[this.m_indexC].w;
+        const aC = data.positions[this.m_indexC].a;
+        const vC = data.velocities[this.m_indexC].v;
+        let wC = data.velocities[this.m_indexC].w;
 
-        const aD: number = data.positions[this.m_indexD].a;
-        const vD: b2Vec2 = data.velocities[this.m_indexD].v;
-        let wD: number = data.velocities[this.m_indexD].w;
+        const aD = data.positions[this.m_indexD].a;
+        const vD = data.velocities[this.m_indexD].v;
+        let wD = data.velocities[this.m_indexD].w;
 
-        // b2Rot qA(aA), qB(aB), qC(aC), qD(aD);
-        const qA: b2Rot = this.m_qA.Set(aA);
-        const qB: b2Rot = this.m_qB.Set(aB);
-        const qC: b2Rot = this.m_qC.Set(aC);
-        const qD: b2Rot = this.m_qD.Set(aD);
+        const { qA, qB, qC, qD } = temp;
+        qA.Set(aA);
+        qB.Set(aB);
+        qC.Set(aC);
+        qD.Set(aD);
 
         this.m_mass = 0;
 
@@ -310,19 +305,12 @@ export class b2GearJoint extends b2Joint {
             this.m_JwC = 1;
             this.m_mass += this.m_iA + this.m_iC;
         } else {
-            // b2Vec2 u = b2Mul(qC, m_localAxisC);
-            const u: b2Vec2 = b2Rot.MultiplyVec2(qC, this.m_localAxisC, b2GearJoint.InitVelocityConstraints_s_u);
-            // b2Vec2 rC = b2Mul(qC, m_localAnchorC - m_lcC);
-            b2Vec2.Subtract(this.m_localAnchorC, this.m_lcC, this.m_lalcC);
-            const rC: b2Vec2 = b2Rot.MultiplyVec2(qC, this.m_lalcC, b2GearJoint.InitVelocityConstraints_s_rC);
-            // b2Vec2 rA = b2Mul(qA, m_localAnchorA - m_lcA);
-            b2Vec2.Subtract(this.m_localAnchorA, this.m_lcA, this.m_lalcA);
-            const rA: b2Vec2 = b2Rot.MultiplyVec2(qA, this.m_lalcA, b2GearJoint.InitVelocityConstraints_s_rA);
-            // m_JvAC = u;
+            const { u, rC, rA, lalcA, lalcC } = temp;
+            b2Rot.MultiplyVec2(qC, this.m_localAxisC, u);
+            b2Rot.MultiplyVec2(qC, b2Vec2.Subtract(this.m_localAnchorC, this.m_lcC, lalcC), rC);
+            b2Rot.MultiplyVec2(qA, b2Vec2.Subtract(this.m_localAnchorA, this.m_lcA, lalcA), rA);
             this.m_JvAC.Copy(u);
-            // m_JwC = b2Cross(rC, u);
             this.m_JwC = b2Vec2.Cross(rC, u);
-            // m_JwA = b2Cross(rA, u);
             this.m_JwA = b2Vec2.Cross(rA, u);
             this.m_mass +=
                 this.m_mC + this.m_mA + this.m_iC * this.m_JwC * this.m_JwC + this.m_iA * this.m_JwA * this.m_JwA;
@@ -334,19 +322,12 @@ export class b2GearJoint extends b2Joint {
             this.m_JwD = this.m_ratio;
             this.m_mass += this.m_ratio * this.m_ratio * (this.m_iB + this.m_iD);
         } else {
-            // b2Vec2 u = b2Mul(qD, m_localAxisD);
-            const u: b2Vec2 = b2Rot.MultiplyVec2(qD, this.m_localAxisD, b2GearJoint.InitVelocityConstraints_s_u);
-            // b2Vec2 rD = b2Mul(qD, m_localAnchorD - m_lcD);
-            b2Vec2.Subtract(this.m_localAnchorD, this.m_lcD, this.m_lalcD);
-            const rD: b2Vec2 = b2Rot.MultiplyVec2(qD, this.m_lalcD, b2GearJoint.InitVelocityConstraints_s_rD);
-            // b2Vec2 rB = b2Mul(qB, m_localAnchorB - m_lcB);
-            b2Vec2.Subtract(this.m_localAnchorB, this.m_lcB, this.m_lalcB);
-            const rB: b2Vec2 = b2Rot.MultiplyVec2(qB, this.m_lalcB, b2GearJoint.InitVelocityConstraints_s_rB);
-            // m_JvBD = m_ratio * u;
+            const { u, rB, rD, lalcB, lalcD } = temp;
+            b2Rot.MultiplyVec2(qD, this.m_localAxisD, u);
+            b2Rot.MultiplyVec2(qD, b2Vec2.Subtract(this.m_localAnchorD, this.m_lcD, lalcD), rD);
+            b2Rot.MultiplyVec2(qB, b2Vec2.Subtract(this.m_localAnchorB, this.m_lcB, lalcB), rB);
             b2Vec2.Scale(this.m_ratio, u, this.m_JvBD);
-            // m_JwD = m_ratio * b2Cross(rD, u);
             this.m_JwD = this.m_ratio * b2Vec2.Cross(rD, u);
-            // m_JwB = m_ratio * b2Cross(rB, u);
             this.m_JwB = this.m_ratio * b2Vec2.Cross(rB, u);
             this.m_mass +=
                 this.m_ratio * this.m_ratio * (this.m_mD + this.m_mB) +
@@ -358,107 +339,78 @@ export class b2GearJoint extends b2Joint {
         this.m_mass = this.m_mass > 0 ? 1 / this.m_mass : 0;
 
         if (data.step.warmStarting) {
-            // vA += (m_mA * m_impulse) * m_JvAC;
             vA.AddScaled(this.m_mA * this.m_impulse, this.m_JvAC);
             wA += this.m_iA * this.m_impulse * this.m_JwA;
-            // vB += (m_mB * m_impulse) * m_JvBD;
             vB.AddScaled(this.m_mB * this.m_impulse, this.m_JvBD);
             wB += this.m_iB * this.m_impulse * this.m_JwB;
-            // vC -= (m_mC * m_impulse) * m_JvAC;
             vC.SubtractScaled(this.m_mC * this.m_impulse, this.m_JvAC);
             wC -= this.m_iC * this.m_impulse * this.m_JwC;
-            // vD -= (m_mD * m_impulse) * m_JvBD;
             vD.SubtractScaled(this.m_mD * this.m_impulse, this.m_JvBD);
             wD -= this.m_iD * this.m_impulse * this.m_JwD;
         } else {
             this.m_impulse = 0;
         }
 
-        // data.velocities[this.m_indexA].v = vA;
         data.velocities[this.m_indexA].w = wA;
-        // data.velocities[this.m_indexB].v = vB;
         data.velocities[this.m_indexB].w = wB;
-        // data.velocities[this.m_indexC].v = vC;
         data.velocities[this.m_indexC].w = wC;
-        // data.velocities[this.m_indexD].v = vD;
         data.velocities[this.m_indexD].w = wD;
     }
 
     public SolveVelocityConstraints(data: b2SolverData): void {
-        const vA: b2Vec2 = data.velocities[this.m_indexA].v;
-        let wA: number = data.velocities[this.m_indexA].w;
-        const vB: b2Vec2 = data.velocities[this.m_indexB].v;
-        let wB: number = data.velocities[this.m_indexB].w;
-        const vC: b2Vec2 = data.velocities[this.m_indexC].v;
-        let wC: number = data.velocities[this.m_indexC].w;
-        const vD: b2Vec2 = data.velocities[this.m_indexD].v;
-        let wD: number = data.velocities[this.m_indexD].w;
+        const vA = data.velocities[this.m_indexA].v;
+        let wA = data.velocities[this.m_indexA].w;
+        const vB = data.velocities[this.m_indexB].v;
+        let wB = data.velocities[this.m_indexB].w;
+        const vC = data.velocities[this.m_indexC].v;
+        let wC = data.velocities[this.m_indexC].w;
+        const vD = data.velocities[this.m_indexD].v;
+        let wD = data.velocities[this.m_indexD].w;
 
-        // float32 Cdot = b2Dot(m_JvAC, vA - vC) + b2Dot(m_JvBD, vB - vD);
         let Cdot =
             b2Vec2.Dot(this.m_JvAC, b2Vec2.Subtract(vA, vC, b2Vec2.s_t0)) +
             b2Vec2.Dot(this.m_JvBD, b2Vec2.Subtract(vB, vD, b2Vec2.s_t0));
         Cdot += this.m_JwA * wA - this.m_JwC * wC + (this.m_JwB * wB - this.m_JwD * wD);
 
-        const impulse: number = -this.m_mass * Cdot;
+        const impulse = -this.m_mass * Cdot;
         this.m_impulse += impulse;
 
-        // vA += (m_mA * impulse) * m_JvAC;
         vA.AddScaled(this.m_mA * impulse, this.m_JvAC);
         wA += this.m_iA * impulse * this.m_JwA;
-        // vB += (m_mB * impulse) * m_JvBD;
         vB.AddScaled(this.m_mB * impulse, this.m_JvBD);
         wB += this.m_iB * impulse * this.m_JwB;
-        // vC -= (m_mC * impulse) * m_JvAC;
         vC.SubtractScaled(this.m_mC * impulse, this.m_JvAC);
         wC -= this.m_iC * impulse * this.m_JwC;
-        // vD -= (m_mD * impulse) * m_JvBD;
         vD.SubtractScaled(this.m_mD * impulse, this.m_JvBD);
         wD -= this.m_iD * impulse * this.m_JwD;
 
-        // data.velocities[this.m_indexA].v = vA;
         data.velocities[this.m_indexA].w = wA;
-        // data.velocities[this.m_indexB].v = vB;
         data.velocities[this.m_indexB].w = wB;
-        // data.velocities[this.m_indexC].v = vC;
         data.velocities[this.m_indexC].w = wC;
-        // data.velocities[this.m_indexD].v = vD;
         data.velocities[this.m_indexD].w = wD;
     }
 
-    private static SolvePositionConstraints_s_u = new b2Vec2();
-
-    private static SolvePositionConstraints_s_rA = new b2Vec2();
-
-    private static SolvePositionConstraints_s_rB = new b2Vec2();
-
-    private static SolvePositionConstraints_s_rC = new b2Vec2();
-
-    private static SolvePositionConstraints_s_rD = new b2Vec2();
-
     public SolvePositionConstraints(data: b2SolverData): boolean {
-        const cA: b2Vec2 = data.positions[this.m_indexA].c;
-        let aA: number = data.positions[this.m_indexA].a;
-        const cB: b2Vec2 = data.positions[this.m_indexB].c;
-        let aB: number = data.positions[this.m_indexB].a;
-        const cC: b2Vec2 = data.positions[this.m_indexC].c;
-        let aC: number = data.positions[this.m_indexC].a;
-        const cD: b2Vec2 = data.positions[this.m_indexD].c;
-        let aD: number = data.positions[this.m_indexD].a;
+        const cA = data.positions[this.m_indexA].c;
+        let aA = data.positions[this.m_indexA].a;
+        const cB = data.positions[this.m_indexB].c;
+        let aB = data.positions[this.m_indexB].a;
+        const cC = data.positions[this.m_indexC].c;
+        let aC = data.positions[this.m_indexC].a;
+        const cD = data.positions[this.m_indexD].c;
+        let aD = data.positions[this.m_indexD].a;
 
-        // b2Rot qA(aA), qB(aB), qC(aC), qD(aD);
-        const qA: b2Rot = this.m_qA.Set(aA);
-        const qB: b2Rot = this.m_qB.Set(aB);
-        const qC: b2Rot = this.m_qC.Set(aC);
-        const qD: b2Rot = this.m_qD.Set(aD);
+        const { qA, qB, qC, qD, JvAC, JvBD } = temp;
+        qA.Set(aA);
+        qB.Set(aB);
+        qC.Set(aC);
+        qD.Set(aD);
 
         const linearError = 0;
 
         let coordinateA: number;
         let coordinateB: number;
 
-        const JvAC: b2Vec2 = this.m_JvAC;
-        const JvBD: b2Vec2 = this.m_JvBD;
         let JwA: number;
         let JwB: number;
         let JwC: number;
@@ -473,29 +425,17 @@ export class b2GearJoint extends b2Joint {
 
             coordinateA = aA - aC - this.m_referenceAngleA;
         } else {
-            // b2Vec2 u = b2Mul(qC, m_localAxisC);
-            const u: b2Vec2 = b2Rot.MultiplyVec2(qC, this.m_localAxisC, b2GearJoint.SolvePositionConstraints_s_u);
-            // b2Vec2 rC = b2Mul(qC, m_localAnchorC - m_lcC);
-            const rC: b2Vec2 = b2Rot.MultiplyVec2(qC, this.m_lalcC, b2GearJoint.SolvePositionConstraints_s_rC);
-            // b2Vec2 rA = b2Mul(qA, m_localAnchorA - m_lcA);
-            const rA: b2Vec2 = b2Rot.MultiplyVec2(qA, this.m_lalcA, b2GearJoint.SolvePositionConstraints_s_rA);
-            // JvAC = u;
+            const { u, rC, rA, lalcC, lalcA } = temp;
+            b2Rot.MultiplyVec2(qC, this.m_localAxisC, u);
+            b2Rot.MultiplyVec2(qC, b2Vec2.Subtract(this.m_localAnchorC, this.m_lcC, lalcC), rC);
+            b2Rot.MultiplyVec2(qA, b2Vec2.Subtract(this.m_localAnchorA, this.m_lcA, lalcA), rA);
             JvAC.Copy(u);
-            // JwC = b2Cross(rC, u);
             JwC = b2Vec2.Cross(rC, u);
-            // JwA = b2Cross(rA, u);
             JwA = b2Vec2.Cross(rA, u);
             mass += this.m_mC + this.m_mA + this.m_iC * JwC * JwC + this.m_iA * JwA * JwA;
 
-            // b2Vec2 pC = m_localAnchorC - m_lcC;
-            const pC = this.m_lalcC;
-            // b2Vec2 pA = b2MulT(qC, rA + (cA - cC));
-            const pA: b2Vec2 = b2Rot.TransposeMultiplyVec2(
-                qC,
-                b2Vec2.Add(rA, b2Vec2.Subtract(cA, cC, b2Vec2.s_t0), b2Vec2.s_t0),
-                b2Vec2.s_t0,
-            ); // pA uses s_t0
-            // coordinateA = b2Dot(pA - pC, m_localAxisC);
+            const pC = lalcC;
+            const pA = b2Rot.TransposeMultiplyVec2(qC, b2Vec2.Add(rA, cA, b2Vec2.s_t0).Subtract(cC), b2Vec2.s_t0);
             coordinateA = b2Vec2.Dot(b2Vec2.Subtract(pA, pC, b2Vec2.s_t0), this.m_localAxisC);
         }
 
@@ -507,60 +447,41 @@ export class b2GearJoint extends b2Joint {
 
             coordinateB = aB - aD - this.m_referenceAngleB;
         } else {
-            // b2Vec2 u = b2Mul(qD, m_localAxisD);
-            const u: b2Vec2 = b2Rot.MultiplyVec2(qD, this.m_localAxisD, b2GearJoint.SolvePositionConstraints_s_u);
-            // b2Vec2 rD = b2Mul(qD, m_localAnchorD - m_lcD);
-            const rD: b2Vec2 = b2Rot.MultiplyVec2(qD, this.m_lalcD, b2GearJoint.SolvePositionConstraints_s_rD);
-            // b2Vec2 rB = b2Mul(qB, m_localAnchorB - m_lcB);
-            const rB: b2Vec2 = b2Rot.MultiplyVec2(qB, this.m_lalcB, b2GearJoint.SolvePositionConstraints_s_rB);
-            // JvBD = m_ratio * u;
+            const { u, rD, rB, lalcD, lalcB } = temp;
+            b2Rot.MultiplyVec2(qD, this.m_localAxisD, u);
+            b2Rot.MultiplyVec2(qD, b2Vec2.Subtract(this.m_localAnchorD, this.m_lcD, lalcD), rD);
+            b2Rot.MultiplyVec2(qB, b2Vec2.Subtract(this.m_localAnchorB, this.m_lcB, lalcB), rB);
+            b2Rot.MultiplyVec2(qB, lalcB, rB);
             b2Vec2.Scale(this.m_ratio, u, JvBD);
-            // JwD = m_ratio * b2Cross(rD, u);
             JwD = this.m_ratio * b2Vec2.Cross(rD, u);
-            // JwB = m_ratio * b2Cross(rB, u);
             JwB = this.m_ratio * b2Vec2.Cross(rB, u);
             mass +=
                 this.m_ratio * this.m_ratio * (this.m_mD + this.m_mB) + this.m_iD * JwD * JwD + this.m_iB * JwB * JwB;
 
-            // b2Vec2 pD = m_localAnchorD - m_lcD;
-            const pD = this.m_lalcD;
-            // b2Vec2 pB = b2MulT(qD, rB + (cB - cD));
-            const pB: b2Vec2 = b2Rot.TransposeMultiplyVec2(
-                qD,
-                b2Vec2.Add(rB, b2Vec2.Subtract(cB, cD, b2Vec2.s_t0), b2Vec2.s_t0),
-                b2Vec2.s_t0,
-            ); // pB uses s_t0
-            // coordinateB = b2Dot(pB - pD, m_localAxisD);
-            coordinateB = b2Vec2.Dot(b2Vec2.Subtract(pB, pD, b2Vec2.s_t0), this.m_localAxisD);
+            const pD = lalcD;
+            const pB = b2Rot.TransposeMultiplyVec2(qD, b2Vec2.Add(rB, cB, b2Vec2.s_t0).Subtract(cD), b2Vec2.s_t0);
+            coordinateB = b2Vec2.Dot(pB.Subtract(pD), this.m_localAxisD);
         }
 
-        const C: number = coordinateA + this.m_ratio * coordinateB - this.m_constant;
+        const C = coordinateA + this.m_ratio * coordinateB - this.m_constant;
 
         let impulse = 0;
         if (mass > 0) {
             impulse = -C / mass;
         }
 
-        // cA += m_mA * impulse * JvAC;
         cA.AddScaled(this.m_mA * impulse, JvAC);
         aA += this.m_iA * impulse * JwA;
-        // cB += m_mB * impulse * JvBD;
         cB.AddScaled(this.m_mB * impulse, JvBD);
         aB += this.m_iB * impulse * JwB;
-        // cC -= m_mC * impulse * JvAC;
         cC.SubtractScaled(this.m_mC * impulse, JvAC);
         aC -= this.m_iC * impulse * JwC;
-        // cD -= m_mD * impulse * JvBD;
         cD.SubtractScaled(this.m_mD * impulse, JvBD);
         aD -= this.m_iD * impulse * JwD;
 
-        // data.positions[this.m_indexA].c = cA;
         data.positions[this.m_indexA].a = aA;
-        // data.positions[this.m_indexB].c = cB;
         data.positions[this.m_indexB].a = aB;
-        // data.positions[this.m_indexC].c = cC;
         data.positions[this.m_indexC].a = aC;
-        // data.positions[this.m_indexD].c = cD;
         data.positions[this.m_indexD].a = aD;
 
         // TODO_ERIN not implemented
@@ -576,14 +497,10 @@ export class b2GearJoint extends b2Joint {
     }
 
     public GetReactionForce<T extends XY>(inv_dt: number, out: T): T {
-        // b2Vec2 P = m_impulse * m_JvAC;
-        // return inv_dt * P;
         return b2Vec2.Scale(inv_dt * this.m_impulse, this.m_JvAC, out);
     }
 
     public GetReactionTorque(inv_dt: number): number {
-        // float32 L = m_impulse * m_JwA;
-        // return inv_dt * L;
         return inv_dt * this.m_impulse * this.m_JwA;
     }
 

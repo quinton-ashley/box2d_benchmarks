@@ -11,3 +11,7 @@ Some performance notes:
 Style notes:
 - move out parameter of math functions to the start to have a = b + c order. i.e. add(out,a,b) rather than add(a,b,out)
 - Make attributes and methods private or protected again as in the original.
+
+Other notes:
+- temporary variables should not be used from outside of their files.
+- encapsulate temp vars either per file, per class or even per method to avoid conflicted use
