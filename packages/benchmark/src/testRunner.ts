@@ -168,9 +168,7 @@ export async function runAllTestsAsync(factories: TestFactory[]) {
     return results.sort((a, b) => a.avg - b.avg);
 }
 
-export function logResults(results: TestResult[]) {
-    console.log("\nResults:");
-
+export function resultsToMarkdown(results: TestResult[]) {
     const header = ["Name", "avg ms/frame", "5th %ile", "95th %ile", "Ratio"];
     const rows = results.map((r) => [
         r.name,
@@ -180,7 +178,7 @@ export function logResults(results: TestResult[]) {
         (r.avg / results[0].avg).toFixed(2),
     ]);
     const lengths = header.map((label, index) =>
-        Math.max(label.length, ...rows.map((columns) => columns[index].length)),
+        Math.max(label.length, ...rows.map((columns) => columns[index].length))
     );
 
     function getDashes(length: number) {
@@ -188,8 +186,9 @@ export function logResults(results: TestResult[]) {
     }
     const dashes = `| ${lengths.map(getDashes).join(" | ")} |`;
 
-    console.log(`| ${header.map(pad).join(" | ")} |`);
-    console.log(dashes);
+    const lines: string[] = [];
+    lines.push(`| ${header.map(pad).join(" | ")} |`);
+    lines.push(dashes);
 
     function pad(value: string, index: number) {
         const length = lengths[index];
@@ -201,7 +200,12 @@ export function logResults(results: TestResult[]) {
     }
 
     for (const row of rows) {
-        console.log(`| ${row.map(pad).join(" | ")} |`);
+        lines.push(`| ${row.map(pad).join(" | ")} |`);
     }
-    console.log(dashes);
+    return lines.join("\n");
+}
+
+export function logResults(results: TestResult[]) {
+    console.log("\nResults:");
+    console.log(resultsToMarkdown(results));
 }

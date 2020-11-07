@@ -19,10 +19,15 @@
             progress {
                 width: 200px;
             }
+            textarea {
+                width: 500px;
+                height: 300px;
+            }
         </style>
     </head>
     <body>
-        <button>Start</button>
+        <h3>Run Benchmark:</h3>
+        <button id="start">Start</button>
         <table>
             <thead>
                 <tr>
@@ -35,6 +40,8 @@
             </thead>
             <tbody></tbody>
         </table>
+        <h3>Result as Markdown: <button id="copy">Copy to clipboard</button></h3>
+        <textarea></textarea>
         <script type="text/javascript" src="index.ts"></script>
     </body>
 </html>

@@ -1,9 +1,12 @@
 import { tests } from "..";
-import { logResults, prepareTests, runTestAsync, TestResult } from "../testRunner";
+import { logResults, prepareTests, resultsToMarkdown, runTestAsync, TestResult } from "../testRunner";
+import { getBrowserInfo } from "./browserInfo";
 
-const button = document.querySelector("button") as HTMLButtonElement;
+const startButton = document.getElementById("start") as HTMLButtonElement;
 const tbody = document.querySelector("tbody") as HTMLElement;
 const ratioHead = document.getElementById("ratio") as HTMLElement;
+const textArea = document.querySelector("textarea") as HTMLTextAreaElement;
+const copyButton = document.getElementById("copy") as HTMLButtonElement;
 
 const testRows = prepareTests(tests).map((test) => {
     const row = document.createElement("tr");
@@ -58,12 +61,20 @@ export async function runAllTestsAsync() {
     }
 
     results.sort((a, b) => a.avg - b.avg).forEach((result) => result.testRow.final(result.avg / results[0].avg));
-    button.removeAttribute("disabled");
+    startButton.removeAttribute("disabled");
     ratioHead.textContent = "Ratio";
-    logResults(results);
+    textArea.value = `**Browser:** ${getBrowserInfo()}\n${resultsToMarkdown(results)}`;
 }
 
-button.addEventListener("click", () => {
-    button.disabled = true;
+startButton.addEventListener("click", () => {
+    startButton.disabled = true;
     runAllTestsAsync();
+});
+
+copyButton.addEventListener("click", () => {
+    textArea.select();
+    textArea.setSelectionRange(0, 99999);
+    document.execCommand("copy");
+    // eslint-disable-next-line no-alert
+    alert("Copied to clipboard");
 });
