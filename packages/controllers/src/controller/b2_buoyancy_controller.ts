@@ -48,7 +48,7 @@ export class b2BuoyancyController extends b2Controller {
     /**
      * Fluid velocity, for drag calculations
      */
-    public readonly velocity = new b2Vec2(0, 0);
+    public readonly velocity = new b2Vec2();
 
     /**
      * Linear drag co-efficient
@@ -74,7 +74,7 @@ export class b2BuoyancyController extends b2Controller {
     /**
      * Gravity vector, if the world's gravity is not used
      */
-    public readonly gravity = new b2Vec2(0, 0);
+    public readonly gravity = new b2Vec2();
 
     public Step(_step: b2TimeStep) {
         if (!this.m_bodyList) {

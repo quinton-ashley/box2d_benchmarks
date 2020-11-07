@@ -199,7 +199,7 @@ export class Faucet extends Test {
             shape.SetAsBox(
                 Faucet.k_containerWidth - Faucet.k_containerThickness,
                 Faucet.k_containerThickness,
-                new b2Vec2(0.0, 0.0),
+                new b2Vec2(),
                 0.0,
             );
             ground.CreateFixture(shape, 0.0);
@@ -266,7 +266,7 @@ export class Faucet extends Test {
                     Faucet.k_containerHeight * Faucet.k_faucetHeight + faucetLength * 0.5,
                 ),
             );
-            this.m_emitter.SetVelocity(new b2Vec2(0.0, 0.0));
+            this.m_emitter.SetVelocity(new b2Vec2());
             this.m_emitter.SetSize(new b2Vec2(0.0, faucetLength));
             this.m_emitter.SetColor(new b2Color(1, 1, 1, 1));
             this.m_emitter.SetEmitRate(120.0);

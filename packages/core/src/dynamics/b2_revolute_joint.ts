@@ -65,10 +65,10 @@ export interface b2IRevoluteJointDef extends b2IJointDef {
 ///    the joints will be broken.
 export class b2RevoluteJointDef extends b2JointDef implements b2IRevoluteJointDef {
     /// The local anchor point relative to bodyA's origin.
-    public readonly localAnchorA = new b2Vec2(0, 0);
+    public readonly localAnchorA = new b2Vec2();
 
     /// The local anchor point relative to bodyB's origin.
-    public readonly localAnchorB = new b2Vec2(0, 0);
+    public readonly localAnchorB = new b2Vec2();
 
     /// The bodyB angle minus bodyA angle in the reference state (radians).
     public referenceAngle = 0;

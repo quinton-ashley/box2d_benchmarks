@@ -69,7 +69,7 @@ export interface XY {
 
 /// A 2D column vector.
 export class b2Vec2 implements XY {
-    public static readonly ZERO: Readonly<XY> = new b2Vec2(0, 0);
+    public static readonly ZERO: Readonly<XY> = new b2Vec2();
 
     public static readonly UNITX: Readonly<XY> = new b2Vec2(1, 0);
 

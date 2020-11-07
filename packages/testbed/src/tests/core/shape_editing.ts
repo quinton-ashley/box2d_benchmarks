@@ -48,7 +48,7 @@ export class ShapeEditing extends Test {
         });
 
         const shape = new b2PolygonShape();
-        shape.SetAsBox(4.0, 4.0, new b2Vec2(0.0, 0.0), 0.0);
+        shape.SetAsBox(4.0, 4.0, new b2Vec2(), 0.0);
         this.m_fixture1 = this.m_body.CreateFixture(shape, 10.0);
     }
 

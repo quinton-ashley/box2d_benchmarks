@@ -27,7 +27,7 @@ export class b2MassData {
     public mass = 0;
 
     /// The position of the shape's centroid relative to the shape's origin.
-    public readonly center = new b2Vec2(0, 0);
+    public readonly center = new b2Vec2();
 
     /// The rotational inertia of the shape about the local origin.
     public I = 0;

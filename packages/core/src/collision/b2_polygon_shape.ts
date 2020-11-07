@@ -111,7 +111,7 @@ function ComputeCentroid(vs: b2Vec2[], count: number, out: b2Vec2): b2Vec2 {
 /// the left of each edge.
 /// In most cases you should not need many vertices for a convex polygon.
 export class b2PolygonShape extends b2Shape {
-    public readonly m_centroid = new b2Vec2(0, 0);
+    public readonly m_centroid = new b2Vec2();
 
     public m_vertices: b2Vec2[] = [];
 

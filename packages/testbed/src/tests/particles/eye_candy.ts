@@ -55,7 +55,7 @@ export class EyeCandy extends Test {
         pd.flags = b2ParticleFlag.b2_waterParticle;
 
         const shape2 = new b2PolygonShape();
-        shape2.SetAsBox(9.0, 9.0, new b2Vec2(0.0, 0.0), 0.0);
+        shape2.SetAsBox(9.0, 9.0, new b2Vec2(), 0.0);
 
         pd.shape = shape2;
         this.m_particleSystem.CreateParticleGroup(pd);

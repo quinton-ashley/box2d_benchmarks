@@ -61,7 +61,7 @@ export interface b2IMotorJointDef extends b2IJointDef {
 /// Motor joint definition.
 export class b2MotorJointDef extends b2JointDef implements b2IMotorJointDef {
     /// Position of bodyB minus the position of bodyA, in bodyA's frame, in meters.
-    public readonly linearOffset = new b2Vec2(0, 0);
+    public readonly linearOffset = new b2Vec2();
 
     /// The bodyB angle minus bodyA angle in radians.
     public angularOffset = 0;

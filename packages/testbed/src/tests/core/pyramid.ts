@@ -41,7 +41,7 @@ export class Pyramid extends Test {
             shape.SetAsBox(a, a);
 
             const x = new b2Vec2(-7.0, 0.75);
-            const y = new b2Vec2(0.0, 0.0);
+            const y = new b2Vec2();
             const deltaX = new b2Vec2(0.5625, 1.25);
             const deltaY = new b2Vec2(1.125, 0.0);
 

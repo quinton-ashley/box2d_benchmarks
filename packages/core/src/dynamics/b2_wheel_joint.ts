@@ -81,10 +81,10 @@ export interface b2IWheelJointDef extends b2IJointDef {
 /// anchors and a local axis helps when saving and loading a game.
 export class b2WheelJointDef extends b2JointDef implements b2IWheelJointDef {
     /// The local anchor point relative to bodyA's origin.
-    public readonly localAnchorA = new b2Vec2(0, 0);
+    public readonly localAnchorA = new b2Vec2();
 
     /// The local anchor point relative to bodyB's origin.
-    public readonly localAnchorB = new b2Vec2(0, 0);
+    public readonly localAnchorB = new b2Vec2();
 
     /// The local translation axis in bodyA.
     public readonly localAxisA = new b2Vec2(1, 0);

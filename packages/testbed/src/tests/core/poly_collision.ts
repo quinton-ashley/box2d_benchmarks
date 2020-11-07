@@ -54,7 +54,7 @@ export class PolyCollision extends Test {
         super();
 
         this.m_polygonA.SetAsBox(0.2, 0.4);
-        this.m_transformA.SetPositionAngle(new b2Vec2(0.0, 0.0), 0.0);
+        this.m_transformA.SetPositionAngle(new b2Vec2(), 0.0);
         this.m_polygonB.SetAsBox(0.5, 0.5);
         this.m_positionB.Set(4, 1);
         this.m_angleB = 1.9160721;

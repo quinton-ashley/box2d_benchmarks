@@ -297,7 +297,7 @@ export class OfficialDemo extends Test {
     private createBoundary() {
         const chainShape = new b2ChainShape();
         chainShape.CreateLoop([
-            new b2Vec2(0, 0),
+            new b2Vec2(),
             new b2Vec2(0, viewportHeight),
             new b2Vec2(viewportWidth, viewportHeight),
             new b2Vec2(viewportWidth, 0),

@@ -27,7 +27,7 @@ export class b2ConstantForceController extends b2Controller {
     /**
      * The force to apply
      */
-    public readonly F = new b2Vec2(0, 0);
+    public readonly F = new b2Vec2();
 
     public Step(_step: b2TimeStep) {
         for (let i = this.m_bodyList; i; i = i.nextBody) {

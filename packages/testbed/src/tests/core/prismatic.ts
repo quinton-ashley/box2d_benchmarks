@@ -55,7 +55,7 @@ export class Prismatic extends Test {
             // Bouncy limit
             const axis = new b2Vec2(2.0, 1.0);
             axis.Normalize();
-            pjd.Initialize(ground, body, new b2Vec2(0.0, 0.0), axis);
+            pjd.Initialize(ground, body, new b2Vec2(), axis);
 
             // Non-bouncy limit
             // pjd.Initialize(ground, body, new b2Vec2(-10.0, 10.0), new b2Vec2(1.0, 0.0));

@@ -55,7 +55,7 @@ export class ShapeCast extends Test {
         // #if 1
         this.m_vAs[0] = new b2Vec2(-0.5, 1.0);
         this.m_vAs[1] = new b2Vec2(0.5, 1.0);
-        this.m_vAs[2] = new b2Vec2(0.0, 0.0);
+        this.m_vAs[2] = new b2Vec2();
         this.m_countA = 3;
         this.m_radiusA = b2_polygonRadius;
 
@@ -66,11 +66,11 @@ export class ShapeCast extends Test {
         this.m_countB = 4;
         this.m_radiusB = b2_polygonRadius;
         // #else
-        // this.m_vAs[0] = new b2Vec2(0.0, 0.0);
+        // this.m_vAs[0] = new b2Vec2();
         // this.m_countA = 1;
         // this.m_radiusA = 0.5;
 
-        // this.m_vBs[0] = new b2Vec2(0.0, 0.0);
+        // this.m_vBs[0] = new b2Vec2();
         // this.m_countB = 1;
         // this.m_radiusB = 0.5;
         // #endif

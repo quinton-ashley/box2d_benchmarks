@@ -49,7 +49,7 @@ export class Skier extends Test {
 
         // Horizontal platform
         const v1 = new b2Vec2(-PlatformWidth, 0.0);
-        const v2 = new b2Vec2(0.0, 0.0);
+        const v2 = new b2Vec2();
         const v3 = new b2Vec2(SlopeLength * Math.cos(Slope1Incline), -SlopeLength * Math.sin(Slope1Incline));
         const v4 = new b2Vec2(
             v3.x + SlopeLength * Math.cos(Slope2Incline),

@@ -29,7 +29,7 @@ export class b2ConstantAccelController extends b2Controller {
     /**
      * The acceleration to apply
      */
-    public readonly A = new b2Vec2(0, 0);
+    public readonly A = new b2Vec2();
 
     public Step(step: b2TimeStep) {
         b2Vec2.Scale(step.dt, this.A, tempDta);

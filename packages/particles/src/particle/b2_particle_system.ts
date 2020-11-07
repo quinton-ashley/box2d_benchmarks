@@ -419,11 +419,11 @@ export class b2ParticleTriad {
 
     public strength = 0.0; // The strength of cohesion among the particles.
 
-    public pa = new b2Vec2(0.0, 0.0); // Values used for calculation.
+    public pa = new b2Vec2(); // Values used for calculation.
 
-    public pb = new b2Vec2(0.0, 0.0);
+    public pb = new b2Vec2();
 
-    public pc = new b2Vec2(0.0, 0.0);
+    public pc = new b2Vec2();
 
     public ka = 0.0;
 
