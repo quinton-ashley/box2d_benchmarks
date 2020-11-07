@@ -29,7 +29,8 @@ export class b2ContactFactory {
 
     constructor() {
         const result = new Array<b2ContactRegister[]>(b2ShapeType.e_typeCount);
-        for (let i = 0; i < b2ShapeType.e_typeCount; i++) result[i] = new Array(b2ShapeType.e_typeCount);
+        for (let i = 0; i < b2ShapeType.e_typeCount; i++)
+            result[i] = new Array<b2ContactRegister>(b2ShapeType.e_typeCount);
         this.m_registers = result;
 
         this.AddType(b2CircleContact, b2ShapeType.e_circle, b2ShapeType.e_circle);

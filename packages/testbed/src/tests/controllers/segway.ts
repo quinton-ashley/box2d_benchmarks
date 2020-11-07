@@ -55,7 +55,7 @@ class PIDController {
 
     public step(dt: number): void {
         this.integral = dt * (this.integral + this.currentError);
-        const derivative: number = (1 / dt) * (this.currentError - this.previousError);
+        const derivative = (1 / dt) * (this.currentError - this.previousError);
         this.output = this.gainP * this.currentError + this.gainI * this.integral + this.gainD * derivative;
         this.previousError = this.currentError;
     }
@@ -70,9 +70,9 @@ export class Segway extends Test {
 
     public posAvg = 0;
 
-    public readonly angleController: PIDController = new PIDController();
+    public readonly angleController = new PIDController();
 
-    public readonly positionController: PIDController = new PIDController();
+    public readonly positionController = new PIDController();
 
     public pendulumBody: b2Body;
 
@@ -106,7 +106,7 @@ export class Segway extends Test {
                 y: 2 + 0.5 * Segway.PENDULUM_LENGTH,
             },
         });
-        const pendulumShape: b2PolygonShape = new b2PolygonShape();
+        const pendulumShape = new b2PolygonShape();
         pendulumShape.SetAsBox(0.5, 0.5 * Segway.PENDULUM_LENGTH);
         const fd: b2FixtureDef = {
             shape: pendulumShape,
@@ -125,7 +125,7 @@ export class Segway extends Test {
             type: b2BodyType.b2_dynamicBody,
             position: b2Vec2.UNITY,
         });
-        const wheelShape: b2CircleShape = new b2CircleShape();
+        const wheelShape = new b2CircleShape();
         wheelShape.m_radius = 0.6;
         fd.shape = wheelShape;
         fd.density = 1 / (Math.PI * 0.6 * 0.6); // TODO: specify mass
@@ -143,7 +143,7 @@ export class Segway extends Test {
         // var m = 40;
         // wheelJoint.motorEquation.maxForce = m;
         // wheelJoint.motorEquation.minForce = -m;
-        const jd: b2RevoluteJointDef = new b2RevoluteJointDef();
+        const jd = new b2RevoluteJointDef();
         jd.Initialize(this.wheelBody, this.pendulumBody, { x: 0, y: 0 });
         jd.localAnchorA.Set(0, 0);
         jd.localAnchorB.Set(0, -0.5 * Segway.PENDULUM_LENGTH);
@@ -163,7 +163,7 @@ export class Segway extends Test {
             type: b2BodyType.b2_staticBody,
             position: b2Vec2.ZERO,
         });
-        const groundShape: b2EdgeShape = new b2EdgeShape();
+        const groundShape = new b2EdgeShape();
         groundShape.SetTwoSided({ x: -100, y: 0 }, { x: 100, y: 0 });
         fd.shape = groundShape;
         fd.friction = 10;
@@ -178,7 +178,7 @@ export class Segway extends Test {
     }
 
     public Step(settings: Settings, timeStep: number): void {
-        let dt: number = settings.m_hertz > 0.0 ? 1.0 / settings.m_hertz : 0.0;
+        let dt = settings.m_hertz > 0.0 ? 1.0 / settings.m_hertz : 0.0;
 
         if (settings.m_pause && !settings.m_singleStep) {
             dt = 0.0;
@@ -201,7 +201,7 @@ export class Segway extends Test {
             this.positionController.currentError = this.targetPosition - this.posAvg;
             // positionController.step(world.lastTimeStep);
             this.positionController.step(dt);
-            let targetLinAccel: number = this.positionController.output;
+            let targetLinAccel = this.positionController.output;
             // targetLinAccel = clamp(targetLinAccel, -10.0, 10.0);
             targetLinAccel = b2Clamp(targetLinAccel, -10, 10);
             // targetAngle = targetLinAccel / world.gravity[1];
@@ -210,19 +210,19 @@ export class Segway extends Test {
             targetAngle = b2Clamp(targetAngle, b2DegToRad(-15), b2DegToRad(15));
         }
         // var currentAngle = pendulumBody.angle;
-        let currentAngle: number = this.pendulumBody.GetAngle();
+        let currentAngle = this.pendulumBody.GetAngle();
         currentAngle = normalizeAngle(currentAngle);
         this.angleController.currentError = targetAngle - currentAngle;
         // angleController.step(world.lastTimeStep);
         this.angleController.step(dt);
-        let targetSpeed: number = this.angleController.output;
+        let targetSpeed = this.angleController.output;
         // give up if speed required is really high
         if (Math.abs(targetSpeed) > 1000) {
             targetSpeed = 0;
         }
         // this is the only output
         // var targetAngularVelocity = -targetSpeed / (2 * Math.PI * wheelBody.shapes[0].radius); // wheel circumference = 2*pi*r
-        const targetAngularVelocity: number = targetSpeed / (2 * Math.PI * 0.6); // wheel circumference = 2*pi*r
+        const targetAngularVelocity = targetSpeed / (2 * Math.PI * 0.6); // wheel circumference = 2*pi*r
         // wheelJoint.motorSpeed = targetAngularVelocity;
         this.wheelJoint.SetMotorSpeed(targetAngularVelocity);
     }

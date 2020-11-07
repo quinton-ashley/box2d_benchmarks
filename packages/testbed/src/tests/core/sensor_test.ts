@@ -43,10 +43,10 @@ export class SensorTest extends Test {
     constructor() {
         super();
 
-        this.m_bodies = new Array(SensorTest.e_count);
-        this.m_touching = new Array(SensorTest.e_count);
+        this.m_bodies = new Array<b2Body>(SensorTest.e_count);
+        this.m_touching = new Array<boolean[]>(SensorTest.e_count);
         for (let i = 0; i < SensorTest.e_count; ++i) {
-            this.m_touching[i] = new Array(1);
+            this.m_touching[i] = new Array<boolean>(1);
         }
 
         const ground = this.m_world.CreateBody();
@@ -105,7 +105,7 @@ export class SensorTest extends Test {
         const fixtureB = contact.GetFixtureB();
 
         if (fixtureA === this.m_sensor) {
-            const userData = fixtureB.GetBody().GetUserData();
+            const userData: boolean[] = fixtureB.GetBody().GetUserData();
             if (userData) {
                 const touching = userData;
                 touching[0] = true;
@@ -113,7 +113,7 @@ export class SensorTest extends Test {
         }
 
         if (fixtureB === this.m_sensor) {
-            const userData = fixtureA.GetBody().GetUserData();
+            const userData: boolean[] = fixtureA.GetBody().GetUserData();
             if (userData) {
                 const touching = userData;
                 touching[0] = true;
@@ -126,7 +126,7 @@ export class SensorTest extends Test {
         const fixtureB = contact.GetFixtureB();
 
         if (fixtureA === this.m_sensor) {
-            const userData = fixtureB.GetBody().GetUserData();
+            const userData: boolean[] = fixtureB.GetBody().GetUserData();
             if (userData) {
                 const touching = userData;
                 touching[0] = false;
@@ -134,7 +134,7 @@ export class SensorTest extends Test {
         }
 
         if (fixtureB === this.m_sensor) {
-            const userData = fixtureA.GetBody().GetUserData();
+            const userData: boolean[] = fixtureA.GetBody().GetUserData();
             if (userData) {
                 const touching = userData;
                 touching[0] = false;

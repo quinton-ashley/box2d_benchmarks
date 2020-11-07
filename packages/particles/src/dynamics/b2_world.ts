@@ -94,7 +94,7 @@ Object.assign(b2World.prototype, {
 
 b2_augment(b2World.prototype, {
     CreateBody(this: b2World, original, def = {}) {
-        const body: b2Body = original(def);
+        const body = original(def);
         (body as b2Writeable<b2Body>).m_xf0 = new b2Transform();
         return body;
     },

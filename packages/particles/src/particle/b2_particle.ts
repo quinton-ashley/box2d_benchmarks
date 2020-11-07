@@ -85,11 +85,11 @@ export interface b2IParticleDef {
 export class b2ParticleDef implements b2IParticleDef {
     public flags: b2ParticleFlag = 0;
 
-    public readonly position: b2Vec2 = new b2Vec2();
+    public readonly position = new b2Vec2();
 
-    public readonly velocity: b2Vec2 = new b2Vec2();
+    public readonly velocity = new b2Vec2();
 
-    public readonly color: b2Color = new b2Color(0, 0, 0, 0);
+    public readonly color = new b2Color(0, 0, 0, 0);
 
     public lifetime = 0.0;
 
@@ -108,7 +108,7 @@ export function b2CalculateParticleIterations(gravity: number, radius: number, t
 }
 
 export class b2ParticleHandle {
-    public m_index: number = b2_invalidParticleIndex;
+    public m_index = b2_invalidParticleIndex;
 
     public GetIndex(): number {
         return this.m_index;

@@ -31,7 +31,7 @@ function vec2Project(x: number, y: number, m: mat4, out: XY) {
 }
 
 export class Camera {
-    private readonly center: b2Vec2 = new b2Vec2(0, 20);
+    private readonly center = new b2Vec2(0, 20);
 
     private zoom = 1;
 
@@ -110,4 +110,4 @@ export class Camera {
     }
 }
 
-export const g_camera: Camera = new Camera();
+export const g_camera = new Camera();

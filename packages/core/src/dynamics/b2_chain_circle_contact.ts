@@ -28,7 +28,7 @@ export class b2ChainAndCircleContact extends b2Contact<b2ChainShape, b2CircleSha
     private static Evaluate_s_edge = new b2EdgeShape();
 
     public Evaluate(manifold: b2Manifold, xfA: b2Transform, xfB: b2Transform): void {
-        const edge: b2EdgeShape = b2ChainAndCircleContact.Evaluate_s_edge;
+        const edge = b2ChainAndCircleContact.Evaluate_s_edge;
         this.GetShapeA().GetChildEdge(edge, this.m_indexA);
         b2CollideEdgeAndCircle(manifold, edge, xfA, this.GetShapeB(), xfB);
     }

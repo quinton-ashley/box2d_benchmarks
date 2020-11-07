@@ -43,9 +43,9 @@ export interface b2IFrictionJointDef extends b2IJointDef {
 
 /// Friction joint definition.
 export class b2FrictionJointDef extends b2JointDef implements b2IFrictionJointDef {
-    public readonly localAnchorA: b2Vec2 = new b2Vec2();
+    public readonly localAnchorA = new b2Vec2();
 
-    public readonly localAnchorB: b2Vec2 = new b2Vec2();
+    public readonly localAnchorB = new b2Vec2();
 
     public maxForce = 0;
 
@@ -64,12 +64,12 @@ export class b2FrictionJointDef extends b2JointDef implements b2IFrictionJointDe
 }
 
 export class b2FrictionJoint extends b2Joint {
-    public readonly m_localAnchorA: b2Vec2 = new b2Vec2();
+    public readonly m_localAnchorA = new b2Vec2();
 
-    public readonly m_localAnchorB: b2Vec2 = new b2Vec2();
+    public readonly m_localAnchorB = new b2Vec2();
 
     // Solver shared
-    public readonly m_linearImpulse: b2Vec2 = new b2Vec2();
+    public readonly m_linearImpulse = new b2Vec2();
 
     public m_angularImpulse = 0;
 
@@ -82,13 +82,13 @@ export class b2FrictionJoint extends b2Joint {
 
     public m_indexB = 0;
 
-    public readonly m_rA: b2Vec2 = new b2Vec2();
+    public readonly m_rA = new b2Vec2();
 
-    public readonly m_rB: b2Vec2 = new b2Vec2();
+    public readonly m_rB = new b2Vec2();
 
-    public readonly m_localCenterA: b2Vec2 = new b2Vec2();
+    public readonly m_localCenterA = new b2Vec2();
 
-    public readonly m_localCenterB: b2Vec2 = new b2Vec2();
+    public readonly m_localCenterB = new b2Vec2();
 
     public m_invMassA = 0;
 
@@ -98,7 +98,7 @@ export class b2FrictionJoint extends b2Joint {
 
     public m_invIB = 0;
 
-    public readonly m_linearMass: b2Mat22 = new b2Mat22();
+    public readonly m_linearMass = new b2Mat22();
 
     public m_angularMass = 0;
 

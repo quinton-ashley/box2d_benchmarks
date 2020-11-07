@@ -52,7 +52,7 @@ export class ParticleCollisionFilter extends Test {
         {
             const ground = this.m_world.CreateBody();
             const shape = new b2ChainShape();
-            const vertices: b2Vec2[] = [
+            const vertices = [
                 new b2Vec2(
                     -ParticleCollisionFilter.kBoxSize,
                     -ParticleCollisionFilter.kBoxSize + ParticleCollisionFilter.kOffset,
@@ -111,8 +111,8 @@ export class ParticleCollisionFilter extends Test {
             // b2Vec2* velocities =
             // 	m_particleSystem.GetVelocityBuffer() +
             // 	m_particleGroup.GetBufferIndex();
-            const velocities: b2Vec2[] = this.m_particleSystem.GetVelocityBuffer();
-            const index: number = this.m_particleGroup.GetBufferIndex();
+            const velocities = this.m_particleSystem.GetVelocityBuffer();
+            const index = this.m_particleGroup.GetBufferIndex();
             // for (int i = 0; i < m_particleGroup.GetParticleCount(); ++i) {
             // 	b2Vec2& v = *(velocities + i);
             // 	v.Set(RandomFloat(), RandomFloat());
@@ -120,7 +120,7 @@ export class ParticleCollisionFilter extends Test {
             // 	v *= kSpeedup;
             // }
             for (let i = 0; i < this.m_particleGroup.GetParticleCount(); ++i) {
-                const v: b2Vec2 = velocities[index + i];
+                const v = velocities[index + i];
                 v.Set(RandomFloat(), RandomFloat());
                 v.Normalize();
                 v.Scale(ParticleCollisionFilter.kSpeedup);
@@ -132,10 +132,10 @@ export class ParticleCollisionFilter extends Test {
         super.Step(settings, timeStep);
 
         // const int32 index = m_particleGroup.GetBufferIndex();
-        const index: number = this.m_particleGroup.GetBufferIndex();
+        const index = this.m_particleGroup.GetBufferIndex();
         // b2Vec2* const velocities =
         // 	m_particleSystem.GetVelocityBuffer() + index;
-        const velocities: b2Vec2[] = this.m_particleSystem.GetVelocityBuffer();
+        const velocities = this.m_particleSystem.GetVelocityBuffer();
         // for (int32 i = 0; i < m_particleGroup.GetParticleCount(); i++) {
         // 	// Add energy to particles based upon the temperature.
         // 	b2Vec2& v = velocities[i];
@@ -143,7 +143,7 @@ export class ParticleCollisionFilter extends Test {
         // 	v *= kSpeedup;
         // }
         for (let i = 0; i < this.m_particleGroup.GetParticleCount(); ++i) {
-            const v: b2Vec2 = velocities[index + i];
+            const v = velocities[index + i];
             v.Normalize();
             v.Scale(ParticleCollisionFilter.kSpeedup);
         }
@@ -173,7 +173,7 @@ export class ParticleCollisionFilter extends Test {
             .m_enableParticleParticleCollisions;
     }
 
-    public m_contactDisabler: ParticleContactDisabler = new ParticleContactDisabler();
+    public m_contactDisabler = new ParticleContactDisabler();
 
     public m_particleGroup: b2ParticleGroup;
 

@@ -27,7 +27,7 @@ type b2Pair<T> = [b2TreeNode<T>, b2TreeNode<T>];
 /// This broad-phase does not persist pairs. Instead, this reports potentially new pairs.
 /// It is up to the client to consume the new pairs and to track subsequent overlap.
 export class b2BroadPhase<T> {
-    public readonly m_tree: b2DynamicTree<T> = new b2DynamicTree<T>();
+    public readonly m_tree = new b2DynamicTree<T>();
 
     private m_proxyCount = 0;
 
@@ -44,7 +44,7 @@ export class b2BroadPhase<T> {
     /// Create a proxy with an initial AABB. Pairs are not reported until
     /// UpdatePairs is called.
     public CreateProxy(aabb: b2AABB, userData: T): b2TreeNode<T> {
-        const proxy: b2TreeNode<T> = this.m_tree.CreateProxy(aabb, userData);
+        const proxy = this.m_tree.CreateProxy(aabb, userData);
         ++this.m_proxyCount;
         this.BufferMove(proxy);
         return proxy;
@@ -60,7 +60,7 @@ export class b2BroadPhase<T> {
     /// Call MoveProxy as many times as you like, then when you are done
     /// call UpdatePairs to finalized the proxy pairs (for your time step).
     public MoveProxy(proxy: b2TreeNode<T>, aabb: b2AABB, displacement: b2Vec2): void {
-        const buffer: boolean = this.m_tree.MoveProxy(proxy, aabb, displacement);
+        const buffer = this.m_tree.MoveProxy(proxy, aabb, displacement);
         if (buffer) {
             this.BufferMove(proxy);
         }
@@ -89,7 +89,7 @@ export class b2BroadPhase<T> {
 
             // We have to query the tree with the fat AABB so that
             // we don't fail to create a pair that may touch later.
-            const fatAABB: b2AABB = queryProxy.aabb;
+            const fatAABB = queryProxy.aabb;
 
             // Query tree, create pairs and add them pair buffer.
             this.m_tree.Query(fatAABB, this.QueryCallback);
@@ -182,7 +182,7 @@ export class b2BroadPhase<T> {
     }
 
     public UnBufferMove(proxy: b2TreeNode<T>): void {
-        const i: number = this.m_moveBuffer.indexOf(proxy);
+        const i = this.m_moveBuffer.indexOf(proxy);
         this.m_moveBuffer[i] = null;
     }
 }

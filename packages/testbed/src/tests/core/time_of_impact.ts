@@ -34,9 +34,9 @@ import { Settings } from "../../settings";
 import { g_debugDraw } from "../../utils/draw";
 
 export class TimeOfImpact extends Test {
-    public m_shapeA: b2PolygonShape = new b2PolygonShape();
+    public m_shapeA = new b2PolygonShape();
 
-    public m_shapeB: b2PolygonShape = new b2PolygonShape();
+    public m_shapeB = new b2PolygonShape();
 
     constructor() {
         super();

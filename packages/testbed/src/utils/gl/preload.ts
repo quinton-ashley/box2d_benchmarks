@@ -13,7 +13,7 @@ export interface TextureInfo {
 }
 
 export async function loadImages<T extends { [s: string]: string }>(gl: WebGLRenderingContext, imagesToLoad: T) {
-    const textures: { [key in keyof T]: TextureInfo } = {} as any;
+    const textures = {} as { [key in keyof T]: TextureInfo };
     const imagePromises = Object.keys(imagesToLoad).map(
         (key) =>
             new Promise((resolve) => {

@@ -38,7 +38,7 @@ export class Settings {
     // Particle iterations are needed for numerical stability in particle
     // simulations with small particles and relatively high gravity.
     // b2CalculateParticleIterations helps to determine the number.
-    public m_particleIterations: number = b2CalculateParticleIterations(10, 0.04, 1 / this.m_hertz);
+    public m_particleIterations = b2CalculateParticleIterations(10, 0.04, 1 / this.m_hertz);
 
     public m_drawShapes = true;
 

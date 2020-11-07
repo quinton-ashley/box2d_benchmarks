@@ -93,7 +93,7 @@ export interface b2IJointDef {
 /// Joint definitions are used to construct joints.
 export abstract class b2JointDef implements b2IJointDef {
     /// The joint type is set automatically for concrete joint types.
-    public readonly type: b2JointType = b2JointType.e_unknownJoint;
+    public readonly type: b2JointType;
 
     /// Use this to attach application specific data to your joints.
     public userData: any = null;
@@ -175,9 +175,9 @@ export abstract class b2Joint {
 
     public m_next: b2Joint | null = null;
 
-    public readonly m_edgeA: b2JointEdge = new b2JointEdge(this);
+    public readonly m_edgeA = new b2JointEdge(this);
 
-    public readonly m_edgeB: b2JointEdge = new b2JointEdge(this);
+    public readonly m_edgeB = new b2JointEdge(this);
 
     public m_bodyA: b2Body;
 
@@ -202,7 +202,7 @@ export abstract class b2Joint {
 
         this.m_collideConnected = def.collideConnected ?? false;
 
-        this.m_userData = def.userData ?? null;
+        this.m_userData = def.userData;
     }
 
     /// Get the type of the concrete joint.

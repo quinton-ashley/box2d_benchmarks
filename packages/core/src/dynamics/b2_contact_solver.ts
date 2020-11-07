@@ -25,11 +25,8 @@ import {
     b2_toiBaumgarte,
 } from "../common/b2_common";
 import { b2Clamp, b2Vec2, b2Mat22, b2Rot, b2Transform } from "../common/b2_math";
-import { b2Manifold, b2ManifoldPoint, b2WorldManifold, b2ManifoldType } from "../collision/b2_collision";
-import { b2Shape } from "../collision/b2_shape";
+import { b2WorldManifold, b2ManifoldType } from "../collision/b2_collision";
 import { b2Contact } from "./b2_contact";
-import { b2Body } from "./b2_body";
-import { b2Fixture } from "./b2_fixture";
 import { b2TimeStep, b2Position, b2Velocity } from "./b2_time_step";
 
 // Solver debugging is normally disabled because the block solver sometimes has to deal with a poorly conditioned effective mass matrix.
@@ -42,9 +39,9 @@ export const b2SetBlockSolve = (value: boolean) => {
 };
 
 export class b2VelocityConstraintPoint {
-    public readonly rA: b2Vec2 = new b2Vec2();
+    public readonly rA = new b2Vec2();
 
-    public readonly rB: b2Vec2 = new b2Vec2();
+    public readonly rB = new b2Vec2();
 
     public normalImpulse = 0;
 
@@ -64,15 +61,15 @@ export class b2VelocityConstraintPoint {
 }
 
 export class b2ContactVelocityConstraint {
-    public readonly points: b2VelocityConstraintPoint[] = b2VelocityConstraintPoint.MakeArray(b2_maxManifoldPoints);
+    public readonly points = b2VelocityConstraintPoint.MakeArray(b2_maxManifoldPoints);
 
-    public readonly normal: b2Vec2 = new b2Vec2();
+    public readonly normal = new b2Vec2();
 
-    public readonly tangent: b2Vec2 = new b2Vec2();
+    public readonly tangent = new b2Vec2();
 
-    public readonly normalMass: b2Mat22 = new b2Mat22();
+    public readonly normalMass = new b2Mat22();
 
-    public readonly K: b2Mat22 = new b2Mat22();
+    public readonly K = new b2Mat22();
 
     public indexA = 0;
 
@@ -106,11 +103,11 @@ export class b2ContactVelocityConstraint {
 }
 
 export class b2ContactPositionConstraint {
-    public readonly localPoints: b2Vec2[] = b2Vec2.MakeArray(b2_maxManifoldPoints);
+    public readonly localPoints = b2Vec2.MakeArray(b2_maxManifoldPoints);
 
-    public readonly localNormal: b2Vec2 = new b2Vec2();
+    public readonly localNormal = new b2Vec2();
 
-    public readonly localPoint: b2Vec2 = new b2Vec2();
+    public readonly localPoint = new b2Vec2();
 
     public indexA = 0;
 
@@ -120,15 +117,15 @@ export class b2ContactPositionConstraint {
 
     public invMassB = 0;
 
-    public readonly localCenterA: b2Vec2 = new b2Vec2();
+    public readonly localCenterA = new b2Vec2();
 
-    public readonly localCenterB: b2Vec2 = new b2Vec2();
+    public readonly localCenterB = new b2Vec2();
 
     public invIA = 0;
 
     public invIB = 0;
 
-    public type: b2ManifoldType = b2ManifoldType.e_circles;
+    public type = b2ManifoldType.e_circles;
 
     public radiusA = 0;
 
@@ -144,7 +141,7 @@ export class b2ContactPositionConstraint {
 }
 
 export class b2ContactSolverDef {
-    public readonly step: b2TimeStep = b2TimeStep.Create();
+    public readonly step = b2TimeStep.Create();
 
     public contacts!: b2Contact[];
 
@@ -156,9 +153,9 @@ export class b2ContactSolverDef {
 }
 
 export class b2PositionSolverManifold {
-    public readonly normal: b2Vec2 = new b2Vec2();
+    public readonly normal = new b2Vec2();
 
-    public readonly point: b2Vec2 = new b2Vec2();
+    public readonly point = new b2Vec2();
 
     public separation = 0;
 
@@ -171,10 +168,10 @@ export class b2PositionSolverManifold {
     private static Initialize_s_clipPoint = new b2Vec2();
 
     public Initialize(pc: b2ContactPositionConstraint, xfA: b2Transform, xfB: b2Transform, index: number): void {
-        const pointA: b2Vec2 = b2PositionSolverManifold.Initialize_s_pointA;
-        const pointB: b2Vec2 = b2PositionSolverManifold.Initialize_s_pointB;
-        const planePoint: b2Vec2 = b2PositionSolverManifold.Initialize_s_planePoint;
-        const clipPoint: b2Vec2 = b2PositionSolverManifold.Initialize_s_clipPoint;
+        const pointA = b2PositionSolverManifold.Initialize_s_pointA;
+        const pointB = b2PositionSolverManifold.Initialize_s_pointB;
+        const planePoint = b2PositionSolverManifold.Initialize_s_planePoint;
+        const clipPoint = b2PositionSolverManifold.Initialize_s_clipPoint;
 
         // DEBUG: b2Assert(pc.pointCount > 0);
 
@@ -222,15 +219,15 @@ export class b2PositionSolverManifold {
 }
 
 export class b2ContactSolver {
-    public readonly m_step: b2TimeStep = b2TimeStep.Create();
+    public readonly m_step = b2TimeStep.Create();
 
     public m_positions!: b2Position[];
 
     public m_velocities!: b2Velocity[];
 
-    public readonly m_positionConstraints: b2ContactPositionConstraint[] = b2ContactPositionConstraint.MakeArray(1024); // TODO: b2Settings
+    public readonly m_positionConstraints = b2ContactPositionConstraint.MakeArray(1024); // TODO: b2Settings
 
-    public readonly m_velocityConstraints: b2ContactVelocityConstraint[] = b2ContactVelocityConstraint.MakeArray(1024); // TODO: b2Settings
+    public readonly m_velocityConstraints = b2ContactVelocityConstraint.MakeArray(1024); // TODO: b2Settings
 
     public m_contacts!: b2Contact[];
 
@@ -241,14 +238,14 @@ export class b2ContactSolver {
         this.m_count = def.count;
         // TODO:
         if (this.m_positionConstraints.length < this.m_count) {
-            const new_length: number = Math.max(this.m_positionConstraints.length * 2, this.m_count);
+            const new_length = Math.max(this.m_positionConstraints.length * 2, this.m_count);
             while (this.m_positionConstraints.length < new_length) {
                 this.m_positionConstraints[this.m_positionConstraints.length] = new b2ContactPositionConstraint();
             }
         }
         // TODO:
         if (this.m_velocityConstraints.length < this.m_count) {
-            const new_length: number = Math.max(this.m_velocityConstraints.length * 2, this.m_count);
+            const new_length = Math.max(this.m_velocityConstraints.length * 2, this.m_count);
             while (this.m_velocityConstraints.length < new_length) {
                 this.m_velocityConstraints[this.m_velocityConstraints.length] = new b2ContactVelocityConstraint();
             }
@@ -259,22 +256,22 @@ export class b2ContactSolver {
 
         // Initialize position independent portions of the constraints.
         for (let i = 0; i < this.m_count; ++i) {
-            const contact: b2Contact = this.m_contacts[i];
+            const contact = this.m_contacts[i];
 
-            const fixtureA: b2Fixture = contact.m_fixtureA;
-            const fixtureB: b2Fixture = contact.m_fixtureB;
-            const shapeA: b2Shape = fixtureA.GetShape();
-            const shapeB: b2Shape = fixtureB.GetShape();
-            const radiusA: number = shapeA.m_radius;
-            const radiusB: number = shapeB.m_radius;
-            const bodyA: b2Body = fixtureA.GetBody();
-            const bodyB: b2Body = fixtureB.GetBody();
-            const manifold: b2Manifold = contact.GetManifold();
+            const fixtureA = contact.m_fixtureA;
+            const fixtureB = contact.m_fixtureB;
+            const shapeA = fixtureA.GetShape();
+            const shapeB = fixtureB.GetShape();
+            const radiusA = shapeA.m_radius;
+            const radiusB = shapeB.m_radius;
+            const bodyA = fixtureA.GetBody();
+            const bodyB = fixtureB.GetBody();
+            const manifold = contact.GetManifold();
 
             const { pointCount } = manifold;
             // DEBUG: b2Assert(pointCount > 0);
 
-            const vc: b2ContactVelocityConstraint = this.m_velocityConstraints[i];
+            const vc = this.m_velocityConstraints[i];
             vc.friction = contact.m_friction;
             vc.restitution = contact.m_restitution;
             vc.threshold = contact.m_restitutionThreshold;
@@ -290,7 +287,7 @@ export class b2ContactSolver {
             vc.K.SetZero();
             vc.normalMass.SetZero();
 
-            const pc: b2ContactPositionConstraint = this.m_positionConstraints[i];
+            const pc = this.m_positionConstraints[i];
             pc.indexA = bodyA.m_islandIndex;
             pc.indexB = bodyB.m_islandIndex;
             pc.invMassA = bodyA.m_invMass;
@@ -307,8 +304,8 @@ export class b2ContactSolver {
             pc.type = manifold.type;
 
             for (let j = 0; j < pointCount; ++j) {
-                const cp: b2ManifoldPoint = manifold.points[j];
-                const vcp: b2VelocityConstraintPoint = vc.points[j];
+                const cp = manifold.points[j];
+                const vcp = vc.points[j];
 
                 if (this.m_step.warmStarting) {
                     vcp.normalImpulse = this.m_step.dtRatio * cp.normalImpulse;
@@ -338,35 +335,35 @@ export class b2ContactSolver {
     private static InitializeVelocityConstraints_s_worldManifold = new b2WorldManifold();
 
     public InitializeVelocityConstraints(): void {
-        const xfA: b2Transform = b2ContactSolver.InitializeVelocityConstraints_s_xfA;
-        const xfB: b2Transform = b2ContactSolver.InitializeVelocityConstraints_s_xfB;
-        const worldManifold: b2WorldManifold = b2ContactSolver.InitializeVelocityConstraints_s_worldManifold;
+        const xfA = b2ContactSolver.InitializeVelocityConstraints_s_xfA;
+        const xfB = b2ContactSolver.InitializeVelocityConstraints_s_xfB;
+        const worldManifold = b2ContactSolver.InitializeVelocityConstraints_s_worldManifold;
 
         const k_maxConditionNumber = 1000;
 
         for (let i = 0; i < this.m_count; ++i) {
-            const vc: b2ContactVelocityConstraint = this.m_velocityConstraints[i];
-            const pc: b2ContactPositionConstraint = this.m_positionConstraints[i];
+            const vc = this.m_velocityConstraints[i];
+            const pc = this.m_positionConstraints[i];
 
             const { radiusA, radiusB, localCenterA, localCenterB } = pc;
-            const manifold: b2Manifold = this.m_contacts[vc.contactIndex].GetManifold();
+            const manifold = this.m_contacts[vc.contactIndex].GetManifold();
 
             const { indexA, indexB, tangent, pointCount } = vc;
 
-            const mA: number = vc.invMassA;
-            const mB: number = vc.invMassB;
-            const iA: number = vc.invIA;
-            const iB: number = vc.invIB;
+            const mA = vc.invMassA;
+            const mB = vc.invMassB;
+            const iA = vc.invIA;
+            const iB = vc.invIB;
 
-            const cA: b2Vec2 = this.m_positions[indexA].c;
-            const aA: number = this.m_positions[indexA].a;
-            const vA: b2Vec2 = this.m_velocities[indexA].v;
-            const wA: number = this.m_velocities[indexA].w;
+            const cA = this.m_positions[indexA].c;
+            const aA = this.m_positions[indexA].a;
+            const vA = this.m_velocities[indexA].v;
+            const wA = this.m_velocities[indexA].w;
 
-            const cB: b2Vec2 = this.m_positions[indexB].c;
-            const aB: number = this.m_positions[indexB].a;
-            const vB: b2Vec2 = this.m_velocities[indexB].v;
-            const wB: number = this.m_velocities[indexB].w;
+            const cB = this.m_positions[indexB].c;
+            const aB = this.m_positions[indexB].a;
+            const vB = this.m_velocities[indexB].v;
+            const wB = this.m_velocities[indexB].w;
 
             // DEBUG: b2Assert(manifold.pointCount > 0);
 
@@ -381,28 +378,28 @@ export class b2ContactSolver {
             b2Vec2.CrossVec2One(vc.normal, tangent); // compute from normal
 
             for (let j = 0; j < pointCount; ++j) {
-                const vcp: b2VelocityConstraintPoint = vc.points[j];
+                const vcp = vc.points[j];
 
                 b2Vec2.Subtract(worldManifold.points[j], cA, vcp.rA);
                 b2Vec2.Subtract(worldManifold.points[j], cB, vcp.rB);
 
-                const rnA: number = b2Vec2.Cross(vcp.rA, vc.normal);
-                const rnB: number = b2Vec2.Cross(vcp.rB, vc.normal);
+                const rnA = b2Vec2.Cross(vcp.rA, vc.normal);
+                const rnB = b2Vec2.Cross(vcp.rB, vc.normal);
 
-                const kNormal: number = mA + mB + iA * rnA * rnA + iB * rnB * rnB;
+                const kNormal = mA + mB + iA * rnA * rnA + iB * rnB * rnB;
 
                 vcp.normalMass = kNormal > 0 ? 1 / kNormal : 0;
 
-                const rtA: number = b2Vec2.Cross(vcp.rA, tangent);
-                const rtB: number = b2Vec2.Cross(vcp.rB, tangent);
+                const rtA = b2Vec2.Cross(vcp.rA, tangent);
+                const rtB = b2Vec2.Cross(vcp.rB, tangent);
 
-                const kTangent: number = mA + mB + iA * rtA * rtA + iB * rtB * rtB;
+                const kTangent = mA + mB + iA * rtA * rtA + iB * rtB * rtB;
 
                 vcp.tangentMass = kTangent > 0 ? 1 / kTangent : 0;
 
                 // Setup a velocity bias for restitution.
                 vcp.velocityBias = 0;
-                const vRel: number = b2Vec2.Dot(
+                const vRel = b2Vec2.Dot(
                     vc.normal,
                     b2Vec2.Subtract(
                         b2Vec2.AddCrossScalarVec2(vB, wB, vcp.rB, b2Vec2.s_t0),
@@ -418,17 +415,17 @@ export class b2ContactSolver {
 
             // If we have two points, then prepare the block solver.
             if (vc.pointCount === 2 && g_blockSolve) {
-                const vcp1: b2VelocityConstraintPoint = vc.points[0];
-                const vcp2: b2VelocityConstraintPoint = vc.points[1];
+                const vcp1 = vc.points[0];
+                const vcp2 = vc.points[1];
 
-                const rn1A: number = b2Vec2.Cross(vcp1.rA, vc.normal);
-                const rn1B: number = b2Vec2.Cross(vcp1.rB, vc.normal);
-                const rn2A: number = b2Vec2.Cross(vcp2.rA, vc.normal);
-                const rn2B: number = b2Vec2.Cross(vcp2.rB, vc.normal);
+                const rn1A = b2Vec2.Cross(vcp1.rA, vc.normal);
+                const rn1B = b2Vec2.Cross(vcp1.rB, vc.normal);
+                const rn2A = b2Vec2.Cross(vcp2.rA, vc.normal);
+                const rn2B = b2Vec2.Cross(vcp2.rB, vc.normal);
 
-                const k11: number = mA + mB + iA * rn1A * rn1A + iB * rn1B * rn1B;
-                const k22: number = mA + mB + iA * rn2A * rn2A + iB * rn2B * rn2B;
-                const k12: number = mA + mB + iA * rn1A * rn2A + iB * rn1B * rn2B;
+                const k11 = mA + mB + iA * rn1A * rn1A + iB * rn1B * rn1B;
+                const k22 = mA + mB + iA * rn2A * rn2A + iB * rn2B * rn2B;
+                const k12 = mA + mB + iA * rn1A * rn2A + iB * rn1B * rn2B;
 
                 // Ensure a reasonable condition number.
                 if (k11 * k11 < k_maxConditionNumber * (k11 * k22 - k12 * k12)) {
@@ -448,25 +445,25 @@ export class b2ContactSolver {
     private static WarmStart_s_P = new b2Vec2();
 
     public WarmStart(): void {
-        const P: b2Vec2 = b2ContactSolver.WarmStart_s_P;
+        const P = b2ContactSolver.WarmStart_s_P;
 
         // Warm start.
         for (let i = 0; i < this.m_count; ++i) {
-            const vc: b2ContactVelocityConstraint = this.m_velocityConstraints[i];
+            const vc = this.m_velocityConstraints[i];
 
             const { indexA, indexB, pointCount, normal, tangent } = vc;
-            const mA: number = vc.invMassA;
-            const iA: number = vc.invIA;
-            const mB: number = vc.invMassB;
-            const iB: number = vc.invIB;
+            const mA = vc.invMassA;
+            const iA = vc.invIA;
+            const mB = vc.invMassB;
+            const iB = vc.invIB;
 
-            const vA: b2Vec2 = this.m_velocities[indexA].v;
-            let wA: number = this.m_velocities[indexA].w;
-            const vB: b2Vec2 = this.m_velocities[indexB].v;
-            let wB: number = this.m_velocities[indexB].w;
+            const vA = this.m_velocities[indexA].v;
+            let wA = this.m_velocities[indexA].w;
+            const vB = this.m_velocities[indexB].v;
+            let wB = this.m_velocities[indexB].w;
 
             for (let j = 0; j < pointCount; ++j) {
-                const vcp: b2VelocityConstraintPoint = vc.points[j];
+                const vcp = vc.points[j];
                 b2Vec2.Add(
                     b2Vec2.Scale(vcp.normalImpulse, normal, b2Vec2.s_t0),
                     b2Vec2.Scale(vcp.tangentImpulse, tangent, b2Vec2.s_t1),
@@ -506,38 +503,38 @@ export class b2ContactSolver {
     private static SolveVelocityConstraints_s_P1P2 = new b2Vec2();
 
     public SolveVelocityConstraints(): void {
-        const dv: b2Vec2 = b2ContactSolver.SolveVelocityConstraints_s_dv;
-        const dv1: b2Vec2 = b2ContactSolver.SolveVelocityConstraints_s_dv1;
-        const dv2: b2Vec2 = b2ContactSolver.SolveVelocityConstraints_s_dv2;
-        const P: b2Vec2 = b2ContactSolver.SolveVelocityConstraints_s_P;
-        const a: b2Vec2 = b2ContactSolver.SolveVelocityConstraints_s_a;
-        const b: b2Vec2 = b2ContactSolver.SolveVelocityConstraints_s_b;
-        const x: b2Vec2 = b2ContactSolver.SolveVelocityConstraints_s_x;
-        const d: b2Vec2 = b2ContactSolver.SolveVelocityConstraints_s_d;
-        const P1: b2Vec2 = b2ContactSolver.SolveVelocityConstraints_s_P1;
-        const P2: b2Vec2 = b2ContactSolver.SolveVelocityConstraints_s_P2;
-        const P1P2: b2Vec2 = b2ContactSolver.SolveVelocityConstraints_s_P1P2;
+        const dv = b2ContactSolver.SolveVelocityConstraints_s_dv;
+        const dv1 = b2ContactSolver.SolveVelocityConstraints_s_dv1;
+        const dv2 = b2ContactSolver.SolveVelocityConstraints_s_dv2;
+        const P = b2ContactSolver.SolveVelocityConstraints_s_P;
+        const a = b2ContactSolver.SolveVelocityConstraints_s_a;
+        const b = b2ContactSolver.SolveVelocityConstraints_s_b;
+        const x = b2ContactSolver.SolveVelocityConstraints_s_x;
+        const d = b2ContactSolver.SolveVelocityConstraints_s_d;
+        const P1 = b2ContactSolver.SolveVelocityConstraints_s_P1;
+        const P2 = b2ContactSolver.SolveVelocityConstraints_s_P2;
+        const P1P2 = b2ContactSolver.SolveVelocityConstraints_s_P1P2;
 
         for (let i = 0; i < this.m_count; ++i) {
-            const vc: b2ContactVelocityConstraint = this.m_velocityConstraints[i];
+            const vc = this.m_velocityConstraints[i];
 
             const { indexA, indexB, pointCount, normal, tangent, friction } = vc;
-            const mA: number = vc.invMassA;
-            const iA: number = vc.invIA;
-            const mB: number = vc.invMassB;
-            const iB: number = vc.invIB;
+            const mA = vc.invMassA;
+            const iA = vc.invIA;
+            const mB = vc.invMassB;
+            const iB = vc.invIB;
 
-            const vA: b2Vec2 = this.m_velocities[indexA].v;
-            let wA: number = this.m_velocities[indexA].w;
-            const vB: b2Vec2 = this.m_velocities[indexB].v;
-            let wB: number = this.m_velocities[indexB].w;
+            const vA = this.m_velocities[indexA].v;
+            let wA = this.m_velocities[indexA].w;
+            const vB = this.m_velocities[indexB].v;
+            let wB = this.m_velocities[indexB].w;
 
             // DEBUG: b2Assert(pointCount === 1 || pointCount === 2);
 
             // Solve tangent constraints first because non-penetration is more important
             // than friction.
             for (let j = 0; j < pointCount; ++j) {
-                const vcp: b2VelocityConstraintPoint = vc.points[j];
+                const vcp = vc.points[j];
 
                 // Relative velocity at contact
                 // b2Vec2 dv = vB + b2Cross(wB, vcp->rB) - vA - b2Cross(wA, vcp->rA);
@@ -548,12 +545,12 @@ export class b2ContactSolver {
                 );
 
                 // Compute tangent force
-                const vt: number = b2Vec2.Dot(dv, tangent) - vc.tangentSpeed;
-                let lambda: number = vcp.tangentMass * -vt;
+                const vt = b2Vec2.Dot(dv, tangent) - vc.tangentSpeed;
+                let lambda = vcp.tangentMass * -vt;
 
                 // b2Clamp the accumulated force
-                const maxFriction: number = friction * vcp.normalImpulse;
-                const newImpulse: number = b2Clamp(vcp.tangentImpulse + lambda, -maxFriction, maxFriction);
+                const maxFriction = friction * vcp.normalImpulse;
+                const newImpulse = b2Clamp(vcp.tangentImpulse + lambda, -maxFriction, maxFriction);
                 lambda = newImpulse - vcp.tangentImpulse;
                 vcp.tangentImpulse = newImpulse;
 
@@ -570,7 +567,7 @@ export class b2ContactSolver {
             // Solve normal constraints
             if (vc.pointCount === 1 || g_blockSolve === false) {
                 for (let j = 0; j < pointCount; ++j) {
-                    const vcp: b2VelocityConstraintPoint = vc.points[j];
+                    const vcp = vc.points[j];
 
                     // Relative velocity at contact
                     // b2Vec2 dv = vB + b2Cross(wB, vcp->rB) - vA - b2Cross(wA, vcp->rA);
@@ -581,12 +578,12 @@ export class b2ContactSolver {
                     );
 
                     // Compute normal impulse
-                    const vn: number = b2Vec2.Dot(dv, normal);
-                    let lambda: number = -vcp.normalMass * (vn - vcp.velocityBias);
+                    const vn = b2Vec2.Dot(dv, normal);
+                    let lambda = -vcp.normalMass * (vn - vcp.velocityBias);
 
                     // b2Clamp the accumulated impulse
                     // float32 newImpulse = Math.max(vcp->normalImpulse + lambda, 0.0f);
-                    const newImpulse: number = Math.max(vcp.normalImpulse + lambda, 0);
+                    const newImpulse = Math.max(vcp.normalImpulse + lambda, 0);
                     lambda = newImpulse - vcp.normalImpulse;
                     vcp.normalImpulse = newImpulse;
 
@@ -651,8 +648,8 @@ export class b2ContactSolver {
                 );
 
                 // Compute normal velocity
-                let vn1: number = b2Vec2.Dot(dv1, normal);
-                let vn2: number = b2Vec2.Dot(dv2, normal);
+                let vn1 = b2Vec2.Dot(dv1, normal);
+                let vn2 = b2Vec2.Dot(dv2, normal);
 
                 b.x = vn1 - cp1.velocityBias;
                 b.y = vn2 - cp2.velocityBias;
@@ -662,7 +659,7 @@ export class b2ContactSolver {
 
                 /*
         #if B2_DEBUG_SOLVER === 1
-        const k_errorTol: number = 1e-3f;
+        const k_errorTol = 1e-3f;
         #endif
         */
 
@@ -845,8 +842,8 @@ export class b2ContactSolver {
 
     public StoreImpulses(): void {
         for (let i = 0; i < this.m_count; ++i) {
-            const vc: b2ContactVelocityConstraint = this.m_velocityConstraints[i];
-            const manifold: b2Manifold = this.m_contacts[vc.contactIndex].GetManifold();
+            const vc = this.m_velocityConstraints[i];
+            const manifold = this.m_contacts[vc.contactIndex].GetManifold();
 
             for (let j = 0; j < vc.pointCount; ++j) {
                 manifold.points[j].normalImpulse = vc.points[j].normalImpulse;
@@ -868,29 +865,29 @@ export class b2ContactSolver {
     private static SolvePositionConstraints_s_P = new b2Vec2();
 
     public SolvePositionConstraints(): boolean {
-        const xfA: b2Transform = b2ContactSolver.SolvePositionConstraints_s_xfA;
-        const xfB: b2Transform = b2ContactSolver.SolvePositionConstraints_s_xfB;
-        const psm: b2PositionSolverManifold = b2ContactSolver.SolvePositionConstraints_s_psm;
-        const rA: b2Vec2 = b2ContactSolver.SolvePositionConstraints_s_rA;
-        const rB: b2Vec2 = b2ContactSolver.SolvePositionConstraints_s_rB;
-        const P: b2Vec2 = b2ContactSolver.SolvePositionConstraints_s_P;
+        const xfA = b2ContactSolver.SolvePositionConstraints_s_xfA;
+        const xfB = b2ContactSolver.SolvePositionConstraints_s_xfB;
+        const psm = b2ContactSolver.SolvePositionConstraints_s_psm;
+        const rA = b2ContactSolver.SolvePositionConstraints_s_rA;
+        const rB = b2ContactSolver.SolvePositionConstraints_s_rB;
+        const P = b2ContactSolver.SolvePositionConstraints_s_P;
 
         let minSeparation = 0;
 
         for (let i = 0; i < this.m_count; ++i) {
-            const pc: b2ContactPositionConstraint = this.m_positionConstraints[i];
+            const pc = this.m_positionConstraints[i];
 
             const { indexA, indexB, localCenterA, localCenterB, pointCount } = pc;
-            const mA: number = pc.invMassA;
-            const iA: number = pc.invIA;
-            const mB: number = pc.invMassB;
-            const iB: number = pc.invIB;
+            const mA = pc.invMassA;
+            const iA = pc.invIA;
+            const mB = pc.invMassB;
+            const iB = pc.invIB;
 
-            const cA: b2Vec2 = this.m_positions[indexA].c;
-            let aA: number = this.m_positions[indexA].a;
+            const cA = this.m_positions[indexA].c;
+            let aA = this.m_positions[indexA].a;
 
-            const cB: b2Vec2 = this.m_positions[indexB].c;
-            let aB: number = this.m_positions[indexB].a;
+            const cB = this.m_positions[indexB].c;
+            let aB = this.m_positions[indexB].a;
 
             // Solve normal constraints
             for (let j = 0; j < pointCount; ++j) {
@@ -909,15 +906,15 @@ export class b2ContactSolver {
                 minSeparation = Math.min(minSeparation, separation);
 
                 // Prevent large corrections and allow slop.
-                const C: number = b2Clamp(b2_baumgarte * (separation + b2_linearSlop), -b2_maxLinearCorrection, 0);
+                const C = b2Clamp(b2_baumgarte * (separation + b2_linearSlop), -b2_maxLinearCorrection, 0);
 
                 // Compute the effective mass.
-                const rnA: number = b2Vec2.Cross(rA, normal);
-                const rnB: number = b2Vec2.Cross(rB, normal);
-                const K: number = mA + mB + iA * rnA * rnA + iB * rnB * rnB;
+                const rnA = b2Vec2.Cross(rA, normal);
+                const rnB = b2Vec2.Cross(rB, normal);
+                const K = mA + mB + iA * rnA * rnA + iB * rnB * rnB;
 
                 // Compute normal impulse
-                const impulse: number = K > 0 ? -C / K : 0;
+                const impulse = K > 0 ? -C / K : 0;
 
                 b2Vec2.Scale(impulse, normal, P);
 
@@ -953,17 +950,17 @@ export class b2ContactSolver {
     private static SolveTOIPositionConstraints_s_P = new b2Vec2();
 
     public SolveTOIPositionConstraints(toiIndexA: number, toiIndexB: number): boolean {
-        const xfA: b2Transform = b2ContactSolver.SolveTOIPositionConstraints_s_xfA;
-        const xfB: b2Transform = b2ContactSolver.SolveTOIPositionConstraints_s_xfB;
-        const psm: b2PositionSolverManifold = b2ContactSolver.SolveTOIPositionConstraints_s_psm;
-        const rA: b2Vec2 = b2ContactSolver.SolveTOIPositionConstraints_s_rA;
-        const rB: b2Vec2 = b2ContactSolver.SolveTOIPositionConstraints_s_rB;
-        const P: b2Vec2 = b2ContactSolver.SolveTOIPositionConstraints_s_P;
+        const xfA = b2ContactSolver.SolveTOIPositionConstraints_s_xfA;
+        const xfB = b2ContactSolver.SolveTOIPositionConstraints_s_xfB;
+        const psm = b2ContactSolver.SolveTOIPositionConstraints_s_psm;
+        const rA = b2ContactSolver.SolveTOIPositionConstraints_s_rA;
+        const rB = b2ContactSolver.SolveTOIPositionConstraints_s_rB;
+        const P = b2ContactSolver.SolveTOIPositionConstraints_s_P;
 
         let minSeparation = 0;
 
         for (let i = 0; i < this.m_count; ++i) {
-            const pc: b2ContactPositionConstraint = this.m_positionConstraints[i];
+            const pc = this.m_positionConstraints[i];
 
             const { indexA, indexB, localCenterA, localCenterB, pointCount } = pc;
 
@@ -981,11 +978,11 @@ export class b2ContactSolver {
                 iB = pc.invIB;
             }
 
-            const cA: b2Vec2 = this.m_positions[indexA].c;
-            let aA: number = this.m_positions[indexA].a;
+            const cA = this.m_positions[indexA].c;
+            let aA = this.m_positions[indexA].a;
 
-            const cB: b2Vec2 = this.m_positions[indexB].c;
-            let aB: number = this.m_positions[indexB].a;
+            const cB = this.m_positions[indexB].c;
+            let aB = this.m_positions[indexB].a;
 
             // Solve normal constraints
             for (let j = 0; j < pointCount; ++j) {
@@ -1004,15 +1001,15 @@ export class b2ContactSolver {
                 minSeparation = Math.min(minSeparation, separation);
 
                 // Prevent large corrections and allow slop.
-                const C: number = b2Clamp(b2_toiBaumgarte * (separation + b2_linearSlop), -b2_maxLinearCorrection, 0);
+                const C = b2Clamp(b2_toiBaumgarte * (separation + b2_linearSlop), -b2_maxLinearCorrection, 0);
 
                 // Compute the effective mass.
-                const rnA: number = b2Vec2.Cross(rA, normal);
-                const rnB: number = b2Vec2.Cross(rB, normal);
-                const K: number = mA + mB + iA * rnA * rnA + iB * rnB * rnB;
+                const rnA = b2Vec2.Cross(rA, normal);
+                const rnB = b2Vec2.Cross(rB, normal);
+                const K = mA + mB + iA * rnA * rnA + iB * rnB * rnB;
 
                 // Compute normal impulse
-                const impulse: number = K > 0 ? -C / K : 0;
+                const impulse = K > 0 ? -C / K : 0;
 
                 b2Vec2.Scale(impulse, normal, P);
 

@@ -16,7 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import { b2World, b2Body, b2_augment } from "@box2d/core";
+import { b2World, b2_augment } from "@box2d/core";
 
 import { b2ControllerEdge, b2Controller } from "../controller/b2_controller";
 
@@ -73,7 +73,7 @@ Object.assign(b2World.prototype, {
 
 b2_augment(b2World.prototype, {
     CreateBody(this: b2World, original, def = {}) {
-        const body: b2Body = original(def);
+        const body = original(def);
         body.m_controllerList = null;
         body.m_controllerCount = 0;
         return body;
@@ -81,7 +81,7 @@ b2_augment(b2World.prototype, {
     DestroyBody(this: b2World, original, body) {
         let coe: b2ControllerEdge | null = body.m_controllerList;
         while (coe) {
-            const coe0: b2ControllerEdge = coe;
+            const coe0 = coe;
             coe = coe.nextController;
             coe0.controller.RemoveBody(body);
         }

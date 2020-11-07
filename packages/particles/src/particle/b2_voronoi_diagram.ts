@@ -217,7 +217,7 @@ export class b2VoronoiDiagram {
 export type b2VoronoiDiagram_NodeCallback = (a: number, b: number, c: number) => void;
 
 export class b2VoronoiDiagram_Generator {
-    public center: b2Vec2 = new b2Vec2();
+    public center = new b2Vec2();
 
     public tag = 0;
 

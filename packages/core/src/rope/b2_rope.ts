@@ -216,9 +216,9 @@ export class b2Rope {
         this.m_stretchCount = this.m_count - 1;
         this.m_bendCount = this.m_count - 2;
 
-        this.m_stretchConstraints = new Array(this.m_stretchCount);
+        this.m_stretchConstraints = new Array<b2RopeStretch>(this.m_stretchCount);
         for (let i = 0; i < this.m_stretchCount; i++) this.m_stretchConstraints[i] = new b2RopeStretch();
-        this.m_bendConstraints = new Array(this.m_bendCount);
+        this.m_bendConstraints = new Array<b2RopeBend>(this.m_bendCount);
         for (let i = 0; i < this.m_bendCount; i++) this.m_bendConstraints[i] = new b2RopeBend();
 
         for (let i = 0; i < this.m_stretchCount; ++i) {

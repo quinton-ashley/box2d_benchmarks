@@ -83,11 +83,11 @@ export class ContactPoint {
 
     public fixtureB!: b2Fixture;
 
-    public readonly normal: b2Vec2 = new b2Vec2();
+    public readonly normal = new b2Vec2();
 
-    public readonly position: b2Vec2 = new b2Vec2();
+    public readonly position = new b2Vec2();
 
-    public state: b2PointState = b2PointState.b2_nullState;
+    public state = b2PointState.b2_nullState;
 
     public normalImpulse = 0;
 
@@ -104,7 +104,7 @@ export class Test extends b2ContactListener {
 
     public static readonly particleParameter = new ParticleParameter();
 
-    public static readonly k_maxContactPoints: number = 2048;
+    public static readonly k_maxContactPoints = 2048;
 
     public m_world: b2World;
 
@@ -120,32 +120,29 @@ export class Test extends b2ContactListener {
 
     public m_mouseJoint: b2MouseJoint | null = null;
 
-    public readonly m_points: ContactPoint[] = Array.from(
-        { length: Test.k_maxContactPoints },
-        () => new ContactPoint(),
-    );
+    public readonly m_points = Array.from({ length: Test.k_maxContactPoints }, () => new ContactPoint());
 
     public m_pointCount = 0;
 
     public m_destructionListener: DestructionListener;
 
-    public readonly m_bombSpawnPoint: b2Vec2 = new b2Vec2();
+    public readonly m_bombSpawnPoint = new b2Vec2();
 
     public m_bombSpawning = false;
 
-    public readonly m_mouseWorld: b2Vec2 = new b2Vec2();
+    public readonly m_mouseWorld = new b2Vec2();
 
     public m_mouseTracing = false;
 
-    public readonly m_mouseTracerPosition: b2Vec2 = new b2Vec2();
+    public readonly m_mouseTracerPosition = new b2Vec2();
 
-    public readonly m_mouseTracerVelocity: b2Vec2 = new b2Vec2();
+    public readonly m_mouseTracerVelocity = new b2Vec2();
 
     public m_stepCount = 0;
 
-    public readonly m_maxProfile: b2Profile = new b2Profile();
+    public readonly m_maxProfile = new b2Profile();
 
-    public readonly m_totalProfile: b2Profile = new b2Profile();
+    public readonly m_totalProfile = new b2Profile();
 
     public m_groundBody: b2Body;
 
@@ -200,10 +197,10 @@ export class Test extends b2ContactListener {
         /* b2_maxManifoldPoints */
     ];
 
-    private static PreSolve_s_worldManifold: b2WorldManifold = new b2WorldManifold();
+    private static PreSolve_s_worldManifold = new b2WorldManifold();
 
     public PreSolve(contact: b2Contact, oldManifold: b2Manifold): void {
-        const manifold: b2Manifold = contact.GetManifold();
+        const manifold = contact.GetManifold();
 
         if (manifold.pointCount === 0) {
             return;
@@ -212,15 +209,15 @@ export class Test extends b2ContactListener {
         const fixtureA: b2Fixture | null = contact.GetFixtureA();
         const fixtureB: b2Fixture | null = contact.GetFixtureB();
 
-        const state1: b2PointState[] = Test.PreSolve_s_state1;
-        const state2: b2PointState[] = Test.PreSolve_s_state2;
+        const state1 = Test.PreSolve_s_state1;
+        const state2 = Test.PreSolve_s_state2;
         b2GetPointStates(state1, state2, oldManifold, manifold);
 
-        const worldManifold: b2WorldManifold = Test.PreSolve_s_worldManifold;
+        const worldManifold = Test.PreSolve_s_worldManifold;
         contact.GetWorldManifold(worldManifold);
 
         for (let i = 0; i < manifold.pointCount && this.m_pointCount < Test.k_maxContactPoints; ++i) {
-            const cp: ContactPoint = this.m_points[this.m_pointCount];
+            const cp = this.m_points[this.m_pointCount];
             cp.fixtureA = fixtureA;
             cp.fixtureB = fixtureB;
             cp.position.Copy(worldManifold.points[i]);
@@ -247,7 +244,7 @@ export class Test extends b2ContactListener {
             this.m_mouseJoint = null;
         }
 
-        let hit_fixture: b2Fixture | null | any = null; // HACK: tsc doesn't detect calling callbacks
+        let hit_fixture: b2Fixture | undefined;
 
         // Query the world for overlapping shapes.
         this.m_world.QueryPointAABB(p, (fixture) => {
@@ -267,7 +264,7 @@ export class Test extends b2ContactListener {
             const dampingRatio = 0.7;
 
             const body = hit_fixture.GetBody();
-            const md: b2MouseJointDef = new b2MouseJointDef();
+            const md = new b2MouseJointDef();
             md.bodyA = this.m_groundBody;
             md.bodyB = body;
             md.target.Copy(p);
@@ -290,7 +287,7 @@ export class Test extends b2ContactListener {
         }
 
         const multiplier = 30;
-        const vel: b2Vec2 = b2Vec2.Subtract(this.m_bombSpawnPoint, p, new b2Vec2());
+        const vel = b2Vec2.Subtract(this.m_bombSpawnPoint, p, new b2Vec2());
         vel.Scale(multiplier);
         this.LaunchBombAt(this.m_bombSpawnPoint, vel);
         this.m_bombSpawning = false;
@@ -328,8 +325,8 @@ export class Test extends b2ContactListener {
     }
 
     public LaunchBomb(): void {
-        const p: b2Vec2 = new b2Vec2(b2RandomRange(-15, 15), 30);
-        const v: b2Vec2 = b2Vec2.Scale(-5, p, new b2Vec2());
+        const p = new b2Vec2(b2RandomRange(-15, 15), 30);
+        const v = b2Vec2.Scale(-5, p, new b2Vec2());
         this.LaunchBombAt(p, v);
     }
 
@@ -346,7 +343,7 @@ export class Test extends b2ContactListener {
         });
         this.m_bomb.SetLinearVelocity(velocity);
 
-        const circle: b2CircleShape = new b2CircleShape();
+        const circle = new b2CircleShape();
         circle.m_radius = 25 / this.GetDefaultViewZoom();
 
         // b2Vec2 minV = position - b2Vec2(0.3f,0.3f);
@@ -476,9 +473,9 @@ export class Test extends b2ContactListener {
         if (settings.m_drawProfile) {
             const p = this.m_world.GetProfile();
 
-            const aveProfile: b2Profile = new b2Profile();
+            const aveProfile = new b2Profile();
             if (this.m_stepCount > 0) {
-                const scale: number = 1 / this.m_stepCount;
+                const scale = 1 / this.m_stepCount;
                 aveProfile.step = scale * this.m_totalProfile.step;
                 aveProfile.collide = scale * this.m_totalProfile.collide;
                 aveProfile.solve = scale * this.m_totalProfile.solve;
@@ -550,7 +547,7 @@ export class Test extends b2ContactListener {
         }
 
         if (this.m_bombSpawning) {
-            const c: b2Color = new b2Color(0, 0, 1);
+            const c = new b2Color(0, 0, 1);
             g_debugDraw.DrawPoint(this.m_bombSpawnPoint, 4, c);
 
             c.SetRGB(0.8, 0.8, 0.8);
@@ -574,32 +571,18 @@ export class Test extends b2ContactListener {
 
                 if (settings.m_drawContactNormals) {
                     const p1 = point.position;
-                    const p2: b2Vec2 = b2Vec2.Add(
-                        p1,
-                        b2Vec2.Scale(k_axisScale, point.normal, b2Vec2.s_t0),
-                        new b2Vec2(),
-                    );
+                    const p2 = b2Vec2.Add(p1, b2Vec2.Scale(k_axisScale, point.normal, b2Vec2.s_t0), new b2Vec2());
                     g_debugDraw.DrawSegment(p1, p2, new b2Color(0.9, 0.9, 0.9));
                 } else if (settings.m_drawContactImpulse) {
                     const p1 = point.position;
-                    const p2: b2Vec2 = b2Vec2.AddScaled(
-                        p1,
-                        k_impulseScale * point.normalImpulse,
-                        point.normal,
-                        new b2Vec2(),
-                    );
+                    const p2 = b2Vec2.AddScaled(p1, k_impulseScale * point.normalImpulse, point.normal, new b2Vec2());
                     g_debugDraw.DrawSegment(p1, p2, new b2Color(0.9, 0.9, 0.3));
                 }
 
                 if (settings.m_drawFrictionImpulse) {
-                    const tangent: b2Vec2 = b2Vec2.CrossVec2One(point.normal, new b2Vec2());
+                    const tangent = b2Vec2.CrossVec2One(point.normal, new b2Vec2());
                     const p1 = point.position;
-                    const p2: b2Vec2 = b2Vec2.AddScaled(
-                        p1,
-                        k_impulseScale * point.tangentImpulse,
-                        tangent,
-                        new b2Vec2(),
-                    );
+                    const p2 = b2Vec2.AddScaled(p1, k_impulseScale * point.tangentImpulse, tangent, new b2Vec2());
                     g_debugDraw.DrawSegment(p1, p2, new b2Color(0.9, 0.9, 0.3));
                 }
             }
@@ -614,7 +597,7 @@ export class Test extends b2ContactListener {
         return b2Vec2.ZERO;
     }
 
-    public static readonly k_ParticleColors: b2Color[] = [
+    public static readonly k_ParticleColors = [
         new b2Color().SetByteRGBA(0xff, 0x00, 0x00, 0xff), // red
         new b2Color().SetByteRGBA(0x00, 0xff, 0x00, 0xff), // green
         new b2Color().SetByteRGBA(0x00, 0x00, 0xff, 0xff), // blue
@@ -727,7 +710,7 @@ export class Test extends b2ContactListener {
      */
     public static SetParticleParameters(
         particleParameterDef: ParticleParameterDefinition[],
-        particleParameterDefCount: number = particleParameterDef.length,
+        particleParameterDefCount = particleParameterDef.length,
     ) {
         Test.particleParameter.SetDefinition(particleParameterDef, particleParameterDefCount);
     }

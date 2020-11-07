@@ -78,7 +78,7 @@ export class ParticleParameterDefinition {
     /**
      * Particle parameter definition.
      */
-    constructor(values: ParticleParameterValue[], numValues: number = values.length) {
+    constructor(values: ParticleParameterValue[], numValues = values.length) {
         this.values = values;
         this.numValues = numValues;
     }
@@ -100,7 +100,7 @@ export class ParticleParameter {
     public static readonly k_DefaultOptions: ParticleParameterOptions =
         ParticleParameterOptions.OptionDrawShapes | ParticleParameterOptions.OptionDrawParticles;
 
-    public static readonly k_particleTypes: ParticleParameterValue[] = [
+    public static readonly k_particleTypes = [
         new ParticleParameterValue(b2ParticleFlag.b2_waterParticle, ParticleParameter.k_DefaultOptions, "water"),
         new ParticleParameterValue(
             b2ParticleFlag.b2_waterParticle,
@@ -135,9 +135,7 @@ export class ParticleParameter {
         ),
     ];
 
-    public static readonly k_defaultDefinition: ParticleParameterDefinition[] = [
-        new ParticleParameterDefinition(ParticleParameter.k_particleTypes),
-    ];
+    public static readonly k_defaultDefinition = [new ParticleParameterDefinition(ParticleParameter.k_particleTypes)];
 
     public m_index = 0;
 
@@ -147,7 +145,7 @@ export class ParticleParameter {
 
     public m_value: ParticleParameterValue | null = null;
 
-    public m_definition: ParticleParameterDefinition[] = ParticleParameter.k_defaultDefinition;
+    public m_definition = ParticleParameter.k_defaultDefinition;
 
     public m_definitionCount = 0;
 
@@ -164,7 +162,7 @@ export class ParticleParameter {
         this.Set(0);
     }
 
-    public SetDefinition(definition: ParticleParameterDefinition[], definitionCount: number = definition.length): void {
+    public SetDefinition(definition: ParticleParameterDefinition[], definitionCount = definition.length): void {
         this.m_definition = definition;
         this.m_definitionCount = definitionCount;
         this.m_valueCount = 0;

@@ -58,7 +58,7 @@ export class Car extends Test {
         {
             ground = this.m_world.CreateBody();
 
-            const shape: b2EdgeShape = new b2EdgeShape();
+            const shape = new b2EdgeShape();
 
             const fd: b2FixtureDef = {
                 shape,
@@ -69,14 +69,14 @@ export class Car extends Test {
             shape.SetTwoSided(new b2Vec2(-20.0, 0.0), new b2Vec2(20.0, 0.0));
             ground.CreateFixture(fd);
 
-            const hs: number[] = [0.25, 1.0, 4.0, 0.0, 0.0, -1.0, -2.0, -2.0, -1.25, 0.0];
+            const hs = [0.25, 1.0, 4.0, 0.0, 0.0, -1.0, -2.0, -2.0, -1.25, 0.0];
 
             let x = 20.0;
             let y1 = 0.0;
             const dx = 5.0;
 
             for (let i = 0; i < 10; ++i) {
-                const y2: number = hs[i];
+                const y2 = hs[i];
                 shape.SetTwoSided(new b2Vec2(x, y1), new b2Vec2(x + dx, y2));
                 ground.CreateFixture(fd);
                 y1 = y2;
@@ -84,7 +84,7 @@ export class Car extends Test {
             }
 
             for (let i = 0; i < 10; ++i) {
-                const y2: number = hs[i];
+                const y2 = hs[i];
                 shape.SetTwoSided(new b2Vec2(x, y1), new b2Vec2(x + dx, y2));
                 ground.CreateFixture(fd);
                 y1 = y2;
@@ -113,16 +113,16 @@ export class Car extends Test {
 
         // Teeter
         {
-            const body: b2Body = this.m_world.CreateBody({
+            const body = this.m_world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
                 position: { x: 140.0, y: 1.0 },
             });
 
-            const box: b2PolygonShape = new b2PolygonShape();
+            const box = new b2PolygonShape();
             box.SetAsBox(10.0, 0.25);
             body.CreateFixture(box, 1.0);
 
-            const jd: b2RevoluteJointDef = new b2RevoluteJointDef();
+            const jd = new b2RevoluteJointDef();
             jd.Initialize(ground, body, body.GetPosition());
             jd.lowerAngle = (-8.0 * Math.PI) / 180.0;
             jd.upperAngle = (8.0 * Math.PI) / 180.0;
@@ -135,7 +135,7 @@ export class Car extends Test {
         // Bridge
         {
             const N = 20;
-            const shape: b2PolygonShape = new b2PolygonShape();
+            const shape = new b2PolygonShape();
             shape.SetAsBox(1.0, 0.125);
 
             const fd: b2FixtureDef = {
@@ -143,31 +143,31 @@ export class Car extends Test {
                 density: 1.0,
                 friction: 0.6,
             };
-            const jd: b2RevoluteJointDef = new b2RevoluteJointDef();
+            const jd = new b2RevoluteJointDef();
 
-            let prevBody: b2Body = ground;
+            let prevBody = ground;
             for (let i = 0; i < N; ++i) {
-                const body: b2Body = this.m_world.CreateBody({
+                const body = this.m_world.CreateBody({
                     type: b2BodyType.b2_dynamicBody,
                     position: { x: 161.0 + 2.0 * i, y: -0.125 },
                 });
                 body.CreateFixture(fd);
 
-                const anchor: b2Vec2 = new b2Vec2(160.0 + 2.0 * i, -0.125);
+                const anchor = new b2Vec2(160.0 + 2.0 * i, -0.125);
                 jd.Initialize(prevBody, body, anchor);
                 this.m_world.CreateJoint(jd);
 
                 prevBody = body;
             }
 
-            const anchor: b2Vec2 = new b2Vec2(160.0 + 2.0 * N, -0.125);
+            const anchor = new b2Vec2(160.0 + 2.0 * N, -0.125);
             jd.Initialize(prevBody, ground, anchor);
             this.m_world.CreateJoint(jd);
         }
 
         // Boxes
         {
-            const box: b2PolygonShape = new b2PolygonShape();
+            const box = new b2PolygonShape();
             box.SetAsBox(0.5, 0.5);
 
             let body: b2Body;
@@ -200,8 +200,8 @@ export class Car extends Test {
 
         // Car
         {
-            const chassis: b2PolygonShape = new b2PolygonShape();
-            const vertices: b2Vec2[] = b2Vec2.MakeArray(8);
+            const chassis = new b2PolygonShape();
+            const vertices = b2Vec2.MakeArray(8);
             vertices[0].Set(-1.5, -0.5);
             vertices[1].Set(1.5, -0.5);
             vertices[2].Set(1.5, 0.0);
@@ -210,7 +210,7 @@ export class Car extends Test {
             vertices[5].Set(-1.5, 0.2);
             chassis.Set(vertices, 6);
 
-            const circle: b2CircleShape = new b2CircleShape();
+            const circle = new b2CircleShape();
             circle.m_radius = 0.4;
 
             const position = new b2Vec2();
@@ -233,15 +233,15 @@ export class Car extends Test {
             this.m_wheel2 = this.m_world.CreateBody(bd);
             this.m_wheel2.CreateFixture(fd);
 
-            const jd: b2WheelJointDef = new b2WheelJointDef();
-            const axis: b2Vec2 = new b2Vec2(0.0, 1.0);
+            const jd = new b2WheelJointDef();
+            const axis = new b2Vec2(0.0, 1.0);
 
-            const mass1: number = this.m_wheel1.GetMass();
-            const mass2: number = this.m_wheel2.GetMass();
+            const mass1 = this.m_wheel1.GetMass();
+            const mass2 = this.m_wheel2.GetMass();
 
             const hertz = 4.0;
             const dampingRatio = 0.7;
-            const omega: number = 2.0 * Math.PI * hertz;
+            const omega = 2.0 * Math.PI * hertz;
 
             jd.Initialize(this.m_car, this.m_wheel1, this.m_wheel1.GetPosition(), axis);
             jd.motorSpeed = 0.0;

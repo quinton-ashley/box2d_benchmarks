@@ -84,9 +84,9 @@ export class b2GearJoint extends b2Joint {
 
     public m_joint2: b2RevoluteJoint | b2PrismaticJoint;
 
-    public m_typeA: b2JointType = b2JointType.e_unknownJoint;
+    public m_typeA = b2JointType.e_unknownJoint;
 
-    public m_typeB: b2JointType = b2JointType.e_unknownJoint;
+    public m_typeB = b2JointType.e_unknownJoint;
 
     // Body A is connected to body C
     // Body B is connected to body D
@@ -95,17 +95,17 @@ export class b2GearJoint extends b2Joint {
     public m_bodyD: b2Body;
 
     // Solver shared
-    public readonly m_localAnchorA: b2Vec2 = new b2Vec2();
+    public readonly m_localAnchorA = new b2Vec2();
 
-    public readonly m_localAnchorB: b2Vec2 = new b2Vec2();
+    public readonly m_localAnchorB = new b2Vec2();
 
-    public readonly m_localAnchorC: b2Vec2 = new b2Vec2();
+    public readonly m_localAnchorC = new b2Vec2();
 
-    public readonly m_localAnchorD: b2Vec2 = new b2Vec2();
+    public readonly m_localAnchorD = new b2Vec2();
 
-    public readonly m_localAxisC: b2Vec2 = new b2Vec2();
+    public readonly m_localAxisC = new b2Vec2();
 
-    public readonly m_localAxisD: b2Vec2 = new b2Vec2();
+    public readonly m_localAxisD = new b2Vec2();
 
     public m_referenceAngleA = 0;
 
@@ -126,13 +126,13 @@ export class b2GearJoint extends b2Joint {
 
     public m_indexD = 0;
 
-    public readonly m_lcA: b2Vec2 = new b2Vec2();
+    public readonly m_lcA = new b2Vec2();
 
-    public readonly m_lcB: b2Vec2 = new b2Vec2();
+    public readonly m_lcB = new b2Vec2();
 
-    public readonly m_lcC: b2Vec2 = new b2Vec2();
+    public readonly m_lcC = new b2Vec2();
 
-    public readonly m_lcD: b2Vec2 = new b2Vec2();
+    public readonly m_lcD = new b2Vec2();
 
     public m_mA = 0;
 
@@ -150,9 +150,9 @@ export class b2GearJoint extends b2Joint {
 
     public m_iD = 0;
 
-    public readonly m_JvAC: b2Vec2 = new b2Vec2();
+    public readonly m_JvAC = new b2Vec2();
 
-    public readonly m_JvBD: b2Vec2 = new b2Vec2();
+    public readonly m_JvBD = new b2Vec2();
 
     public m_JwA = 0;
 

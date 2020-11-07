@@ -24,7 +24,7 @@ function hotKeyToText(hotKey: HotKey) {
 export class TestManager {
     public m_fpsCalculator = new FpsCalculator(200, 200, 16);
 
-    public readonly m_settings: Settings = new Settings();
+    public readonly m_settings = new Settings();
 
     public m_test: Test | null = null;
 
@@ -32,7 +32,7 @@ export class TestManager {
 
     public m_rMouseDown = false;
 
-    public m_max_demo_time: number = 1000 * 10;
+    public m_max_demo_time = 1000 * 10;
 
     public m_ctx: CanvasRenderingContext2D | null = null;
 
@@ -168,8 +168,8 @@ export class TestManager {
     }
 
     public HandleMouseMove(e: MouseEvent): void {
-        const element: b2Vec2 = new b2Vec2(e.offsetX, e.offsetY);
-        const world: b2Vec2 = g_camera.unproject(element, new b2Vec2());
+        const element = new b2Vec2(e.offsetX, e.offsetY);
+        const world = g_camera.unproject(element, new b2Vec2());
 
         this.m_mouse.Copy(element);
 
@@ -183,8 +183,8 @@ export class TestManager {
     }
 
     public HandleMouseDown(e: MouseEvent): void {
-        const element: b2Vec2 = new b2Vec2(e.offsetX, e.offsetY);
-        const world: b2Vec2 = g_camera.unproject(element, new b2Vec2());
+        const element = new b2Vec2(e.offsetX, e.offsetY);
+        const world = g_camera.unproject(element, new b2Vec2());
 
         switch (e.button) {
             case 0: // left mouse button
@@ -202,8 +202,8 @@ export class TestManager {
     }
 
     public HandleMouseUp(e: MouseEvent): void {
-        const element: b2Vec2 = new b2Vec2(e.offsetX, e.offsetY);
-        const world: b2Vec2 = g_camera.unproject(element, new b2Vec2());
+        const element = new b2Vec2(e.offsetX, e.offsetY);
+        const world = g_camera.unproject(element, new b2Vec2());
 
         switch (e.button) {
             case 0: // left mouse button

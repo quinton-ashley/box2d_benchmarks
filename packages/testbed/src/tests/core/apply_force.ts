@@ -122,13 +122,13 @@ export class ApplyForce extends Test {
             });
 
             const gravity = 10.0;
-            const I: number = this.m_body.GetInertia();
-            const mass: number = this.m_body.GetMass();
+            const I = this.m_body.GetInertia();
+            const mass = this.m_body.GetMass();
 
             // Compute an effective radius that can be used to
             // set the max torque for a friction joint
-            // For a circle: I = 0.5 * m * r * r ==> r = sqrt(2 * I / m)
-            const radius: number = Math.sqrt((2.0 * I) / mass);
+            // For a circle = 0.5 * m * r * r ==> r = sqrt(2 * I / m)
+            const radius = Math.sqrt((2.0 * I) / mass);
 
             // b2FrictionJointDef jd;
             const jd = new b2FrictionJointDef();

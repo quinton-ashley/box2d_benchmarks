@@ -111,7 +111,7 @@ function ComputeCentroid(vs: b2Vec2[], count: number, out: b2Vec2): b2Vec2 {
 /// the left of each edge.
 /// In most cases you should not need many vertices for a convex polygon.
 export class b2PolygonShape extends b2Shape {
-    public readonly m_centroid: b2Vec2 = new b2Vec2(0, 0);
+    public readonly m_centroid = new b2Vec2(0, 0);
 
     public m_vertices: b2Vec2[] = [];
 
@@ -343,11 +343,8 @@ export class b2PolygonShape extends b2Shape {
             // p = p1 + a * d
             // dot(normal, p - v) = 0
             // dot(normal, p1 - v) + a * dot(normal, d) = 0
-            const numerator: number = b2Vec2.Dot(
-                this.m_normals[i],
-                b2Vec2.Subtract(this.m_vertices[i], p1, b2Vec2.s_t0),
-            );
-            const denominator: number = b2Vec2.Dot(this.m_normals[i], d);
+            const numerator = b2Vec2.Dot(this.m_normals[i], b2Vec2.Subtract(this.m_vertices[i], p1, b2Vec2.s_t0));
+            const denominator = b2Vec2.Dot(this.m_normals[i], d);
 
             if (denominator === 0) {
                 if (numerator < 0) {
@@ -449,7 +446,7 @@ export class b2PolygonShape extends b2Shape {
 
             const D = b2Vec2.Cross(e1, e2);
 
-            const triangleArea: number = 0.5 * D;
+            const triangleArea = 0.5 * D;
             area += triangleArea;
 
             // Area weighted centroid

@@ -50,8 +50,8 @@ export class EdgeShapes extends Test {
         super();
 
         this.m_bodyIndex = 0;
-        this.m_bodies = new Array(EdgeShapes.e_maxBodies);
-        this.m_polygons = new Array(4);
+        this.m_bodies = new Array<b2Body>(EdgeShapes.e_maxBodies);
+        this.m_polygons = new Array<b2PolygonShape>(4);
         for (let i = 0; i < 4; ++i) {
             this.m_polygons[i] = new b2PolygonShape();
         }

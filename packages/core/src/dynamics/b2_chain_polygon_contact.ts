@@ -28,7 +28,7 @@ export class b2ChainAndPolygonContact extends b2Contact<b2ChainShape, b2PolygonS
     private static Evaluate_s_edge = new b2EdgeShape();
 
     public Evaluate(manifold: b2Manifold, xfA: b2Transform, xfB: b2Transform): void {
-        const edge: b2EdgeShape = b2ChainAndPolygonContact.Evaluate_s_edge;
+        const edge = b2ChainAndPolygonContact.Evaluate_s_edge;
         this.GetShapeA().GetChildEdge(edge, this.m_indexA);
         b2CollideEdgeAndPolygon(manifold, edge, xfA, this.GetShapeB(), xfB);
     }

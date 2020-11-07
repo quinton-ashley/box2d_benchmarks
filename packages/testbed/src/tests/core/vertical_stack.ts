@@ -36,8 +36,8 @@ export class VerticalStack extends Test {
     constructor() {
         super();
 
-        this.m_bodies = new Array(VerticalStack.e_rowCount * VerticalStack.e_columnCount);
-        this.m_indices = new Array(VerticalStack.e_rowCount * VerticalStack.e_columnCount);
+        this.m_bodies = new Array<b2Body>(VerticalStack.e_rowCount * VerticalStack.e_columnCount);
+        this.m_indices = new Array<number>(VerticalStack.e_rowCount * VerticalStack.e_columnCount);
 
         {
             const ground = this.m_world.CreateBody();

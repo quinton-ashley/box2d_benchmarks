@@ -18,13 +18,7 @@
 
 import { b2Assert, b2_linearSlop } from "../common/b2_common";
 import { b2Transform, b2Sweep } from "../common/b2_math";
-import {
-    b2Manifold,
-    b2WorldManifold,
-    b2ManifoldPoint,
-    b2ContactID,
-    b2TestOverlapShape,
-} from "../collision/b2_collision";
+import { b2Manifold, b2WorldManifold, b2TestOverlapShape } from "../collision/b2_collision";
 import { b2TimeOfImpact, b2TOIInput, b2TOIOutput } from "../collision/b2_time_of_impact";
 import { b2Body } from "./b2_body";
 import { b2Fixture } from "./b2_fixture";
@@ -112,7 +106,7 @@ export abstract class b2Contact<A extends b2Shape = b2Shape, B extends b2Shape =
 
     public m_indexB = 0;
 
-    public m_manifold: b2Manifold = new b2Manifold(); // TODO: readonly
+    public m_manifold = new b2Manifold(); // TODO: readonly
 
     public m_toiCount = 0;
 
@@ -126,17 +120,17 @@ export abstract class b2Contact<A extends b2Shape = b2Shape, B extends b2Shape =
 
     public m_tangentSpeed = 0;
 
-    public m_oldManifold: b2Manifold = new b2Manifold(); // TODO: readonly
+    public m_oldManifold = new b2Manifold(); // TODO: readonly
 
     public GetManifold() {
         return this.m_manifold;
     }
 
     public GetWorldManifold(worldManifold: b2WorldManifold): void {
-        const bodyA: b2Body = this.m_fixtureA.GetBody();
-        const bodyB: b2Body = this.m_fixtureB.GetBody();
-        const shapeA: A = this.GetShapeA();
-        const shapeB: B = this.GetShapeB();
+        const bodyA = this.m_fixtureA.GetBody();
+        const bodyB = this.m_fixtureB.GetBody();
+        const shapeA = this.GetShapeA();
+        const shapeB = this.GetShapeB();
         worldManifold.Initialize(
             this.m_manifold,
             bodyA.GetTransform(),
@@ -276,7 +270,7 @@ export abstract class b2Contact<A extends b2Shape = b2Shape, B extends b2Shape =
     }
 
     public Update(listener: b2ContactListener): void {
-        const tManifold: b2Manifold = this.m_oldManifold;
+        const tManifold = this.m_oldManifold;
         this.m_oldManifold = this.m_manifold;
         this.m_manifold = tManifold;
 
@@ -284,21 +278,21 @@ export abstract class b2Contact<A extends b2Shape = b2Shape, B extends b2Shape =
         this.m_enabledFlag = true;
 
         let touching = false;
-        const wasTouching: boolean = this.m_touchingFlag;
+        const wasTouching = this.m_touchingFlag;
 
-        const sensorA: boolean = this.m_fixtureA.IsSensor();
-        const sensorB: boolean = this.m_fixtureB.IsSensor();
-        const sensor: boolean = sensorA || sensorB;
+        const sensorA = this.m_fixtureA.IsSensor();
+        const sensorB = this.m_fixtureB.IsSensor();
+        const sensor = sensorA || sensorB;
 
-        const bodyA: b2Body = this.m_fixtureA.GetBody();
-        const bodyB: b2Body = this.m_fixtureB.GetBody();
-        const xfA: b2Transform = bodyA.GetTransform();
-        const xfB: b2Transform = bodyB.GetTransform();
+        const bodyA = this.m_fixtureA.GetBody();
+        const bodyB = this.m_fixtureB.GetBody();
+        const xfA = bodyA.GetTransform();
+        const xfB = bodyB.GetTransform();
 
         // Is this contact a sensor?
         if (sensor) {
-            const shapeA: A = this.GetShapeA();
-            const shapeB: B = this.GetShapeB();
+            const shapeA = this.GetShapeA();
+            const shapeB = this.GetShapeB();
             touching = b2TestOverlapShape(shapeA, this.m_indexA, shapeB, this.m_indexB, xfA, xfB);
 
             // Sensors don't generate manifolds.
@@ -310,13 +304,13 @@ export abstract class b2Contact<A extends b2Shape = b2Shape, B extends b2Shape =
             // Match old contact ids to new contact ids and copy the
             // stored impulses to warm start the solver.
             for (let i = 0; i < this.m_manifold.pointCount; ++i) {
-                const mp2: b2ManifoldPoint = this.m_manifold.points[i];
+                const mp2 = this.m_manifold.points[i];
                 mp2.normalImpulse = 0;
                 mp2.tangentImpulse = 0;
-                const id2: b2ContactID = mp2.id;
+                const id2 = mp2.id;
 
                 for (let j = 0; j < this.m_oldManifold.pointCount; ++j) {
-                    const mp1: b2ManifoldPoint = this.m_oldManifold.points[j];
+                    const mp1 = this.m_oldManifold.points[j];
 
                     if (mp1.id.key === id2.key) {
                         mp2.normalImpulse = mp1.normalImpulse;
@@ -352,14 +346,14 @@ export abstract class b2Contact<A extends b2Shape = b2Shape, B extends b2Shape =
     private static ComputeTOI_s_output = new b2TOIOutput();
 
     public ComputeTOI(sweepA: b2Sweep, sweepB: b2Sweep): number {
-        const input: b2TOIInput = b2Contact.ComputeTOI_s_input;
+        const input = b2Contact.ComputeTOI_s_input;
         input.proxyA.SetShape(this.GetShapeA(), this.m_indexA);
         input.proxyB.SetShape(this.GetShapeB(), this.m_indexB);
         input.sweepA.Copy(sweepA);
         input.sweepB.Copy(sweepB);
         input.tMax = b2_linearSlop;
 
-        const output: b2TOIOutput = b2Contact.ComputeTOI_s_output;
+        const output = b2Contact.ComputeTOI_s_output;
 
         b2TimeOfImpact(output, input);
 

@@ -20,8 +20,8 @@ function submergedAreaForPolygon(shape: b2Shape, normal: b2Vec2, offset: number,
     const polygon = shape as b2PolygonShape;
 
     // Transform plane into shape co-ordinates
-    const normalL: b2Vec2 = b2Rot.TransposeMultiplyVec2(xf.q, normal, ComputeSubmergedArea_s_normalL);
-    const offsetL: number = offset - b2Vec2.Dot(normal, xf.p);
+    const normalL = b2Rot.TransposeMultiplyVec2(xf.q, normal, ComputeSubmergedArea_s_normalL);
+    const offsetL = offset - b2Vec2.Dot(normal, xf.p);
 
     const depths: number[] = [];
     let diveCount = 0;
@@ -31,7 +31,7 @@ function submergedAreaForPolygon(shape: b2Shape, normal: b2Vec2, offset: number,
     let lastSubmerged = false;
     for (let i = 0; i < polygon.m_count; ++i) {
         depths[i] = b2Vec2.Dot(normalL, polygon.m_vertices[i]) - offsetL;
-        const isSubmerged: boolean = depths[i] < -b2_epsilon;
+        const isSubmerged = depths[i] < -b2_epsilon;
         if (i > 0) {
             if (isSubmerged) {
                 if (!lastSubmerged) {
@@ -49,7 +49,7 @@ function submergedAreaForPolygon(shape: b2Shape, normal: b2Vec2, offset: number,
         case 0:
             if (lastSubmerged) {
                 // Completely submerged
-                const md: b2MassData = ComputeSubmergedArea_s_md;
+                const md = ComputeSubmergedArea_s_md;
                 polygon.ComputeMass(md, 1);
                 b2Transform.MultiplyVec2(xf, md.center, c);
                 return md.mass;
@@ -65,28 +65,28 @@ function submergedAreaForPolygon(shape: b2Shape, normal: b2Vec2, offset: number,
             }
             break;
     }
-    const intoIndex2: number = (intoIndex + 1) % polygon.m_count;
-    const outoIndex2: number = (outoIndex + 1) % polygon.m_count;
-    const intoLamdda: number = (0 - depths[intoIndex]) / (depths[intoIndex2] - depths[intoIndex]);
-    const outoLamdda: number = (0 - depths[outoIndex]) / (depths[outoIndex2] - depths[outoIndex]);
+    const intoIndex2 = (intoIndex + 1) % polygon.m_count;
+    const outoIndex2 = (outoIndex + 1) % polygon.m_count;
+    const intoLamdda = (0 - depths[intoIndex]) / (depths[intoIndex2] - depths[intoIndex]);
+    const outoLamdda = (0 - depths[outoIndex]) / (depths[outoIndex2] - depths[outoIndex]);
 
-    const intoVec: b2Vec2 = ComputeSubmergedArea_s_intoVec.Set(
+    const intoVec = ComputeSubmergedArea_s_intoVec.Set(
         polygon.m_vertices[intoIndex].x * (1 - intoLamdda) + polygon.m_vertices[intoIndex2].x * intoLamdda,
         polygon.m_vertices[intoIndex].y * (1 - intoLamdda) + polygon.m_vertices[intoIndex2].y * intoLamdda,
     );
-    const outoVec: b2Vec2 = ComputeSubmergedArea_s_outoVec.Set(
+    const outoVec = ComputeSubmergedArea_s_outoVec.Set(
         polygon.m_vertices[outoIndex].x * (1 - outoLamdda) + polygon.m_vertices[outoIndex2].x * outoLamdda,
         polygon.m_vertices[outoIndex].y * (1 - outoLamdda) + polygon.m_vertices[outoIndex2].y * outoLamdda,
     );
 
     // Initialize accumulator
     let area = 0;
-    const center: b2Vec2 = ComputeSubmergedArea_s_center.SetZero();
-    let p2: b2Vec2 = polygon.m_vertices[intoIndex2];
+    const center = ComputeSubmergedArea_s_center.SetZero();
+    let p2 = polygon.m_vertices[intoIndex2];
     let p3: b2Vec2;
 
     // An awkward loop from intoIndex2+1 to outIndex2
-    let i: number = intoIndex2;
+    let i = intoIndex2;
     while (i !== outoIndex2) {
         i = (i + 1) % polygon.m_count;
         if (i === outoIndex2) {
@@ -95,8 +95,7 @@ function submergedAreaForPolygon(shape: b2Shape, normal: b2Vec2, offset: number,
             p3 = polygon.m_vertices[i];
         }
 
-        const triangleArea: number =
-            0.5 * ((p2.x - intoVec.x) * (p3.y - intoVec.y) - (p2.y - intoVec.y) * (p3.x - intoVec.x));
+        const triangleArea = 0.5 * ((p2.x - intoVec.x) * (p3.y - intoVec.y) - (p2.y - intoVec.y) * (p3.x - intoVec.x));
         area += triangleArea;
         // Area weighted centroid
         center.x += (triangleArea * (intoVec.x + p2.x + p3.x)) / 3;
@@ -124,8 +123,8 @@ function submergedAreaForChain(shape: b2Shape, _normal: b2Vec2, _offset: number,
 
 function submergedAreaForCircle(shape: b2Shape, normal: b2Vec2, offset: number, xf: b2Transform, c: b2Vec2): number {
     const circle = shape as b2CircleShape;
-    const p: b2Vec2 = b2Transform.MultiplyVec2(xf, circle.m_p, new b2Vec2());
-    const l: number = -(b2Vec2.Dot(normal, p) - offset);
+    const p = b2Transform.MultiplyVec2(xf, circle.m_p, new b2Vec2());
+    const l = -(b2Vec2.Dot(normal, p) - offset);
 
     if (l < -circle.m_radius + b2_epsilon) {
         // Completely dry
@@ -138,10 +137,10 @@ function submergedAreaForCircle(shape: b2Shape, normal: b2Vec2, offset: number, 
     }
 
     // Magic
-    const r2: number = circle.m_radius * circle.m_radius;
-    const l2: number = l * l;
-    const area: number = r2 * (Math.asin(l / circle.m_radius) + Math.PI / 2) + l * Math.sqrt(r2 - l2);
-    const com: number = ((-2 / 3) * (r2 - l2) ** 1.5) / area;
+    const r2 = circle.m_radius * circle.m_radius;
+    const l2 = l * l;
+    const area = r2 * (Math.asin(l / circle.m_radius) + Math.PI / 2) + l * Math.sqrt(r2 - l2);
+    const com = ((-2 / 3) * (r2 - l2) ** 1.5) / area;
 
     c.x = p.x + normal.x * com;
     c.y = p.y + normal.y * com;

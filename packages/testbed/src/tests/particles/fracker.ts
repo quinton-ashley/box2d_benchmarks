@@ -357,7 +357,7 @@ export class Fracker extends Test {
 
     public m_wellBottom = FrackerSettings.k_worldHeightTiles / 8;
 
-    public m_tracker: EmitterTracker = new EmitterTracker();
+    public m_tracker = new EmitterTracker();
 
     public m_allowInput = false;
 
@@ -370,7 +370,7 @@ export class Fracker extends Test {
     /**
      * Set of particle groups the well has influence over.
      */
-    public m_listener: Fracker_DestructionListener = new Fracker_DestructionListener(this.m_world);
+    public m_listener = new Fracker_DestructionListener(this.m_world);
 
     constructor() {
         super();
@@ -942,7 +942,7 @@ export class Fracker extends Test {
     /**
      * Convert a tile position to a point  in world coordinates.
      */
-    public static TileToWorld(x: number, y: number, out: b2Vec2 = new b2Vec2()): b2Vec2 {
+    public static TileToWorld(x: number, y: number, out = new b2Vec2()): b2Vec2 {
         // Scale based upon the tile size and translate relative to the world
         // center.
         const bottomLeft = new b2Vec2();
@@ -965,7 +965,7 @@ export class Fracker extends Test {
     /**
      * Calculate the center of a tile position in world units.
      */
-    public static CenteredPosition(position: b2Vec2, out: b2Vec2 = new b2Vec2()): b2Vec2 {
+    public static CenteredPosition(position: b2Vec2, out = new b2Vec2()): b2Vec2 {
         return out.Set(position.x + FrackerSettings.k_tileHalfWidth, position.y + FrackerSettings.k_tileHalfHeight);
     }
 

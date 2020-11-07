@@ -32,9 +32,9 @@ import { b2EdgeShape } from "./b2_edge_shape";
 export class b2ChainShape extends b2Shape {
     public m_vertices: b2Vec2[] = [];
 
-    public readonly m_prevVertex: b2Vec2 = new b2Vec2();
+    public readonly m_prevVertex = new b2Vec2();
 
-    public readonly m_nextVertex: b2Vec2 = new b2Vec2();
+    public readonly m_nextVertex = new b2Vec2();
 
     constructor() {
         super(b2ShapeType.e_chain, b2_polygonRadius);
@@ -68,7 +68,7 @@ export class b2ChainShape extends b2Shape {
         if (count < 3) {
             return this;
         }
-        // DEBUG: for (let i: number = 1; i < count; ++i) {
+        // DEBUG: for (let i =  1; i < count; ++i) {
         // DEBUG:   const v1 = vertices[start + i - 1];
         // DEBUG:   const v2 = vertices[start + i];
         // DEBUG:   // If the code crashes here, it means your vertices are too close together.
@@ -124,7 +124,7 @@ export class b2ChainShape extends b2Shape {
         nextVertex: Readonly<XY>,
     ): b2ChainShape {
         // DEBUG: b2Assert(count >= 2);
-        // DEBUG: for (let i: number = 1; i < count; ++i) {
+        // DEBUG: for (let i =  1; i < count; ++i) {
         // DEBUG:   const v1 = vertices[start + i - 1];
         // DEBUG:   const v2 = vertices[start + i];
         // DEBUG:   // If the code crashes here, it means your vertices are too close together.
@@ -201,7 +201,7 @@ export class b2ChainShape extends b2Shape {
     public RayCast(output: b2RayCastOutput, input: b2RayCastInput, xf: b2Transform, childIndex: number): boolean {
         // DEBUG: b2Assert(childIndex < this.m_vertices.length);
 
-        const edgeShape: b2EdgeShape = b2ChainShape.RayCast_s_edgeShape;
+        const edgeShape = b2ChainShape.RayCast_s_edgeShape;
 
         edgeShape.m_vertex1.Copy(this.m_vertices[childIndex]);
         edgeShape.m_vertex2.Copy(this.m_vertices[(childIndex + 1) % this.m_vertices.length]);
@@ -221,14 +221,14 @@ export class b2ChainShape extends b2Shape {
     public ComputeAABB(aabb: b2AABB, xf: b2Transform, childIndex: number): void {
         // DEBUG: b2Assert(childIndex < this.m_vertices.length);
 
-        const vertexi1: b2Vec2 = this.m_vertices[childIndex];
-        const vertexi2: b2Vec2 = this.m_vertices[(childIndex + 1) % this.m_vertices.length];
+        const vertexi1 = this.m_vertices[childIndex];
+        const vertexi2 = this.m_vertices[(childIndex + 1) % this.m_vertices.length];
 
-        const v1: b2Vec2 = b2Transform.MultiplyVec2(xf, vertexi1, b2ChainShape.ComputeAABB_s_v1);
-        const v2: b2Vec2 = b2Transform.MultiplyVec2(xf, vertexi2, b2ChainShape.ComputeAABB_s_v2);
+        const v1 = b2Transform.MultiplyVec2(xf, vertexi1, b2ChainShape.ComputeAABB_s_v1);
+        const v2 = b2Transform.MultiplyVec2(xf, vertexi2, b2ChainShape.ComputeAABB_s_v2);
 
-        const lower: b2Vec2 = b2Vec2.Min(v1, v2, b2ChainShape.ComputeAABB_s_lower);
-        const upper: b2Vec2 = b2Vec2.Max(v1, v2, b2ChainShape.ComputeAABB_s_upper);
+        const lower = b2Vec2.Min(v1, v2, b2ChainShape.ComputeAABB_s_lower);
+        const upper = b2Vec2.Max(v1, v2, b2ChainShape.ComputeAABB_s_upper);
 
         aabb.lowerBound.x = lower.x - this.m_radius;
         aabb.lowerBound.y = lower.y - this.m_radius;

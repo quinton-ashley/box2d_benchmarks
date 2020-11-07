@@ -41,9 +41,9 @@ let nextNodeid = 0;
 
 /// A node in the dynamic tree. The client does not interact with this directly.
 export class b2TreeNode<T> {
-    public readonly m_id: number = 0;
+    public readonly m_id: number;
 
-    public readonly aabb: b2AABB = new b2AABB();
+    public readonly aabb = new b2AABB();
 
     public userData: T | null = null;
 
@@ -75,7 +75,7 @@ export class b2TreeNode<T> {
     public GetArea(): number {
         if (this.IsLeaf()) return 0;
 
-        let area: number = this.aabb.GetPerimeter();
+        let area = this.aabb.GetPerimeter();
         if (this.child1) area += this.child1.GetArea();
         if (this.child2) area += this.child2.GetArea();
         return area;
@@ -290,8 +290,8 @@ export class b2DynamicTree<T> {
         fatAABB.upperBound.Set(aabb.upperBound.x + b2_aabbExtension, aabb.upperBound.y + b2_aabbExtension);
 
         // Predict AABB movement
-        const d_x: number = b2_aabbMultiplier * displacement.x;
-        const d_y: number = b2_aabbMultiplier * displacement.y;
+        const d_x = b2_aabbMultiplier * displacement.x;
+        const d_y = b2_aabbMultiplier * displacement.y;
 
         if (d_x < 0.0) {
             fatAABB.lowerBound.x += d_x;
@@ -499,7 +499,7 @@ export class b2DynamicTree<T> {
         const B = b2Verify(A.child1);
         const C = b2Verify(A.child2);
 
-        const balance: number = C.height - B.height;
+        const balance = C.height - B.height;
 
         // Rotate C up
         if (balance > 1) {
@@ -684,7 +684,7 @@ export class b2DynamicTree<T> {
     public Validate(): void {
         // DEBUG: this.ValidateStructure(this.m_root);
         // DEBUG: this.ValidateMetrics(this.m_root);
-        // let freeCount: number = 0;
+        // let freeCount = 0;
         // let freeIndex: b2TreeNode<T> | null = this.m_freeList;
         // while (freeIndex !== null) {
         //   freeIndex = freeIndex.parent; // freeIndex = freeIndex.next;

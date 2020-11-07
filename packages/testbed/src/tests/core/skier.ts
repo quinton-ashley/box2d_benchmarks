@@ -48,16 +48,16 @@ export class Skier extends Test {
         this.m_platform_width = PlatformWidth;
 
         // Horizontal platform
-        const v1: b2Vec2 = new b2Vec2(-PlatformWidth, 0.0);
-        const v2: b2Vec2 = new b2Vec2(0.0, 0.0);
-        const v3: b2Vec2 = new b2Vec2(SlopeLength * Math.cos(Slope1Incline), -SlopeLength * Math.sin(Slope1Incline));
-        const v4: b2Vec2 = new b2Vec2(
+        const v1 = new b2Vec2(-PlatformWidth, 0.0);
+        const v2 = new b2Vec2(0.0, 0.0);
+        const v3 = new b2Vec2(SlopeLength * Math.cos(Slope1Incline), -SlopeLength * Math.sin(Slope1Incline));
+        const v4 = new b2Vec2(
             v3.x + SlopeLength * Math.cos(Slope2Incline),
             v3.y - SlopeLength * Math.sin(Slope2Incline),
         );
-        const v5: b2Vec2 = new b2Vec2(v4.x, v4.y - 1.0);
+        const v5 = new b2Vec2(v4.x, v4.y - 1.0);
 
-        const vertices: b2Vec2[] = [v5, v4, v3, v2, v1];
+        const vertices = [v5, v4, v3, v2, v1];
 
         const shape = new b2ChainShape();
         shape.CreateLoop(vertices);

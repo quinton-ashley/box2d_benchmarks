@@ -69,11 +69,11 @@ export interface XY {
 
 /// A 2D column vector.
 export class b2Vec2 implements XY {
-    public static readonly ZERO: Readonly<b2Vec2> = new b2Vec2(0, 0);
+    public static readonly ZERO: Readonly<XY> = new b2Vec2(0, 0);
 
-    public static readonly UNITX: Readonly<b2Vec2> = new b2Vec2(1, 0);
+    public static readonly UNITX: Readonly<XY> = new b2Vec2(1, 0);
 
-    public static readonly UNITY: Readonly<b2Vec2> = new b2Vec2(0, 1);
+    public static readonly UNITY: Readonly<XY> = new b2Vec2(0, 1);
 
     public static readonly s_t0 = new b2Vec2();
 
@@ -397,7 +397,7 @@ export interface XYZ extends XY {
 
 /// A 2D column vector with 3 elements.
 export class b2Vec3 implements XYZ {
-    public static readonly ZERO: Readonly<b2Vec3> = new b2Vec3(0, 0, 0);
+    public static readonly ZERO: Readonly<XYZ> = new b2Vec3(0, 0, 0);
 
     public static readonly s_t0 = new b2Vec3();
 

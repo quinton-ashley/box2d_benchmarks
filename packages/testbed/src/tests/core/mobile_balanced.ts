@@ -55,7 +55,7 @@ export class MobileBalanced extends Test {
         };
     }
 
-    public AddNode(parent: b2Body, localAnchor: b2Vec2, depth: number, offset: number, a: number): b2Body {
+    public AddNode(parent: b2Body, localAnchor: XY, depth: number, offset: number, a: number): b2Body {
         const /* float32 */ density = 20.0;
         const /* b2Vec2 */ h = new b2Vec2(0.0, a);
 

@@ -32,6 +32,10 @@ import { b2ParticleGroup, b2ParticleSystem, b2ParticleFlag, b2ParticleGroupDef }
 import { Test, RandomFloat } from "../../test";
 import { Settings } from "../../settings";
 
+interface SparkUserData {
+    spark: boolean;
+}
+
 class ParticleVFX {
     private m_initialLifetime = 0.0;
 
@@ -43,7 +47,7 @@ class ParticleVFX {
 
     private m_particleSystem: b2ParticleSystem;
 
-    private m_origColor: b2Color = new b2Color();
+    private m_origColor = new b2Color();
 
     constructor(
         particleSystem: b2ParticleSystem,
@@ -92,8 +96,8 @@ class ParticleVFX {
             if (s === 0) {
                 r = g = b = l; // achromatic
             } else {
-                const q: number = l < 0.5 ? l * (1 + s) : l + s - l * s;
-                const p: number = 2 * l - q;
+                const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+                const p = 2 * l - q;
                 r = hue2rgb(p, q, h + 1 / 3);
                 g = hue2rgb(p, q, h);
                 b = hue2rgb(p, q, h - 1 / 3);
@@ -174,7 +178,7 @@ export class Sparky extends Test {
 
     private m_contact = false;
 
-    private m_contactPoint: b2Vec2 = new b2Vec2();
+    private m_contactPoint = new b2Vec2();
 
     constructor() {
         super();
@@ -211,8 +215,8 @@ export class Sparky extends Test {
     public BeginContact(contact: b2Contact) {
         super.BeginContact(contact);
         // Check to see if these are two circles hitting one another.
-        const userA = contact.GetFixtureA().GetUserData();
-        const userB = contact.GetFixtureB().GetUserData();
+        const userA: SparkUserData = contact.GetFixtureA().GetUserData();
+        const userB: SparkUserData = contact.GetFixtureB().GetUserData();
         if (userA?.spark || userB?.spark) {
             const worldManifold = new b2WorldManifold();
             contact.GetWorldManifold(worldManifold);

@@ -43,17 +43,17 @@ export class Rope extends Test {
 
     public readonly m_rope2: b2Rope;
 
-    public readonly m_tuning1: b2RopeTuning = new b2RopeTuning();
+    public readonly m_tuning1 = new b2RopeTuning();
 
-    public readonly m_tuning2: b2RopeTuning = new b2RopeTuning();
+    public readonly m_tuning2 = new b2RopeTuning();
 
     public m_iterations1 = 0;
 
     public m_iterations2 = 0;
 
-    public readonly m_position1: b2Vec2 = new b2Vec2();
+    public readonly m_position1 = new b2Vec2();
 
-    public readonly m_position2: b2Vec2 = new b2Vec2();
+    public readonly m_position2 = new b2Vec2();
 
     public m_speed = 0.0;
 
@@ -62,9 +62,9 @@ export class Rope extends Test {
         const N = 20;
         const L = 0.5;
         // b2Vec2 vertices[N];
-        const vertices: b2Vec2[] = b2Vec2.MakeArray(N);
+        const vertices = b2Vec2.MakeArray(N);
         // float masses[N];
-        const masses: number[] = b2MakeNumberArray(N);
+        const masses = b2MakeNumberArray(N);
 
         for (let i = 0; i < N; ++i) {
             vertices[i].Set(0.0, L * (N - i));
@@ -289,7 +289,7 @@ export class Rope extends Test {
     }
 
     public Step(settings: Settings, timeStep: number): void {
-        let dt: number = settings.m_hertz > 0.0 ? 1.0 / settings.m_hertz : 0.0;
+        let dt = settings.m_hertz > 0.0 ? 1.0 / settings.m_hertz : 0.0;
 
         if (settings.m_pause === true && settings.m_singleStep === false) {
             dt = 0.0;

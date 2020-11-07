@@ -28,14 +28,14 @@ import { b2MassData, b2Shape, b2ShapeType } from "./b2_shape";
 /// no provide smooth movement across junctions.
 export class b2EdgeShape extends b2Shape {
     /// These are the edge vertices
-    public readonly m_vertex1: b2Vec2 = new b2Vec2();
+    public readonly m_vertex1 = new b2Vec2();
 
-    public readonly m_vertex2: b2Vec2 = new b2Vec2();
+    public readonly m_vertex2 = new b2Vec2();
 
     /// Optional adjacent vertices. These are used for smooth collision.
-    public readonly m_vertex0: b2Vec2 = new b2Vec2();
+    public readonly m_vertex0 = new b2Vec2();
 
-    public readonly m_vertex3: b2Vec2 = new b2Vec2();
+    public readonly m_vertex3 = new b2Vec2();
 
     /// Uses m_vertex0 and m_vertex3 to create smooth collision.
     public m_oneSided = false;
@@ -174,13 +174,13 @@ export class b2EdgeShape extends b2Shape {
     private static ComputeAABB_s_v2 = new b2Vec2();
 
     public ComputeAABB(aabb: b2AABB, xf: b2Transform, _childIndex: number): void {
-        const v1: b2Vec2 = b2Transform.MultiplyVec2(xf, this.m_vertex1, b2EdgeShape.ComputeAABB_s_v1);
-        const v2: b2Vec2 = b2Transform.MultiplyVec2(xf, this.m_vertex2, b2EdgeShape.ComputeAABB_s_v2);
+        const v1 = b2Transform.MultiplyVec2(xf, this.m_vertex1, b2EdgeShape.ComputeAABB_s_v1);
+        const v2 = b2Transform.MultiplyVec2(xf, this.m_vertex2, b2EdgeShape.ComputeAABB_s_v2);
 
         b2Vec2.Min(v1, v2, aabb.lowerBound);
         b2Vec2.Max(v1, v2, aabb.upperBound);
 
-        const r: number = this.m_radius;
+        const r = this.m_radius;
         aabb.lowerBound.SubtractXY(r, r);
         aabb.upperBound.AddXY(r, r);
     }

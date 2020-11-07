@@ -417,8 +417,8 @@ export class TopdownCar extends Test {
     public static handleContact(contact: b2Contact, began: boolean): void {
         const a = contact.GetFixtureA();
         const b = contact.GetFixtureB();
-        const fudA = a.GetUserData();
-        const fudB = b.GetUserData();
+        const fudA: GroundAreaFUD = a.GetUserData();
+        const fudB: GroundAreaFUD = b.GetUserData();
 
         if (!fudA || !fudB) {
             return;
@@ -440,8 +440,8 @@ export class TopdownCar extends Test {
     }
 
     public static tire_vs_groundArea(tireFixture: b2Fixture, groundAreaFixture: b2Fixture, began: boolean): void {
-        const tire = tireFixture.GetBody().GetUserData();
-        const gaFud = groundAreaFixture.GetUserData();
+        const tire: TDTire = tireFixture.GetBody().GetUserData();
+        const gaFud: GroundAreaFUD = groundAreaFixture.GetUserData();
         if (began) {
             tire.addGroundArea(gaFud);
         } else {

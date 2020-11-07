@@ -24,6 +24,7 @@ import {
     b2RevoluteJointDef,
     b2PrismaticJointDef,
     XY,
+    b2Body,
 } from "@box2d/core";
 
 import { Test } from "../../test";
@@ -34,7 +35,7 @@ export class DumpShell extends Test {
 
         // dump begin
         /* b2Body */
-        const bodies = new Array(4);
+        const bodies = new Array<b2Body>(4);
         /* b2Joint */
         const joints = new Array(2);
         bodies[0] = this.m_world.CreateBody({

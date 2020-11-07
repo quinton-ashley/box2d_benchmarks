@@ -83,13 +83,13 @@ export interface b2IPrismaticJointDef extends b2IJointDef {
 /// anchors and a local axis helps when saving and loading a game.
 export class b2PrismaticJointDef extends b2JointDef implements b2IPrismaticJointDef {
     /// The local anchor point relative to bodyA's origin.
-    public readonly localAnchorA: b2Vec2 = new b2Vec2();
+    public readonly localAnchorA = new b2Vec2();
 
     /// The local anchor point relative to bodyB's origin.
-    public readonly localAnchorB: b2Vec2 = new b2Vec2();
+    public readonly localAnchorB = new b2Vec2();
 
     /// The local translation unit axis in bodyA.
-    public readonly localAxisA: b2Vec2 = new b2Vec2(1, 0);
+    public readonly localAxisA = new b2Vec2(1, 0);
 
     /// The constrained angle between the bodies: bodyB_angle - bodyA_angle.
     public referenceAngle = 0;
@@ -176,17 +176,17 @@ export class b2PrismaticJointDef extends b2JointDef implements b2IPrismaticJoint
 /// use a joint limit to restrict the range of motion and a joint motor to
 /// drive the motion or to model joint friction.
 export class b2PrismaticJoint extends b2Joint {
-    public readonly m_localAnchorA: b2Vec2 = new b2Vec2();
+    public readonly m_localAnchorA = new b2Vec2();
 
-    public readonly m_localAnchorB: b2Vec2 = new b2Vec2();
+    public readonly m_localAnchorB = new b2Vec2();
 
-    public readonly m_localXAxisA: b2Vec2 = new b2Vec2();
+    public readonly m_localXAxisA = new b2Vec2();
 
-    public readonly m_localYAxisA: b2Vec2 = new b2Vec2();
+    public readonly m_localYAxisA = new b2Vec2();
 
     public m_referenceAngle = 0;
 
-    public readonly m_impulse: b2Vec2 = new b2Vec2();
+    public readonly m_impulse = new b2Vec2();
 
     public m_motorImpulse = 0;
 
@@ -211,9 +211,9 @@ export class b2PrismaticJoint extends b2Joint {
 
     public m_indexB = 0;
 
-    public readonly m_localCenterA: b2Vec2 = new b2Vec2();
+    public readonly m_localCenterA = new b2Vec2();
 
-    public readonly m_localCenterB: b2Vec2 = new b2Vec2();
+    public readonly m_localCenterB = new b2Vec2();
 
     public m_invMassA = 0;
 
@@ -223,9 +223,9 @@ export class b2PrismaticJoint extends b2Joint {
 
     public m_invIB = 0;
 
-    public readonly m_axis: b2Vec2 = new b2Vec2();
+    public readonly m_axis = new b2Vec2();
 
-    public readonly m_perp: b2Vec2 = new b2Vec2();
+    public readonly m_perp = new b2Vec2();
 
     public m_s1 = 0;
 
@@ -235,7 +235,7 @@ export class b2PrismaticJoint extends b2Joint {
 
     public m_a2 = 0;
 
-    public readonly m_K: b2Mat22 = new b2Mat22();
+    public readonly m_K = new b2Mat22();
 
     public m_translation = 0;
 

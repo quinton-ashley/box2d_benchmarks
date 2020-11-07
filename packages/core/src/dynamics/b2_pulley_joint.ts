@@ -57,16 +57,16 @@ export interface b2IPulleyJointDef extends b2IJointDef {
 /// two dynamic body anchor points, and a pulley ratio.
 export class b2PulleyJointDef extends b2JointDef implements b2IPulleyJointDef {
     /// The first ground anchor in world coordinates. This point never moves.
-    public readonly groundAnchorA: b2Vec2 = new b2Vec2(-1, 1);
+    public readonly groundAnchorA = new b2Vec2(-1, 1);
 
     /// The second ground anchor in world coordinates. This point never moves.
-    public readonly groundAnchorB: b2Vec2 = new b2Vec2(1, 1);
+    public readonly groundAnchorB = new b2Vec2(1, 1);
 
     /// The local anchor point relative to bodyA's origin.
-    public readonly localAnchorA: b2Vec2 = new b2Vec2(-1, 0);
+    public readonly localAnchorA = new b2Vec2(-1, 0);
 
     /// The local anchor point relative to bodyB's origin.
-    public readonly localAnchorB: b2Vec2 = new b2Vec2(1, 0);
+    public readonly localAnchorB = new b2Vec2(1, 0);
 
     /// The a reference length for the segment attached to bodyA.
     public lengthA = 0;
@@ -118,18 +118,18 @@ const defaultLocalAnchorB = b2Vec2.UNITX;
 /// the anchor points with static shapes to prevent one side from going to
 /// zero length.
 export class b2PulleyJoint extends b2Joint {
-    public readonly m_groundAnchorA: b2Vec2 = new b2Vec2();
+    public readonly m_groundAnchorA = new b2Vec2();
 
-    public readonly m_groundAnchorB: b2Vec2 = new b2Vec2();
+    public readonly m_groundAnchorB = new b2Vec2();
 
     public m_lengthA = 0;
 
     public m_lengthB = 0;
 
     // Solver shared
-    public readonly m_localAnchorA: b2Vec2 = new b2Vec2();
+    public readonly m_localAnchorA = new b2Vec2();
 
-    public readonly m_localAnchorB: b2Vec2 = new b2Vec2();
+    public readonly m_localAnchorB = new b2Vec2();
 
     public m_constant = 0;
 
@@ -142,17 +142,17 @@ export class b2PulleyJoint extends b2Joint {
 
     public m_indexB = 0;
 
-    public readonly m_uA: b2Vec2 = new b2Vec2();
+    public readonly m_uA = new b2Vec2();
 
-    public readonly m_uB: b2Vec2 = new b2Vec2();
+    public readonly m_uB = new b2Vec2();
 
-    public readonly m_rA: b2Vec2 = new b2Vec2();
+    public readonly m_rA = new b2Vec2();
 
-    public readonly m_rB: b2Vec2 = new b2Vec2();
+    public readonly m_rB = new b2Vec2();
 
-    public readonly m_localCenterA: b2Vec2 = new b2Vec2();
+    public readonly m_localCenterA = new b2Vec2();
 
-    public readonly m_localCenterB: b2Vec2 = new b2Vec2();
+    public readonly m_localCenterB = new b2Vec2();
 
     public m_invMassA = 0;
 
@@ -334,9 +334,9 @@ export class b2PulleyJoint extends b2Joint {
         }
 
         const C = this.m_constant - lengthA - this.m_ratio * lengthB;
-        const linearError: number = Math.abs(C);
+        const linearError = Math.abs(C);
 
-        const impulse: number = -mass * C;
+        const impulse = -mass * C;
 
         b2Vec2.Scale(-impulse, uA, PA);
         b2Vec2.Scale(-this.m_ratio * impulse, uB, PB);

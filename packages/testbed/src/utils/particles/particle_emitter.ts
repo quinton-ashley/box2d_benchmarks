@@ -49,12 +49,12 @@ export class RadialEmitter {
     /**
      * Center of particle emitter
      */
-    public m_origin: b2Vec2 = new b2Vec2();
+    public m_origin = new b2Vec2();
 
     /**
      * Launch direction.
      */
-    public m_startingVelocity: b2Vec2 = new b2Vec2();
+    public m_startingVelocity = new b2Vec2();
 
     /**
      * Speed particles are emitted
@@ -64,7 +64,7 @@ export class RadialEmitter {
     /**
      * Half width / height of particle emitter
      */
-    public m_halfSize: b2Vec2 = new b2Vec2();
+    public m_halfSize = new b2Vec2();
 
     /**
      * Particles per second
@@ -74,7 +74,7 @@ export class RadialEmitter {
     /**
      * Initial color of particle emitted.
      */
-    public m_color: b2Color = new b2Color();
+    public m_color = new b2Color();
 
     /**
      * Number particles to emit on the next frame
@@ -266,7 +266,7 @@ export class RadialEmitter {
     public Step(
         dt: number,
         particleIndices?: number[],
-        particleIndicesCount: number = particleIndices ? particleIndices.length : 0,
+        particleIndicesCount = particleIndices ? particleIndices.length : 0,
     ): number {
         b2Assert(this.m_particleSystem !== null);
         let numberOfParticlesCreated = 0;

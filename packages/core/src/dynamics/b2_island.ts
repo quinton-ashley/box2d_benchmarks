@@ -169,9 +169,9 @@ export class b2Island {
         /* 1024 */
     ]; // TODO: b2Settings
 
-    public readonly m_positions: b2Position[] = b2Position.MakeArray(1024); // TODO: b2Settings
+    public readonly m_positions = b2Position.MakeArray(1024); // TODO: b2Settings
 
-    public readonly m_velocities: b2Velocity[] = b2Velocity.MakeArray(1024); // TODO: b2Settings
+    public readonly m_velocities = b2Velocity.MakeArray(1024); // TODO: b2Settings
 
     public m_bodyCount = 0;
 

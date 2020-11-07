@@ -19,13 +19,13 @@
 
 import { b2Vec2, b2Transform, b2Rot } from "./b2_math";
 import { b2Color, b2Draw } from "./b2_draw";
-import { b2Shape, b2ShapeType } from "../collision/b2_shape";
+import { b2ShapeType } from "../collision/b2_shape";
 import { b2ChainShape } from "../collision/b2_chain_shape";
 import { b2CircleShape } from "../collision/b2_circle_shape";
 import { b2EdgeShape } from "../collision/b2_edge_shape";
 import { b2PolygonShape } from "../collision/b2_polygon_shape";
 import { b2Body, b2BodyType } from "../dynamics/b2_body";
-import { b2Fixture, b2FixtureProxy } from "../dynamics/b2_fixture";
+import { b2Fixture } from "../dynamics/b2_fixture";
 import { b2World } from "../dynamics/b2_world";
 import { b2PrismaticJoint } from "../dynamics/b2_prismatic_joint";
 import { b2WheelJoint } from "../dynamics/b2_wheel_joint";
@@ -102,7 +102,7 @@ export function GetShapeColor(b: b2Body) {
 
 export function DrawShapes(draw: b2Draw, world: b2World) {
     for (let b = world.GetBodyList(); b; b = b.m_next) {
-        const xf: b2Transform = b.m_xf;
+        const xf = b.m_xf;
 
         draw.PushTransform(xf);
 
@@ -142,7 +142,7 @@ export function DrawAABBs(draw: b2Draw, world: b2World) {
 
         for (let f: b2Fixture | null = b.GetFixtureList(); f; f = f.m_next) {
             for (let i = 0; i < f.m_proxyCount; ++i) {
-                const proxy: b2FixtureProxy = f.m_proxies[i];
+                const proxy = f.m_proxies[i];
 
                 const { aabb } = proxy.treeNode;
                 vs[0].Set(aabb.lowerBound.x, aabb.lowerBound.y);
@@ -166,22 +166,22 @@ export function DrawCenterOfMasses(draw: b2Draw, world: b2World) {
 }
 
 export function DrawShape(draw: b2Draw, fixture: b2Fixture, color: b2Color): void {
-    const shape: b2Shape = fixture.GetShape();
+    const shape = fixture.GetShape();
 
     switch (shape.m_type) {
         case b2ShapeType.e_circle: {
-            const circle: b2CircleShape = shape as b2CircleShape;
-            const center: b2Vec2 = circle.m_p;
-            const radius: number = circle.m_radius;
-            const axis: b2Vec2 = b2Vec2.UNITX;
+            const circle = shape as b2CircleShape;
+            const center = circle.m_p;
+            const radius = circle.m_radius;
+            const axis = b2Vec2.UNITX;
             draw.DrawSolidCircle(center, radius, axis, color);
             break;
         }
 
         case b2ShapeType.e_edge: {
-            const edge: b2EdgeShape = shape as b2EdgeShape;
-            const v1: b2Vec2 = edge.m_vertex1;
-            const v2: b2Vec2 = edge.m_vertex2;
+            const edge = shape as b2EdgeShape;
+            const v1 = edge.m_vertex1;
+            const v2 = edge.m_vertex2;
             draw.DrawSegment(v1, v2, color);
 
             if (edge.m_oneSided === false) {
@@ -192,11 +192,11 @@ export function DrawShape(draw: b2Draw, fixture: b2Fixture, color: b2Color): voi
         }
 
         case b2ShapeType.e_chain: {
-            const chain: b2ChainShape = shape as b2ChainShape;
-            const vertices: b2Vec2[] = chain.m_vertices;
-            let v1: b2Vec2 = vertices[0];
+            const chain = shape as b2ChainShape;
+            const vertices = chain.m_vertices;
+            let v1 = vertices[0];
             for (let i = 1; i < vertices.length; ++i) {
-                const v2: b2Vec2 = vertices[i];
+                const v2 = vertices[i];
                 draw.DrawSegment(v1, v2, color);
                 v1 = v2;
             }
@@ -205,9 +205,9 @@ export function DrawShape(draw: b2Draw, fixture: b2Fixture, color: b2Color): voi
         }
 
         case b2ShapeType.e_polygon: {
-            const poly: b2PolygonShape = shape as b2PolygonShape;
-            const vertexCount: number = poly.m_count;
-            const vertices: b2Vec2[] = poly.m_vertices;
+            const poly = shape as b2PolygonShape;
+            const vertexCount = poly.m_count;
+            const vertices = poly.m_vertices;
             draw.DrawSolidPolygon(vertices, vertexCount, color);
             break;
         }
@@ -324,10 +324,10 @@ export function DrawDistanceJoint(draw: b2Draw, joint: b2DistanceJoint): void {
 }
 
 export function DrawJointFallback(draw: b2Draw, joint: b2Joint): void {
-    const x1: b2Vec2 = joint.m_bodyA.GetTransform().p;
-    const x2: b2Vec2 = joint.m_bodyB.GetTransform().p;
-    const p1: b2Vec2 = joint.GetAnchorA(temp.pA);
-    const p2: b2Vec2 = joint.GetAnchorB(temp.pB);
+    const x1 = joint.m_bodyA.GetTransform().p;
+    const x2 = joint.m_bodyB.GetTransform().p;
+    const p1 = joint.GetAnchorA(temp.pA);
+    const p2 = joint.GetAnchorB(temp.pB);
     draw.DrawSegment(x1, p1, debugColors.joint6);
     draw.DrawSegment(p1, p2, debugColors.joint6);
     draw.DrawSegment(x2, p2, debugColors.joint6);

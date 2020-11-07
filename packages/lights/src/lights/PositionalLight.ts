@@ -164,8 +164,8 @@ export abstract class PositionalLight extends Light {
 
         // actual check
         let oddNodes = false;
-        let x2: number = (this.mx[this.rayNum] = this.start.x);
-        let y2: number = (this.my[this.rayNum] = this.start.y);
+        let x2 = (this.mx[this.rayNum] = this.start.x);
+        let y2 = (this.my[this.rayNum] = this.start.y);
         let x1 = 0;
         let y1 = 0;
         for (let i = 0; i <= this.rayNum; x2 = x1, y2 = y1, ++i) {

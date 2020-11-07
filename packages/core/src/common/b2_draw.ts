@@ -30,17 +30,17 @@ export interface RGBA extends RGB {
 
 /// Color for debug drawing. Each value has the range [0,1].
 export class b2Color implements RGBA {
-    public static readonly ZERO: Readonly<b2Color> = new b2Color(0, 0, 0, 0);
+    public static readonly ZERO: Readonly<RGBA> = new b2Color(0, 0, 0, 0);
 
-    public static readonly RED: Readonly<b2Color> = new b2Color(1, 0, 0);
+    public static readonly RED: Readonly<RGBA> = new b2Color(1, 0, 0);
 
-    public static readonly GREEN: Readonly<b2Color> = new b2Color(0, 1, 0);
+    public static readonly GREEN: Readonly<RGBA> = new b2Color(0, 1, 0);
 
-    public static readonly BLUE: Readonly<b2Color> = new b2Color(0, 0, 1);
+    public static readonly BLUE: Readonly<RGBA> = new b2Color(0, 0, 1);
 
-    public static readonly WHITE: Readonly<b2Color> = new b2Color(1, 1, 1);
+    public static readonly WHITE: Readonly<RGBA> = new b2Color(1, 1, 1);
 
-    public static readonly BLACK: Readonly<b2Color> = new b2Color(0, 0, 0);
+    public static readonly BLACK: Readonly<RGBA> = new b2Color(0, 0, 0);
 
     public r: number;
 

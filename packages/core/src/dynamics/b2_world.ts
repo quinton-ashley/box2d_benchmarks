@@ -53,7 +53,7 @@ import {
 /// and asynchronous queries. The world also contains efficient memory
 /// management facilities.
 export class b2World {
-    public readonly m_contactManager: b2ContactManager = new b2ContactManager();
+    public readonly m_contactManager = new b2ContactManager();
 
     public m_bodyList: b2Body | null = null;
 
@@ -63,7 +63,7 @@ export class b2World {
 
     public m_jointCount = 0;
 
-    public readonly m_gravity: b2Vec2 = new b2Vec2();
+    public readonly m_gravity = new b2Vec2();
 
     public m_allowSleep = true;
 
@@ -88,9 +88,9 @@ export class b2World {
 
     public m_stepComplete = true;
 
-    public readonly m_profile: b2Profile = new b2Profile();
+    public readonly m_profile = new b2Profile();
 
-    public readonly m_island: b2Island = new b2Island();
+    public readonly m_island = new b2Island();
 
     public readonly s_stack: Array<b2Body | null> = [];
 
@@ -508,7 +508,7 @@ export class b2World {
     private static QueryFixtureShape_s_aabb = new b2AABB();
 
     public QueryFixtureShape(shape: b2Shape, index: number, transform: b2Transform, callback: b2QueryCallback): void {
-        const aabb: b2AABB = b2World.QueryFixtureShape_s_aabb;
+        const aabb = b2World.QueryFixtureShape_s_aabb;
         shape.ComputeAABB(aabb, transform, index);
         this.m_contactManager.m_broadPhase.Query(aabb, (proxy) => {
             const fixture_proxy = b2Verify(proxy.userData);
@@ -570,7 +570,7 @@ export class b2World {
     /// @param point2 the ray ending point
     /// @param callback a user implemented callback class or function.
     public RayCast(point1: XY, point2: XY, callback: b2RayCastCallback): void {
-        const input: b2RayCastInput = b2World.RayCast_s_input;
+        const input = b2World.RayCast_s_input;
         input.maxFraction = 1;
         input.p1.Copy(point1);
         input.p2.Copy(point2);
@@ -799,7 +799,7 @@ export class b2World {
         }
 
         // Build and simulate all awake islands.
-        // DEBUG: const stackSize: number = this.m_bodyCount;
+        // DEBUG: const stackSize = this.m_bodyCount;
         const stack = this.s_stack;
         for (let seed = this.m_bodyList; seed; seed = seed.m_next) {
             if (seed.m_islandFlag) {
@@ -1047,14 +1047,14 @@ export class b2World {
                     const indexB = c.GetChildIndexB();
 
                     // Compute the time of impact in interval [0, minTOI]
-                    const input: b2TOIInput = b2World.SolveTOI_s_toi_input;
+                    const input = b2World.SolveTOI_s_toi_input;
                     input.proxyA.SetShape(fA.GetShape(), indexA);
                     input.proxyB.SetShape(fB.GetShape(), indexB);
                     input.sweepA.Copy(bA.m_sweep);
                     input.sweepB.Copy(bB.m_sweep);
                     input.tMax = 1;
 
-                    const output: b2TOIOutput = b2World.SolveTOI_s_toi_output;
+                    const output = b2World.SolveTOI_s_toi_output;
                     b2TimeOfImpact(output, input);
 
                     // Beta is the fraction of the remaining portion of the .

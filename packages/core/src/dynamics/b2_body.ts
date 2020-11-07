@@ -93,7 +93,7 @@ export interface b2BodyDef {
 
 /// A rigid body. These are created via b2World::CreateBody.
 export class b2Body {
-    public m_type: b2BodyType = b2BodyType.b2_staticBody;
+    public m_type = b2BodyType.b2_staticBody;
 
     public m_islandFlag = false;
 
@@ -111,15 +111,15 @@ export class b2Body {
 
     public m_islandIndex = 0;
 
-    public readonly m_xf: b2Transform = new b2Transform(); // the body origin transform
+    public readonly m_xf = new b2Transform(); // the body origin transform
 
-    public readonly m_sweep: b2Sweep = new b2Sweep(); // the swept motion for CCD
+    public readonly m_sweep = new b2Sweep(); // the swept motion for CCD
 
-    public readonly m_linearVelocity: b2Vec2 = new b2Vec2();
+    public readonly m_linearVelocity = new b2Vec2();
 
     public m_angularVelocity = 0;
 
-    public readonly m_force: b2Vec2 = new b2Vec2();
+    public readonly m_force = new b2Vec2();
 
     public m_torque = 0;
 
@@ -226,7 +226,7 @@ export class b2Body {
     public CreateFixtureDef(def: b2FixtureDef): b2Fixture {
         b2Assert(!this.m_world.IsLocked());
 
-        const fixture: b2Fixture = new b2Fixture(this, def);
+        const fixture = new b2Fixture(this, def);
 
         if (this.m_enabledFlag) {
             const broadPhase = this.m_world.m_contactManager.m_broadPhase;
@@ -276,7 +276,7 @@ export class b2Body {
         // DEBUG: b2Assert(this.m_fixtureCount > 0);
         let node: b2Fixture | null = this.m_fixtureList;
         let ppF: b2Fixture | null = null;
-        // DEBUG: let found: boolean = false;
+        // DEBUG: let found = false;
         while (node !== null) {
             if (node === fixture) {
                 if (ppF) {
@@ -301,8 +301,8 @@ export class b2Body {
             const c = edge.contact;
             edge = edge.next;
 
-            const fixtureA: b2Fixture = c.GetFixtureA();
-            const fixtureB: b2Fixture = c.GetFixtureB();
+            const fixtureA = c.GetFixtureA();
+            const fixtureB = c.GetFixtureB();
 
             if (fixture === fixtureA || fixture === fixtureB) {
                 // This destroys the contact and removes it from
@@ -437,24 +437,6 @@ export class b2Body {
     /// @return the angular velocity in radians/second.
     public GetAngularVelocity(): number {
         return this.m_angularVelocity;
-    }
-
-    public GetDefinition(): b2BodyDef {
-        return {
-            type: this.GetType(),
-            allowSleep: this.m_autoSleepFlag,
-            angle: this.GetAngle(),
-            angularDamping: this.m_angularDamping,
-            gravityScale: this.m_gravityScale,
-            angularVelocity: this.m_angularVelocity,
-            fixedRotation: this.m_fixedRotationFlag,
-            bullet: this.m_bulletFlag,
-            awake: this.m_awakeFlag,
-            linearDamping: this.m_linearDamping,
-            linearVelocity: this.GetLinearVelocity().Clone(),
-            position: this.GetPosition().Clone(),
-            userData: this.GetUserData(),
-        };
     }
 
     /// Apply a force at a world point. If the force is not
@@ -605,7 +587,7 @@ export class b2Body {
     /// Note that creating or destroying fixtures can also alter the mass.
     /// This function has no effect if the body isn't dynamic.
     /// @param massData the mass properties.
-    private static SetMassData_s_oldCenter: b2Vec2 = new b2Vec2();
+    private static SetMassData_s_oldCenter = new b2Vec2();
 
     public SetMassData(massData: b2MassData): void {
         b2Assert(!this.m_world.IsLocked());
@@ -632,7 +614,7 @@ export class b2Body {
         }
 
         // Move center of mass.
-        const oldCenter: b2Vec2 = b2Body.SetMassData_s_oldCenter.Copy(this.m_sweep.c);
+        const oldCenter = b2Body.SetMassData_s_oldCenter.Copy(this.m_sweep.c);
         this.m_sweep.localCenter.Copy(massData.center);
         b2Transform.MultiplyVec2(this.m_xf, this.m_sweep.localCenter, this.m_sweep.c);
         this.m_sweep.c0.Copy(this.m_sweep.c);
@@ -649,11 +631,11 @@ export class b2Body {
     /// This resets the mass properties to the sum of the mass properties of the fixtures.
     /// This normally does not need to be called unless you called SetMassData to override
     /// the mass and you later want to reset the mass.
-    private static ResetMassData_s_localCenter: b2Vec2 = new b2Vec2();
+    private static ResetMassData_s_localCenter = new b2Vec2();
 
-    private static ResetMassData_s_oldCenter: b2Vec2 = new b2Vec2();
+    private static ResetMassData_s_oldCenter = new b2Vec2();
 
-    private static ResetMassData_s_massData: b2MassData = new b2MassData();
+    private static ResetMassData_s_massData = new b2MassData();
 
     public ResetMassData(): void {
         // Compute mass data from shapes. Each shape has its own density.
@@ -674,13 +656,13 @@ export class b2Body {
         // DEBUG: b2Assert(this.m_type === b2BodyType.b2_dynamicBody);
 
         // Accumulate mass over all fixtures.
-        const localCenter: b2Vec2 = b2Body.ResetMassData_s_localCenter.SetZero();
+        const localCenter = b2Body.ResetMassData_s_localCenter.SetZero();
         for (let f: b2Fixture | null = this.m_fixtureList; f; f = f.m_next) {
             if (f.m_density === 0) {
                 continue;
             }
 
-            const massData: b2MassData = f.GetMassData(b2Body.ResetMassData_s_massData);
+            const massData = f.GetMassData(b2Body.ResetMassData_s_massData);
             this.m_mass += massData.mass;
             localCenter.x += massData.center.x * massData.mass;
             localCenter.y += massData.center.y * massData.mass;
@@ -705,7 +687,7 @@ export class b2Body {
         }
 
         // Move center of mass.
-        const oldCenter: b2Vec2 = b2Body.ResetMassData_s_oldCenter.Copy(this.m_sweep.c);
+        const oldCenter = b2Body.ResetMassData_s_oldCenter.Copy(this.m_sweep.c);
         this.m_sweep.localCenter.Copy(localCenter);
         b2Transform.MultiplyVec2(this.m_xf, this.m_sweep.localCenter, this.m_sweep.c);
         this.m_sweep.c0.Copy(this.m_sweep.c);
@@ -825,7 +807,7 @@ export class b2Body {
         // Delete the attached contacts.
         let ce: b2ContactEdge | null = this.m_contactList;
         while (ce) {
-            const ce0: b2ContactEdge = ce;
+            const ce0 = ce;
             ce = ce.next;
             this.m_world.m_contactManager.Destroy(ce0.contact);
         }
@@ -930,7 +912,7 @@ export class b2Body {
             // Destroy the attached contacts.
             let ce: b2ContactEdge | null = this.m_contactList;
             while (ce) {
-                const ce0: b2ContactEdge = ce;
+                const ce0 = ce;
                 ce = ce.next;
                 this.m_world.m_contactManager.Destroy(ce0.contact);
             }
@@ -999,12 +981,12 @@ export class b2Body {
         return this.m_world;
     }
 
-    private static SynchronizeFixtures_s_xf1: b2Transform = new b2Transform();
+    private static SynchronizeFixtures_s_xf1 = new b2Transform();
 
     public SynchronizeFixtures(): void {
         const broadPhase = this.m_world.m_contactManager.m_broadPhase;
         if (this.m_awakeFlag) {
-            const xf1: b2Transform = b2Body.SynchronizeFixtures_s_xf1;
+            const xf1 = b2Body.SynchronizeFixtures_s_xf1;
             xf1.q.Set(this.m_sweep.a0);
             b2Rot.MultiplyVec2(xf1.q, this.m_sweep.localCenter, xf1.p);
             b2Vec2.Subtract(this.m_sweep.c0, xf1.p, xf1.p);

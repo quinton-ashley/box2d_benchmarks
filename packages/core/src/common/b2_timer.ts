@@ -19,7 +19,7 @@
 /// Timer for profiling. This has platform specific code and may
 /// not work on every platform.
 export class b2Timer {
-    public m_start: number = performance.now();
+    public m_start = performance.now();
 
     /// Reset the timer.
     public Reset(): b2Timer {

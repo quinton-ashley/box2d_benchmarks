@@ -65,10 +65,10 @@ export interface b2IRevoluteJointDef extends b2IJointDef {
 ///    the joints will be broken.
 export class b2RevoluteJointDef extends b2JointDef implements b2IRevoluteJointDef {
     /// The local anchor point relative to bodyA's origin.
-    public readonly localAnchorA: b2Vec2 = new b2Vec2(0, 0);
+    public readonly localAnchorA = new b2Vec2(0, 0);
 
     /// The local anchor point relative to bodyB's origin.
-    public readonly localAnchorB: b2Vec2 = new b2Vec2(0, 0);
+    public readonly localAnchorB = new b2Vec2(0, 0);
 
     /// The bodyB angle minus bodyA angle in the reference state (radians).
     public referenceAngle = 0;
@@ -113,11 +113,11 @@ export class b2RevoluteJointDef extends b2JointDef implements b2IRevoluteJointDe
 /// is provided so that infinite forces are not generated.
 export class b2RevoluteJoint extends b2Joint {
     // Solver shared
-    public readonly m_localAnchorA: b2Vec2 = new b2Vec2();
+    public readonly m_localAnchorA = new b2Vec2();
 
-    public readonly m_localAnchorB: b2Vec2 = new b2Vec2();
+    public readonly m_localAnchorB = new b2Vec2();
 
-    public readonly m_impulse: b2Vec2 = new b2Vec2();
+    public readonly m_impulse = new b2Vec2();
 
     public m_motorImpulse = 0;
 
@@ -144,13 +144,13 @@ export class b2RevoluteJoint extends b2Joint {
 
     public m_indexB = 0;
 
-    public readonly m_rA: b2Vec2 = new b2Vec2();
+    public readonly m_rA = new b2Vec2();
 
-    public readonly m_rB: b2Vec2 = new b2Vec2();
+    public readonly m_rB = new b2Vec2();
 
-    public readonly m_localCenterA: b2Vec2 = new b2Vec2();
+    public readonly m_localCenterA = new b2Vec2();
 
-    public readonly m_localCenterB: b2Vec2 = new b2Vec2();
+    public readonly m_localCenterB = new b2Vec2();
 
     public m_invMassA = 0;
 
@@ -160,7 +160,7 @@ export class b2RevoluteJoint extends b2Joint {
 
     public m_invIB = 0;
 
-    public readonly m_K: b2Mat22 = new b2Mat22();
+    public readonly m_K = new b2Mat22();
 
     public m_angle = 0;
 
@@ -364,11 +364,11 @@ export class b2RevoluteJoint extends b2Joint {
         let angularError = 0;
         let positionError = 0;
 
-        const fixedRotation: boolean = this.m_invIA + this.m_invIB === 0;
+        const fixedRotation = this.m_invIA + this.m_invIB === 0;
 
         // Solve angular limit constraint
         if (this.m_enableLimit && !fixedRotation) {
-            const angle: number = aB - aA - this.m_referenceAngle;
+            const angle = aB - aA - this.m_referenceAngle;
             let C = 0.0;
 
             if (Math.abs(this.m_upperAngle - this.m_lowerAngle) < 2 * b2_angularSlop) {

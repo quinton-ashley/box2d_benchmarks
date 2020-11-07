@@ -4,8 +4,8 @@ import { b2Manifold, b2ManifoldType } from "./b2_collision";
 import { b2CircleShape } from "./b2_circle_shape";
 import { b2PolygonShape } from "./b2_polygon_shape";
 
-const b2CollideCircles_s_pA: b2Vec2 = new b2Vec2();
-const b2CollideCircles_s_pB: b2Vec2 = new b2Vec2();
+const b2CollideCircles_s_pA = new b2Vec2();
+const b2CollideCircles_s_pB = new b2Vec2();
 export function b2CollideCircles(
     manifold: b2Manifold,
     circleA: b2CircleShape,
@@ -15,11 +15,11 @@ export function b2CollideCircles(
 ): void {
     manifold.pointCount = 0;
 
-    const pA: b2Vec2 = b2Transform.MultiplyVec2(xfA, circleA.m_p, b2CollideCircles_s_pA);
-    const pB: b2Vec2 = b2Transform.MultiplyVec2(xfB, circleB.m_p, b2CollideCircles_s_pB);
+    const pA = b2Transform.MultiplyVec2(xfA, circleA.m_p, b2CollideCircles_s_pA);
+    const pB = b2Transform.MultiplyVec2(xfB, circleB.m_p, b2CollideCircles_s_pB);
 
-    const distSqr: number = b2Vec2.DistanceSquared(pA, pB);
-    const radius: number = circleA.m_radius + circleB.m_radius;
+    const distSqr = b2Vec2.DistanceSquared(pA, pB);
+    const radius = circleA.m_radius + circleB.m_radius;
     if (distSqr > radius * radius) {
         return;
     }
@@ -33,9 +33,9 @@ export function b2CollideCircles(
     manifold.points[0].id.key = 0;
 }
 
-const b2CollidePolygonAndCircle_s_c: b2Vec2 = new b2Vec2();
-const b2CollidePolygonAndCircle_s_cLocal: b2Vec2 = new b2Vec2();
-const b2CollidePolygonAndCircle_s_faceCenter: b2Vec2 = new b2Vec2();
+const b2CollidePolygonAndCircle_s_c = new b2Vec2();
+const b2CollidePolygonAndCircle_s_cLocal = new b2Vec2();
+const b2CollidePolygonAndCircle_s_faceCenter = new b2Vec2();
 export function b2CollidePolygonAndCircle(
     manifold: b2Manifold,
     polygonA: b2PolygonShape,
@@ -46,19 +46,19 @@ export function b2CollidePolygonAndCircle(
     manifold.pointCount = 0;
 
     // Compute circle position in the frame of the polygon.
-    const c: b2Vec2 = b2Transform.MultiplyVec2(xfB, circleB.m_p, b2CollidePolygonAndCircle_s_c);
-    const cLocal: b2Vec2 = b2Transform.TransposeMultiplyVec2(xfA, c, b2CollidePolygonAndCircle_s_cLocal);
+    const c = b2Transform.MultiplyVec2(xfB, circleB.m_p, b2CollidePolygonAndCircle_s_c);
+    const cLocal = b2Transform.TransposeMultiplyVec2(xfA, c, b2CollidePolygonAndCircle_s_cLocal);
 
     // Find the min separating edge.
     let normalIndex = 0;
-    let separation: number = -b2_maxFloat;
-    const radius: number = polygonA.m_radius + circleB.m_radius;
-    const vertexCount: number = polygonA.m_count;
-    const vertices: b2Vec2[] = polygonA.m_vertices;
-    const normals: b2Vec2[] = polygonA.m_normals;
+    let separation = -b2_maxFloat;
+    const radius = polygonA.m_radius + circleB.m_radius;
+    const vertexCount = polygonA.m_count;
+    const vertices = polygonA.m_vertices;
+    const normals = polygonA.m_normals;
 
     for (let i = 0; i < vertexCount; ++i) {
-        const s: number = b2Vec2.Dot(normals[i], b2Vec2.Subtract(cLocal, vertices[i], b2Vec2.s_t0));
+        const s = b2Vec2.Dot(normals[i], b2Vec2.Subtract(cLocal, vertices[i], b2Vec2.s_t0));
 
         if (s > radius) {
             // Early out.
@@ -72,10 +72,10 @@ export function b2CollidePolygonAndCircle(
     }
 
     // Vertices that subtend the incident face.
-    const vertIndex1: number = normalIndex;
-    const vertIndex2: number = (vertIndex1 + 1) % vertexCount;
-    const v1: b2Vec2 = vertices[vertIndex1];
-    const v2: b2Vec2 = vertices[vertIndex2];
+    const vertIndex1 = normalIndex;
+    const vertIndex2 = (vertIndex1 + 1) % vertexCount;
+    const v1 = vertices[vertIndex1];
+    const v2 = vertices[vertIndex2];
 
     // If the center is inside the polygon ...
     if (separation < b2_epsilon) {
@@ -89,8 +89,8 @@ export function b2CollidePolygonAndCircle(
     }
 
     // Compute barycentric coordinates
-    const u1: number = b2Vec2.Dot(b2Vec2.Subtract(cLocal, v1, b2Vec2.s_t0), b2Vec2.Subtract(v2, v1, b2Vec2.s_t1));
-    const u2: number = b2Vec2.Dot(b2Vec2.Subtract(cLocal, v2, b2Vec2.s_t0), b2Vec2.Subtract(v1, v2, b2Vec2.s_t1));
+    const u1 = b2Vec2.Dot(b2Vec2.Subtract(cLocal, v1, b2Vec2.s_t0), b2Vec2.Subtract(v2, v1, b2Vec2.s_t1));
+    const u2 = b2Vec2.Dot(b2Vec2.Subtract(cLocal, v2, b2Vec2.s_t0), b2Vec2.Subtract(v1, v2, b2Vec2.s_t1));
     if (u1 <= 0) {
         if (b2Vec2.DistanceSquared(cLocal, v1) > radius * radius) {
             return;
@@ -114,7 +114,7 @@ export function b2CollidePolygonAndCircle(
         manifold.points[0].localPoint.Copy(circleB.m_p);
         manifold.points[0].id.key = 0;
     } else {
-        const faceCenter: b2Vec2 = b2Vec2.Mid(v1, v2, b2CollidePolygonAndCircle_s_faceCenter);
+        const faceCenter = b2Vec2.Mid(v1, v2, b2CollidePolygonAndCircle_s_faceCenter);
         const separation2 = b2Vec2.Dot(b2Vec2.Subtract(cLocal, faceCenter, b2Vec2.s_t1), normals[vertIndex1]);
         if (separation2 > radius) {
             return;

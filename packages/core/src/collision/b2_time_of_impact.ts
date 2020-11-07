@@ -52,13 +52,13 @@ const b2TimeOfImpact_s_axisB = new b2Vec2();
 
 /// Input parameters for b2TimeOfImpact
 export class b2TOIInput {
-    public readonly proxyA: b2DistanceProxy = new b2DistanceProxy();
+    public readonly proxyA = new b2DistanceProxy();
 
-    public readonly proxyB: b2DistanceProxy = new b2DistanceProxy();
+    public readonly proxyB = new b2DistanceProxy();
 
-    public readonly sweepA: b2Sweep = new b2Sweep();
+    public readonly sweepA = new b2Sweep();
 
-    public readonly sweepB: b2Sweep = new b2Sweep();
+    public readonly sweepB = new b2Sweep();
 
     public tMax = 0; // defines sweep interval [0, tMax]
 }
@@ -89,11 +89,11 @@ class b2SeparationFunction {
 
     public m_proxyB!: b2DistanceProxy;
 
-    public readonly m_sweepA: b2Sweep = new b2Sweep();
+    public readonly m_sweepA = new b2Sweep();
 
-    public readonly m_sweepB: b2Sweep = new b2Sweep();
+    public readonly m_sweepB = new b2Sweep();
 
-    public m_type: b2SeparationFunctionType = b2SeparationFunctionType.e_points;
+    public m_type = b2SeparationFunctionType.e_points;
 
     public readonly m_localPoint = new b2Vec2();
 

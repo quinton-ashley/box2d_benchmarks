@@ -25,13 +25,13 @@ import { b2MassData, b2Shape, b2ShapeType } from "./b2_shape";
 
 /// A solid circle shape
 export class b2CircleShape extends b2Shape {
-    public readonly m_p: b2Vec2 = new b2Vec2();
+    public readonly m_p = new b2Vec2();
 
     constructor(radius = 0) {
         super(b2ShapeType.e_circle, radius);
     }
 
-    public Set(position: XY, radius: number = this.m_radius) {
+    public Set(position: XY, radius = this.m_radius) {
         this.m_p.Copy(position);
         this.m_radius = radius;
         return this;
@@ -62,8 +62,8 @@ export class b2CircleShape extends b2Shape {
     private static TestPoint_s_d = new b2Vec2();
 
     public TestPoint(transform: b2Transform, p: XY): boolean {
-        const center: b2Vec2 = b2Transform.MultiplyVec2(transform, this.m_p, b2CircleShape.TestPoint_s_center);
-        const d: b2Vec2 = b2Vec2.Subtract(p, center, b2CircleShape.TestPoint_s_d);
+        const center = b2Transform.MultiplyVec2(transform, this.m_p, b2CircleShape.TestPoint_s_center);
+        const d = b2Vec2.Subtract(p, center, b2CircleShape.TestPoint_s_d);
         return b2Vec2.Dot(d, d) <= this.m_radius ** 2;
     }
 
@@ -86,14 +86,14 @@ export class b2CircleShape extends b2Shape {
         transform: b2Transform,
         _childIndex: number,
     ): boolean {
-        const position: b2Vec2 = b2Transform.MultiplyVec2(transform, this.m_p, b2CircleShape.RayCast_s_position);
-        const s: b2Vec2 = b2Vec2.Subtract(input.p1, position, b2CircleShape.RayCast_s_s);
-        const b: number = b2Vec2.Dot(s, s) - this.m_radius ** 2;
+        const position = b2Transform.MultiplyVec2(transform, this.m_p, b2CircleShape.RayCast_s_position);
+        const s = b2Vec2.Subtract(input.p1, position, b2CircleShape.RayCast_s_s);
+        const b = b2Vec2.Dot(s, s) - this.m_radius ** 2;
 
         // Solve quadratic equation.
-        const r: b2Vec2 = b2Vec2.Subtract(input.p2, input.p1, b2CircleShape.RayCast_s_r);
-        const c: number = b2Vec2.Dot(s, r);
-        const rr: number = b2Vec2.Dot(r, r);
+        const r = b2Vec2.Subtract(input.p2, input.p1, b2CircleShape.RayCast_s_r);
+        const c = b2Vec2.Dot(s, r);
+        const rr = b2Vec2.Dot(r, r);
         const sigma = c * c - rr * b;
 
         // Check for negative discriminant and short segment.
@@ -102,7 +102,7 @@ export class b2CircleShape extends b2Shape {
         }
 
         // Find the point of intersection of the line with the circle.
-        let a: number = -(c + Math.sqrt(sigma));
+        let a = -(c + Math.sqrt(sigma));
 
         // Is the intersection point on the segment?
         if (a >= 0 && a <= input.maxFraction * rr) {
@@ -119,7 +119,7 @@ export class b2CircleShape extends b2Shape {
     private static ComputeAABB_s_p = new b2Vec2();
 
     public ComputeAABB(aabb: b2AABB, transform: b2Transform, _childIndex: number): void {
-        const p: b2Vec2 = b2Transform.MultiplyVec2(transform, this.m_p, b2CircleShape.ComputeAABB_s_p);
+        const p = b2Transform.MultiplyVec2(transform, this.m_p, b2CircleShape.ComputeAABB_s_p);
         aabb.lowerBound.Set(p.x - this.m_radius, p.y - this.m_radius);
         aabb.upperBound.Set(p.x + this.m_radius, p.y + this.m_radius);
     }

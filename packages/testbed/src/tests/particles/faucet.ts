@@ -150,7 +150,7 @@ export class Faucet extends Test {
     /**
      * Selection of particle types for this test.
      */
-    public static readonly k_paramValues: ParticleParameterValue[] = [
+    public static readonly k_paramValues = [
         new ParticleParameterValue(b2ParticleFlag.b2_waterParticle, ParticleParameter.k_DefaultOptions, "water"),
         new ParticleParameterValue(
             b2ParticleFlag.b2_waterParticle,
@@ -172,9 +172,7 @@ export class Faucet extends Test {
         ),
     ];
 
-    public static readonly k_paramDef: ParticleParameterDefinition[] = [
-        new ParticleParameterDefinition(Faucet.k_paramValues),
-    ];
+    public static readonly k_paramDef = [new ParticleParameterDefinition(Faucet.k_paramValues)];
 
     public static readonly k_paramDefCount = Faucet.k_paramDef.length;
 

@@ -39,8 +39,8 @@ export class Web extends Test {
     constructor() {
         super();
 
-        this.m_bodies = new Array(4);
-        this.m_joints = new Array(8);
+        this.m_bodies = new Array<b2Body>(4);
+        this.m_joints = new Array<b2Joint>(8);
 
         let ground = null;
         {

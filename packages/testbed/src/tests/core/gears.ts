@@ -90,11 +90,11 @@ export class Gears extends Test {
 
             const jd1 = new b2RevoluteJointDef();
             jd1.Initialize(body2, body1, bdPosition1);
-            const joint1: b2RevoluteJoint = this.m_world.CreateJoint(jd1);
+            const joint1 = this.m_world.CreateJoint(jd1);
 
             const jd2 = new b2RevoluteJointDef();
             jd2.Initialize(body2, body3, bdPosition3);
-            const joint2: b2RevoluteJoint = this.m_world.CreateJoint(jd2);
+            const joint2 = this.m_world.CreateJoint(jd2);
 
             const jd4 = new b2GearJointDef();
             jd4.bodyA = body1;

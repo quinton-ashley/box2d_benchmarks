@@ -29,7 +29,7 @@ export function b2Verify<T>(value: T | null): T {
 
 export const b2_maxFloat = 1e37; // FLT_MAX instead of Number.MAX_VALUE;
 export const b2_epsilon = 1e-5; // FLT_EPSILON instead of Number.MIN_VALUE;
-export const b2_epsilon_sq: number = b2_epsilon * b2_epsilon;
+export const b2_epsilon_sq = b2_epsilon * b2_epsilon;
 
 /// @file
 /// Global tuning constants based on meters-kilograms-seconds (MKS) units.
@@ -57,12 +57,12 @@ export const b2_linearSlop = 0.005 * b2_lengthUnitsPerMeter;
 
 /// A small angle used as a collision and constraint tolerance. Usually it is
 /// chosen to be numerically significant, but visually insignificant.
-export const b2_angularSlop: number = (2 / 180) * Math.PI;
+export const b2_angularSlop = (2 / 180) * Math.PI;
 
 /// The radius of the polygon/edge shape skin. This should not be modified. Making
 /// this smaller means polygons will have an insufficient buffer for continuous collision.
 /// Making it larger may create artifacts for vertex collision.
-export const b2_polygonRadius: number = 2 * b2_linearSlop;
+export const b2_polygonRadius = 2 * b2_linearSlop;
 
 /// Maximum number of sub-steps per contact in continuous physics simulation.
 export const b2_maxSubSteps = 8;
@@ -78,17 +78,17 @@ export const b2_maxLinearCorrection = 0.2 * b2_lengthUnitsPerMeter;
 
 /// The maximum angular position correction used when solving constraints. This helps to
 /// prevent overshoot.
-export const b2_maxAngularCorrection: number = (8 / 180) * Math.PI;
+export const b2_maxAngularCorrection = (8 / 180) * Math.PI;
 
 /// The maximum linear translation of a body per step. This limit is very large and is used
 /// to prevent numerical problems. You shouldn't need to adjust this. Meters.
 export const b2_maxTranslation = 2 * b2_lengthUnitsPerMeter;
-export const b2_maxTranslationSquared: number = b2_maxTranslation * b2_maxTranslation;
+export const b2_maxTranslationSquared = b2_maxTranslation * b2_maxTranslation;
 
 /// The maximum angular velocity of a body. This limit is very large and is used
 /// to prevent numerical problems. You shouldn't need to adjust this.
-export const b2_maxRotation: number = 0.5 * Math.PI;
-export const b2_maxRotationSquared: number = b2_maxRotation * b2_maxRotation;
+export const b2_maxRotation = 0.5 * Math.PI;
+export const b2_maxRotationSquared = b2_maxRotation * b2_maxRotation;
 
 /// This scale factor controls how fast overlap is resolved. Ideally this would be 1 so
 /// that overlap is removed in one time step. However using values close to 1 often lead
@@ -105,7 +105,7 @@ export const b2_timeToSleep = 0.5;
 export const b2_linearSleepTolerance = 0.01 * b2_lengthUnitsPerMeter;
 
 /// A body cannot sleep if its angular velocity is above this tolerance.
-export const b2_angularSleepTolerance: number = (2 / 180) * Math.PI;
+export const b2_angularSleepTolerance = (2 / 180) * Math.PI;
 
 /// Current version.
 /// See http://en.wikipedia.org/wiki/Software_versioning

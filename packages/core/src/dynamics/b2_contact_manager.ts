@@ -18,40 +18,39 @@
 
 // DEBUG: import { b2Assert } from "../common/b2_common";
 import { b2BroadPhase } from "../collision/b2_broad_phase";
-import { b2TreeNode } from "../collision/b2_dynamic_tree";
 import { b2Contact, b2ContactEdge } from "./b2_contact";
 import { b2ContactFactory } from "./b2_contact_factory";
-import { b2Body, b2BodyType } from "./b2_body";
-import { b2Fixture, b2FixtureProxy } from "./b2_fixture";
+import { b2BodyType } from "./b2_body";
+import { b2FixtureProxy } from "./b2_fixture";
 import { b2ContactFilter, b2ContactListener } from "./b2_world_callbacks";
 
 // Delegate of b2World.
 export class b2ContactManager {
-    public readonly m_broadPhase: b2BroadPhase<b2FixtureProxy> = new b2BroadPhase<b2FixtureProxy>();
+    public readonly m_broadPhase = new b2BroadPhase<b2FixtureProxy>();
 
     public m_contactList: b2Contact | null = null;
 
     public m_contactCount = 0;
 
-    public m_contactFilter: b2ContactFilter = b2ContactFilter.b2_defaultFilter;
+    public m_contactFilter = b2ContactFilter.b2_defaultFilter;
 
-    public m_contactListener: b2ContactListener = b2ContactListener.b2_defaultListener;
+    public m_contactListener = b2ContactListener.b2_defaultListener;
 
-    public readonly m_contactFactory: b2ContactFactory = new b2ContactFactory();
+    public readonly m_contactFactory = new b2ContactFactory();
 
     // Broad-phase callback.
     public AddPair = (proxyA: b2FixtureProxy, proxyB: b2FixtureProxy): void => {
         // DEBUG: b2Assert(proxyA instanceof b2FixtureProxy);
         // DEBUG: b2Assert(proxyB instanceof b2FixtureProxy);
 
-        let fixtureA: b2Fixture = proxyA.fixture;
-        let fixtureB: b2Fixture = proxyB.fixture;
+        let fixtureA = proxyA.fixture;
+        let fixtureB = proxyB.fixture;
 
-        let indexA: number = proxyA.childIndex;
-        let indexB: number = proxyB.childIndex;
+        let indexA = proxyA.childIndex;
+        let indexB = proxyB.childIndex;
 
-        let bodyA: b2Body = fixtureA.GetBody();
-        let bodyB: b2Body = fixtureB.GetBody();
+        let bodyA = fixtureA.GetBody();
+        let bodyB = fixtureB.GetBody();
 
         // Are the fixtures on the same body?
         if (bodyA === bodyB) {
@@ -64,10 +63,10 @@ export class b2ContactManager {
         let edge: b2ContactEdge | null = bodyB.GetContactList();
         while (edge) {
             if (edge.other === bodyA) {
-                const fA: b2Fixture = edge.contact.GetFixtureA();
-                const fB: b2Fixture = edge.contact.GetFixtureB();
-                const iA: number = edge.contact.GetChildIndexA();
-                const iB: number = edge.contact.GetChildIndexB();
+                const fA = edge.contact.GetFixtureA();
+                const fB = edge.contact.GetFixtureB();
+                const iA = edge.contact.GetChildIndexA();
+                const iB = edge.contact.GetChildIndexB();
 
                 if (fA === fixtureA && fB === fixtureB && iA === indexA && iB === indexB) {
                     // A contact already exists.
@@ -145,10 +144,10 @@ export class b2ContactManager {
     }
 
     public Destroy(c: b2Contact): void {
-        const fixtureA: b2Fixture = c.GetFixtureA();
-        const fixtureB: b2Fixture = c.GetFixtureB();
-        const bodyA: b2Body = fixtureA.GetBody();
-        const bodyB: b2Body = fixtureB.GetBody();
+        const fixtureA = c.GetFixtureA();
+        const fixtureB = c.GetFixtureB();
+        const bodyA = fixtureA.GetBody();
+        const bodyB = fixtureB.GetBody();
 
         if (this.m_contactListener && c.IsTouching()) {
             this.m_contactListener.EndContact(c);
@@ -211,12 +210,12 @@ export class b2ContactManager {
         // Update awake contacts.
         let c: b2Contact | null = this.m_contactList;
         while (c) {
-            const fixtureA: b2Fixture = c.GetFixtureA();
-            const fixtureB: b2Fixture = c.GetFixtureB();
-            const indexA: number = c.GetChildIndexA();
-            const indexB: number = c.GetChildIndexB();
-            const bodyA: b2Body = fixtureA.GetBody();
-            const bodyB: b2Body = fixtureB.GetBody();
+            const fixtureA = c.GetFixtureA();
+            const fixtureB = c.GetFixtureB();
+            const indexA = c.GetChildIndexA();
+            const indexB = c.GetChildIndexB();
+            const bodyA = fixtureA.GetBody();
+            const bodyB = fixtureB.GetBody();
 
             // Is this contact flagged for filtering?
             if (c.m_filterFlag) {
@@ -235,8 +234,8 @@ export class b2ContactManager {
                 c.m_filterFlag = false;
             }
 
-            const activeA: boolean = bodyA.IsAwake() && bodyA.m_type !== b2BodyType.b2_staticBody;
-            const activeB: boolean = bodyB.IsAwake() && bodyB.m_type !== b2BodyType.b2_staticBody;
+            const activeA = bodyA.IsAwake() && bodyA.m_type !== b2BodyType.b2_staticBody;
+            const activeB = bodyB.IsAwake() && bodyB.m_type !== b2BodyType.b2_staticBody;
 
             // At least one body must be awake and it must be dynamic or kinematic.
             if (!activeA && !activeB) {
@@ -244,13 +243,13 @@ export class b2ContactManager {
                 continue;
             }
 
-            const treeNodeA: b2TreeNode<b2FixtureProxy> = fixtureA.m_proxies[indexA].treeNode;
-            const treeNodeB: b2TreeNode<b2FixtureProxy> = fixtureB.m_proxies[indexB].treeNode;
-            const overlap: boolean = treeNodeA.aabb.TestOverlap(treeNodeB.aabb);
+            const treeNodeA = fixtureA.m_proxies[indexA].treeNode;
+            const treeNodeB = fixtureB.m_proxies[indexB].treeNode;
+            const overlap = treeNodeA.aabb.TestOverlap(treeNodeB.aabb);
 
             // Here we destroy contacts that cease to overlap in the broad-phase.
             if (!overlap) {
-                const cNuke: b2Contact = c;
+                const cNuke = c;
                 c = cNuke.m_next;
                 this.Destroy(cNuke);
                 continue;

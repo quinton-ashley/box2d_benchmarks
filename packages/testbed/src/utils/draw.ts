@@ -86,8 +86,8 @@ export class DebugDraw implements b2Draw {
     public DrawSolidCircle(center: XY, radius: number, axis: XY, color: RGBA): void {
         const ctx: CanvasRenderingContext2D | null = this.m_ctx;
         if (ctx) {
-            const cx: number = center.x;
-            const cy: number = center.y;
+            const cx = center.x;
+            const cy = center.y;
             ctx.beginPath();
             ctx.arc(cx, cy, radius, 0, Math.PI * 2, true);
             ctx.moveTo(cx, cy);
@@ -164,7 +164,7 @@ export class DebugDraw implements b2Draw {
         if (ctx) {
             ctx.fillStyle = DebugDraw.MakeStyleString(color);
             size /= g_camera.getZoom();
-            const hsize: number = size / 2;
+            const hsize = size / 2;
             ctx.fillRect(p.x - hsize, p.y - hsize, size, size);
         }
     }
@@ -183,21 +183,21 @@ export class DebugDraw implements b2Draw {
         }
     }
 
-    private static DrawStringWorld_s_p: b2Vec2 = new b2Vec2();
+    private static DrawStringWorld_s_p = new b2Vec2();
 
-    private static DrawStringWorld_s_cc: b2Vec2 = new b2Vec2();
+    private static DrawStringWorld_s_cc = new b2Vec2();
 
     public DrawStringWorld(x: number, y: number, message: string): void {
         const ctx: CanvasRenderingContext2D | null = this.m_ctx;
         if (ctx) {
-            const p: b2Vec2 = DebugDraw.DrawStringWorld_s_p.Set(x, y);
+            const p = DebugDraw.DrawStringWorld_s_p.Set(x, y);
 
             // world -> viewport
             const vt = g_camera.getCenter();
             b2Vec2.Subtract(p, vt, p);
             b2Vec2.Scale(g_camera.getZoom(), p, p);
             p.y *= -1;
-            const cc: b2Vec2 = DebugDraw.DrawStringWorld_s_cc.Set(0.5 * ctx.canvas.width, 0.5 * ctx.canvas.height);
+            const cc = DebugDraw.DrawStringWorld_s_cc.Set(0.5 * ctx.canvas.width, 0.5 * ctx.canvas.height);
             b2Vec2.Add(p, cc, p);
 
             ctx.save();
@@ -215,8 +215,8 @@ export class DebugDraw implements b2Draw {
             ctx.strokeStyle = DebugDraw.MakeStyleString(color);
             const { x } = aabb.lowerBound;
             const { y } = aabb.lowerBound;
-            const w: number = aabb.upperBound.x - aabb.lowerBound.x;
-            const h: number = aabb.upperBound.y - aabb.lowerBound.y;
+            const w = aabb.upperBound.x - aabb.lowerBound.x;
+            const h = aabb.upperBound.y - aabb.lowerBound.y;
             ctx.strokeRect(x, y, w, h);
         }
     }
@@ -234,4 +234,4 @@ export class DebugDraw implements b2Draw {
     }
 }
 
-export const g_debugDraw: DebugDraw = new DebugDraw();
+export const g_debugDraw = new DebugDraw();

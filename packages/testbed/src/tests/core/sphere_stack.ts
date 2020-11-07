@@ -21,7 +21,7 @@ import { b2Body, b2EdgeShape, b2Vec2, b2CircleShape, b2BodyType } from "@box2d/c
 import { Test } from "../../test";
 
 export class SphereStack extends Test {
-    public static readonly e_count: number = 10;
+    public static readonly e_count = 10;
 
     public m_bodies: b2Body[] = [];
 
@@ -29,15 +29,15 @@ export class SphereStack extends Test {
         super();
 
         {
-            const ground: b2Body = this.m_world.CreateBody();
+            const ground = this.m_world.CreateBody();
 
-            const shape: b2EdgeShape = new b2EdgeShape();
+            const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(-40.0, 0.0), new b2Vec2(40.0, 0.0));
             ground.CreateFixture(shape, 0.0);
         }
 
         {
-            const shape: b2CircleShape = new b2CircleShape();
+            const shape = new b2CircleShape();
             shape.m_radius = 1.0;
 
             for (let i = 0; i < SphereStack.e_count; ++i) {

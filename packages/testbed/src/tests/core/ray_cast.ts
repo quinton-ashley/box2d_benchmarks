@@ -38,13 +38,13 @@ export class RayCast extends Test {
 
     private m_polygons: b2PolygonShape[] = [];
 
-    private m_circle: b2CircleShape = new b2CircleShape();
+    private m_circle = new b2CircleShape();
 
-    private m_edge: b2EdgeShape = new b2EdgeShape();
+    private m_edge = new b2EdgeShape();
 
     private m_angle = 0;
 
-    private m_mode: RayCastMode = RayCastMode.e_closest;
+    private m_mode = RayCastMode.e_closest;
 
     constructor() {
         super();
@@ -183,7 +183,7 @@ export class RayCast extends Test {
     }
 
     public Step(settings: Settings, timeStep: number): void {
-        const advanceRay: boolean = !settings.m_pause || settings.m_singleStep;
+        const advanceRay = !settings.m_pause || settings.m_singleStep;
 
         super.Step(settings, timeStep);
 
@@ -261,8 +261,8 @@ export class RayCast extends Test {
         const resultPoint = new b2Vec2();
         const resultNormal = new b2Vec2();
         this.m_world.RayCast(point1, point2, (fixture, point, normal, fraction) => {
-            const body: b2Body = fixture.GetBody();
-            const userData: any = body.GetUserData();
+            const body = fixture.GetBody();
+            const userData = body.GetUserData();
             if (userData) {
                 const { index } = userData;
                 if (index === 0) {
@@ -299,8 +299,8 @@ export class RayCast extends Test {
         const resultPoint = new b2Vec2();
         const resultNormal = new b2Vec2();
         this.m_world.RayCast(point1, point2, (fixture, point, normal, _fraction) => {
-            const body: b2Body = fixture.GetBody();
-            const userData: any = body.GetUserData();
+            const body = fixture.GetBody();
+            const userData = body.GetUserData();
             if (userData) {
                 const { index } = userData;
                 if (index === 0) {
@@ -339,8 +339,8 @@ export class RayCast extends Test {
 
         let count = 0;
         this.m_world.RayCast(point1, point2, (fixture, point, normal) => {
-            const body: b2Body = fixture.GetBody();
-            const userData: any = body.GetUserData();
+            const body = fixture.GetBody();
+            const userData = body.GetUserData();
             if (userData) {
                 const { index } = userData;
                 if (index === 0) {

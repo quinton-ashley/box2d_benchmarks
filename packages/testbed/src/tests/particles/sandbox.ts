@@ -58,71 +58,71 @@ export class SandboxParams {
     /**
      * Total possible pump squares
      */
-    public static readonly k_maxPumps: number = 5;
+    public static readonly k_maxPumps = 5;
 
     /**
      * Total possible emitters
      */
-    public static readonly k_maxEmitters: number = 5;
+    public static readonly k_maxEmitters = 5;
 
     /**
      * Number of seconds to push one direction or the other on the
      * pumps
      */
-    public static readonly k_flipTime: number = 6;
+    public static readonly k_flipTime = 6;
 
     /**
      * Radius of a tile
      */
-    public static readonly k_tileRadius: number = 2;
+    public static readonly k_tileRadius = 2;
 
     /**
      * Diameter of a tile
      */
-    public static readonly k_tileDiameter: number = 4;
+    public static readonly k_tileDiameter = 4;
 
     /**
      * Pump radius; slightly smaller than a tile
      */
-    public static readonly k_pumpRadius: number = 2.0 - 0.05;
+    public static readonly k_pumpRadius = 2.0 - 0.05;
 
-    public static readonly k_playfieldLeftEdge: number = -20;
+    public static readonly k_playfieldLeftEdge = -20;
 
-    public static readonly k_playfieldRightEdge: number = 20;
+    public static readonly k_playfieldRightEdge = 20;
 
-    public static readonly k_playfieldBottomEdge: number = 40;
+    public static readonly k_playfieldBottomEdge = 40;
 
     /**
      * The world size in the TILE
      */
-    public static readonly k_tileWidth: number = 10;
+    public static readonly k_tileWidth = 10;
 
-    public static readonly k_tileHeight: number = 11;
+    public static readonly k_tileHeight = 11;
 
     /**
      * Particles/second
      */
-    public static readonly k_defaultEmitterRate: number = 30;
+    public static readonly k_defaultEmitterRate = 30;
 
     /**
      * Fit cleanly inside one block
      */
-    public static readonly k_defaultEmitterSize: number = 3;
+    public static readonly k_defaultEmitterSize = 3;
 
     /**
      * How fast particles coming out of the particles should drop
      */
-    public static readonly k_particleExitSpeedY: number = -9.8;
+    public static readonly k_particleExitSpeedY = -9.8;
 
     /**
      * How hard the pumps can push
      */
-    public static readonly k_pumpForce: number = 600;
+    public static readonly k_pumpForce = 600;
 
     /**
      * Number of *special* particles.
      */
-    public static readonly k_numberOfSpecialParticles: number = 256;
+    public static readonly k_numberOfSpecialParticles = 256;
 }
 
 /**
@@ -272,7 +272,7 @@ export class Sandbox extends Test {
     /**
      * Pump force
      */
-    public readonly m_pumpForce: b2Vec2 = new b2Vec2();
+    public readonly m_pumpForce = new b2Vec2();
 
     /**
      * The shape we will use for the killfield

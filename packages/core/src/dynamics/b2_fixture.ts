@@ -85,11 +85,11 @@ export interface b2FixtureDef {
 
 /// This proxy is used internally to connect fixtures to the broad-phase.
 export class b2FixtureProxy {
-    public readonly aabb: b2AABB = new b2AABB();
+    public readonly aabb = new b2AABB();
 
     public readonly fixture: b2Fixture;
 
-    public readonly childIndex: number = 0;
+    public readonly childIndex: number;
 
     public readonly treeNode: b2TreeNode<b2FixtureProxy>;
 
@@ -145,7 +145,7 @@ export class b2Fixture {
     constructor(body: b2Body, def: b2FixtureDef) {
         this.m_body = body;
         this.m_shape = def.shape.Clone();
-        this.m_userData = def.userData ?? null;
+        this.m_userData = def.userData;
         this.m_friction = def.friction ?? 0.2;
         this.m_restitution = def.restitution ?? 0;
         this.m_restitutionThreshold = def.restitutionThreshold ?? b2_lengthUnitsPerMeter;
@@ -262,7 +262,7 @@ export class b2Fixture {
     /// Get the mass data for this fixture. The mass data is based on the density and
     /// the shape. The rotational inertia is about the shape's origin. This operation
     /// may be expensive.
-    public GetMassData(massData: b2MassData = new b2MassData()): b2MassData {
+    public GetMassData(massData = new b2MassData()): b2MassData {
         this.m_shape.ComputeMass(massData, this.m_density);
 
         return massData;

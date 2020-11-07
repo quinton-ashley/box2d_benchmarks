@@ -23,9 +23,9 @@ import { Settings } from "../../settings";
 import { hotKeyPress, HotKey } from "../../utils/hotkeys";
 
 export class EdgeTest extends Test {
-    public readonly m_offset1: b2Vec2 = new b2Vec2();
+    public readonly m_offset1 = new b2Vec2();
 
-    public readonly m_offset2: b2Vec2 = new b2Vec2();
+    public readonly m_offset2 = new b2Vec2();
 
     public m_body1: b2Body | null = null;
 
@@ -53,20 +53,20 @@ export class EdgeTest extends Test {
         this.m_offset2.Set(0.0, 16.0);
 
         {
-            const v1: b2Vec2 = vertices[0].Clone().Add(this.m_offset1);
-            const v2: b2Vec2 = vertices[1].Clone().Add(this.m_offset1);
-            const v3: b2Vec2 = vertices[2].Clone().Add(this.m_offset1);
-            const v4: b2Vec2 = vertices[3].Clone().Add(this.m_offset1);
-            const v5: b2Vec2 = vertices[4].Clone().Add(this.m_offset1);
-            const v6: b2Vec2 = vertices[5].Clone().Add(this.m_offset1);
-            const v7: b2Vec2 = vertices[6].Clone().Add(this.m_offset1);
-            const v8: b2Vec2 = vertices[7].Clone().Add(this.m_offset1);
-            const v9: b2Vec2 = vertices[8].Clone().Add(this.m_offset1);
-            const v10: b2Vec2 = vertices[9].Clone().Add(this.m_offset1);
+            const v1 = vertices[0].Clone().Add(this.m_offset1);
+            const v2 = vertices[1].Clone().Add(this.m_offset1);
+            const v3 = vertices[2].Clone().Add(this.m_offset1);
+            const v4 = vertices[3].Clone().Add(this.m_offset1);
+            const v5 = vertices[4].Clone().Add(this.m_offset1);
+            const v6 = vertices[5].Clone().Add(this.m_offset1);
+            const v7 = vertices[6].Clone().Add(this.m_offset1);
+            const v8 = vertices[7].Clone().Add(this.m_offset1);
+            const v9 = vertices[8].Clone().Add(this.m_offset1);
+            const v10 = vertices[9].Clone().Add(this.m_offset1);
 
-            const ground: b2Body = this.m_world.CreateBody();
+            const ground = this.m_world.CreateBody();
 
-            const shape: b2EdgeShape = new b2EdgeShape();
+            const shape = new b2EdgeShape();
 
             shape.SetOneSided(v10, v1, v2, v3);
             ground.CreateFixture(shape, 0.0);
@@ -100,20 +100,20 @@ export class EdgeTest extends Test {
         }
 
         {
-            const v1: b2Vec2 = vertices[0].Clone().Add(this.m_offset2);
-            const v2: b2Vec2 = vertices[1].Clone().Add(this.m_offset2);
-            const v3: b2Vec2 = vertices[2].Clone().Add(this.m_offset2);
-            const v4: b2Vec2 = vertices[3].Clone().Add(this.m_offset2);
-            const v5: b2Vec2 = vertices[4].Clone().Add(this.m_offset2);
-            const v6: b2Vec2 = vertices[5].Clone().Add(this.m_offset2);
-            const v7: b2Vec2 = vertices[6].Clone().Add(this.m_offset2);
-            const v8: b2Vec2 = vertices[7].Clone().Add(this.m_offset2);
-            const v9: b2Vec2 = vertices[8].Clone().Add(this.m_offset2);
-            const v10: b2Vec2 = vertices[9].Clone().Add(this.m_offset2);
+            const v1 = vertices[0].Clone().Add(this.m_offset2);
+            const v2 = vertices[1].Clone().Add(this.m_offset2);
+            const v3 = vertices[2].Clone().Add(this.m_offset2);
+            const v4 = vertices[3].Clone().Add(this.m_offset2);
+            const v5 = vertices[4].Clone().Add(this.m_offset2);
+            const v6 = vertices[5].Clone().Add(this.m_offset2);
+            const v7 = vertices[6].Clone().Add(this.m_offset2);
+            const v8 = vertices[7].Clone().Add(this.m_offset2);
+            const v9 = vertices[8].Clone().Add(this.m_offset2);
+            const v10 = vertices[9].Clone().Add(this.m_offset2);
 
-            const ground: b2Body = this.m_world.CreateBody();
+            const ground = this.m_world.CreateBody();
 
-            const shape: b2EdgeShape = new b2EdgeShape();
+            const shape = new b2EdgeShape();
 
             shape.SetTwoSided(v1, v2);
             ground.CreateFixture(shape, 0.0);

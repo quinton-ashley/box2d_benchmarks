@@ -44,7 +44,7 @@ export interface b2IMouseJointDef extends b2IJointDef {
 export class b2MouseJointDef extends b2JointDef implements b2IMouseJointDef {
     /// The initial world target point. This is assumed
     /// to coincide with the body anchor initially.
-    public readonly target: b2Vec2 = new b2Vec2();
+    public readonly target = new b2Vec2();
 
     /// The maximum constraint force that can be exerted
     /// to move the candidate body. Usually you will express

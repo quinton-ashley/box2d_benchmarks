@@ -24,6 +24,7 @@ import {
     b2BodyType,
     b2RandomRange,
     b2CircleShape,
+    b2Body,
 } from "@box2d/core";
 
 import { Test } from "../../test";
@@ -48,10 +49,7 @@ export class CollisionProcessing extends Test {
         const yHi = 35.0;
 
         // Small triangle
-        const vertices = new Array(3);
-        vertices[0] = new b2Vec2(-1.0, 0.0);
-        vertices[1] = new b2Vec2(1.0, 0.0);
-        vertices[2] = new b2Vec2(0.0, 2.0);
+        const vertices = [new b2Vec2(-1.0, 0.0), new b2Vec2(1.0, 0.0), new b2Vec2(0.0, 2.0)];
 
         const polygon = new b2PolygonShape();
         polygon.Set(vertices, 3);
@@ -134,7 +132,7 @@ export class CollisionProcessing extends Test {
         // points. We must buffer the bodies that should be destroyed
         // because they may belong to multiple contact points.
         const k_maxNuke = 6;
-        const nuke = new Array(k_maxNuke);
+        const nuke = new Array<b2Body>(k_maxNuke);
         let nukeCount = 0;
 
         // Traverse the contact results. Destroy bodies that
@@ -160,20 +158,10 @@ export class CollisionProcessing extends Test {
             }
         }
 
-        // Sort the nuke array to group duplicates.
-        nuke.sort((a, b) => {
-            return a - b;
-        });
-
         // Destroy the bodies, skipping duplicates.
-        let i = 0;
-        while (i < nukeCount) {
-            const b = nuke[i++];
-            while (i < nukeCount && nuke[i] === b) {
-                ++i;
-            }
-
-            if (b !== this.m_bomb) {
+        for (let i = 0; i < nukeCount; i++) {
+            const b = nuke[i];
+            if (nuke.indexOf(b) === i && b !== this.m_bomb) {
                 this.m_world.DestroyBody(b);
             }
         }

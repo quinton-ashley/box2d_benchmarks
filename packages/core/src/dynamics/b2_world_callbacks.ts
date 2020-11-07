@@ -52,16 +52,16 @@ export class b2ContactFilter {
         return (filterA.maskBits & filterB.categoryBits) !== 0 && (filterA.categoryBits & filterB.maskBits) !== 0;
     }
 
-    public static readonly b2_defaultFilter: b2ContactFilter = new b2ContactFilter();
+    public static readonly b2_defaultFilter = new b2ContactFilter();
 }
 
 /// Contact impulses for reporting. Impulses are used instead of forces because
 /// sub-step forces may approach infinity for rigid body collisions. These
 /// match up one-to-one with the contact points in b2Manifold.
 export class b2ContactImpulse {
-    public normalImpulses: number[] = b2MakeNumberArray(b2_maxManifoldPoints);
+    public normalImpulses = b2MakeNumberArray(b2_maxManifoldPoints);
 
-    public tangentImpulses: number[] = b2MakeNumberArray(b2_maxManifoldPoints);
+    public tangentImpulses = b2MakeNumberArray(b2_maxManifoldPoints);
 
     public count = 0;
 }
@@ -102,7 +102,7 @@ export class b2ContactListener {
     /// Note: this is only called for contacts that are touching, solid, and awake.
     public PostSolve(_contact: b2Contact, _impulse: b2ContactImpulse): void {}
 
-    public static readonly b2_defaultListener: b2ContactListener = new b2ContactListener();
+    public static readonly b2_defaultListener = new b2ContactListener();
 }
 
 /// Callback class for AABB queries

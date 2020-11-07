@@ -67,7 +67,7 @@ export type b2ParticleQueryCallback = (index: number) => boolean;
 export type b2ParticleRayCastCallback = (index: number, point: b2Vec2, normal: b2Vec2, fraction: number) => number;
 
 function std_iter_swap<T>(array: T[], a: number, b: number): void {
-    const tmp: T = array[a];
+    const tmp = array[a];
     array[a] = array[b];
     array[b] = tmp;
 }
@@ -79,7 +79,7 @@ function default_compare<T>(a: T, b: T): boolean {
 function std_sort<T>(
     array: T[],
     first = 0,
-    len: number = array.length - first,
+    len = array.length - first,
     cmp: (a: T, b: T) => boolean = default_compare,
 ): T[] {
     let left = first;
@@ -115,13 +115,13 @@ function std_sort<T>(
 function std_stable_sort<T>(
     array: T[],
     first = 0,
-    len: number = array.length - first,
+    len = array.length - first,
     cmp: (a: T, b: T) => boolean = default_compare,
 ): T[] {
     return std_sort(array, first, len, cmp);
 }
 
-function std_remove_if<T>(array: T[], predicate: (value: T) => boolean, length: number = array.length) {
+function std_remove_if<T>(array: T[], predicate: (value: T) => boolean, length = array.length) {
     let l = 0;
 
     for (let c = 0; c < length; ++c) {
@@ -312,7 +312,7 @@ export class b2ParticleContact {
 
     public weight = 0;
 
-    public normal: b2Vec2 = new b2Vec2();
+    public normal = new b2Vec2();
 
     public flags: b2ParticleFlag = 0;
 
@@ -391,7 +391,7 @@ export class b2ParticleBodyContact {
 
     public weight = 0.0; // Weight of the contact. A value between 0.0f and 1.0f.
 
-    public normal: b2Vec2 = new b2Vec2(); // The normalized direction from the particle to the body.
+    public normal = new b2Vec2(); // The normalized direction from the particle to the body.
 
     public mass = 0.0; // The effective mass used in calculating force.
 }
@@ -419,11 +419,11 @@ export class b2ParticleTriad {
 
     public strength = 0.0; // The strength of cohesion among the particles.
 
-    public pa: b2Vec2 = new b2Vec2(0.0, 0.0); // Values used for calculation.
+    public pa = new b2Vec2(0.0, 0.0); // Values used for calculation.
 
-    public pb: b2Vec2 = new b2Vec2(0.0, 0.0);
+    public pb = new b2Vec2(0.0, 0.0);
 
-    public pc: b2Vec2 = new b2Vec2(0.0, 0.0);
+    public pc = new b2Vec2(0.0, 0.0);
 
     public ka = 0.0;
 
@@ -577,7 +577,7 @@ export class b2ParticleSystemDef {
      * lifetimeGranularity) seconds. With the value set to 1/60 the
      * maximum lifetime or age of a particle is 2.27 years.
      */
-    public lifetimeGranularity: number = 1.0 / 60.0;
+    public lifetimeGranularity = 1.0 / 60.0;
 
     public Copy(def: b2ParticleSystemDef): b2ParticleSystemDef {
         this.strictContactCheck = def.strictContactCheck;
@@ -697,13 +697,11 @@ export class b2ParticleSystem {
      */
     public m_depthBuffer: number[] = [];
 
-    public m_colorBuffer: b2ParticleSystem_UserOverridableBuffer<b2Color> = new b2ParticleSystem_UserOverridableBuffer<
-        b2Color
-    >();
+    public m_colorBuffer = new b2ParticleSystem_UserOverridableBuffer<b2Color>();
 
     public m_groupBuffer: Array<b2ParticleGroup | null> = [];
 
-    public m_userDataBuffer: b2ParticleSystem_UserOverridableBuffer<any> = new b2ParticleSystem_UserOverridableBuffer();
+    public m_userDataBuffer = new b2ParticleSystem_UserOverridableBuffer<any>();
 
     /**
      * Stuck particle detection parameters and record keeping
@@ -722,27 +720,17 @@ export class b2ParticleSystem {
         number
     > = new b2ParticleSystem_UserOverridableBuffer<number>();
 
-    public m_stuckParticleBuffer: b2GrowableBuffer<number> = new b2GrowableBuffer<number>(() => 0);
+    public m_stuckParticleBuffer = new b2GrowableBuffer<number>(() => 0);
 
-    public m_proxyBuffer: b2GrowableBuffer<b2ParticleSystem_Proxy> = new b2GrowableBuffer<b2ParticleSystem_Proxy>(
-        () => new b2ParticleSystem_Proxy(),
-    );
+    public m_proxyBuffer = new b2GrowableBuffer<b2ParticleSystem_Proxy>(() => new b2ParticleSystem_Proxy());
 
-    public m_contactBuffer: b2GrowableBuffer<b2ParticleContact> = new b2GrowableBuffer<b2ParticleContact>(
-        () => new b2ParticleContact(),
-    );
+    public m_contactBuffer = new b2GrowableBuffer<b2ParticleContact>(() => new b2ParticleContact());
 
-    public m_bodyContactBuffer: b2GrowableBuffer<b2ParticleBodyContact> = new b2GrowableBuffer<b2ParticleBodyContact>(
-        () => new b2ParticleBodyContact(),
-    );
+    public m_bodyContactBuffer = new b2GrowableBuffer<b2ParticleBodyContact>(() => new b2ParticleBodyContact());
 
-    public m_pairBuffer: b2GrowableBuffer<b2ParticlePair> = new b2GrowableBuffer<b2ParticlePair>(
-        () => new b2ParticlePair(),
-    );
+    public m_pairBuffer = new b2GrowableBuffer<b2ParticlePair>(() => new b2ParticlePair());
 
-    public m_triadBuffer: b2GrowableBuffer<b2ParticleTriad> = new b2GrowableBuffer<b2ParticleTriad>(
-        () => new b2ParticleTriad(),
-    );
+    public m_triadBuffer = new b2GrowableBuffer<b2ParticleTriad>(() => new b2ParticleTriad());
 
     /**
      * Time each particle should be destroyed relative to the last
@@ -778,7 +766,7 @@ export class b2ParticleSystem {
 
     public m_groupList: b2ParticleGroup | null = null;
 
-    public m_def: b2ParticleSystemDef = new b2ParticleSystemDef();
+    public m_def = new b2ParticleSystemDef();
 
     public m_world: b2World;
 
@@ -786,26 +774,26 @@ export class b2ParticleSystem {
 
     public m_next: b2ParticleSystem | null = null;
 
-    public static readonly xTruncBits: number = 12;
+    public static readonly xTruncBits = 12;
 
-    public static readonly yTruncBits: number = 12;
+    public static readonly yTruncBits = 12;
 
-    public static readonly tagBits: number = 8 * 4; // 8u * sizeof(uint32);
+    public static readonly tagBits = 8 * 4; // 8u * sizeof(uint32);
 
-    public static readonly yOffset: number = 1 << (b2ParticleSystem.yTruncBits - 1);
+    public static readonly yOffset = 1 << (b2ParticleSystem.yTruncBits - 1);
 
-    public static readonly yShift: number = b2ParticleSystem.tagBits - b2ParticleSystem.yTruncBits;
+    public static readonly yShift = b2ParticleSystem.tagBits - b2ParticleSystem.yTruncBits;
 
-    public static readonly xShift: number =
+    public static readonly xShift =
         b2ParticleSystem.tagBits - b2ParticleSystem.yTruncBits - b2ParticleSystem.xTruncBits;
 
-    public static readonly xScale: number = 1 << b2ParticleSystem.xShift;
+    public static readonly xScale = 1 << b2ParticleSystem.xShift;
 
-    public static readonly xOffset: number = b2ParticleSystem.xScale * (1 << (b2ParticleSystem.xTruncBits - 1));
+    public static readonly xOffset = b2ParticleSystem.xScale * (1 << (b2ParticleSystem.xTruncBits - 1));
 
-    public static readonly yMask: number = ((1 << b2ParticleSystem.yTruncBits) - 1) << b2ParticleSystem.yShift;
+    public static readonly yMask = ((1 << b2ParticleSystem.yTruncBits) - 1) << b2ParticleSystem.yShift;
 
-    public static readonly xMask: number = ~b2ParticleSystem.yMask;
+    public static readonly xMask = ~b2ParticleSystem.yMask;
 
     public static computeTag(x: number, y: number): number {
         /// return ((uint32)(y + yOffset) << yShift) + (uint32)(xScale * x + xOffset);
@@ -914,7 +902,7 @@ export class b2ParticleSystem {
         if (this.m_depthBuffer) {
             this.m_depthBuffer[index] = 0;
         }
-        const color: b2Color = new b2Color().Copy(def.color ?? b2Color.ZERO);
+        const color = new b2Color().Copy(def.color ?? b2Color.ZERO);
         if (this.m_colorBuffer.data || !color.IsZero()) {
             this.m_colorBuffer.data = this.RequestBuffer(this.m_colorBuffer.data);
             this.m_colorBuffer.data[index] = (this.m_colorBuffer.data[index] || new b2Color()).Copy(color);
@@ -2071,7 +2059,7 @@ export class b2ParticleSystem {
     /**
      * All particle types that require creating pairs
      */
-    public static readonly k_pairFlags: number = b2ParticleFlag.b2_springParticle;
+    public static readonly k_pairFlags = b2ParticleFlag.b2_springParticle;
 
     /**
      * All particle types that require creating triads
@@ -2707,7 +2695,7 @@ export class b2ParticleSystem {
         const bufferIndex = group.GetBufferIndex();
         const particleCount = group.GetParticleCount();
         for (let i = 0; i < particleCount; i++) {
-            const node: b2ParticleSystem_ParticleListNode = nodeBuffer[i];
+            const node = nodeBuffer[i];
             node.list = node;
             node.next = null;
             node.count = 1;
@@ -2725,8 +2713,8 @@ export class b2ParticleSystem {
             if (!group.ContainsParticle(a) || !group.ContainsParticle(b)) {
                 continue;
             }
-            let listA: b2ParticleSystem_ParticleListNode = nodeBuffer[a - bufferIndex].list;
-            let listB: b2ParticleSystem_ParticleListNode = nodeBuffer[b - bufferIndex].list;
+            let listA = nodeBuffer[a - bufferIndex].list;
+            let listB = nodeBuffer[b - bufferIndex].list;
             if (listA === listB) {
                 continue;
             }
@@ -2753,7 +2741,7 @@ export class b2ParticleSystem {
         // to
         //     listA => listB => b1 => b2 => a1 => a2 => a3 => null
         // DEBUG: b2Assert(listA !== listB);
-        for (let b: b2ParticleSystem_ParticleListNode = listB; ; ) {
+        for (let b = listB; ; ) {
             b.list = listA;
             const nextB: b2ParticleSystem_ParticleListNode | null = b.next;
             if (nextB) {
@@ -2773,9 +2761,9 @@ export class b2ParticleSystem {
         nodeBuffer: b2ParticleSystem_ParticleListNode[],
     ): b2ParticleSystem_ParticleListNode {
         const particleCount = group.GetParticleCount();
-        let result: b2ParticleSystem_ParticleListNode = nodeBuffer[0];
+        let result = nodeBuffer[0];
         for (let i = 0; i < particleCount; i++) {
-            const node: b2ParticleSystem_ParticleListNode = nodeBuffer[i];
+            const node = nodeBuffer[i];
             if (result.count < node.count) {
                 result = node;
             }
@@ -2790,7 +2778,7 @@ export class b2ParticleSystem {
     ): void {
         const particleCount = group.GetParticleCount();
         for (let i = 0; i < particleCount; i++) {
-            const node: b2ParticleSystem_ParticleListNode = nodeBuffer[i];
+            const node = nodeBuffer[i];
             if (node !== survivingList && this.m_flagsBuffer.data[node.index] & b2ParticleFlag.b2_zombieParticle) {
                 b2ParticleSystem.MergeParticleListAndNode(survivingList, node);
             }
@@ -2827,12 +2815,12 @@ export class b2ParticleSystem {
         def.groupFlags = group.GetGroupFlags();
         def.userData = group.GetUserData();
         for (let i = 0; i < particleCount; i++) {
-            const list: b2ParticleSystem_ParticleListNode = nodeBuffer[i];
+            const list = nodeBuffer[i];
             if (!list.count || list === survivingList) {
                 continue;
             }
             // DEBUG: b2Assert(list.list === list);
-            const newGroup: b2ParticleGroup = this.CreateParticleGroup(def);
+            const newGroup = this.CreateParticleGroup(def);
             for (let node: b2ParticleSystem_ParticleListNode | null = list; node; node = node.next) {
                 const oldIndex = node.index;
                 // DEBUG: const flags = this.m_flagsBuffer.data[oldIndex];
@@ -5226,7 +5214,7 @@ export class b2ParticleSystem {
 }
 
 export class b2ParticleSystem_Proxy {
-    public index: number = b2_invalidParticleIndex;
+    public index = b2_invalidParticleIndex;
 
     public tag = 0;
 
@@ -5360,7 +5348,7 @@ export class b2ParticleSystem_FixedSetAllocator<T> {
 export class b2ParticleSystem_FixtureParticle {
     public first: b2Fixture;
 
-    public second: number = b2_invalidParticleIndex;
+    public second = b2_invalidParticleIndex;
 
     constructor(fixture: b2Fixture, particle: number) {
         this.first = fixture;
@@ -5385,9 +5373,9 @@ export class b2ParticleSystem_FixtureParticleSet extends b2ParticleSystem_FixedS
 }
 
 export class b2ParticleSystem_ParticlePair {
-    public first: number = b2_invalidParticleIndex;
+    public first = b2_invalidParticleIndex;
 
-    public second: number = b2_invalidParticleIndex;
+    public second = b2_invalidParticleIndex;
 
     constructor(particleA: number, particleB: number) {
         this.first = particleA;
@@ -5461,7 +5449,7 @@ export class b2ParticleSystem_JoinParticleGroupsFilter extends b2ParticleSystem_
 }
 
 export class b2ParticleSystem_CompositeShape extends b2Shape {
-    constructor(shapes: b2Shape[], shapeCount: number = shapes.length) {
+    constructor(shapes: b2Shape[], shapeCount = shapes.length) {
         super(b2ShapeType.e_unknown, 0);
         this.m_shapes = shapes;
         this.m_shapeCount = shapeCount;
