@@ -1,6 +1,6 @@
 {
   "name": "@box2d/benchmark",
-  "version": "0.7.4",
+  "version": "0.7.5",
   "description": "A benchmark to compare various js/ts Box2D implementations",
   "keywords": [
     "box2d",
@@ -35,7 +35,7 @@
     "> 5%"
   ],
   "dependencies": {
-    "@box2d/core": "^0.7.4",
+    "@box2d/core": "^0.7.5",
     "@flyover/box2d": "^1.0.1",
     "box2d.js": "^1.0.4",
     "planck-js": "^0.3.22"
