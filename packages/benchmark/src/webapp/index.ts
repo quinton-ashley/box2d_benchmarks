@@ -1,5 +1,5 @@
 import { tests } from "..";
-import { logResults, prepareTests, resultsToMarkdown, runTestAsync, TestResult } from "../testRunner";
+import { prepareTests, resultsToMarkdown, runTestAsync, TestResult } from "../testRunner";
 import { getBrowserInfo } from "./browserInfo";
 
 const startButton = document.getElementById("start") as HTMLButtonElement;
