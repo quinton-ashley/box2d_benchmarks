@@ -1,6 +1,6 @@
 {
   "name": "@box2d/benchmark",
-  "version": "0.7.1",
+  "version": "0.7.2",
   "description": "A benchmark to compare various js/ts Box2D implementations",
   "homepage": "https://github.com/lusito/box2d.ts",
   "bugs": {
@@ -28,7 +28,7 @@
     "> 5%"
   ],
   "dependencies": {
-    "@box2d/core": "^0.7.1",
+    "@box2d/core": "^0.7.2",
     "@flyover/box2d": "^1.0.1",
     "box2d.js": "^1.0.4",
     "planck-js": "^0.3.22"
