@@ -3,3 +3,4 @@ dist/
 .cache/
 *.tgz
 .changelog/
+lerna-debug.log
