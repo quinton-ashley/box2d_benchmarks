@@ -24,7 +24,7 @@
     "lint:style": "yarn run lint:style:base --check",
     "lint:style:base": "prettier packages/*/src/**/*.{ts,tsx,js,json} packages/*/*.{ts,tsx,js,json}",
     "lint:style:fix": "yarn run lint:style:base --write",
-    "publish": "lerna publish",
+    "release": "lerna publish",
     "start": "yarn workspace @box2d/testbed start",
     "start:fresh": "yarn run build:libs && yarn workspace @box2d/testbed start"
   },
