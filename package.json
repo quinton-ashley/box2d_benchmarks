@@ -12,7 +12,6 @@
     "bench": "yarn workspace @box2d/benchmark test",
     "bench:web": "yarn workspace @box2d/benchmark start",
     "build:libs": "yarn workspace @box2d/core build && yarn workspace @box2d/controllers build && yarn workspace @box2d/particles build && yarn workspace @box2d/lights build",
-    "changes": "lerna-changelog",
     "lint": "yarn run lint:es && yarn run lint:scss && yarn run lint:package && yarn run lint:style",
     "lint:es": "eslint packages/*/src/**/*.{ts,tsx} --ext .ts,.tsx --ignore-path .prettierignore",
     "lint:es:fix": "yarn run lint:es --fix",
@@ -33,7 +32,6 @@
     "@lusito/prettier-config": "^1.2.0",
     "@lusito/stylelint-config": "^1.2.0",
     "lerna": "^3.22.1",
-    "lerna-changelog": "^1.0.1",
     "sort-package-json": "^1.46.0"
   }
 }
