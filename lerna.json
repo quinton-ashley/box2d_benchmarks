@@ -1,0 +1,22 @@
+{
+  "version": "0.7.0",
+  "packages": ["packages/*"],
+  "npmClient": "yarn",
+  "useWorkspaces": true,
+  "changelog": {
+    "repo": "lusito/box2d.ts",
+    "cacheDir": ".changelog",
+    "labels": {
+      "Breaking Change": ":boom: Breaking Change",
+      "New Feature": ":rocket: New Feature",
+      "Bug Fix": ":beetle: Bug Fix",
+      "Cleanup": ":rainbow: Cleanup",
+      "Refactoring": ":construction: Refactoring",
+      "Documentation": ":books: Documentation",
+      "Tooling": ":wrench: Tooling",
+      "Performance": ":chart_with_upwards_trend: Performance",
+      "Demo": ":video_game: Demo",
+      "Dependency Update": ":arrow_up: Dependency Update"
+    }
+  }
+}
