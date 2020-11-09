@@ -1,6 +1,6 @@
 # @box2d Monorepository
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-5-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-6-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 Work in Progress of a full Box2D ecosystem for the web.
@@ -61,6 +61,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="http://nekland.fr/"><img src="https://avatars1.githubusercontent.com/u/972456?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Maxime Veber</b></sub></a><br /><a href="https://github.com/Lusito/box2d.ts/commits?author=Nek-" title="Code">💻</a></td>
     <td align="center"><a href="http://fins.iteye.com/"><img src="https://avatars3.githubusercontent.com/u/288367?v=4?s=100" width="100px;" alt=""/><br /><sub><b>finscn</b></sub></a><br /><a href="https://github.com/Lusito/box2d.ts/commits?author=finscn" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/Lusito"><img src="https://avatars0.githubusercontent.com/u/1135267?v=4?s=100" width="100px;" alt=""/><br /><sub><b>lusito</b></sub></a><br /><a href="https://github.com/Lusito/box2d.ts/commits?author=Lusito" title="Code">💻</a> <a href="#maintenance-Lusito" title="Maintenance">🚧</a></td>
+    <td align="center"><a href="https://github.com/DanielHZhang"><img src="https://avatars0.githubusercontent.com/u/30360288?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Daniel Zhang</b></sub></a><br /><a href="#ideas-DanielHZhang" title="Ideas, Planning, & Feedback">🤔</a></td>
   </tr>
 </table>
 

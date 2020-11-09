@@ -51,6 +51,15 @@
         "code",
         "maintenance"
       ]
+    },
+    {
+      "login": "DanielHZhang",
+      "name": "Daniel Zhang",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/30360288?v=4",
+      "profile": "https://github.com/DanielHZhang",
+      "contributions": [
+        "ideas"
+      ]
     }
   ],
   "contributorsPerLine": 7,
