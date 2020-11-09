@@ -34,9 +34,9 @@ import { b2TimeStep, b2Position, b2Velocity } from "./b2_time_step";
 
 let g_blockSolve = true;
 
-export const b2SetBlockSolve = (value: boolean) => {
+export function b2SetBlockSolve(value: boolean) {
     g_blockSolve = value;
-};
+}
 
 export class b2VelocityConstraintPoint {
     public readonly rA = new b2Vec2();

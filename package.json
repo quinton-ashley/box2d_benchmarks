@@ -6,7 +6,8 @@
     "packages/particles",
     "packages/lights",
     "packages/testbed",
-    "packages/benchmark"
+    "packages/benchmark",
+    "packages/updiff"
   ],
   "scripts": {
     "bench": "yarn workspace @box2d/benchmark test",
@@ -26,7 +27,8 @@
     "lint:style:fix": "yarn run lint:style:base --write",
     "release": "lerna publish",
     "start": "yarn workspace @box2d/testbed start",
-    "start:fresh": "yarn run build:libs && yarn workspace @box2d/testbed start"
+    "start:fresh": "yarn run build:libs && yarn workspace @box2d/testbed start",
+    "updiff": "yarn workspace @box2d/updiff start"
   },
   "devDependencies": {
     "@lusito/eslint-config-react": "^1.3.1",
