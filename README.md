@@ -1,6 +1,6 @@
 # @box2d Monorepository
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-5-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 Work in Progress of a full Box2D ecosystem for the web.
@@ -19,6 +19,7 @@ Most important commands to execute from the root folder (you need [yarn](https:/
 - `yarn` ->  install dependencies
 - `yarn workspaces run build` ->  build all projects
 - `yarn build:libs` ->  build only the libraries
+- `yarn credit "<username>" <type>` ->  Add user to all contributors list. Use quotes, as otherwise wrong people get added.
 - `yarn start` ->  Run testbed locally
 - `yarn start:fresh` ->  Run testbed locally after building all libraries freshly
 - `yarn run bench` ->  Run the benchmark using node.js
@@ -55,12 +56,17 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <!-- markdownlint-disable -->
 <table>
   <tr>
-    <td align="center"><a href="http://box2d.org"><img src="https://avatars2.githubusercontent.com/u/7284063?v=4" width="100px;" alt=""/><br /><sub><b>Erin Catto</b></sub></a><br /><a href="https://github.com/Lusito/box2d.ts/commits?author=erincatto" title="Code">💻</a></td>
+    <td align="center"><a href="http://box2d.org"><img src="https://avatars2.githubusercontent.com/u/7284063?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Erin Catto</b></sub></a><br /><a href="https://github.com/Lusito/box2d.ts/commits?author=erincatto" title="Code">💻</a></td>
+    <td align="center"><a href="http://flyovergames.com/"><img src="https://avatars0.githubusercontent.com/u/1216696?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Isaac Burns</b></sub></a><br /><a href="https://github.com/Lusito/box2d.ts/commits?author=flyover" title="Code">💻</a> <a href="#platform-flyover" title="Packaging/porting to new platform">📦</a></td>
+    <td align="center"><a href="http://nekland.fr/"><img src="https://avatars1.githubusercontent.com/u/972456?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Maxime Veber</b></sub></a><br /><a href="https://github.com/Lusito/box2d.ts/commits?author=Nek-" title="Code">💻</a></td>
+    <td align="center"><a href="http://fins.iteye.com/"><img src="https://avatars3.githubusercontent.com/u/288367?v=4?s=100" width="100px;" alt=""/><br /><sub><b>finscn</b></sub></a><br /><a href="https://github.com/Lusito/box2d.ts/commits?author=finscn" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/Lusito"><img src="https://avatars0.githubusercontent.com/u/1135267?v=4?s=100" width="100px;" alt=""/><br /><sub><b>lusito</b></sub></a><br /><a href="https://github.com/Lusito/box2d.ts/commits?author=Lusito" title="Code">💻</a> <a href="#maintenance-Lusito" title="Maintenance">🚧</a></td>
   </tr>
 </table>
 
-<!-- markdownlint-enable -->
+<!-- markdownlint-restore -->
 <!-- prettier-ignore-end -->
+
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
