@@ -21,6 +21,7 @@ export interface ClassType {
 export interface EnumType {
     name: string;
     body: string;
+    comment: string;
 }
 export interface UnionType {
     name: string;
@@ -204,6 +205,7 @@ export function writeModule(type: "cpp" | "ts", name: string, module: ModuleType
     if (module.enums.length) {
         for (const entry of module.enums.sort((a, b) => (a.name < b.name ? -1 : 1))) {
             const lines: string[] = [];
+            lines.push(entry.comment);
             lines.push(entry.body);
             lines.push("\n");
             writeFile("enum", entry.name, lines);

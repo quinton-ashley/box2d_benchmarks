@@ -123,7 +123,9 @@ function parseClass(line: string, lines: string[], module: ModuleType, comment: 
             module.enums.push({
                 name: `${classEntry.name}::${(enumName || "").trim()}`,
                 body: fixComment(enumBody),
+                comment: comments.join("\n"),
             });
+            comments.length = 0;
         } else if (unionRegex.test(classLineTrimmed)) {
             parseBody(classLines, classLine);
         } else if (modifierRegex.test(classLineTrimmed)) {
@@ -197,7 +199,9 @@ function parseFile(file: string, module: ModuleType) {
             module.enums.push({
                 name: (enumName || "").trim(),
                 body: fixComment(enumBody),
+                comment: comments.join("\n"),
             });
+            comments.length = 0;
         } else if (unionRegex.test(lineTrimmed)) {
             parseBody(lines, line);
         } else if (classRegex.test(lineTrimmed)) {

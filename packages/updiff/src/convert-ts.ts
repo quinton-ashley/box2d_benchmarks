@@ -221,7 +221,9 @@ function parseFile(file: string, module: ModuleType) {
             module.enums.push({
                 name: (enumName || "").trim(),
                 body: enumBody,
+                comment: comments.join("\n"),
             });
+            comments.length = 0;
         } else if (classRegex.test(lineTrimmed)) {
             const comment = comments.join("\n");
             comments.length = 0;
