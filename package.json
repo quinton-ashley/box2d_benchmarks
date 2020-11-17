@@ -29,7 +29,9 @@
     "release": "lerna publish",
     "start": "yarn workspace @box2d/testbed start",
     "start:fresh": "yarn run build:libs && yarn workspace @box2d/testbed start",
-    "updiff": "yarn workspace @box2d/updiff start"
+    "updiff": "yarn workspace @box2d/updiff start",
+    "updiff:cpp": "yarn workspace @box2d/updiff run convert:cpp",
+    "updiff:ts": "yarn workspace @box2d/updiff run convert:ts"
   },
   "devDependencies": {
     "@lusito/eslint-config-react": "^1.3.1",

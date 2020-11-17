@@ -46,7 +46,7 @@ const functionRegex = /(?:export )?\s*([a-z0-9_]+)\s*\((.*)\)/i;
 const methodRegexDef = /^(public |private |protected )?(?:abstract )?\s*([a-z0-9_]+)\s*\((.*)\): .*;/i;
 const methodRegex = /^(public |private |protected |readonly |static |get |set )*\s*([a-z0-9_]+)\s*(?:=\s*)?\((.*)\)/i;
 const templateRegex = /<[^>]+>/g;
-const ignoreLinesRegex = /^(#ifndef|#ifdef|#else|#endif|#include|export type|type)\b/;
+const ignoreLinesRegex = /^(#ifndef|#ifdef|#else|#endif|#include|export type |type )\b/;
 const paramNameCharRegex = /[a-z0-9_.{}[\],\s]/i;
 const openBracketsRegex = /[<[{(]/;
 const closeBracketsRegex = /[\]})]/;
