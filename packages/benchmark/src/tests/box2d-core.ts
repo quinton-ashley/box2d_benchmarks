@@ -8,7 +8,7 @@ export const box2dCoreFactory: TestFactory = (gravity, edgeV1, edgeV2, edgeDensi
 
     const edgeShape = new b2EdgeShape();
     edgeShape.SetTwoSided(new b2Vec2(edgeV1.x, edgeV1.y), new b2Vec2(edgeV2.x, edgeV2.y));
-    ground.CreateFixture(edgeShape, edgeDensity);
+    ground.CreateFixture({ shape: edgeShape, density: edgeDensity });
 
     return {
         name: "@box2d/core",
@@ -24,7 +24,7 @@ export const box2dCoreFactory: TestFactory = (gravity, edgeV1, edgeV2, edgeDensi
                     y,
                 },
             });
-            body.CreateFixture(shape, density);
+            body.CreateFixture({ shape, density });
         },
         step(timeStep: number, velocityIterations: number, positionIterations: number) {
             world.Step(timeStep, { velocityIterations, positionIterations });

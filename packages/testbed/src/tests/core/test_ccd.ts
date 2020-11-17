@@ -34,7 +34,7 @@ export class TestCCD extends Test {
                 new b2Vec2(30.0, 40.0),
                 new b2Vec2(30.0, 0.0),
             ]);
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
         }
 
         // Always on, even if default is off

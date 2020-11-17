@@ -46,7 +46,7 @@ export class Pointy extends Test {
                 const shape = new b2PolygonShape();
                 const vertices = [new b2Vec2(x, -10.0), new b2Vec2(x + xstep, -10.0), new b2Vec2(0.0, 25.0)];
                 shape.Set(vertices, 3);
-                ground.CreateFixture(shape, 0.0);
+                ground.CreateFixture({ shape });
             }
         }
 

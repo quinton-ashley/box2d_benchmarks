@@ -39,7 +39,7 @@ export class ShapeEditing extends Test {
 
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(-40.0, 0.0), new b2Vec2(40.0, 0.0));
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
         }
 
         this.m_body = this.m_world.CreateBody({
@@ -49,7 +49,7 @@ export class ShapeEditing extends Test {
 
         const shape = new b2PolygonShape();
         shape.SetAsBox(4.0, 4.0, new b2Vec2(), 0.0);
-        this.m_fixture1 = this.m_body.CreateFixture(shape, 10.0);
+        this.m_fixture1 = this.m_body.CreateFixture({ shape, density: 10.0 });
     }
 
     getHotkeys(): HotKey[] {
@@ -59,7 +59,7 @@ export class ShapeEditing extends Test {
                     const shape = new b2CircleShape();
                     shape.m_radius = 3.0;
                     shape.m_p.Set(0.5, -4.0);
-                    this.m_fixture2 = this.m_body.CreateFixture(shape, 10.0);
+                    this.m_fixture2 = this.m_body.CreateFixture({ shape, density: 10.0 });
                     this.m_body.SetAwake(true);
                 }
             }),

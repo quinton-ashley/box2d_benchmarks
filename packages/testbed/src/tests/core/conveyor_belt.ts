@@ -33,7 +33,7 @@ export class ConveyorBelt extends Test {
 
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(-20.0, 0.0), new b2Vec2(20.0, 0.0));
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
         }
 
         // Platform
@@ -62,7 +62,7 @@ export class ConveyorBelt extends Test {
 
             const shape = new b2PolygonShape();
             shape.SetAsBox(0.5, 0.5);
-            body.CreateFixture(shape, 20.0);
+            body.CreateFixture({ shape, density: 20.0 });
         }
     }
 

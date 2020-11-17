@@ -69,14 +69,14 @@ export class MobileBalanced extends Test {
 
         const /* b2PolygonShape */ shape = new b2PolygonShape();
         shape.SetAsBox(0.25 * a, a);
-        body.CreateFixture(shape, density);
+        body.CreateFixture({ shape, density });
 
         if (depth === MobileBalanced.e_depth) {
             return body;
         }
 
         shape.SetAsBox(offset, 0.25 * a, new b2Vec2(0, -a), 0.0);
-        body.CreateFixture(shape, density);
+        body.CreateFixture({ shape, density });
 
         const /* b2Vec2 */ a1 = new b2Vec2(offset, -a);
         const /* b2Vec2 */ a2 = new b2Vec2(-offset, -a);

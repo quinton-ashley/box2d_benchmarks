@@ -40,7 +40,7 @@ export class CompoundShapes extends Test {
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(50.0, 0.0), new b2Vec2(-50.0, 0.0));
 
-            body.CreateFixture(shape, 0.0);
+            body.CreateFixture({ shape });
         }
 
         {
@@ -62,8 +62,8 @@ export class CompoundShapes extends Test {
                         y: 1.05 + 2.5 * i,
                     },
                 });
-                body.CreateFixture(circle1, 2.0);
-                body.CreateFixture(circle2, 0.0);
+                body.CreateFixture({ shape: circle1, density: 2.0 });
+                body.CreateFixture({ shape: circle2 });
             }
         }
 
@@ -81,8 +81,8 @@ export class CompoundShapes extends Test {
                     angle: b2RandomRange(-Math.PI, Math.PI),
                     position: { x: x - 5.0, y: 1.05 + 2.5 * i },
                 });
-                body.CreateFixture(polygon1, 2.0);
-                body.CreateFixture(polygon2, 2.0);
+                body.CreateFixture({ shape: polygon1, density: 2.0 });
+                body.CreateFixture({ shape: polygon2, density: 2.0 });
             }
         }
 
@@ -115,8 +115,8 @@ export class CompoundShapes extends Test {
                     position: { x: b2RandomRange(-0.1, 0.1), y: 2.05 + 2.5 * i },
                     angle: 0,
                 });
-                body.CreateFixture(triangle1, 2.0);
-                body.CreateFixture(triangle2, 2.0);
+                body.CreateFixture({ shape: triangle1, density: 2.0 });
+                body.CreateFixture({ shape: triangle2, density: 2.0 });
             }
         }
 
@@ -134,9 +134,9 @@ export class CompoundShapes extends Test {
                 type: b2BodyType.b2_dynamicBody,
                 position: { x: 0.0, y: 2.0 },
             });
-            body.CreateFixture(bottom, 4.0);
-            body.CreateFixture(left, 4.0);
-            body.CreateFixture(right, 4.0);
+            body.CreateFixture({ shape: bottom, density: 4.0 });
+            body.CreateFixture({ shape: left, density: 4.0 });
+            body.CreateFixture({ shape: right, density: 4.0 });
         }
     }
 

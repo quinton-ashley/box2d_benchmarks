@@ -44,7 +44,7 @@ export class AddPair extends Test {
                         y: b2RandomRange(minY, maxY),
                     },
                 });
-                body.CreateFixture(shape, 0.01);
+                body.CreateFixture({ shape, density: 0.01 });
             }
         }
 
@@ -59,7 +59,7 @@ export class AddPair extends Test {
                 },
                 bullet: true,
             });
-            body.CreateFixture(shape, 1.0);
+            body.CreateFixture({ shape, density: 1.0 });
             body.SetLinearVelocity(new b2Vec2(10.0, 0.0));
         }
     }

@@ -42,12 +42,12 @@ export class BulletTest extends Test {
             const edge = new b2EdgeShape();
 
             edge.SetTwoSided(new b2Vec2(-10.0, 0.0), new b2Vec2(10.0, 0.0));
-            body.CreateFixture(edge, 0.0);
+            body.CreateFixture({ shape: edge });
 
             /* b2PolygonShape */
             const shape = new b2PolygonShape();
             shape.SetAsBox(0.2, 1.0, new b2Vec2(0.5, 1.0), 0.0);
-            body.CreateFixture(shape, 0.0);
+            body.CreateFixture({ shape });
         }
 
         {
@@ -62,7 +62,7 @@ export class BulletTest extends Test {
                     y: 4.0,
                 },
             });
-            this.m_body.CreateFixture(box, 1.0);
+            this.m_body.CreateFixture({ shape: box, density: 1.0 });
 
             box.SetAsBox(0.25, 0.25);
 
@@ -77,7 +77,7 @@ export class BulletTest extends Test {
                     y: 10.0,
                 },
             });
-            this.m_bullet.CreateFixture(box, 100.0);
+            this.m_bullet.CreateFixture({ shape: box, density: 100.0 });
 
             this.m_bullet.SetLinearVelocity(new b2Vec2(0.0, -50.0));
         }

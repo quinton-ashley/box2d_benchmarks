@@ -46,17 +46,17 @@ export class AntiPointy extends Test {
                 const shape = new b2PolygonShape();
                 const vertices = [new b2Vec2(i, -10.0), new b2Vec2(i + step, -10.0), new b2Vec2(0.0, 15.0)];
                 shape.Set(vertices, 3);
-                ground.CreateFixture(shape, 0.0);
+                ground.CreateFixture({ shape });
             }
             for (let i = -10.0; i < 35.0; i += step) {
                 const shape = new b2PolygonShape();
                 const vertices = [new b2Vec2(-10.0, i), new b2Vec2(-10.0, i + step), new b2Vec2(0.0, 15.0)];
                 shape.Set(vertices, 3);
-                ground.CreateFixture(shape, 0.0);
+                ground.CreateFixture({ shape });
 
                 const vertices2 = [new b2Vec2(10.0, i), new b2Vec2(10.0, i + step), new b2Vec2(0.0, 15.0)];
                 shape.Set(vertices2, 3);
-                ground.CreateFixture(shape, 0.0);
+                ground.CreateFixture({ shape });
             }
         }
 

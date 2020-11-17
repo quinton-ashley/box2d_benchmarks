@@ -33,7 +33,7 @@ export class SphereStack extends Test {
 
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(-40.0, 0.0), new b2Vec2(40.0, 0.0));
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
         }
 
         {
@@ -46,7 +46,7 @@ export class SphereStack extends Test {
                     position: { x: 0.0, y: 4.0 + 3.0 * i },
                 });
 
-                this.m_bodies[i].CreateFixture(shape, 1.0);
+                this.m_bodies[i].CreateFixture({ shape, density: 1.0 });
 
                 this.m_bodies[i].SetLinearVelocity(new b2Vec2(0.0, -50.0));
             }

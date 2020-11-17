@@ -31,21 +31,21 @@ export class ElasticParticles extends Test {
                 const shape = new b2PolygonShape();
                 const vertices = [new b2Vec2(-4, -1), new b2Vec2(4, -1), new b2Vec2(4, 0), new b2Vec2(-4, 0)];
                 shape.Set(vertices, 4);
-                ground.CreateFixture(shape, 0.0);
+                ground.CreateFixture({ shape });
             }
 
             {
                 const shape = new b2PolygonShape();
                 const vertices = [new b2Vec2(-4, -0.1), new b2Vec2(-2, -0.1), new b2Vec2(-2, 2), new b2Vec2(-4, 2)];
                 shape.Set(vertices, 4);
-                ground.CreateFixture(shape, 0.0);
+                ground.CreateFixture({ shape });
             }
 
             {
                 const shape = new b2PolygonShape();
                 const vertices = [new b2Vec2(2, -0.1), new b2Vec2(4, -0.1), new b2Vec2(4, 2), new b2Vec2(2, 2)];
                 shape.Set(vertices, 4);
-                ground.CreateFixture(shape, 0.0);
+                ground.CreateFixture({ shape });
             }
         }
 
@@ -96,7 +96,7 @@ export class ElasticParticles extends Test {
             const shape = new b2CircleShape();
             shape.m_p.Set(0, 8);
             shape.m_radius = 0.5;
-            body.CreateFixture(shape, 0.5);
+            body.CreateFixture({ shape, density: 0.5 });
         }
     }
 

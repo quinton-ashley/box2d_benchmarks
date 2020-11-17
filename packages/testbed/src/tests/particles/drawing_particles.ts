@@ -103,28 +103,28 @@ export class DrawingParticles extends Test {
                 const shape = new b2PolygonShape();
                 const vertices = [new b2Vec2(-4, -2), new b2Vec2(4, -2), new b2Vec2(4, 0), new b2Vec2(-4, 0)];
                 shape.Set(vertices, 4);
-                ground.CreateFixture(shape, 0.0);
+                ground.CreateFixture({ shape });
             }
 
             {
                 const shape = new b2PolygonShape();
                 const vertices = [new b2Vec2(-4, -2), new b2Vec2(-2, -2), new b2Vec2(-2, 6), new b2Vec2(-4, 6)];
                 shape.Set(vertices, 4);
-                ground.CreateFixture(shape, 0.0);
+                ground.CreateFixture({ shape });
             }
 
             {
                 const shape = new b2PolygonShape();
                 const vertices = [new b2Vec2(2, -2), new b2Vec2(4, -2), new b2Vec2(4, 6), new b2Vec2(2, 6)];
                 shape.Set(vertices, 4);
-                ground.CreateFixture(shape, 0.0);
+                ground.CreateFixture({ shape });
             }
 
             {
                 const shape = new b2PolygonShape();
                 const vertices = [new b2Vec2(-4, 4), new b2Vec2(4, 4), new b2Vec2(4, 6), new b2Vec2(-4, 6)];
                 shape.Set(vertices, 4);
-                ground.CreateFixture(shape, 0.0);
+                ground.CreateFixture({ shape });
             }
         }
 

@@ -65,7 +65,7 @@ export class Revolute extends Test {
 
                 position: { x: -10.0, y: 20.0 },
             });
-            body.CreateFixture(shape, 5.0);
+            body.CreateFixture({ shape, density: 5.0 });
 
             const w = 100.0;
             body.SetAngularVelocity(w);
@@ -110,7 +110,7 @@ export class Revolute extends Test {
                 position: { x: 20.0, y: 10.0 },
                 bullet: true,
             });
-            polygon_body.CreateFixture(polygon_shape, 2.0);
+            polygon_body.CreateFixture({ shape: polygon_shape, density: 2.0 });
 
             const rjd = new b2RevoluteJointDef();
             rjd.Initialize(ground, polygon_body, new b2Vec2(20.0, 10.0));

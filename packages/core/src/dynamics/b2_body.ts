@@ -18,7 +18,7 @@
 
 // DEBUG: import { b2Assert } from "../common/b2_common";
 import { b2Vec2, b2Rot, b2Transform, b2Sweep, XY } from "../common/b2_math";
-import { b2Shape, b2MassData } from "../collision/b2_shape";
+import { b2MassData } from "../collision/b2_shape";
 import type { b2ContactEdge } from "./b2_contact";
 import { b2JointEdge } from "./b2_joint";
 import { b2Fixture, b2FixtureDef } from "./b2_fixture";
@@ -35,6 +35,8 @@ export enum b2BodyType {
     b2_dynamicBody,
 }
 
+/// A body definition holds all the data needed to construct a rigid body.
+/// You can safely re-use body definitions. Shapes are added to a body after construction.
 export interface b2BodyDef {
     /// The body type: static, kinematic, or dynamic.
     /// Note: if a dynamic body would have zero mass, the mass is set to one.
@@ -202,20 +204,6 @@ export class b2Body {
         this.m_fixtureCount = 0;
     }
 
-    public CreateFixture(def: b2FixtureDef): b2Fixture;
-
-    public CreateFixture(shape: b2Shape): b2Fixture;
-
-    public CreateFixture(shape: b2Shape, density: number): b2Fixture;
-
-    public CreateFixture(a: b2FixtureDef | b2Shape, b = 0): b2Fixture {
-        if (a instanceof b2Shape) {
-            // fixme: call directly to avoid overload check
-            return this.CreateShapeFixture(a, b);
-        }
-        return this.CreateFixtureDef(a);
-    }
-
     /// Creates a fixture and attach it to this body. Use this function if you need
     /// to set some fixture parameters, like friction. Otherwise you can create the
     /// fixture directly from a shape.
@@ -223,7 +211,7 @@ export class b2Body {
     /// Contacts are not created until the next time step.
     /// @param def the fixture definition.
     /// @warning This function is locked during callbacks.
-    public CreateFixtureDef(def: b2FixtureDef): b2Fixture {
+    public CreateFixture(def: b2FixtureDef): b2Fixture {
         b2Assert(!this.m_world.IsLocked());
 
         const fixture = new b2Fixture(this, def);
@@ -247,17 +235,6 @@ export class b2Body {
         this.m_world.m_newContacts = true;
 
         return fixture;
-    }
-
-    /// Creates a fixture from a shape and attach it to this body.
-    /// This is a convenience function. Use b2FixtureDef if you need to set parameters
-    /// like friction, restitution, user data, or filtering.
-    /// If the density is non-zero, this function automatically updates the mass of the body.
-    /// @param shape the shape to be cloned.
-    /// @param density the shape density (set to zero for static bodies).
-    /// @warning This function is locked during callbacks.
-    public CreateShapeFixture(shape: b2Shape, density = 0): b2Fixture {
-        return this.CreateFixtureDef({ shape, density });
     }
 
     /// Destroy a fixture. This removes the fixture from the broad-phase and

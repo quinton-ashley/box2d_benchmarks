@@ -59,7 +59,7 @@ export class OneSidedPlatform extends Test {
 
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(-40.0, 0.0), new b2Vec2(40.0, 0.0));
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
         }
 
         // Platform
@@ -70,7 +70,7 @@ export class OneSidedPlatform extends Test {
 
             const shape = new b2PolygonShape();
             shape.SetAsBox(3.0, 0.5);
-            this.m_platform = body.CreateFixture(shape, 0.0);
+            this.m_platform = body.CreateFixture({ shape });
 
             this.m_bottom = 10.0 - 0.5;
             this.m_top = 10.0 + 0.5;
@@ -86,7 +86,7 @@ export class OneSidedPlatform extends Test {
             this.m_radius = 0.5;
             const shape = new b2CircleShape();
             shape.m_radius = this.m_radius;
-            this.m_character = body.CreateFixture(shape, 20.0);
+            this.m_character = body.CreateFixture({ shape, density: 20.0 });
 
             body.SetLinearVelocity(new b2Vec2(0.0, -50.0));
 

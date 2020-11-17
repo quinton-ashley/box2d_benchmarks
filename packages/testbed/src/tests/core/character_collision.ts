@@ -33,7 +33,7 @@ export class CharacterCollision extends Test {
 
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(-20.0, 0.0), new b2Vec2(20.0, 0.0));
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
         }
 
         // Collinear edges with no adjacency information.
@@ -44,11 +44,11 @@ export class CharacterCollision extends Test {
 
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(-8.0, 1.0), new b2Vec2(-6.0, 1.0));
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
             shape.SetTwoSided(new b2Vec2(-6.0, 1.0), new b2Vec2(-4.0, 1.0));
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
             shape.SetTwoSided(new b2Vec2(-4.0, 1.0), new b2Vec2(-2.0, 1.0));
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
         }
 
         // Chain shape
@@ -66,7 +66,7 @@ export class CharacterCollision extends Test {
             /* b2ChainShape */
             const shape = new b2ChainShape();
             shape.CreateLoop(vs, 4);
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
         }
 
         // Square tiles. This shows that adjacency shapes may
@@ -77,11 +77,11 @@ export class CharacterCollision extends Test {
 
             const shape = new b2PolygonShape();
             shape.SetAsBox(1.0, 1.0, new b2Vec2(4.0, 3.0), 0.0);
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
             shape.SetAsBox(1.0, 1.0, new b2Vec2(6.0, 3.0), 0.0);
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
             shape.SetAsBox(1.0, 1.0, new b2Vec2(8.0, 3.0), 0.0);
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
         }
 
         // Square made from an edge loop. Collision should be smooth.
@@ -97,7 +97,7 @@ export class CharacterCollision extends Test {
             /* b2ChainShape */
             const shape = new b2ChainShape();
             shape.CreateLoop(vs, 4);
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
         }
 
         // Edge loop. Collision should be smooth.
@@ -121,7 +121,7 @@ export class CharacterCollision extends Test {
             /* b2ChainShape */
             const shape = new b2ChainShape();
             shape.CreateLoop(vs, 10);
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
         }
 
         // Square character 1

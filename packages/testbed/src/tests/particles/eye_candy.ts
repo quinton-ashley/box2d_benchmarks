@@ -26,19 +26,19 @@ export class EyeCandy extends Test {
 
         const shape = new b2PolygonShape();
         shape.SetAsBox(0.5, 10.0, new b2Vec2(20.0, 0.0), 0.0);
-        body.CreateFixture(shape, 5.0);
+        body.CreateFixture({ shape, density: 5.0 });
         shape.SetAsBox(0.5, 10.0, new b2Vec2(-20.0, 0.0), 0.0);
-        body.CreateFixture(shape, 5.0);
+        body.CreateFixture({ shape, density: 5.0 });
         shape.SetAsBox(0.5, 20.0, new b2Vec2(0.0, 10.0), Math.PI / 2.0);
-        body.CreateFixture(shape, 5.0);
+        body.CreateFixture({ shape, density: 5.0 });
         shape.SetAsBox(0.5, 20.0, new b2Vec2(0.0, -10.0), Math.PI / 2.0);
-        body.CreateFixture(shape, 5.0);
+        body.CreateFixture({ shape, density: 5.0 });
 
         this.m_mover = this.m_world.CreateBody({
             type: b2BodyType.b2_dynamicBody,
         });
         shape.SetAsBox(1.0, 5.0, new b2Vec2(0.0, 2.0), 0.0);
-        this.m_mover.CreateFixture(shape, 5.0);
+        this.m_mover.CreateFixture({ shape, density: 5.0 });
 
         const jd = new b2RevoluteJointDef();
         jd.bodyA = ground;

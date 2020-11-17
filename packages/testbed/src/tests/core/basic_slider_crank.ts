@@ -50,7 +50,7 @@ export class BasicSliderCrank extends Test {
                         y: 20,
                     },
                 });
-                body.CreateFixture(shape, 2.0);
+                body.CreateFixture({ shape, density: 2.0 });
 
                 /* b2RevoluteJointDef */
                 const rjd = new b2RevoluteJointDef();
@@ -74,7 +74,7 @@ export class BasicSliderCrank extends Test {
                         y: 20.0,
                     },
                 });
-                body.CreateFixture(shape, 2.0);
+                body.CreateFixture({ shape, density: 2.0 });
 
                 /* b2RevoluteJointDef */
                 const rjd = new b2RevoluteJointDef();
@@ -99,7 +99,7 @@ export class BasicSliderCrank extends Test {
                         y: 20,
                     },
                 });
-                body.CreateFixture(shape, 2.0);
+                body.CreateFixture({ shape, density: 2.0 });
 
                 /* b2RevoluteJointDef */
                 const rjd = new b2RevoluteJointDef();

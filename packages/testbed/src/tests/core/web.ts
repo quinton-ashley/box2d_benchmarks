@@ -48,7 +48,7 @@ export class Web extends Test {
 
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(-40.0, 0.0), new b2Vec2(40.0, 0.0));
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
         }
 
         {
@@ -59,25 +59,25 @@ export class Web extends Test {
                 type: b2BodyType.b2_dynamicBody,
                 position: { x: -5.0, y: 5.0 },
             }));
-            body0.CreateFixture(shape, 5.0);
+            body0.CreateFixture({ shape, density: 5.0 });
 
             const body1 = (this.m_bodies[1] = this.m_world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
                 position: { x: 5.0, y: 5.0 },
             }));
-            body1.CreateFixture(shape, 5.0);
+            body1.CreateFixture({ shape, density: 5.0 });
 
             const body2 = (this.m_bodies[2] = this.m_world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
                 position: { x: 5.0, y: 15.0 },
             }));
-            body2.CreateFixture(shape, 5.0);
+            body2.CreateFixture({ shape, density: 5.0 });
 
             const body3 = (this.m_bodies[3] = this.m_world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
                 position: { x: -5.0, y: 15.0 },
             }));
-            body3.CreateFixture(shape, 5.0);
+            body3.CreateFixture({ shape, density: 5.0 });
 
             const jd = new b2DistanceJointDef();
             let p1;

@@ -120,7 +120,7 @@ export class Car extends Test {
 
             const box = new b2PolygonShape();
             box.SetAsBox(10.0, 0.25);
-            body.CreateFixture(box, 1.0);
+            body.CreateFixture({ shape: box, density: 1.0 });
 
             const jd = new b2RevoluteJointDef();
             jd.Initialize(ground, body, body.GetPosition());
@@ -179,23 +179,23 @@ export class Car extends Test {
 
             position.Set(230.0, 0.5);
             body = this.m_world.CreateBody(bd);
-            body.CreateFixture(box, 0.5);
+            body.CreateFixture({ shape: box, density: 0.5 });
 
             position.Set(230.0, 1.5);
             body = this.m_world.CreateBody(bd);
-            body.CreateFixture(box, 0.5);
+            body.CreateFixture({ shape: box, density: 0.5 });
 
             position.Set(230.0, 2.5);
             body = this.m_world.CreateBody(bd);
-            body.CreateFixture(box, 0.5);
+            body.CreateFixture({ shape: box, density: 0.5 });
 
             position.Set(230.0, 3.5);
             body = this.m_world.CreateBody(bd);
-            body.CreateFixture(box, 0.5);
+            body.CreateFixture({ shape: box, density: 0.5 });
 
             position.Set(230.0, 4.5);
             body = this.m_world.CreateBody(bd);
-            body.CreateFixture(box, 0.5);
+            body.CreateFixture({ shape: box, density: 0.5 });
         }
 
         // Car
@@ -217,7 +217,7 @@ export class Car extends Test {
             const bd: b2BodyDef = { type: b2BodyType.b2_dynamicBody, position };
             position.Set(0.0, 1.0);
             this.m_car = this.m_world.CreateBody(bd);
-            this.m_car.CreateFixture(chassis, 1.0);
+            this.m_car.CreateFixture({ shape: chassis, density: 1.0 });
 
             const fd: b2FixtureDef = {
                 shape: circle,

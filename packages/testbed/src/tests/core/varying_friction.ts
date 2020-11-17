@@ -29,7 +29,7 @@ export class VaryingFriction extends Test {
 
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(-40.0, 0.0), new b2Vec2(40.0, 0.0));
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
         }
 
         {
@@ -40,7 +40,7 @@ export class VaryingFriction extends Test {
                 position: { x: -4.0, y: 22.0 },
                 angle: -0.25,
             });
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
         }
 
         {
@@ -50,7 +50,7 @@ export class VaryingFriction extends Test {
             const ground = this.m_world.CreateBody({
                 position: { x: 10.5, y: 19.0 },
             });
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
         }
 
         {
@@ -60,7 +60,7 @@ export class VaryingFriction extends Test {
                 position: { x: 4.0, y: 14.0 },
                 angle: 0.25,
             });
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
         }
 
         {
@@ -70,7 +70,7 @@ export class VaryingFriction extends Test {
             const ground = this.m_world.CreateBody({
                 position: { x: -10.5, y: 11.0 },
             });
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
         }
 
         {
@@ -80,7 +80,7 @@ export class VaryingFriction extends Test {
                 position: { x: -4.0, y: 6.0 },
                 angle: -0.25,
             });
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
         }
 
         {

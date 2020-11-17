@@ -101,7 +101,7 @@ export class MultipleParticleSystems extends Test {
             const ground = this.m_world.CreateBody();
             const shape = new b2PolygonShape();
             shape.SetAsBox(5.0, 0.1);
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
         }
 
         // Create a dynamic body to push around.
@@ -117,7 +117,7 @@ export class MultipleParticleSystems extends Test {
                 center,
                 0.0,
             );
-            body.CreateFixture(shape, 0.0);
+            body.CreateFixture({ shape });
             ///  b2MassData massData = { MultipleParticleSystems.k_boxMass, center, 0.0 };
             const massData = new b2MassData();
             massData.mass = MultipleParticleSystems.k_boxMass;

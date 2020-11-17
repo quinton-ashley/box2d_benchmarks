@@ -61,13 +61,13 @@ export class TheoJansen extends Test {
 
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(-50.0, 0.0), new b2Vec2(50.0, 0.0));
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
 
             shape.SetTwoSided(new b2Vec2(-50.0, 0.0), new b2Vec2(-50.0, 10.0));
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
 
             shape.SetTwoSided(new b2Vec2(50.0, 0.0), new b2Vec2(50.0, 10.0));
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
         }
 
         // Balls
@@ -79,7 +79,7 @@ export class TheoJansen extends Test {
                 type: b2BodyType.b2_dynamicBody,
                 position: { x: -40.0 + 2.0 * i, y: 0.5 },
             });
-            body.CreateFixture(shape, 1.0);
+            body.CreateFixture({ shape, density: 1.0 });
         }
 
         // Chassis

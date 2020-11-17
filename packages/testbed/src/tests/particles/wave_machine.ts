@@ -41,13 +41,13 @@ export class WaveMachine extends Test {
 
             const shape = new b2PolygonShape();
             shape.SetAsBox(0.05, 1.0, new b2Vec2(2.0, 0.0), 0.0);
-            body.CreateFixture(shape, 5.0);
+            body.CreateFixture({ shape, density: 5.0 });
             shape.SetAsBox(0.05, 1.0, new b2Vec2(-2.0, 0.0), 0.0);
-            body.CreateFixture(shape, 5.0);
+            body.CreateFixture({ shape, density: 5.0 });
             shape.SetAsBox(2.0, 0.05, new b2Vec2(0.0, 1.0), 0.0);
-            body.CreateFixture(shape, 5.0);
+            body.CreateFixture({ shape, density: 5.0 });
             shape.SetAsBox(2.0, 0.05, new b2Vec2(0.0, -1.0), 0.0);
-            body.CreateFixture(shape, 5.0);
+            body.CreateFixture({ shape, density: 5.0 });
 
             const jd = new b2RevoluteJointDef();
             jd.bodyA = ground;

@@ -35,7 +35,7 @@ export class Prismatic extends Test {
 
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(-40.0, 0.0), new b2Vec2(40.0, 0.0));
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
         }
 
         {
@@ -48,7 +48,7 @@ export class Prismatic extends Test {
                 angle: 0.5 * Math.PI,
                 allowSleep: false,
             });
-            body.CreateFixture(shape, 5.0);
+            body.CreateFixture({ shape, density: 5.0 });
 
             const pjd = new b2PrismaticJointDef();
 

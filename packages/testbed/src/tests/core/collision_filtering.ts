@@ -114,7 +114,7 @@ export class CollisionFiltering extends Test {
 
             const p = new b2PolygonShape();
             p.SetAsBox(0.5, 1.0);
-            body.CreateFixture(p, 1.0);
+            body.CreateFixture({ shape: p, density: 1.0 });
 
             const jd = new b2PrismaticJointDef();
             jd.bodyA = body2;

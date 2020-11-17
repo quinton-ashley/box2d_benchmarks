@@ -66,7 +66,7 @@ export class Mobile extends Test {
 
         const /* b2PolygonShape */ shape = new b2PolygonShape();
         shape.SetAsBox(0.25 * a, a);
-        body.CreateFixture(shape, density);
+        body.CreateFixture({ shape, density });
 
         if (depth === Mobile.e_depth) {
             return body;

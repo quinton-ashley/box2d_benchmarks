@@ -31,7 +31,7 @@ export class DamBreak extends Test {
             const shape = new b2ChainShape();
             const vertices = [new b2Vec2(-2, 0), new b2Vec2(2, 0), new b2Vec2(2, 4), new b2Vec2(-2, 4)];
             shape.CreateLoop(vertices, 4);
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
         }
 
         this.m_particleSystem.SetRadius(0.025 * 2); // HACK: increase particle radius

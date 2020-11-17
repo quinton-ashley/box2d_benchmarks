@@ -54,7 +54,7 @@ export class SensorTest extends Test {
         {
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(-40.0, 0.0), new b2Vec2(40.0, 0.0));
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
         }
 
         /*
@@ -88,7 +88,7 @@ export class SensorTest extends Test {
                     userData: this.m_touching[i],
                 });
 
-                this.m_bodies[i].CreateFixture(shape, 1.0);
+                this.m_bodies[i].CreateFixture({ shape, density: 1.0 });
             }
         }
     }

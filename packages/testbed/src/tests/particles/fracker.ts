@@ -452,7 +452,7 @@ export class Fracker extends Test {
             new b2Vec2(FrackerSettings.k_tileHalfWidth, FrackerSettings.k_tileHalfHeight),
             0,
         );
-        this.m_player.CreateFixture(shape, FrackerSettings.k_density);
+        this.m_player.CreateFixture({ shape, density: FrackerSettings.k_density });
         this.m_player.SetTransformVec(
             Fracker.TileToWorld(FrackerSettings.k_worldWidthTiles / 2, FrackerSettings.k_worldHeightTiles / 2),
             0,
@@ -509,7 +509,7 @@ export class Fracker extends Test {
             new b2Vec2(bottomLeft.x, topRight.y),
         ];
         shape.CreateLoop(vertices, 4);
-        ground.CreateFixture(shape, 0.0);
+        ground.CreateFixture({ shape });
     }
 
     /**
@@ -525,7 +525,7 @@ export class Fracker extends Test {
             Fracker.CenteredPosition(position),
             0,
         );
-        body.CreateFixture(shape, FrackerSettings.k_density);
+        body.CreateFixture({ shape, density: FrackerSettings.k_density });
         this.SetBody(x, y, body);
         this.SetMaterial(x, y, Fracker_Material.DIRT);
     }

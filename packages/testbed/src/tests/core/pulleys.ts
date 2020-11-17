@@ -41,10 +41,10 @@ export class Pulleys extends Test {
             circle.m_radius = 2.0;
 
             circle.m_p.Set(-10.0, y + b + L);
-            ground.CreateFixture(circle, 0.0);
+            ground.CreateFixture({ shape: circle });
 
             circle.m_p.Set(10.0, y + b + L);
-            ground.CreateFixture(circle, 0.0);
+            ground.CreateFixture({ shape: circle });
         }
 
         {
@@ -56,14 +56,14 @@ export class Pulleys extends Test {
                 // fixedRotation: true,
                 position: { x: -10.0, y },
             });
-            body1.CreateFixture(shape, 5.0);
+            body1.CreateFixture({ shape, density: 5.0 });
 
             const body2 = this.m_world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
                 // fixedRotation: true,
                 position: { x: 10.0, y },
             });
-            body2.CreateFixture(shape, 5.0);
+            body2.CreateFixture({ shape, density: 5.0 });
 
             const pulleyDef = new b2PulleyJointDef();
             const anchor1 = new b2Vec2(-10.0, y + b);

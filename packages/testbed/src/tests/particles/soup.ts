@@ -36,21 +36,21 @@ export class Soup extends Test {
             const shape = new b2PolygonShape();
             const vertices = [new b2Vec2(-4, -1), new b2Vec2(4, -1), new b2Vec2(4, 0), new b2Vec2(-4, 0)];
             shape.Set(vertices, 4);
-            this.m_ground.CreateFixture(shape, 0.0);
+            this.m_ground.CreateFixture({ shape });
         }
 
         {
             const shape = new b2PolygonShape();
             const vertices = [new b2Vec2(-4, -0.1), new b2Vec2(-2, -0.1), new b2Vec2(-2, 2), new b2Vec2(-4, 3)];
             shape.Set(vertices, 4);
-            this.m_ground.CreateFixture(shape, 0.0);
+            this.m_ground.CreateFixture({ shape });
         }
 
         {
             const shape = new b2PolygonShape();
             const vertices = [new b2Vec2(2, -0.1), new b2Vec2(4, -0.1), new b2Vec2(4, 3), new b2Vec2(2, 2)];
             shape.Set(vertices, 4);
-            this.m_ground.CreateFixture(shape, 0.0);
+            this.m_ground.CreateFixture({ shape });
         }
 
         this.m_particleSystem.SetRadius(0.035 * 2); // HACK: increase particle radius
@@ -73,7 +73,7 @@ export class Soup extends Test {
             const shape = new b2CircleShape();
             shape.m_p.Set(0, 0.5);
             shape.m_radius = 0.1;
-            body.CreateFixture(shape, 0.1);
+            body.CreateFixture({ shape, density: 0.1 });
             this.m_particleSystem.DestroyParticlesInShape(shape, body.GetTransform());
         }
 
@@ -83,7 +83,7 @@ export class Soup extends Test {
             });
             const shape = new b2PolygonShape();
             shape.SetAsBox(0.1, 0.1, new b2Vec2(-1, 0.5), 0);
-            body.CreateFixture(shape, 0.1);
+            body.CreateFixture({ shape, density: 0.1 });
             this.m_particleSystem.DestroyParticlesInShape(shape, body.GetTransform());
         }
 
@@ -93,7 +93,7 @@ export class Soup extends Test {
             });
             const shape = new b2PolygonShape();
             shape.SetAsBox(0.1, 0.1, new b2Vec2(1, 0.5), 0.5);
-            body.CreateFixture(shape, 0.1);
+            body.CreateFixture({ shape, density: 0.1 });
             this.m_particleSystem.DestroyParticlesInShape(shape, body.GetTransform());
         }
 
@@ -103,7 +103,7 @@ export class Soup extends Test {
             });
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(0, 2), new b2Vec2(0.1, 2.1));
-            body.CreateFixture(shape, 1);
+            body.CreateFixture({ shape, density: 1 });
             ///  b2MassData massData = {0.1f, 0.5f * (shape.m_vertex1 + shape.m_vertex2), 0.0f};
             const massData = new b2MassData();
             massData.mass = 0.1;
@@ -119,7 +119,7 @@ export class Soup extends Test {
             });
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(0.3, 2.0), new b2Vec2(0.4, 2.1));
-            body.CreateFixture(shape, 1);
+            body.CreateFixture({ shape, density: 1 });
             ///  b2MassData massData = {0.1f, 0.5f * (shape.m_vertex1 + shape.m_vertex2), 0.0f};
             const massData = new b2MassData();
             massData.mass = 0.1;
@@ -135,7 +135,7 @@ export class Soup extends Test {
             });
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(-0.3, 2.1), new b2Vec2(-0.2, 2.0));
-            body.CreateFixture(shape, 1);
+            body.CreateFixture({ shape, density: 1 });
             ///  b2MassData massData = {0.1f, 0.5f * (shape.m_vertex1 + shape.m_vertex2), 0.0f};
             const massData = new b2MassData();
             massData.mass = 0.1;

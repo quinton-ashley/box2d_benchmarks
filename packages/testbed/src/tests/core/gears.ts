@@ -52,7 +52,7 @@ export class Gears extends Test {
 
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(-50.0, 0.0), new b2Vec2(50.0, 0.0));
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
         }
 
         {
@@ -73,20 +73,20 @@ export class Gears extends Test {
                 type: b2BodyType.b2_staticBody,
                 position: bdPosition1,
             });
-            body1.CreateFixture(circle1, 5.0);
+            body1.CreateFixture({ shape: circle1, density: 5.0 });
 
             const body2 = this.m_world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
                 position: { x: 10.0, y: 8.0 },
             });
-            body2.CreateFixture(box, 5.0);
+            body2.CreateFixture({ shape: box, density: 5.0 });
 
             const bdPosition3 = { x: 10.0, y: 6.0 };
             const body3 = this.m_world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
                 position: bdPosition3,
             });
-            body3.CreateFixture(circle2, 5.0);
+            body3.CreateFixture({ shape: circle2, density: 5.0 });
 
             const jd1 = new b2RevoluteJointDef();
             jd1.Initialize(body2, body1, bdPosition1);
@@ -120,7 +120,7 @@ export class Gears extends Test {
                 type: b2BodyType.b2_dynamicBody,
                 position: bdPosition1,
             });
-            body1.CreateFixture(circle1, 5.0);
+            body1.CreateFixture({ shape: circle1, density: 5.0 });
 
             const jd1 = new b2RevoluteJointDef();
             jd1.bodyA = ground;
@@ -135,7 +135,7 @@ export class Gears extends Test {
                 type: b2BodyType.b2_dynamicBody,
                 position: bdPosition2,
             });
-            body2.CreateFixture(circle2, 5.0);
+            body2.CreateFixture({ shape: circle2, density: 5.0 });
 
             const jd2 = new b2RevoluteJointDef();
             jd2.Initialize(ground, body2, bdPosition2);
@@ -146,7 +146,7 @@ export class Gears extends Test {
                 type: b2BodyType.b2_dynamicBody,
                 position: bdPosition3,
             });
-            body3.CreateFixture(box, 5.0);
+            body3.CreateFixture({ shape: box, density: 5.0 });
 
             const jd3 = new b2PrismaticJointDef();
             jd3.Initialize(ground, body3, bdPosition3, new b2Vec2(0.0, 1.0));

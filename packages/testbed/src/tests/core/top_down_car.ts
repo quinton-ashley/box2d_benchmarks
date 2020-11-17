@@ -112,7 +112,7 @@ export class TDTire {
 
         const polygonShape = new b2PolygonShape();
         polygonShape.SetAsBox(0.5, 1.25);
-        const fixture = this.m_body.CreateFixture(polygonShape, 1); // shape, density
+        const fixture = this.m_body.CreateFixture({ shape: polygonShape, density: 1 }); // shape, density
         fixture.SetUserData(new CarTireFUD());
 
         this.m_body.SetUserData(this);
@@ -265,7 +265,7 @@ export class TDCar {
         vertices[7] = new b2Vec2(-1.5, 0);
         const polygonShape = new b2PolygonShape();
         polygonShape.Set(vertices, 8);
-        this.m_body.CreateFixture(polygonShape, 0.1); // shape, density
+        this.m_body.CreateFixture({ shape: polygonShape, density: 0.1 }); // shape, density
 
         // prepare common joint parameters
         const jointDef = new b2RevoluteJointDef();

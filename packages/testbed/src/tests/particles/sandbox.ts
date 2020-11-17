@@ -352,7 +352,7 @@ export class Sandbox extends Test {
             const shape = new b2PolygonShape();
             const vertices = [new b2Vec2(-40, -10), new b2Vec2(40, -10), new b2Vec2(40, 0), new b2Vec2(-40, 0)];
             shape.Set(vertices, 4);
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
         }
 
         {
@@ -364,7 +364,7 @@ export class Sandbox extends Test {
                 new b2Vec2(SandboxParams.k_playfieldLeftEdge - 20, 50),
             ];
             shape.Set(vertices, 4);
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
         }
 
         {
@@ -376,7 +376,7 @@ export class Sandbox extends Test {
                 new b2Vec2(SandboxParams.k_playfieldRightEdge, 50),
             ];
             shape.Set(vertices, 4);
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
         }
 
         this.m_particleSystem.SetRadius(0.25);
@@ -526,7 +526,7 @@ export class Sandbox extends Test {
             type,
             position: center,
         });
-        body.CreateFixture(shape, 10.0);
+        body.CreateFixture({ shape, density: 10.0 });
     }
 
     // Inititalizes a pump and its prismatic joint, and adds it to the world
@@ -542,7 +542,7 @@ export class Sandbox extends Test {
             type: b2BodyType.b2_dynamicBody,
             angle: 0,
         });
-        body.CreateFixture(shape, 5.0);
+        body.CreateFixture({ shape, density: 5.0 });
 
         // Create a prismatic joint and connect to the ground, and have it
         // slide along the x axis.

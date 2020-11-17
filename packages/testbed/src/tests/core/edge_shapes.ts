@@ -71,7 +71,7 @@ export class EdgeShapes extends Test {
 
                 const shape = new b2EdgeShape();
                 shape.SetTwoSided(new b2Vec2(x1, y1), new b2Vec2(x2, y2));
-                ground.CreateFixture(shape, 0.0);
+                ground.CreateFixture({ shape });
 
                 x1 = x2;
                 y1 = y2;

@@ -43,7 +43,7 @@ export class SoupStirrer extends Soup {
         this.m_stirrer = this.m_world.CreateBody({
             type: b2BodyType.b2_dynamicBody,
         });
-        this.m_stirrer.CreateFixture(shape, 1.0);
+        this.m_stirrer.CreateFixture({ shape, density: 1.0 });
 
         // Destroy all particles under the stirrer.
         const xf = new b2Transform();

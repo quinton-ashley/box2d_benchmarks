@@ -61,7 +61,7 @@ export class BodyTypes extends Test {
             /* b2PolygonShape */
             const shape = new b2PolygonShape();
             shape.SetAsBox(0.5, 2.0);
-            this.m_attachment.CreateFixture(shape, 2.0);
+            this.m_attachment.CreateFixture({ shape, density: 2.0 });
         }
 
         // Define platform

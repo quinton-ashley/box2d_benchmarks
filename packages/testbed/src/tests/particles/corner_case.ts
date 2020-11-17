@@ -42,7 +42,7 @@ export class CornerCase extends Test {
                     new b2Vec2(-25.0, 30.0),
                 ];
                 shape.Set(vertices);
-                ground.CreateFixture(shape, 0.0);
+                ground.CreateFixture({ shape });
             }
 
             const yrange = 30.0;
@@ -54,21 +54,21 @@ export class CornerCase extends Test {
                 const shape = new b2PolygonShape();
                 const vertices = [new b2Vec2(-25.0, 0.0), new b2Vec2(20.0, 15.0), new b2Vec2(25.0, 0.0)];
                 shape.Set(vertices);
-                ground.CreateFixture(shape, 0.0);
+                ground.CreateFixture({ shape });
             }
 
             for (let x = -xrange; x < xrange; x += xstep) {
                 const shape = new b2PolygonShape();
                 const vertices = [new b2Vec2(-25.0, 0.0), new b2Vec2(x, 15.0), new b2Vec2(x + xstep, 15.0)];
                 shape.Set(vertices);
-                ground.CreateFixture(shape, 0.0);
+                ground.CreateFixture({ shape });
             }
 
             for (let y = 0.0; y < yrange; y += ystep) {
                 const shape = new b2PolygonShape();
                 const vertices = [new b2Vec2(25.0, y), new b2Vec2(25.0, y + ystep), new b2Vec2(20.0, 15.0)];
                 shape.Set(vertices);
-                ground.CreateFixture(shape, 0.0);
+                ground.CreateFixture({ shape });
             }
         }
 

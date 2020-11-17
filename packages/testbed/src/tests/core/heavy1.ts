@@ -31,7 +31,7 @@ export class HeavyOnLight extends Test {
             /* b2EdgeShape */
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(-40.0, 0.0), new b2Vec2(40.0, 0.0));
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
         }
 
         /* b2Body */
@@ -43,13 +43,13 @@ export class HeavyOnLight extends Test {
         /* b2CircleShape */
         const shape = new b2CircleShape();
         shape.m_radius = 0.5;
-        body.CreateFixture(shape, 10.0);
+        body.CreateFixture({ shape, density: 10.0 });
 
         body = this.m_world.CreateBody({
             type: b2BodyType.b2_dynamicBody,
             position: { x: 0.0, y: 6.0 },
         });
         shape.m_radius = 5.0;
-        body.CreateFixture(shape, 10.0);
+        body.CreateFixture({ shape, density: 10.0 });
     }
 }

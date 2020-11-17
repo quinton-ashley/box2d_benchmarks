@@ -53,7 +53,7 @@ export class DistanceJoint extends Test {
         const ground = this.m_world.CreateBody();
         const edgeShape = new b2EdgeShape();
         edgeShape.SetTwoSided(new b2Vec2(-40.0, 0.0), new b2Vec2(40.0, 0.0));
-        ground.CreateFixture(edgeShape, 0.0);
+        ground.CreateFixture({ shape: edgeShape });
 
         const position = {
             x: 0,
@@ -67,7 +67,7 @@ export class DistanceJoint extends Test {
 
         const shape = new b2PolygonShape();
         shape.SetAsBox(0.5, 0.5);
-        body.CreateFixture(shape, 5.0);
+        body.CreateFixture({ shape, density: 5.0 });
 
         this.m_hertz = 1.0;
         this.m_dampingRatio = 0.7;

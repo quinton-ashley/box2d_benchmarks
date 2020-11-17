@@ -42,7 +42,7 @@ export class DominoTower extends Test {
             const body = world.CreateBody({
                 position: { x: 0, y: -10 },
             });
-            body.CreateFixture(sd, 0);
+            body.CreateFixture({ shape: sd, density: 0 });
         }
 
         {

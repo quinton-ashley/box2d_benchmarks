@@ -62,7 +62,7 @@ export class Breakable extends Test {
             /* b2EdgeShape */
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(-40.0, 0.0), new b2Vec2(40.0, 0.0));
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
         }
 
         // Breakable dynamic body
@@ -77,11 +77,11 @@ export class Breakable extends Test {
 
         this.m_shape1 = new b2PolygonShape();
         this.m_shape1.SetAsBox(0.5, 0.5, new b2Vec2(-0.5, 0.0), 0.0);
-        this.m_piece1 = this.m_body1.CreateFixture(this.m_shape1, 1.0);
+        this.m_piece1 = this.m_body1.CreateFixture({ shape: this.m_shape1, density: 1.0 });
 
         this.m_shape2 = new b2PolygonShape();
         this.m_shape2.SetAsBox(0.5, 0.5, new b2Vec2(0.5, 0.0), 0.0);
-        this.m_piece2 = this.m_body1.CreateFixture(this.m_shape2, 1.0);
+        this.m_piece2 = this.m_body1.CreateFixture({ shape: this.m_shape2, density: 1.0 });
     }
 
     public PostSolve(contact: b2Contact, impulse: b2ContactImpulse) {
@@ -121,7 +121,7 @@ export class Breakable extends Test {
             position: body1.GetPosition(),
             angle: body1.GetAngle(),
         });
-        this.m_piece2 = body2.CreateFixture(this.m_shape2, 1.0);
+        this.m_piece2 = body2.CreateFixture({ shape: this.m_shape2, density: 1.0 });
 
         // Compute consistent velocities for new bodies based on
         // cached velocity.

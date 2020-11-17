@@ -63,7 +63,7 @@ export class Tiles extends Test {
                         /* b2PolygonShape */
                         const shape = new b2PolygonShape();
                         shape.SetAsBox(a, a, position, 0.0);
-                        ground.CreateFixture(shape, 0.0);
+                        ground.CreateFixture({ shape });
                         ++this.m_fixtureCount;
                         position.x += 2.0 * a;
                     }
@@ -83,7 +83,7 @@ export class Tiles extends Test {
             //        {
             //          /*b2PolygonShape*/ const shape = new b2PolygonShape();
             //          shape.SetAsBox(a, a, position, 0.0);
-            //          ground.CreateFixture(shape, 0.0);
+            //          ground.CreateFixture({ shape });
             //          position.y -= 2.0 * a;
             //        }
             //        position.x += 2.0 * a;
@@ -117,7 +117,7 @@ export class Tiles extends Test {
                         position: y,
                         // allowSleep: i !== 0 || j !== 0,
                     });
-                    body.CreateFixture(shape, 5.0);
+                    body.CreateFixture({ shape, density: 5.0 });
                     ++this.m_fixtureCount;
                     y.Add(deltaY);
                 }

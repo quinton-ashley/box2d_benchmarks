@@ -305,7 +305,7 @@ export class OfficialDemo extends Test {
         this.groundBody = this.m_world.CreateBody({
             type: b2BodyType.b2_staticBody,
         });
-        const fixture = this.groundBody.CreateFixture(chainShape, 0);
+        const fixture = this.groundBody.CreateFixture({ shape: chainShape, density: 0 });
         fixture.m_filter.categoryBits = Category.WORLD;
         fixture.m_filter.maskBits = Mask.WORLD;
         fixture.Refilter();

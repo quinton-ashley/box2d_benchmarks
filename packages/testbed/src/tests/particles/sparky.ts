@@ -201,7 +201,7 @@ export class Sparky extends Test {
             const shape = new b2CircleShape();
             shape.m_p.Set(3.0 * RandomFloat(), Sparky.SHAPE_HEIGHT_OFFSET + Sparky.SHAPE_OFFSET * i);
             shape.m_radius = 2;
-            const f = body.CreateFixture(shape, 0.5);
+            const f = body.CreateFixture({ shape, density: 0.5 });
             // Tag this as a sparkable body.
             f.SetUserData({
                 spark: true,
@@ -296,28 +296,28 @@ export class Sparky extends Test {
             const shape = new b2PolygonShape();
             const vertices = [new b2Vec2(-40, -10), new b2Vec2(40, -10), new b2Vec2(40, 0), new b2Vec2(-40, 0)];
             shape.Set(vertices, 4);
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
         }
 
         {
             const shape = new b2PolygonShape();
             const vertices = [new b2Vec2(-40, 40), new b2Vec2(40, 40), new b2Vec2(40, 50), new b2Vec2(-40, 50)];
             shape.Set(vertices, 4);
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
         }
 
         {
             const shape = new b2PolygonShape();
             const vertices = [new b2Vec2(-40, -10), new b2Vec2(-20, -10), new b2Vec2(-20, 50), new b2Vec2(-40, 50)];
             shape.Set(vertices, 4);
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
         }
 
         {
             const shape = new b2PolygonShape();
             const vertices = [new b2Vec2(20, -10), new b2Vec2(40, -10), new b2Vec2(40, 50), new b2Vec2(20, 50)];
             shape.Set(vertices, 4);
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
         }
     }
 }

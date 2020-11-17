@@ -48,7 +48,7 @@ export class Impulse extends Test {
             ];
             const shape = new b2ChainShape();
             shape.CreateLoop(box, box.length);
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
         }
 
         this.m_particleSystem.SetRadius(0.025 * 2); // HACK: increase particle radius

@@ -38,14 +38,14 @@ export class Ramp extends Test {
                 const shape = new b2PolygonShape();
                 const vertices = [new b2Vec2(-25.0, y), new b2Vec2(-25.0, y - ystep), new b2Vec2(0.0, 15.0)];
                 shape.Set(vertices, 3);
-                ground.CreateFixture(shape, 0.0);
+                ground.CreateFixture({ shape });
             }
 
             for (let x = -25.0; x < 25.0; x += xstep) {
                 const shape = new b2PolygonShape();
                 const vertices = [new b2Vec2(x, 0.0), new b2Vec2(x + xstep, 0.0), new b2Vec2(0.0, 15.0)];
                 shape.Set(vertices, 3);
-                ground.CreateFixture(shape, 0.0);
+                ground.CreateFixture({ shape });
             }
         }
 

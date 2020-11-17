@@ -41,7 +41,7 @@ export class Dominos extends Test {
             shape.SetTwoSided(new b2Vec2(-40.0, 0.0), new b2Vec2(40.0, 0.0));
 
             b1 = this.m_world.CreateBody();
-            b1.CreateFixture(shape, 0.0);
+            b1.CreateFixture({ shape });
         }
 
         {
@@ -51,7 +51,7 @@ export class Dominos extends Test {
             const ground = this.m_world.CreateBody({
                 position: { x: -1.5, y: 10.0 },
             });
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
         }
 
         {
@@ -80,7 +80,7 @@ export class Dominos extends Test {
             const ground = this.m_world.CreateBody({
                 position: { x: 1.0, y: 6.0 },
             });
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
         }
 
         let b2 = null;
@@ -91,7 +91,7 @@ export class Dominos extends Test {
             b2 = this.m_world.CreateBody({
                 position: { x: -7.0, y: 4.0 },
             });
-            b2.CreateFixture(shape, 0.0);
+            b2.CreateFixture({ shape });
         }
 
         let b3 = null;
@@ -104,7 +104,7 @@ export class Dominos extends Test {
                 angle: -0.15,
                 position: { x: -0.9, y: 1.0 },
             });
-            b3.CreateFixture(shape, 10.0);
+            b3.CreateFixture({ shape, density: 10.0 });
         }
 
         const jd = new b2RevoluteJointDef();
@@ -124,7 +124,7 @@ export class Dominos extends Test {
                 type: b2BodyType.b2_dynamicBody,
                 position: { x: -10.0, y: 15.0 },
             });
-            b4.CreateFixture(shape, 10.0);
+            b4.CreateFixture({ shape, density: 10.0 });
         }
 
         anchor.Set(-7.0, 15.0);
@@ -168,7 +168,7 @@ export class Dominos extends Test {
                 type: b2BodyType.b2_dynamicBody,
                 position: { x: 6.5, y: 4.1 },
             });
-            b6.CreateFixture(shape, 30.0);
+            b6.CreateFixture({ shape, density: 30.0 });
         }
 
         anchor.Set(7.5, 4.0);
@@ -184,7 +184,7 @@ export class Dominos extends Test {
                 type: b2BodyType.b2_dynamicBody,
                 position: { x: 7.4, y: 1.0 },
             });
-            b7.CreateFixture(shape, 10.0);
+            b7.CreateFixture({ shape, density: 10.0 });
         }
 
         const djd = new b2DistanceJointDef();
@@ -212,7 +212,7 @@ export class Dominos extends Test {
                     type: b2BodyType.b2_dynamicBody,
                     position: { x: 5.9 + 2.0 * radius * i, y: 2.4 },
                 });
-                body.CreateFixture(shape, 10.0);
+                body.CreateFixture({ shape, density: 10.0 });
             }
         }
     }

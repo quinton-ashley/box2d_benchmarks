@@ -47,7 +47,7 @@ export class SliderCrank extends Test {
 
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(-40.0, 0.0), new b2Vec2(40.0, 0.0));
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
         }
 
         {
@@ -62,7 +62,7 @@ export class SliderCrank extends Test {
                     type: b2BodyType.b2_dynamicBody,
                     position: { x: 0.0, y: 7.0 },
                 });
-                body.CreateFixture(shape, 2.0);
+                body.CreateFixture({ shape, density: 2.0 });
 
                 const rjd = new b2RevoluteJointDef();
                 rjd.Initialize(prevBody, body, new b2Vec2(0.0, 5.0));
@@ -83,7 +83,7 @@ export class SliderCrank extends Test {
                     type: b2BodyType.b2_dynamicBody,
                     position: { x: 0.0, y: 13.0 },
                 });
-                body.CreateFixture(shape, 2.0);
+                body.CreateFixture({ shape, density: 2.0 });
 
                 const rjd = new b2RevoluteJointDef();
                 rjd.Initialize(prevBody, body, new b2Vec2(0.0, 9.0));
@@ -103,7 +103,7 @@ export class SliderCrank extends Test {
                     fixedRotation: true,
                     position: { x: 0.0, y: 17.0 },
                 });
-                body.CreateFixture(shape, 2.0);
+                body.CreateFixture({ shape, density: 2.0 });
 
                 const rjd = new b2RevoluteJointDef();
                 rjd.Initialize(prevBody, body, new b2Vec2(0.0, 17.0));
@@ -127,7 +127,7 @@ export class SliderCrank extends Test {
                     type: b2BodyType.b2_dynamicBody,
                     position: { x: 0.0, y: 23.0 },
                 });
-                body.CreateFixture(shape, 2.0);
+                body.CreateFixture({ shape, density: 2.0 });
             }
         }
     }

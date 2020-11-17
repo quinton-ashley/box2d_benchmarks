@@ -69,34 +69,34 @@ export class EdgeTest extends Test {
             const shape = new b2EdgeShape();
 
             shape.SetOneSided(v10, v1, v2, v3);
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
 
             shape.SetOneSided(v1, v2, v3, v4);
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
 
             shape.SetOneSided(v2, v3, v4, v5);
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
 
             shape.SetOneSided(v3, v4, v5, v6);
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
 
             shape.SetOneSided(v4, v5, v6, v7);
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
 
             shape.SetOneSided(v5, v6, v7, v8);
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
 
             shape.SetOneSided(v6, v7, v8, v9);
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
 
             shape.SetOneSided(v7, v8, v9, v10);
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
 
             shape.SetOneSided(v8, v9, v10, v1);
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
 
             shape.SetOneSided(v9, v10, v1, v2);
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
         }
 
         {
@@ -116,34 +116,34 @@ export class EdgeTest extends Test {
             const shape = new b2EdgeShape();
 
             shape.SetTwoSided(v1, v2);
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
 
             shape.SetTwoSided(v2, v3);
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
 
             shape.SetTwoSided(v3, v4);
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
 
             shape.SetTwoSided(v4, v5);
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
 
             shape.SetTwoSided(v5, v6);
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
 
             shape.SetTwoSided(v6, v7);
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
 
             shape.SetTwoSided(v7, v8);
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
 
             shape.SetTwoSided(v8, v9);
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
 
             shape.SetTwoSided(v9, v10);
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
 
             shape.SetTwoSided(v10, v1);
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
         }
 
         this.m_body1 = null;
@@ -176,7 +176,7 @@ export class EdgeTest extends Test {
             const shape = new b2PolygonShape();
             shape.SetAsBox(0.5, 1.0);
 
-            this.m_body1.CreateFixture(shape, 1.0);
+            this.m_body1.CreateFixture({ shape, density: 1.0 });
         }
 
         {
@@ -189,7 +189,7 @@ export class EdgeTest extends Test {
             const shape = new b2PolygonShape();
             shape.SetAsBox(0.5, 1.0);
 
-            this.m_body2.CreateFixture(shape, 1.0);
+            this.m_body2.CreateFixture({ shape, density: 1.0 });
         }
     }
 
@@ -214,7 +214,7 @@ export class EdgeTest extends Test {
         //     b2CircleShape shape;
         //     shape.this.m_radius = 0.5f;
 
-        //     this.m_body1.CreateFixture(shape, 1.0);
+        //     this.m_body1.CreateFixture({ shape, density: 1.0 });
         // }
 
         // {
@@ -227,7 +227,7 @@ export class EdgeTest extends Test {
         //     b2CircleShape shape;
         //     shape.this.m_radius = 0.5f;
 
-        //     this.m_body2.CreateFixture(shape, 1.0);
+        //     this.m_body2.CreateFixture({ shape, density: 1.0 });
         // }
     }
 

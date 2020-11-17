@@ -37,19 +37,19 @@ export class Confined extends Test {
 
             // Floor
             shape.SetTwoSided(new b2Vec2(-10.0, 0.0), new b2Vec2(10.0, 0.0));
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
 
             // Left wall
             shape.SetTwoSided(new b2Vec2(-10.0, 0.0), new b2Vec2(-10.0, 20.0));
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
 
             // Right wall
             shape.SetTwoSided(new b2Vec2(10.0, 0.0), new b2Vec2(10.0, 20.0));
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
 
             // Roof
             shape.SetTwoSided(new b2Vec2(-10.0, 20.0), new b2Vec2(10.0, 20.0));
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
         }
 
         const radius = 0.5;

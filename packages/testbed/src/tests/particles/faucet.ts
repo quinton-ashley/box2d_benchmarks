@@ -202,21 +202,21 @@ export class Faucet extends Test {
                 new b2Vec2(),
                 0.0,
             );
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
             shape.SetAsBox(
                 Faucet.k_containerThickness,
                 height,
                 new b2Vec2(-Faucet.k_containerWidth, Faucet.k_containerHeight),
                 0.0,
             );
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
             shape.SetAsBox(
                 Faucet.k_containerThickness,
                 height,
                 new b2Vec2(Faucet.k_containerWidth, Faucet.k_containerHeight),
                 0.0,
             );
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
         }
 
         // Create ground under the container to catch overflow.
@@ -228,7 +228,7 @@ export class Faucet extends Test {
                 new b2Vec2(0.0, Faucet.k_containerThickness * -2.0),
                 0.0,
             );
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
         }
 
         // Create the faucet spout.
@@ -243,16 +243,16 @@ export class Faucet extends Test {
             const height = Faucet.k_containerHeight * Faucet.k_faucetHeight + length * 0.5;
 
             shape.SetAsBox(particleDiameter, length, new b2Vec2(-width, height), 0.0);
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
             shape.SetAsBox(particleDiameter, length, new b2Vec2(width, height), 0.0);
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
             shape.SetAsBox(
                 width - particleDiameter,
                 particleDiameter,
                 new b2Vec2(0.0, height + length - particleDiameter),
                 0.0,
             );
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
         }
 
         // Initialize the particle emitter.

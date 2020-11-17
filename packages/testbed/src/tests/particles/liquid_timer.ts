@@ -54,7 +54,7 @@ export class LiquidTimer extends Test {
             const shape = new b2ChainShape();
             const vertices = [new b2Vec2(-2, 0), new b2Vec2(2, 0), new b2Vec2(2, 4), new b2Vec2(-2, 4)];
             shape.CreateLoop(vertices, 4);
-            ground.CreateFixture(shape, 0.0);
+            ground.CreateFixture({ shape });
         }
 
         this.m_particleSystem.SetRadius(0.025);
@@ -74,70 +74,70 @@ export class LiquidTimer extends Test {
             const body = this.m_world.CreateBody();
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(-2, 3.2), new b2Vec2(-1.2, 3.2));
-            body.CreateFixture(shape, 0.1);
+            body.CreateFixture({ shape, density: 0.1 });
         }
 
         {
             const body = this.m_world.CreateBody();
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(-1.1, 3.2), new b2Vec2(2, 3.2));
-            body.CreateFixture(shape, 0.1);
+            body.CreateFixture({ shape, density: 0.1 });
         }
 
         {
             const body = this.m_world.CreateBody();
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(-1.2, 3.2), new b2Vec2(-1.2, 2.8));
-            body.CreateFixture(shape, 0.1);
+            body.CreateFixture({ shape, density: 0.1 });
         }
 
         {
             const body = this.m_world.CreateBody();
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(-1.1, 3.2), new b2Vec2(-1.1, 2.8));
-            body.CreateFixture(shape, 0.1);
+            body.CreateFixture({ shape, density: 0.1 });
         }
 
         {
             const body = this.m_world.CreateBody();
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(-1.6, 2.4), new b2Vec2(0.8, 2));
-            body.CreateFixture(shape, 0.1);
+            body.CreateFixture({ shape, density: 0.1 });
         }
 
         {
             const body = this.m_world.CreateBody();
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(1.6, 1.6), new b2Vec2(-0.8, 1.2));
-            body.CreateFixture(shape, 0.1);
+            body.CreateFixture({ shape, density: 0.1 });
         }
 
         {
             const body = this.m_world.CreateBody();
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(-1.2, 0.8), new b2Vec2(-1.2, 0));
-            body.CreateFixture(shape, 0.1);
+            body.CreateFixture({ shape, density: 0.1 });
         }
 
         {
             const body = this.m_world.CreateBody();
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(-0.4, 0.8), new b2Vec2(-0.4, 0));
-            body.CreateFixture(shape, 0.1);
+            body.CreateFixture({ shape, density: 0.1 });
         }
 
         {
             const body = this.m_world.CreateBody();
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(0.4, 0.8), new b2Vec2(0.4, 0));
-            body.CreateFixture(shape, 0.1);
+            body.CreateFixture({ shape, density: 0.1 });
         }
 
         {
             const body = this.m_world.CreateBody();
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(1.2, 0.8), new b2Vec2(1.2, 0));
-            body.CreateFixture(shape, 0.1);
+            body.CreateFixture({ shape, density: 0.1 });
         }
     }
 

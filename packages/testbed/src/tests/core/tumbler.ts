@@ -42,13 +42,13 @@ export class Tumbler extends Test {
 
             const shape = new b2PolygonShape();
             shape.SetAsBox(0.5, 10.0, new b2Vec2(10.0, 0.0), 0.0);
-            body.CreateFixture(shape, 5.0);
+            body.CreateFixture({ shape, density: 5.0 });
             shape.SetAsBox(0.5, 10.0, new b2Vec2(-10.0, 0.0), 0.0);
-            body.CreateFixture(shape, 5.0);
+            body.CreateFixture({ shape, density: 5.0 });
             shape.SetAsBox(10.0, 0.5, new b2Vec2(0.0, 10.0), 0.0);
-            body.CreateFixture(shape, 5.0);
+            body.CreateFixture({ shape, density: 5.0 });
             shape.SetAsBox(10.0, 0.5, new b2Vec2(0.0, -10.0), 0.0);
-            body.CreateFixture(shape, 5.0);
+            body.CreateFixture({ shape, density: 5.0 });
 
             const jd = new b2RevoluteJointDef();
             jd.bodyA = ground;
@@ -83,7 +83,7 @@ export class Tumbler extends Test {
 
             const shape = new b2PolygonShape();
             shape.SetAsBox(0.125, 0.125);
-            body.CreateFixture(shape, 1.0);
+            body.CreateFixture({ shape, density: 1.0 });
 
             ++this.m_count;
         }
