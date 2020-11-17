@@ -348,14 +348,6 @@ export class b2Body {
         return this.m_xf.p;
     }
 
-    public SetPosition(position: XY): void {
-        this.SetTransformVec(position, this.GetAngle());
-    }
-
-    public SetPositionXY(x: number, y: number): void {
-        this.SetTransformXY(x, y, this.GetAngle());
-    }
-
     /// Get the angle in radians.
     /// @return the current world rotation angle in radians.
     public GetAngle(): number {
@@ -641,16 +633,14 @@ export class b2Body {
 
             const massData = f.GetMassData(b2Body.ResetMassData_s_massData);
             this.m_mass += massData.mass;
-            localCenter.x += massData.center.x * massData.mass;
-            localCenter.y += massData.center.y * massData.mass;
+            localCenter.AddScaled(massData.mass, massData.center);
             this.m_I += massData.I;
         }
 
         // Compute center of mass.
         if (this.m_mass > 0) {
             this.m_invMass = 1 / this.m_mass;
-            localCenter.x *= this.m_invMass;
-            localCenter.y *= this.m_invMass;
+            localCenter.Scale(this.m_invMass);
         }
 
         if (this.m_I > 0 && !this.m_fixedRotationFlag) {
@@ -987,8 +977,8 @@ export class b2Body {
     // This is used to prevent connected bodies from colliding.
     // It may lie, depending on the collideConnected flag.
     public ShouldCollide(other: b2Body): boolean {
-        // At least one body should be dynamic or kinematic.
-        if (this.m_type === b2BodyType.b2_staticBody && other.m_type === b2BodyType.b2_staticBody) {
+        // At least one body should be dynamic.
+        if (this.m_type !== b2BodyType.b2_dynamicBody && other.m_type !== b2BodyType.b2_dynamicBody) {
             return false;
         }
         return this.ShouldCollideConnected(other);
