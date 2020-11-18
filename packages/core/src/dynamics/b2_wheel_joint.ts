@@ -306,10 +306,10 @@ export class b2WheelJoint extends b2Joint {
         this.m_sBx = b2Vec2.Cross(rB, this.m_ax);
 
         const invMass = mA + mB + iA * this.m_sAx * this.m_sAx + iB * this.m_sBx * this.m_sBx;
-        if (invMass > 0.0) {
-            this.m_axialMass = 1.0 / invMass;
+        if (invMass > 0) {
+            this.m_axialMass = 1 / invMass;
         } else {
-            this.m_axialMass = 0.0;
+            this.m_axialMass = 0;
         }
 
         this.m_springMass = 0;
@@ -500,7 +500,7 @@ export class b2WheelJoint extends b2Joint {
         const cB = data.positions[this.m_indexB].c;
         let aB = data.positions[this.m_indexB].a;
 
-        let linearError = 0.0;
+        let linearError = 0;
 
         const { qA, qB, lalcA, lalcB, rA, rB, d, P, ay } = temp;
 
@@ -718,8 +718,8 @@ export class b2WheelJoint extends b2Joint {
             this.m_bodyA.SetAwake(true);
             this.m_bodyB.SetAwake(true);
             this.m_enableLimit = flag;
-            this.m_lowerImpulse = 0.0;
-            this.m_upperImpulse = 0.0;
+            this.m_lowerImpulse = 0;
+            this.m_upperImpulse = 0;
         }
     }
 
