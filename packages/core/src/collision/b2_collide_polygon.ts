@@ -184,20 +184,20 @@ export function b2CollidePolygons(
     const iv1 = edge1;
     const iv2 = edge1 + 1 < count1 ? edge1 + 1 : 0;
 
-    const local_v11 = vertices1[iv1];
-    const local_v12 = vertices1[iv2];
+    let v11 = vertices1[iv1];
+    let v12 = vertices1[iv2];
 
-    const localTangent = b2Vec2.Subtract(local_v12, local_v11, b2CollidePolygons_s_localTangent);
+    const localTangent = b2Vec2.Subtract(v12, v11, b2CollidePolygons_s_localTangent);
     localTangent.Normalize();
 
     const localNormal = b2Vec2.CrossVec2One(localTangent, b2CollidePolygons_s_localNormal);
-    const planePoint = b2Vec2.Mid(local_v11, local_v12, b2CollidePolygons_s_planePoint);
+    const planePoint = b2Vec2.Mid(v11, v12, b2CollidePolygons_s_planePoint);
 
     const tangent = b2Rot.MultiplyVec2(xf1.q, localTangent, b2CollidePolygons_s_tangent);
     const normal = b2Vec2.CrossVec2One(tangent, b2CollidePolygons_s_normal);
 
-    const v11 = b2Transform.MultiplyVec2(xf1, local_v11, b2CollidePolygons_s_v11);
-    const v12 = b2Transform.MultiplyVec2(xf1, local_v12, b2CollidePolygons_s_v12);
+    v11 = b2Transform.MultiplyVec2(xf1, v11, b2CollidePolygons_s_v11);
+    v12 = b2Transform.MultiplyVec2(xf1, v12, b2CollidePolygons_s_v12);
 
     // Face offset.
     const frontOffset = b2Vec2.Dot(normal, v11);
