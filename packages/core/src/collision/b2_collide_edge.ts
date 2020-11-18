@@ -217,7 +217,7 @@ function b2ComputeEdgeSeparation(
 
     const axes = b2ComputeEdgeSeparation_s_axes;
     axes[0].Copy(normal1);
-    axes[1].Copy(normal1).Negate();
+    b2Vec2.Negate(normal1, axes[1]);
 
     // Find axis with least overlap (min-max problem)
     for (let j = 0; j < 2; ++j) {
@@ -425,7 +425,7 @@ export function b2CollideEdgeAndPolygon(
         ref.v1.Copy(v1);
         ref.v2.Copy(v2);
         ref.normal.Copy(primaryAxis.normal);
-        ref.sideNormal1.Copy(edge1).Negate();
+        b2Vec2.Negate(edge1, ref.sideNormal1);
         ref.sideNormal2.Copy(edge1);
     } else {
         manifold.type = b2ManifoldType.e_faceB;
@@ -450,7 +450,7 @@ export function b2CollideEdgeAndPolygon(
 
         // CCW winding
         ref.sideNormal1.Set(ref.normal.y, -ref.normal.x);
-        ref.sideNormal2.Copy(ref.sideNormal1).Negate();
+        b2Vec2.Negate(ref.sideNormal1, ref.sideNormal2);
     }
 
     ref.sideOffset1 = b2Vec2.Dot(ref.sideNormal1, ref.v1);

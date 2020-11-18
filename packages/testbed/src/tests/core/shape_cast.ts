@@ -99,8 +99,7 @@ export class ShapeCast extends Test {
 
         const transformB2 = new b2Transform();
         transformB2.q.Copy(transformB.q);
-        // transformB2.p = transformB.p + output.lambda * input.translationB;
-        transformB2.p.Copy(transformB.p).AddScaled(output.lambda, input.translationB);
+        b2Vec2.AddScaled(transformB.p, output.lambda, input.translationB, transformB2.p);
 
         const distanceInput = new b2DistanceInput();
         distanceInput.proxyA.SetVerticesRadius(this.m_vAs, this.m_countA, this.m_radiusA);

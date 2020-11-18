@@ -17,7 +17,7 @@
  */
 
 // DEBUG: import { b2Assert } from "./b2_common";
-import { b2_epsilon } from "./b2_common";
+import { b2_epsilon, b2_epsilon_sq } from "./b2_common";
 
 export const b2_pi_over_180 = Math.PI / 180;
 export const b2_180_over_pi = 180 / Math.PI;
@@ -387,6 +387,19 @@ export class b2Vec2 implements XY {
     public static Negate<T extends XY>(v: XY, out: T) {
         out.x = -v.x;
         out.y = -v.y;
+        return out;
+    }
+
+    public static Normalize<T extends XY>(v: XY, out: T) {
+        const length_sq = v.x ** 2 + v.y ** 2;
+        if (length_sq >= b2_epsilon_sq) {
+            const inv_length = 1 / Math.sqrt(length_sq);
+            out.x = inv_length * v.x;
+            out.y = inv_length * v.y;
+        } else {
+            out.x = 0;
+            out.y = 0;
+        }
         return out;
     }
 }

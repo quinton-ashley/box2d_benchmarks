@@ -120,14 +120,14 @@ export class RadialEmitter {
      * Set the size of the circle which emits particles.
      */
     public SetSize(size: b2Vec2): void {
-        this.m_halfSize.Copy(size).Scale(0.5);
+        b2Vec2.Scale(0.5, size, this.m_halfSize);
     }
 
     /**
      * Get the size of the circle which emits particles.
      */
     public GetSize(out: b2Vec2): b2Vec2 {
-        return out.Copy(this.m_halfSize).Scale(2.0);
+        return b2Vec2.Scale(2, this.m_halfSize, out);
     }
 
     /**

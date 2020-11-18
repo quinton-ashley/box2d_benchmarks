@@ -1803,7 +1803,7 @@ export class b2ParticleSystem {
         const numParticles = lastIndex - firstIndex;
         const totalMass = numParticles * this.GetParticleMass();
         /// const b2Vec2 velocityDelta = impulse / totalMass;
-        const velocityDelta = new b2Vec2().Copy(impulse).Scale(1 / totalMass);
+        const velocityDelta = b2Vec2.Scale(1 / totalMass, impulse, new b2Vec2());
         for (let i = firstIndex; i < lastIndex; i++) {
             /// m_velocityBuffer.data[i] += velocityDelta;
             vel_data[i].Add(velocityDelta);
@@ -1850,7 +1850,7 @@ export class b2ParticleSystem {
 
         // Early out if force does nothing (optimization).
         /// const b2Vec2 distributedForce = force / (float32)(lastIndex - firstIndex);
-        const distributedForce = new b2Vec2().Copy(force).Scale(1 / (lastIndex - firstIndex));
+        const distributedForce = b2Vec2.Scale(1 / (lastIndex - firstIndex), force, new b2Vec2());
         if (b2ParticleSystem.IsSignificantForce(distributedForce)) {
             this.PrepareForceBuffer();
 
