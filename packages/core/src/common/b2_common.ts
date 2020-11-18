@@ -52,7 +52,7 @@ export const b2_aabbExtension = 0.1 * b2_lengthUnitsPerMeter;
 export const b2_aabbMultiplier = 4;
 
 /// A small length used as a collision and constraint tolerance. Usually it is
-/// chosen to be numerically significant, but visually insignificant.
+/// chosen to be numerically significant, but visually insignificant. In meters.
 export const b2_linearSlop = 0.005 * b2_lengthUnitsPerMeter;
 
 /// A small angle used as a collision and constraint tolerance. Usually it is
