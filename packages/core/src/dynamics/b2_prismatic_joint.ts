@@ -527,6 +527,7 @@ export class b2PrismaticJoint extends b2Joint {
             const k13 = iA * s1 * a1 + iB * s2 * a2;
             let k22 = iA + iB;
             if (k22 === 0) {
+                // For fixed rotation
                 k22 = 1;
             }
             const k23 = iA * a1 + iB * a2;
@@ -624,9 +625,9 @@ export class b2PrismaticJoint extends b2Joint {
         const { lalcA, lalcB, rA, rB } = temp;
         b2Rot.MultiplyVec2(bA.m_xf.q, b2Vec2.Subtract(this.m_localAnchorA, bA.m_sweep.localCenter, lalcA), rA);
         b2Rot.MultiplyVec2(bB.m_xf.q, b2Vec2.Subtract(this.m_localAnchorB, bB.m_sweep.localCenter, lalcB), rB);
-        const pA = b2Vec2.Add(bA.m_sweep.c, rA, b2Vec2.s_t0);
-        const pB = b2Vec2.Add(bB.m_sweep.c, rB, b2Vec2.s_t1);
-        const d = b2Vec2.Subtract(pB, pA, b2Vec2.s_t2);
+        const p1 = b2Vec2.Add(bA.m_sweep.c, rA, b2Vec2.s_t0);
+        const p2 = b2Vec2.Add(bB.m_sweep.c, rB, b2Vec2.s_t1);
+        const d = b2Vec2.Subtract(p2, p1, b2Vec2.s_t2);
         const axis = b2Rot.MultiplyVec2(bA.m_xf.q, this.m_localXAxisA, this.m_axis);
 
         const vA = bA.m_linearVelocity;
