@@ -140,9 +140,6 @@ export function b2LinearStiffness(
 }
 
 /// Utility to compute rotational stiffness values frequency and damping ratio
-// void b2AngularStiffness(float& stiffness, float& damping,
-// 	float frequencyHertz, float dampingRatio,
-// 	const b2Body* bodyA, const b2Body* bodyB);
 export function b2AngularStiffness(
     def: { stiffness: number; damping: number },
     frequencyHertz: number,
@@ -153,7 +150,7 @@ export function b2AngularStiffness(
     const IA = bodyA.GetInertia();
     const IB = bodyB.GetInertia();
     let I: number;
-    if (IA > 0.0 && IB > 0) {
+    if (IA > 0 && IB > 0) {
         I = (IA * IB) / (IA + IB);
     } else if (IA > 0) {
         I = IA;
