@@ -38,12 +38,16 @@ export class b2ContactFeature {
 
     private m_key_invalid = false;
 
+    /// < Feature index on shapeA
     private m_indexA = 0;
 
+    /// < Feature index on shapeB
     private m_indexB = 0;
 
+    /// < The feature type on shapeA
     private m_typeA = b2ContactFeatureType.e_vertex;
 
+    /// < The feature type on shapeB
     private m_typeB = b2ContactFeatureType.e_vertex;
 
     public get key(): number {
@@ -186,14 +190,18 @@ export enum b2ManifoldType {
 /// All contact scenarios must be expressed in one of these types.
 /// This structure is stored across time steps, so we keep it small.
 export class b2Manifold {
+    /// < the points of contact
     public readonly points = b2ManifoldPoint.MakeArray(b2_maxManifoldPoints);
 
+    /// < not use for Type::e_points
     public readonly localNormal = new b2Vec2();
 
+    /// < usage depends on manifold type
     public readonly localPoint = new b2Vec2();
 
     public type = b2ManifoldType.e_circles;
 
+    /// < the number of manifold points
     public pointCount = 0;
 
     public Reset(): void {
@@ -224,11 +232,15 @@ export class b2Manifold {
     }
 }
 
+/// This is used to compute the current state of a contact manifold.
 export class b2WorldManifold {
+    /// < world vector pointing from A to B
     public readonly normal = new b2Vec2();
 
+    /// < world contact point (point of intersection)
     public readonly points = b2Vec2.MakeArray(b2_maxManifoldPoints);
 
+    /// < a negative value indicates overlap, in meters
     public readonly separations = b2MakeNumberArray(b2_maxManifoldPoints);
 
     private static Initialize_s_pointA = new b2Vec2();
@@ -349,7 +361,7 @@ export function b2GetPointStates(
 
         state1[i] = b2PointState.b2_removeState;
 
-        for (let j = 0, jct = manifold2.pointCount; j < jct; ++j) {
+        for (let j = 0; j < manifold2.pointCount; ++j) {
             if (manifold2.points[j].id.key === key) {
                 state1[i] = b2PointState.b2_persistState;
                 break;
@@ -366,7 +378,7 @@ export function b2GetPointStates(
 
         state2[i] = b2PointState.b2_addState;
 
-        for (let j = 0, jct = manifold1.pointCount; j < jct; ++j) {
+        for (let j = 0; j < manifold1.pointCount; ++j) {
             if (manifold1.points[j].id.key === key) {
                 state2[i] = b2PointState.b2_persistState;
                 break;
@@ -663,10 +675,10 @@ export function b2ClipSegmentToLine(
 }
 
 /// Determine if two generic shapes overlap.
-const b2TestOverlapShape_s_input = new b2DistanceInput();
-const b2TestOverlapShape_s_simplexCache = new b2SimplexCache();
-const b2TestOverlapShape_s_output = new b2DistanceOutput();
-export function b2TestOverlapShape(
+const b2TestOverlap_s_input = new b2DistanceInput();
+const b2TestOverlap_s_simplexCache = new b2SimplexCache();
+const b2TestOverlap_s_output = new b2DistanceOutput();
+export function b2TestOverlap(
     shapeA: b2Shape,
     indexA: number,
     shapeB: b2Shape,
@@ -674,17 +686,17 @@ export function b2TestOverlapShape(
     xfA: b2Transform,
     xfB: b2Transform,
 ): boolean {
-    const input = b2TestOverlapShape_s_input.Reset();
+    const input = b2TestOverlap_s_input.Reset();
     input.proxyA.SetShape(shapeA, indexA);
     input.proxyB.SetShape(shapeB, indexB);
     input.transformA.Copy(xfA);
     input.transformB.Copy(xfB);
     input.useRadii = true;
 
-    const simplexCache = b2TestOverlapShape_s_simplexCache.Reset();
+    const simplexCache = b2TestOverlap_s_simplexCache.Reset();
     simplexCache.count = 0;
 
-    const output = b2TestOverlapShape_s_output.Reset();
+    const output = b2TestOverlap_s_output.Reset();
 
     b2Distance(output, simplexCache, input);
 

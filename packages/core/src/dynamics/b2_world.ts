@@ -20,7 +20,7 @@
 import { b2Assert, b2Verify, b2_epsilon, b2_maxSubSteps, b2_maxTOIContacts } from "../common/b2_common";
 import { b2Vec2, b2Transform, b2Sweep, XY } from "../common/b2_math";
 import { b2Timer } from "../common/b2_timer";
-import { b2AABB, b2RayCastInput, b2RayCastOutput, b2TestOverlapShape } from "../collision/b2_collision";
+import { b2AABB, b2RayCastInput, b2RayCastOutput, b2TestOverlap } from "../collision/b2_collision";
 import { b2TimeOfImpact, b2TOIInput, b2TOIOutput, b2TOIOutputState } from "../collision/b2_time_of_impact";
 import { b2Shape } from "../collision/b2_shape";
 import { b2Contact } from "./b2_contact";
@@ -514,7 +514,7 @@ export class b2World {
             const fixture_proxy = b2Verify(proxy.userData);
             // DEBUG: b2Assert(fixture_proxy instanceof b2FixtureProxy);
             const { fixture } = fixture_proxy;
-            const overlap = b2TestOverlapShape(
+            const overlap = b2TestOverlap(
                 shape,
                 index,
                 fixture.GetShape(),

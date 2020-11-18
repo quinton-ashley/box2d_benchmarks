@@ -19,7 +19,7 @@
 import {
     b2CircleShape,
     b2Transform,
-    b2TestOverlapShape,
+    b2TestOverlap,
     b2Color,
     b2Body,
     b2PolygonShape,
@@ -194,7 +194,7 @@ export class PolyShapes extends Test {
             const body = fixture.GetBody();
             const shape = fixture.GetShape();
 
-            const overlap = b2TestOverlapShape(shape, 0, circle, 0, body.GetTransform(), transform);
+            const overlap = b2TestOverlap(shape, 0, circle, 0, body.GetTransform(), transform);
 
             if (overlap) {
                 const color = new b2Color(0.95, 0.95, 0.6);

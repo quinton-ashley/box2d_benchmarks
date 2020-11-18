@@ -18,7 +18,7 @@
 
 import { b2Assert, b2_linearSlop } from "../common/b2_common";
 import { b2Transform, b2Sweep } from "../common/b2_math";
-import { b2Manifold, b2WorldManifold, b2TestOverlapShape } from "../collision/b2_collision";
+import { b2Manifold, b2WorldManifold, b2TestOverlap } from "../collision/b2_collision";
 import { b2TimeOfImpact, b2TOIInput, b2TOIOutput } from "../collision/b2_time_of_impact";
 import { b2Body } from "./b2_body";
 import { b2Fixture } from "./b2_fixture";
@@ -293,7 +293,7 @@ export abstract class b2Contact<A extends b2Shape = b2Shape, B extends b2Shape =
         if (sensor) {
             const shapeA = this.GetShapeA();
             const shapeB = this.GetShapeB();
-            touching = b2TestOverlapShape(shapeA, this.m_indexA, shapeB, this.m_indexB, xfA, xfB);
+            touching = b2TestOverlap(shapeA, this.m_indexA, shapeB, this.m_indexB, xfA, xfB);
 
             // Sensors don't generate manifolds.
             this.m_manifold.pointCount = 0;
