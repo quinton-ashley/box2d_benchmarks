@@ -182,9 +182,10 @@ export class b2DistanceJoint extends b2Joint {
         return this.m_localAnchorB;
     }
 
-    public SetLength(length: number): void {
+    public SetLength(length: number) {
         this.m_impulse = 0;
         this.m_length = Math.max(b2_linearSlop, length);
+        return this.m_length;
     }
 
     public GetLength() {
@@ -194,6 +195,7 @@ export class b2DistanceJoint extends b2Joint {
     public SetMinLength(minLength: number) {
         this.m_lowerImpulse = 0;
         this.m_minLength = b2Clamp(minLength, b2_linearSlop, this.m_maxLength);
+        return this.m_minLength;
     }
 
     public GetMinLength() {
@@ -203,6 +205,7 @@ export class b2DistanceJoint extends b2Joint {
     public SetMaxLength(maxLength: number) {
         this.m_upperImpulse = 0;
         this.m_maxLength = Math.max(maxLength, this.m_minLength);
+        return this.m_maxLength;
     }
 
     public GetMaxLength() {
