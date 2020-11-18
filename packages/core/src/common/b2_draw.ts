@@ -58,7 +58,7 @@ export class b2Color implements RGBA {
     }
 
     public Clone(): b2Color {
-        return new b2Color().Copy(this);
+        return new b2Color(this.r, this.g, this.b, this.a);
     }
 
     public Copy(other: RGBA) {
