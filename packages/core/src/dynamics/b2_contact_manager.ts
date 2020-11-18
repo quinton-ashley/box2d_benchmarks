@@ -219,9 +219,10 @@ export class b2ContactManager {
 
             // Is this contact flagged for filtering?
             if (c.m_filterFlag) {
-                // Should these bodies collide?
                 if (
+                    // Should these bodies collide?
                     !bodyB.ShouldCollide(bodyA) ||
+                    // Check user filtering.
                     (this.m_contactFilter && !this.m_contactFilter.ShouldCollide(fixtureA, fixtureB))
                 ) {
                     const cNuke = c;
