@@ -25,6 +25,7 @@ import { b2MassData, b2Shape, b2ShapeType } from "./b2_shape";
 
 /// A solid circle shape
 export class b2CircleShape extends b2Shape {
+    /// Position
     public readonly m_p = new b2Vec2();
 
     constructor(radius = 0) {
