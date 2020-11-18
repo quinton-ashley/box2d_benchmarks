@@ -17,7 +17,7 @@
  */
 
 // DEBUG: import { b2Assert } from "../common/b2_common";
-import { b2_linearSlop } from "../common/b2_common";
+import { b2Assert, b2_linearSlop } from "../common/b2_common";
 import { b2_maxPolygonVertices } from "../common/b2_settings";
 import { b2Vec2, b2Rot, b2Transform, b2Sweep } from "../common/b2_math";
 import { b2Timer } from "../common/b2_timer";
@@ -63,7 +63,6 @@ export class b2TOIInput {
     public tMax = 0; // defines sweep interval [0, tMax]
 }
 
-/// Output parameters for b2TimeOfImpact.
 export enum b2TOIOutputState {
     e_unknown,
     e_failed,
@@ -72,6 +71,7 @@ export enum b2TOIOutputState {
     e_separated,
 }
 
+/// Output parameters for b2TimeOfImpact.
 export class b2TOIOutput {
     public state = b2TOIOutputState.e_unknown;
 
@@ -285,7 +285,7 @@ class b2SeparationFunction {
             }
 
             default:
-                // DEBUG: b2Assert(false);
+                b2Assert(false);
                 return 0;
         }
     }
@@ -447,7 +447,7 @@ export function b2TimeOfImpact(output: b2TOIOutput, input: b2TOIInput): void {
             let a2 = t2;
             for (;;) {
                 // Use a mix of the secant rule and bisection.
-                let t = 0;
+                let t: number;
                 if (rootIterCount & 1) {
                     // Secant rule to improve convergence.
                     t = a1 + ((target - s1) * (a2 - a1)) / (s2 - s1);
