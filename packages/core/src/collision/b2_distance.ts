@@ -227,16 +227,12 @@ export class b2Simplex {
 
     public readonly m_v3 = new b2SimplexVertex();
 
-    public readonly m_vertices: b2SimplexVertex[] = [
-        /* 3 */
-    ];
+    public readonly m_vertices: [b2SimplexVertex, b2SimplexVertex, b2SimplexVertex];
 
     public m_count = 0;
 
     constructor() {
-        this.m_vertices[0] = this.m_v1;
-        this.m_vertices[1] = this.m_v2;
-        this.m_vertices[2] = this.m_v3;
+        this.m_vertices = [this.m_v1, this.m_v2, this.m_v3];
     }
 
     public ReadCache(
@@ -246,7 +242,7 @@ export class b2Simplex {
         proxyB: b2DistanceProxy,
         transformB: b2Transform,
     ): void {
-        // DEBUG: b2Assert(0 <= cache.count && cache.count <= 3);
+        // DEBUG: b2Assert(cache.count <= 3);
 
         // Copy data from cache.
         this.m_count = cache.count;
@@ -589,9 +585,8 @@ export function b2Distance(output: b2DistanceOutput, cache: b2SimplexCache, inpu
                 simplex.Solve3();
                 break;
 
-            default:
-                // DEBUG: b2Assert(false);
-                break;
+            // DEBUG: default:
+            // DEBUG: b2Assert(false);
         }
 
         // If we have 3 points, then the origin is in the corresponding triangle.
@@ -695,7 +690,7 @@ const b2ShapeCast_s_pointA = new b2Vec2();
 const b2ShapeCast_s_pointB = new b2Vec2();
 export function b2ShapeCast(output: b2ShapeCastOutput, input: b2ShapeCastInput): boolean {
     output.iterations = 0;
-    output.lambda = 1.0;
+    output.lambda = 1;
     output.normal.SetZero();
     output.point.SetZero();
 
@@ -710,7 +705,7 @@ export function b2ShapeCast(output: b2ShapeCastOutput, input: b2ShapeCastInput):
 
     const r = input.translationB;
     const n = b2ShapeCast_s_n.SetZero();
-    let lambda = 0.0;
+    let lambda = 0;
 
     // Initial simplex
     const simplex = b2ShapeCast_s_simplex;
@@ -762,7 +757,7 @@ export function b2ShapeCast(output: b2ShapeCastOutput, input: b2ShapeCastInput):
                 return false;
             }
 
-            n.Copy(v).Negate();
+            b2Vec2.Negate(v, n);
             simplex.m_count = 0;
         }
 
@@ -772,11 +767,11 @@ export function b2ShapeCast(output: b2ShapeCastOutput, input: b2ShapeCastInput):
         // to be formed in unshifted space.
         const vertex = vertices[simplex.m_count];
         vertex.indexA = indexB;
-        vertex.wA.Copy(wB).AddScaled(lambda, r);
+        b2Vec2.AddScaled(wB, lambda, r, vertex.wA);
         vertex.indexB = indexA;
         vertex.wB.Copy(wA);
-        vertex.w.Copy(vertex.wB).Subtract(vertex.wA);
-        vertex.a = 1.0;
+        b2Vec2.Subtract(vertex.wB, vertex.wA, vertex.w);
+        vertex.a = 1;
         simplex.m_count += 1;
 
         switch (simplex.m_count) {
@@ -791,7 +786,7 @@ export function b2ShapeCast(output: b2ShapeCastOutput, input: b2ShapeCastInput):
                 simplex.Solve3();
                 break;
 
-            default:
+            // DEBUG: default:
             // DEBUG: b2Assert(false);
         }
 
@@ -819,11 +814,11 @@ export function b2ShapeCast(output: b2ShapeCastOutput, input: b2ShapeCastInput):
     simplex.GetWitnessPoints(pointA, pointB);
 
     if (v.LengthSquared() > 0) {
-        n.Copy(v).Negate();
+        b2Vec2.Negate(v, n);
         n.Normalize();
     }
 
-    output.point.Copy(pointA).AddScaled(radiusA, n);
+    b2Vec2.AddScaled(pointA, radiusA, n, output.point);
     output.normal.Copy(n);
     output.lambda = lambda;
     output.iterations = iter;
