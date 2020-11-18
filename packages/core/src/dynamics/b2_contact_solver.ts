@@ -176,7 +176,7 @@ export class b2PositionSolverManifold {
         // DEBUG: b2Assert(pc.pointCount > 0);
 
         switch (pc.type) {
-            case b2ManifoldType.e_circles: {
+            case b2ManifoldType.e_circles:
                 b2Transform.MultiplyVec2(xfA, pc.localPoint, pointA);
                 b2Transform.MultiplyVec2(xfB, pc.localPoints[0], pointB);
                 b2Vec2.Subtract(pointB, pointA, this.normal).Normalize();
@@ -184,9 +184,8 @@ export class b2PositionSolverManifold {
                 this.separation =
                     b2Vec2.Dot(b2Vec2.Subtract(pointB, pointA, b2Vec2.s_t0), this.normal) - pc.radiusA - pc.radiusB;
                 break;
-            }
 
-            case b2ManifoldType.e_faceA: {
+            case b2ManifoldType.e_faceA:
                 b2Rot.MultiplyVec2(xfA.q, pc.localNormal, this.normal);
                 b2Transform.MultiplyVec2(xfA, pc.localPoint, planePoint);
 
@@ -197,9 +196,8 @@ export class b2PositionSolverManifold {
                     pc.radiusB;
                 this.point.Copy(clipPoint);
                 break;
-            }
 
-            case b2ManifoldType.e_faceB: {
+            case b2ManifoldType.e_faceB:
                 b2Rot.MultiplyVec2(xfB.q, pc.localNormal, this.normal);
                 b2Transform.MultiplyVec2(xfB, pc.localPoint, planePoint);
 
@@ -213,7 +211,6 @@ export class b2PositionSolverManifold {
                 // Ensure normal points from A to B
                 this.normal.Negate();
                 break;
-            }
         }
     }
 }
@@ -537,7 +534,6 @@ export class b2ContactSolver {
                 const vcp = vc.points[j];
 
                 // Relative velocity at contact
-                // b2Vec2 dv = vB + b2Cross(wB, vcp->rB) - vA - b2Cross(wA, vcp->rA);
                 b2Vec2.Subtract(
                     b2Vec2.AddCrossScalarVec2(vB, wB, vcp.rB, b2Vec2.s_t0),
                     b2Vec2.AddCrossScalarVec2(vA, wA, vcp.rA, b2Vec2.s_t1),
@@ -570,7 +566,6 @@ export class b2ContactSolver {
                     const vcp = vc.points[j];
 
                     // Relative velocity at contact
-                    // b2Vec2 dv = vB + b2Cross(wB, vcp->rB) - vA - b2Cross(wA, vcp->rA);
                     b2Vec2.Subtract(
                         b2Vec2.AddCrossScalarVec2(vB, wB, vcp.rB, b2Vec2.s_t0),
                         b2Vec2.AddCrossScalarVec2(vA, wA, vcp.rA, b2Vec2.s_t1),
@@ -582,7 +577,6 @@ export class b2ContactSolver {
                     let lambda = -vcp.normalMass * (vn - vcp.velocityBias);
 
                     // b2Clamp the accumulated impulse
-                    // float32 newImpulse = Math.max(vcp->normalImpulse + lambda, 0.0f);
                     const newImpulse = Math.max(vcp.normalImpulse + lambda, 0);
                     lambda = newImpulse - vcp.normalImpulse;
                     vcp.normalImpulse = newImpulse;
@@ -657,11 +651,9 @@ export class b2ContactSolver {
                 // Compute b'
                 b.Subtract(b2Mat22.MultiplyVec2(vc.K, a, b2Vec2.s_t0));
 
-                /*
-        #if B2_DEBUG_SOLVER === 1
-        const k_errorTol = 1e-3f;
-        #endif
-        */
+                // #if B2_DEBUG_SOLVER === 1
+                // const k_errorTol = 1e-3f;
+                // #endif
 
                 for (;;) {
                     //
@@ -695,20 +687,18 @@ export class b2ContactSolver {
                         cp1.normalImpulse = x.x;
                         cp2.normalImpulse = x.y;
 
-                        /*
-            #if B2_DEBUG_SOLVER === 1
-            // Postconditions
-            dv1 = vB + b2Cross(wB, cp1->rB) - vA - b2Cross(wA, cp1->rA);
-            dv2 = vB + b2Cross(wB, cp2->rB) - vA - b2Cross(wA, cp2->rA);
+                        // #if B2_DEBUG_SOLVER === 1
+                        // // Postconditions
+                        // dv1 = vB + b2Cross(wB, cp1->rB) - vA - b2Cross(wA, cp1->rA);
+                        // dv2 = vB + b2Cross(wB, cp2->rB) - vA - b2Cross(wA, cp2->rA);
 
-            // Compute normal velocity
-            vn1 = b2Dot(dv1, normal);
-            vn2 = b2Dot(dv2, normal);
+                        // // Compute normal velocity
+                        // vn1 = b2Dot(dv1, normal);
+                        // vn2 = b2Dot(dv2, normal);
 
-            b2Assert(Math.abs(vn1 - cp1->velocityBias) < k_errorTol);
-            b2Assert(Math.abs(vn2 - cp2->velocityBias) < k_errorTol);
-            #endif
-            */
+                        // b2Assert(Math.abs(vn1 - cp1->velocityBias) < k_errorTol);
+                        // b2Assert(Math.abs(vn2 - cp2->velocityBias) < k_errorTol);
+                        // #endif
                         break;
                     }
 
@@ -742,17 +732,15 @@ export class b2ContactSolver {
                         cp1.normalImpulse = x.x;
                         cp2.normalImpulse = x.y;
 
-                        /*
-            #if B2_DEBUG_SOLVER === 1
-            // Postconditions
-            dv1 = vB + b2Cross(wB, cp1->rB) - vA - b2Cross(wA, cp1->rA);
+                        // #if B2_DEBUG_SOLVER === 1
+                        // // Postconditions
+                        // dv1 = vB + b2Cross(wB, cp1->rB) - vA - b2Cross(wA, cp1->rA);
 
-            // Compute normal velocity
-            vn1 = b2Dot(dv1, normal);
+                        // // Compute normal velocity
+                        // vn1 = b2Dot(dv1, normal);
 
-            b2Assert(Math.abs(vn1 - cp1->velocityBias) < k_errorTol);
-            #endif
-            */
+                        // b2Assert(Math.abs(vn1 - cp1->velocityBias) < k_errorTol);
+                        // #endif
                         break;
                     }
 
