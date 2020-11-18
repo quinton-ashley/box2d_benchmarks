@@ -73,7 +73,7 @@ export function b2CollidePolygonAndCircle(
 
     // Vertices that subtend the incident face.
     const vertIndex1 = normalIndex;
-    const vertIndex2 = (vertIndex1 + 1) % vertexCount;
+	const vertIndex2 = vertIndex1 + 1 < vertexCount ? vertIndex1 + 1 : 0;
     const v1 = vertices[vertIndex1];
     const v2 = vertices[vertIndex2];
 
