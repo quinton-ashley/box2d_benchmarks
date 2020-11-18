@@ -16,10 +16,9 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import { b2Assert, b2_linearSlop } from "../common/b2_common";
-import { b2Transform, b2Sweep } from "../common/b2_math";
+import { b2Assert } from "../common/b2_common";
+import { b2Transform } from "../common/b2_math";
 import { b2Manifold, b2WorldManifold, b2TestOverlap } from "../collision/b2_collision";
-import { b2TimeOfImpact, b2TOIInput, b2TOIOutput } from "../collision/b2_time_of_impact";
 import { b2Body } from "./b2_body";
 import { b2Fixture } from "./b2_fixture";
 import { b2Shape } from "../collision/b2_shape";
@@ -77,6 +76,9 @@ export class b2ContactEdge {
     }
 }
 
+/// The class manages contact between two shapes. A contact exists for each overlapping
+/// AABB in the broad-phase (except if filtered). Therefore a contact object may exist
+/// that has no contact points.
 export abstract class b2Contact<A extends b2Shape = b2Shape, B extends b2Shape = b2Shape> {
     public m_islandFlag = false; /// Used when crawling contact graph when forming islands.
 
@@ -90,10 +92,12 @@ export abstract class b2Contact<A extends b2Shape = b2Shape, B extends b2Shape =
 
     public m_toiFlag = false; /// This contact has a valid TOI in m_toi
 
+    // World pool and list pointers.
     public m_prev: b2Contact | null = null;
 
     public m_next: b2Contact | null = null;
 
+    // Nodes for connecting bodies.
     public readonly m_nodeA: b2ContactEdge = new b2ContactEdge(this);
 
     public readonly m_nodeB: b2ContactEdge = new b2ContactEdge(this);
@@ -339,24 +343,5 @@ export abstract class b2Contact<A extends b2Shape = b2Shape, B extends b2Shape =
         if (!sensor && touching && listener) {
             listener.PreSolve(this, this.m_oldManifold);
         }
-    }
-
-    private static ComputeTOI_s_input = new b2TOIInput();
-
-    private static ComputeTOI_s_output = new b2TOIOutput();
-
-    public ComputeTOI(sweepA: b2Sweep, sweepB: b2Sweep): number {
-        const input = b2Contact.ComputeTOI_s_input;
-        input.proxyA.SetShape(this.GetShapeA(), this.m_indexA);
-        input.proxyB.SetShape(this.GetShapeB(), this.m_indexB);
-        input.sweepA.Copy(sweepA);
-        input.sweepB.Copy(sweepB);
-        input.tMax = b2_linearSlop;
-
-        const output = b2Contact.ComputeTOI_s_output;
-
-        b2TimeOfImpact(output, input);
-
-        return output.t;
     }
 }
