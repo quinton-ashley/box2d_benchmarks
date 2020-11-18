@@ -1,5 +1,5 @@
 // DEBUG: import { b2Assert } from "../common/b2_common";
-import { b2_maxManifoldPoints } from "../common/b2_common";
+import { b2_maxFloat, b2_maxManifoldPoints } from "../common/b2_common";
 import { b2Vec2, b2Rot, b2Transform } from "../common/b2_math";
 import {
     b2ContactFeatureType,
@@ -12,6 +12,7 @@ import {
 import { b2CircleShape } from "./b2_circle_shape";
 import { b2PolygonShape } from "./b2_polygon_shape";
 import { b2EdgeShape } from "./b2_edge_shape";
+import { b2_maxPolygonVertices } from "../common/b2_settings";
 
 const b2CollideEdgeAndCircle_s_Q = new b2Vec2();
 const b2CollideEdgeAndCircle_s_e = new b2Vec2();
@@ -42,14 +43,11 @@ export function b2CollideEdgeAndCircle(
     const e = b2Vec2.Subtract(B, A, b2CollideEdgeAndCircle_s_e);
 
     // Normal points to the right for a CCW winding
-    // b2Vec2 n(e.y, -e.x);
-    // const n = b2CollideEdgeAndCircle_s_n.Set(-e.y, e.x);
     const n = b2CollideEdgeAndCircle_s_n.Set(e.y, -e.x);
-    // float offset = b2Dot(n, Q - A);
     const offset = b2Vec2.Dot(n, b2Vec2.Subtract(Q, A, b2Vec2.s_t0));
 
     const oneSided = edgeA.m_oneSided;
-    if (oneSided && offset < 0.0) {
+    if (oneSided && offset < 0) {
         return;
     }
 
@@ -59,7 +57,6 @@ export function b2CollideEdgeAndCircle(
 
     const radius = edgeA.m_radius + circleB.m_radius;
 
-    // const cf = new b2ContactFeature();
     const id = b2CollideEdgeAndCircle_s_id;
     id.cf.indexB = 0;
     id.cf.typeB = b2ContactFeatureType.e_vertex;
@@ -93,8 +90,6 @@ export function b2CollideEdgeAndCircle(
         manifold.localNormal.SetZero();
         manifold.localPoint.Copy(P);
         manifold.points[0].id.Copy(id);
-        // manifold.points[0].id.key = 0;
-        // manifold.points[0].id.cf = cf;
         manifold.points[0].localPoint.Copy(circleB.m_p);
         return;
     }
@@ -128,8 +123,6 @@ export function b2CollideEdgeAndCircle(
         manifold.localNormal.SetZero();
         manifold.localPoint.Copy(P);
         manifold.points[0].id.Copy(id);
-        // manifold.points[0].id.key = 0;
-        // manifold.points[0].id.cf = cf;
         manifold.points[0].localPoint.Copy(circleB.m_p);
         return;
     }
@@ -158,8 +151,6 @@ export function b2CollideEdgeAndCircle(
     manifold.localNormal.Copy(n);
     manifold.localPoint.Copy(A);
     manifold.points[0].id.Copy(id);
-    // manifold.points[0].id.key = 0;
-    // manifold.points[0].id.cf = cf;
     manifold.points[0].localPoint.Copy(circleB.m_p);
 }
 
@@ -169,6 +160,7 @@ enum b2EPAxisType {
     e_edgeB,
 }
 
+// This structure is used to keep track of the best separating axis.
 class b2EPAxis {
     public normal = new b2Vec2();
 
@@ -179,14 +171,16 @@ class b2EPAxis {
     public separation = 0;
 }
 
+// This holds polygon B expressed in frame A.
 class b2TempPolygon {
-    public vertices: b2Vec2[] = [];
+    public vertices: b2Vec2[] = b2Vec2.MakeArray(b2_maxPolygonVertices);
 
-    public normals: b2Vec2[] = [];
+    public normals: b2Vec2[] = b2Vec2.MakeArray(b2_maxPolygonVertices);
 
     public count = 0;
 }
 
+// Reference face used for clipping
 class b2ReferenceFace {
     public i1 = 0;
 
@@ -215,25 +209,22 @@ function b2ComputeEdgeSeparation(
     v1: Readonly<b2Vec2>,
     normal1: Readonly<b2Vec2>,
 ): b2EPAxis {
-    // b2EPAxis axis;
     const axis = b2ComputeEdgeSeparation_s_axis;
     axis.type = b2EPAxisType.e_edgeA;
     axis.index = -1;
-    axis.separation = -Number.MAX_VALUE; // -FLT_MAX;
+    axis.separation = -b2_maxFloat;
     axis.normal.SetZero();
 
-    // b2Vec2 axes[2] = { normal1, -normal1 };
     const axes = b2ComputeEdgeSeparation_s_axes;
     axes[0].Copy(normal1);
     axes[1].Copy(normal1).Negate();
 
     // Find axis with least overlap (min-max problem)
     for (let j = 0; j < 2; ++j) {
-        let sj = Number.MAX_VALUE; // FLT_MAX;
+        let sj = b2_maxFloat;
 
         // Find deepest polygon vertex along axis j
         for (let i = 0; i < polygonB.count; ++i) {
-            // float si = b2Dot(axes[j], polygonB.vertices[i] - v1);
             const si = b2Vec2.Dot(axes[j], b2Vec2.Subtract(polygonB.vertices[i], v1, b2Vec2.s_t0));
             if (si < sj) {
                 sj = si;
@@ -261,18 +252,14 @@ function b2ComputePolygonSeparation(
     const axis = b2ComputePolygonSeparation_s_axis;
     axis.type = b2EPAxisType.e_unknown;
     axis.index = -1;
-    axis.separation = -Number.MAX_VALUE; // -FLT_MAX;
+    axis.separation = -b2_maxFloat;
     axis.normal.SetZero();
 
     for (let i = 0; i < polygonB.count; ++i) {
-        // b2Vec2 n = -polygonB.normals[i];
         const n = b2Vec2.Negate(polygonB.normals[i], b2ComputePolygonSeparation_s_n);
 
-        // float s1 = b2Dot(n, polygonB.vertices[i] - v1);
         const s1 = b2Vec2.Dot(n, b2Vec2.Subtract(polygonB.vertices[i], v1, b2Vec2.s_t0));
-        // float s2 = b2Dot(n, polygonB.vertices[i] - v2);
         const s2 = b2Vec2.Dot(n, b2Vec2.Subtract(polygonB.vertices[i], v2, b2Vec2.s_t0));
-        // float s = Math.min(s1, s2);
         const s = Math.min(s1, s2);
 
         if (s > axis.separation) {
@@ -308,58 +295,40 @@ export function b2CollideEdgeAndPolygon(
 ): void {
     manifold.pointCount = 0;
 
-    // b2Transform xf = b2MulT(xfA, xfB);
     const xf = b2Transform.TransposeMultiply(xfA, xfB, b2CollideEdgeAndPolygon_s_xf);
 
-    // b2Vec2 centroidB = b2Mul(xf, polygonB.m_centroid);
     const centroidB = b2Transform.MultiplyVec2(xf, polygonB.m_centroid, b2CollideEdgeAndPolygon_s_centroidB);
 
-    // b2Vec2 v1 = edgeA.m_vertex1;
     const v1 = edgeA.m_vertex1;
-    // b2Vec2 v2 = edgeA.m_vertex2;
     const v2 = edgeA.m_vertex2;
 
-    // b2Vec2 edge1 = v2 - v1;
     const edge1 = b2Vec2.Subtract(v2, v1, b2CollideEdgeAndPolygon_s_edge1);
     edge1.Normalize();
 
     // Normal points to the right for a CCW winding
-    // b2Vec2 normal1(edge1.y, -edge1.x);
     const normal1 = b2CollideEdgeAndPolygon_s_normal1.Set(edge1.y, -edge1.x);
-    // float offset1 = b2Dot(normal1, centroidB - v1);
     const offset1 = b2Vec2.Dot(normal1, b2Vec2.Subtract(centroidB, v1, b2Vec2.s_t0));
 
     const oneSided = edgeA.m_oneSided;
-    if (oneSided && offset1 < 0.0) {
+    if (oneSided && offset1 < 0) {
         return;
     }
 
     // Get polygonB in frameA
-    // b2TempPolygon tempPolygonB;
     const tempPolygonB = b2CollideEdgeAndPolygon_s_tempPolygonB;
     tempPolygonB.count = polygonB.m_count;
     for (let i = 0; i < polygonB.m_count; ++i) {
-        if (tempPolygonB.vertices.length <= i) {
-            tempPolygonB.vertices.push(new b2Vec2());
-        }
-        if (tempPolygonB.normals.length <= i) {
-            tempPolygonB.normals.push(new b2Vec2());
-        }
-        // tempPolygonB.vertices[i] = b2Mul(xf, polygonB.m_vertices[i]);
         b2Transform.MultiplyVec2(xf, polygonB.m_vertices[i], tempPolygonB.vertices[i]);
-        // tempPolygonB.normals[i] = b2Mul(xf.q, polygonB.m_normals[i]);
         b2Rot.MultiplyVec2(xf.q, polygonB.m_normals[i], tempPolygonB.normals[i]);
     }
 
     const radius = polygonB.m_radius + edgeA.m_radius;
 
-    // b2EPAxis edgeAxis = b2ComputeEdgeSeparation(tempPolygonB, v1, normal1);
     const edgeAxis = b2ComputeEdgeSeparation(tempPolygonB, v1, normal1);
     if (edgeAxis.separation > radius) {
         return;
     }
 
-    // b2EPAxis polygonAxis = b2ComputePolygonSeparation(tedge0.y, -edge0.xempPolygonB, v1, v2);
     const polygonAxis = b2ComputePolygonSeparation(tempPolygonB, v1, v2);
     if (polygonAxis.separation > radius) {
         return;
@@ -381,22 +350,18 @@ export function b2CollideEdgeAndPolygon(
         // Smooth collision
         // See https://box2d.org/posts/2020/06/ghost-collisions/
 
-        // b2Vec2 edge0 = v1 - edgeA.m_vertex0;
         const edge0 = b2Vec2.Subtract(v1, edgeA.m_vertex0, b2CollideEdgeAndPolygon_s_edge0);
         edge0.Normalize();
-        // b2Vec2 normal0(edge0.y, -edge0.x);
         const normal0 = b2CollideEdgeAndPolygon_s_normal0.Set(edge0.y, -edge0.x);
-        const convex1 = b2Vec2.Cross(edge0, edge1) >= 0.0;
+        const convex1 = b2Vec2.Cross(edge0, edge1) >= 0;
 
-        // b2Vec2 edge2 = edgeA.m_vertex3 - v2;
         const edge2 = b2Vec2.Subtract(edgeA.m_vertex3, v2, b2CollideEdgeAndPolygon_s_edge2);
         edge2.Normalize();
-        // b2Vec2 normal2(edge2.y, -edge2.x);
         const normal2 = b2CollideEdgeAndPolygon_s_normal2.Set(edge2.y, -edge2.x);
-        const convex2 = b2Vec2.Cross(edge1, edge2) >= 0.0;
+        const convex2 = b2Vec2.Cross(edge1, edge2) >= 0;
 
         const sinTol = 0.1;
-        const side1 = b2Vec2.Dot(primaryAxis.normal, edge1) <= 0.0;
+        const side1 = b2Vec2.Dot(primaryAxis.normal, edge1) <= 0;
 
         // Check Gauss Map
         if (side1) {
@@ -424,9 +389,7 @@ export function b2CollideEdgeAndPolygon(
         }
     }
 
-    // b2ClipVertex clipPoints[2];
     const clipPoints = b2CollideEdgeAndPolygon_s_clipPoints;
-    // b2ReferenceFace ref;
     const ref = b2CollideEdgeAndPolygon_s_ref;
     if (primaryAxis.type === b2EPAxisType.e_edgeA) {
         manifold.type = b2ManifoldType.e_faceA;
@@ -462,7 +425,7 @@ export function b2CollideEdgeAndPolygon(
         ref.v1.Copy(v1);
         ref.v2.Copy(v2);
         ref.normal.Copy(primaryAxis.normal);
-        ref.sideNormal1.Copy(edge1).Negate(); // ref.sideNormal1 = -edge1;
+        ref.sideNormal1.Copy(edge1).Negate();
         ref.sideNormal2.Copy(edge1);
     } else {
         manifold.type = b2ManifoldType.e_faceB;
@@ -487,18 +450,15 @@ export function b2CollideEdgeAndPolygon(
 
         // CCW winding
         ref.sideNormal1.Set(ref.normal.y, -ref.normal.x);
-        ref.sideNormal2.Copy(ref.sideNormal1).Negate(); // ref.sideNormal2 = -ref.sideNormal1;
+        ref.sideNormal2.Copy(ref.sideNormal1).Negate();
     }
 
     ref.sideOffset1 = b2Vec2.Dot(ref.sideNormal1, ref.v1);
     ref.sideOffset2 = b2Vec2.Dot(ref.sideNormal2, ref.v2);
 
     // Clip incident edge against reference face side planes
-    // b2ClipVertex clipPoints1[2];
-    const clipPoints1 = b2CollideEdgeAndPolygon_s_clipPoints1; // [new b2ClipVertex(), new b2ClipVertex()];
-    // b2ClipVertex clipPoints2[2];
-    const clipPoints2 = b2CollideEdgeAndPolygon_s_clipPoints2; // [new b2ClipVertex(), new b2ClipVertex()];
-    // int32 np;
+    const clipPoints1 = b2CollideEdgeAndPolygon_s_clipPoints1;
+    const clipPoints2 = b2CollideEdgeAndPolygon_s_clipPoints2;
     let np: number;
 
     // Clip to side 1
@@ -532,7 +492,7 @@ export function b2CollideEdgeAndPolygon(
             const cp = manifold.points[pointCount];
 
             if (primaryAxis.type === b2EPAxisType.e_edgeA) {
-                b2Transform.TransposeMultiplyVec2(xf, clipPoints2[i].v, cp.localPoint); // cp.localPoint = b2MulT(xf, clipPoints2[i].v);
+                b2Transform.TransposeMultiplyVec2(xf, clipPoints2[i].v, cp.localPoint);
                 cp.id.Copy(clipPoints2[i].id);
             } else {
                 cp.localPoint.Copy(clipPoints2[i].v);
