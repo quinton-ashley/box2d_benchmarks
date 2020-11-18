@@ -106,6 +106,7 @@ export class b2ContactListener {
 }
 
 /// Callback class for AABB queries
+/// See b2World::Query
 export type b2QueryCallback = (fixture: b2Fixture) => boolean;
 
 /// Callback class for ray casts.
