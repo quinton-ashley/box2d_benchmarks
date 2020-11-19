@@ -84,7 +84,7 @@ function ComputeCentroid(vs: b2Vec2[], count: number, out: b2Vec2): b2Vec2 {
         // Triangle vertices.
         b2Vec2.Subtract(vs[0], s, p1);
         b2Vec2.Subtract(vs[i], s, p2);
-        b2Vec2.Subtract(vs[(i + 1) % count], s, p3);
+        b2Vec2.Subtract(vs[i + 1 < count ? i + 1 : 0], s, p3);
 
         b2Vec2.Subtract(p2, p1, e1);
         b2Vec2.Subtract(p3, p1, e2);
@@ -109,6 +109,7 @@ function ComputeCentroid(vs: b2Vec2[], count: number, out: b2Vec2): b2Vec2 {
 
 /// A solid convex polygon. It is assumed that the interior of the polygon is to
 /// the left of each edge.
+/// Polygons have a maximum number of vertices equal to b2_maxPolygonVertices.
 /// In most cases you should not need many vertices for a convex polygon.
 export class b2PolygonShape extends b2Shape {
     public readonly m_centroid = new b2Vec2();
@@ -153,27 +154,7 @@ export class b2PolygonShape extends b2Shape {
     /// @warning the points may be re-ordered, even if they form a convex polygon
     /// @warning collinear points are handled but not removed. Collinear points
     /// may lead to poor stacking behavior.
-    public Set(vertices: XY[]): b2PolygonShape;
-
-    public Set(vertices: XY[], count: number): b2PolygonShape;
-
-    public Set(vertices: number[]): b2PolygonShape;
-
-    public Set(...args: any[]): b2PolygonShape {
-        if (typeof args[0][0] === "number") {
-            const vertices: number[] = args[0];
-            b2Assert(vertices.length % 2 === 0);
-            return this.SetEx(
-                (index: number): XY => ({ x: vertices[index * 2], y: vertices[index * 2 + 1] }),
-                vertices.length / 2,
-            );
-        }
-        const vertices: XY[] = args[0];
-        const count: number = args[1] || vertices.length;
-        return this.SetEx((index: number): XY => vertices[index], count);
-    }
-
-    public SetEx(vertices: (index: number) => XY, count: number): b2PolygonShape {
+    public Set(vertices: XY[], count = vertices.length): b2PolygonShape {
         // DEBUG: b2Assert(3 <= count && count <= b2_maxPolygonVertices);
         if (count < 3) {
             return this.SetAsBox(1, 1);
@@ -184,7 +165,7 @@ export class b2PolygonShape extends b2Shape {
         // Perform welding and copy vertices into local buffer.
         const ps: XY[] = [];
         for (let i = 0; i < n; ++i) {
-            const v = vertices(i);
+            const v = vertices[i];
 
             const unique = ps.every((p) => b2Vec2.DistanceSquared(v, p) >= weldingDistanceSquared);
             if (unique) {
@@ -262,9 +243,9 @@ export class b2PolygonShape extends b2Shape {
 
         // Compute normals. Ensure the edges have non-zero length.
         for (let i = 0; i < m; ++i) {
-            const vertexi1 = this.m_vertices[i];
-            const vertexi2 = this.m_vertices[(i + 1) % m];
-            const edge = b2Vec2.Subtract(vertexi2, vertexi1, b2Vec2.s_t0);
+            const i1 = i;
+            const i2 = i + 1 < m ? i + 1 : 0;
+            const edge = b2Vec2.Subtract(this.m_vertices[i2], this.m_vertices[i1], b2Vec2.s_t0);
             // DEBUG: b2Assert(edge.LengthSquared() > b2_epsilon_sq);
             b2Vec2.CrossVec2One(edge, this.m_normals[i]).Normalize();
         }
@@ -292,7 +273,6 @@ export class b2PolygonShape extends b2Shape {
         this.m_normals[1].Set(1, 0);
         this.m_normals[2].Set(0, 1);
         this.m_normals[3].Set(-1, 0);
-        this.m_centroid.SetZero();
 
         if (center) {
             this.m_centroid.Copy(center);
@@ -306,6 +286,8 @@ export class b2PolygonShape extends b2Shape {
                 b2Transform.MultiplyVec2(xf, this.m_vertices[i], this.m_vertices[i]);
                 b2Rot.MultiplyVec2(xf.q, this.m_normals[i], this.m_normals[i]);
             }
+        } else {
+            this.m_centroid.SetZero();
         }
 
         return this;
@@ -392,8 +374,8 @@ export class b2PolygonShape extends b2Shape {
 
         for (let i = 1; i < this.m_count; ++i) {
             const v = b2Transform.MultiplyVec2(xf, this.m_vertices[i], temp.ComputeAABB.v);
-            b2Vec2.Min(v, lower, lower);
-            b2Vec2.Max(v, upper, upper);
+            b2Vec2.Min(lower, v, lower);
+            b2Vec2.Max(upper, v, upper);
         }
 
         const r = this.m_radius;
@@ -442,7 +424,7 @@ export class b2PolygonShape extends b2Shape {
         for (let i = 0; i < this.m_count; ++i) {
             // Triangle vertices.
             const e1 = b2Vec2.Subtract(this.m_vertices[i], s, temp.ComputeMass.e1);
-            const e2 = b2Vec2.Subtract(this.m_vertices[(i + 1) % this.m_count], s, temp.ComputeMass.e2);
+            const e2 = b2Vec2.Subtract(this.m_vertices[i + 1 < this.m_count ? i + 1 : 0], s, temp.ComputeMass.e2);
 
             const D = b2Vec2.Cross(e1, e2);
 
@@ -450,7 +432,7 @@ export class b2PolygonShape extends b2Shape {
             area += triangleArea;
 
             // Area weighted centroid
-            center.Add(b2Vec2.Scale(triangleArea * k_inv3, b2Vec2.Add(e1, e2, b2Vec2.s_t0), b2Vec2.s_t1));
+            center.AddScaled(triangleArea * k_inv3, b2Vec2.Add(e1, e2, b2Vec2.s_t0));
 
             const ex1 = e1.x;
             const ey1 = e1.y;
@@ -482,7 +464,7 @@ export class b2PolygonShape extends b2Shape {
         const { e, v } = temp.Validate;
         for (let i = 0; i < this.m_count; ++i) {
             const i1 = i;
-            const i2 = (i + 1) % this.m_count;
+            const i2 = i < this.m_count - 1 ? i1 + 1 : 0;
             const p = this.m_vertices[i1];
             b2Vec2.Subtract(this.m_vertices[i2], p, e);
 
