@@ -209,7 +209,7 @@ export class b2GearJoint extends b2Joint {
             this.m_localAxisC.Copy(prismatic.m_localXAxisA);
 
             const pC = this.m_localAnchorC;
-            const pA = b2Rot.MultiplyVec2(
+            const pA = b2Rot.TransposeMultiplyVec2(
                 xfC.q,
                 b2Rot.MultiplyVec2(xfA.q, this.m_localAnchorA, b2Vec2.s_t0).Add(xfA.p).Subtract(xfC.p),
                 b2Vec2.s_t0,
@@ -219,6 +219,9 @@ export class b2GearJoint extends b2Joint {
 
         this.m_bodyD = this.m_joint2.GetBodyA();
         this.m_bodyB = this.m_joint2.GetBodyB();
+
+        // Body B on joint2 must be dynamic
+        // DEBUG: b2Assert(this.m_bodyB.m_type === b2BodyType.b2_dynamicBody);
 
         // Get geometry of joint2
         const xfB = this.m_bodyB.m_xf;
@@ -451,7 +454,6 @@ export class b2GearJoint extends b2Joint {
             b2Rot.MultiplyVec2(qD, this.m_localAxisD, u);
             b2Rot.MultiplyVec2(qD, b2Vec2.Subtract(this.m_localAnchorD, this.m_lcD, lalcD), rD);
             b2Rot.MultiplyVec2(qB, b2Vec2.Subtract(this.m_localAnchorB, this.m_lcB, lalcB), rB);
-            b2Rot.MultiplyVec2(qB, lalcB, rB);
             b2Vec2.Scale(this.m_ratio, u, JvBD);
             JwD = this.m_ratio * b2Vec2.Cross(rD, u);
             JwB = this.m_ratio * b2Vec2.Cross(rB, u);
