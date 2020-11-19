@@ -144,8 +144,8 @@ export class b2MotorJoint extends b2Joint {
         this.m_linearOffset.Copy(def.linearOffset ?? b2Vec2.ZERO);
         this.m_angularOffset = def.angularOffset ?? 0;
         this.m_linearImpulse.SetZero();
-        this.m_maxForce = def.maxForce ?? 0;
-        this.m_maxTorque = def.maxTorque ?? 0;
+        this.m_maxForce = def.maxForce ?? 1;
+        this.m_maxTorque = def.maxTorque ?? 1;
         this.m_correctionFactor = def.correctionFactor ?? 0.3;
     }
 
@@ -211,6 +211,15 @@ export class b2MotorJoint extends b2Joint {
 
     public GetMaxTorque() {
         return this.m_maxTorque;
+    }
+
+    public GetCorrectionFactor() {
+        return this.m_correctionFactor;
+    }
+
+    public SetCorrectionFactor(factor: number) {
+        // DEBUG: b2Assert(Number.isFinite(factor) && factor >= 0 && factor <= 1);
+        this.m_correctionFactor = factor;
     }
 
     public InitVelocityConstraints(data: b2SolverData): void {
@@ -325,13 +334,11 @@ export class b2MotorJoint extends b2Joint {
         // Solve linear friction
         {
             const { impulse, oldImpulse, Cdot } = temp;
-            const rA = this.m_rA;
-            const rB = this.m_rB;
 
             b2Vec2.AddScaled(
                 b2Vec2.Subtract(
-                    b2Vec2.AddCrossScalarVec2(vB, wB, rB, b2Vec2.s_t0),
-                    b2Vec2.AddCrossScalarVec2(vA, wA, rA, b2Vec2.s_t1),
+                    b2Vec2.AddCrossScalarVec2(vB, wB, this.m_rB, b2Vec2.s_t0),
+                    b2Vec2.AddCrossScalarVec2(vA, wA, this.m_rA, b2Vec2.s_t1),
                     b2Vec2.s_t2,
                 ),
                 inv_h * this.m_correctionFactor,
@@ -353,10 +360,10 @@ export class b2MotorJoint extends b2Joint {
             b2Vec2.Subtract(this.m_linearImpulse, oldImpulse, impulse);
 
             vA.SubtractScaled(mA, impulse);
-            wA -= iA * b2Vec2.Cross(rA, impulse);
+            wA -= iA * b2Vec2.Cross(this.m_rA, impulse);
 
             vB.AddScaled(mB, impulse);
-            wB += iB * b2Vec2.Cross(rB, impulse);
+            wB += iB * b2Vec2.Cross(this.m_rB, impulse);
         }
 
         data.velocities[this.m_indexA].w = wA;
