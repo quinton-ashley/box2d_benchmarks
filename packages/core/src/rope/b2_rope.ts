@@ -189,10 +189,9 @@ export class b2Rope {
     private readonly m_tuning = new b2RopeTuning();
 
     public constructor(def: b2RopeDef) {
-        this.m_count = def.vertices.length;
-        b2Assert(def.vertices.length === def.masses.length);
         b2Assert(def.vertices.length >= 3);
         this.m_position.Copy(def.position);
+        this.m_count = def.vertices.length;
         this.m_bindPositions = b2Vec2.MakeArray(this.m_count);
         this.m_ps = b2Vec2.MakeArray(this.m_count);
         this.m_p0s = b2Vec2.MakeArray(this.m_count);
@@ -266,12 +265,8 @@ export class b2Rope {
                 continue;
             }
 
-            Jd1.Copy(e1)
-                .Skew()
-                .Scale(-1 / L1sqr);
-            Jd2.Copy(e2)
-                .Skew()
-                .Scale(1 / L2sqr);
+            b2Vec2.Skew(e1, Jd1).Scale(-1 / L1sqr);
+            b2Vec2.Skew(e2, Jd2).Scale(1 / L2sqr);
 
             b2Vec2.Negate(Jd1, J1);
             b2Vec2.Subtract(Jd1, Jd2, J2);
@@ -536,12 +531,8 @@ export class b2Rope {
                 continue;
             }
 
-            Jd1.Copy(d1)
-                .Skew()
-                .Scale(-1 / L1sqr);
-            Jd2.Copy(d2)
-                .Skew()
-                .Scale(1 / L2sqr);
+            b2Vec2.Skew(d1, Jd1).Scale(-1 / L1sqr);
+            b2Vec2.Skew(d2, Jd2).Scale(1 / L2sqr);
 
             b2Vec2.Negate(Jd1, J1);
             b2Vec2.Subtract(Jd1, Jd2, J2);
@@ -605,12 +596,8 @@ export class b2Rope {
 
             const angle = Math.atan2(a, b);
 
-            Jd1.Copy(d1)
-                .Skew()
-                .Scale(-1 / L1sqr);
-            Jd2.Copy(d2)
-                .Skew()
-                .Scale(1 / L2sqr);
+            b2Vec2.Skew(d1, Jd1).Scale(-1 / L1sqr);
+            b2Vec2.Skew(d2, Jd2).Scale(1 / L2sqr);
 
             b2Vec2.Negate(Jd1, J1);
             b2Vec2.Subtract(Jd1, Jd2, J2);
@@ -786,12 +773,8 @@ export class b2Rope {
 
             const angle = Math.atan2(a, b);
 
-            Jd1.Copy(d1)
-                .Skew()
-                .Scale(-1 / L1sqr);
-            Jd2.Copy(d2)
-                .Skew()
-                .Scale(1 / L2sqr);
+            b2Vec2.Skew(d1, Jd1).Scale(-1 / L1sqr);
+            b2Vec2.Skew(d2, Jd2).Scale(1 / L2sqr);
 
             b2Vec2.Negate(Jd1, J1);
             b2Vec2.Subtract(Jd1, Jd2, J2);

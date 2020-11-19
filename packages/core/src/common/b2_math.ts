@@ -402,6 +402,14 @@ export class b2Vec2 implements XY {
         }
         return out;
     }
+
+    /// Skew a vector such that dot(skew_vec, other) == cross(vec, other)
+    public static Skew<T extends XY>(v: XY, out: T) {
+        const { x } = v;
+        out.x = -v.y;
+        out.y = x;
+        return out;
+    }
 }
 
 export interface XYZ extends XY {
