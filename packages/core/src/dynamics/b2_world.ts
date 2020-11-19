@@ -90,7 +90,12 @@ export class b2World {
 
     public readonly m_profile = new b2Profile();
 
-    public readonly m_island = new b2Island();
+    public readonly m_island = new b2Island(
+        2 * b2_maxTOIContacts,
+        b2_maxTOIContacts,
+        0,
+        this.m_contactManager.m_contactListener,
+    );
 
     public readonly s_stack: Array<b2Body | null> = [];
 
@@ -780,12 +785,8 @@ export class b2World {
 
         // Size the island for the worst case.
         const island = this.m_island;
-        island.Initialize(
-            this.m_bodyCount,
-            this.m_contactManager.m_contactCount,
-            this.m_jointCount,
-            this.m_contactManager.m_contactListener,
-        );
+        island.Resize(this.m_bodyCount);
+        island.Clear();
 
         // Clear all the island flags.
         for (let b = this.m_bodyList; b; b = b.m_next) {
@@ -959,7 +960,7 @@ export class b2World {
 
     public SolveTOI(step: b2TimeStep): void {
         const island = this.m_island;
-        island.Initialize(2 * b2_maxTOIContacts, b2_maxTOIContacts, 0, this.m_contactManager.m_contactListener);
+        island.Clear();
 
         if (this.m_stepComplete) {
             for (let b = this.m_bodyList; b; b = b.m_next) {

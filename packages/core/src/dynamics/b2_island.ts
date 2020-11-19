@@ -154,24 +154,19 @@ This might be faster than computing sin+cos.
 However, we can compute sin+cos of the same angle fast.
 */
 
+/// This is an internal class.
 export class b2Island {
-    public m_listener!: b2ContactListener;
+    public readonly m_listener: b2ContactListener;
 
-    public readonly m_bodies: b2Body[] = [
-        /* 1024 */
-    ]; // TODO: b2Settings
+    public readonly m_bodies: b2Body[];
 
-    public readonly m_contacts: b2Contact[] = [
-        /* 1024 */
-    ]; // TODO: b2Settings
+    public readonly m_contacts: b2Contact[];
 
-    public readonly m_joints: b2Joint[] = [
-        /* 1024 */
-    ]; // TODO: b2Settings
+    public readonly m_joints: b2Joint[];
 
-    public readonly m_positions = b2Position.MakeArray(1024); // TODO: b2Settings
+    public readonly m_positions: b2Position[];
 
-    public readonly m_velocities = b2Velocity.MakeArray(1024); // TODO: b2Settings
+    public readonly m_velocities: b2Velocity[];
 
     public m_bodyCount = 0;
 
@@ -179,53 +174,33 @@ export class b2Island {
 
     public m_contactCount = 0;
 
-    public m_bodyCapacity = 0;
+    public m_bodyCapacity: number;
 
-    public m_contactCapacity = 0;
-
-    public m_jointCapacity = 0;
-
-    public Initialize(
+    public constructor(
         bodyCapacity: number,
         contactCapacity: number,
         jointCapacity: number,
         listener: b2ContactListener,
-    ): void {
+    ) {
         this.m_bodyCapacity = bodyCapacity;
-        this.m_contactCapacity = contactCapacity;
-        this.m_jointCapacity = jointCapacity;
-        this.m_bodyCount = 0;
-        this.m_contactCount = 0;
-        this.m_jointCount = 0;
 
         this.m_listener = listener;
 
-        // TODO:
-        // while (this.m_bodies.length < bodyCapacity) {
-        //   this.m_bodies[this.m_bodies.length] = null;
-        // }
-        // TODO:
-        // while (this.m_contacts.length < contactCapacity) {
-        //   this.m_contacts[this.m_contacts.length] = null;
-        // }
-        // TODO:
-        // while (this.m_joints.length < jointCapacity) {
-        //   this.m_joints[this.m_joints.length] = null;
-        // }
+        this.m_bodies = new Array(bodyCapacity);
+        this.m_contacts = new Array(contactCapacity);
+        this.m_joints = new Array(jointCapacity);
 
-        // TODO:
-        if (this.m_positions.length < bodyCapacity) {
-            const new_length = Math.max(this.m_positions.length * 2, bodyCapacity);
-            while (this.m_positions.length < new_length) {
-                this.m_positions[this.m_positions.length] = new b2Position();
-            }
-        }
-        // TODO:
-        if (this.m_velocities.length < bodyCapacity) {
-            const new_length = Math.max(this.m_velocities.length * 2, bodyCapacity);
-            while (this.m_velocities.length < new_length) {
-                this.m_velocities[this.m_velocities.length] = new b2Velocity();
-            }
+        this.m_velocities = b2Velocity.MakeArray(bodyCapacity);
+        this.m_positions = b2Position.MakeArray(bodyCapacity);
+
+        this.Resize(bodyCapacity);
+    }
+
+    public Resize(bodyCapacity: number) {
+        while (this.m_bodyCapacity < bodyCapacity) {
+            this.m_velocities[this.m_bodyCapacity] = new b2Velocity();
+            this.m_positions[this.m_bodyCapacity] = new b2Position();
+            this.m_bodyCapacity++;
         }
     }
 
@@ -238,16 +213,15 @@ export class b2Island {
     public AddBody(body: b2Body): void {
         // DEBUG: b2Assert(this.m_bodyCount < this.m_bodyCapacity);
         body.m_islandIndex = this.m_bodyCount;
-        this.m_bodies[this.m_bodyCount++] = body;
+        this.m_bodies[this.m_bodyCount] = body;
+        ++this.m_bodyCount;
     }
 
     public AddContact(contact: b2Contact): void {
-        // DEBUG: b2Assert(this.m_contactCount < this.m_contactCapacity);
         this.m_contacts[this.m_contactCount++] = contact;
     }
 
     public AddJoint(joint: b2Joint): void {
-        // DEBUG: b2Assert(this.m_jointCount < this.m_jointCapacity);
         this.m_joints[this.m_jointCount++] = joint;
     }
 
@@ -364,8 +338,7 @@ export class b2Island {
             }
 
             // Integrate
-            c.x += h * v.x;
-            c.y += h * v.y;
+            c.AddScaled(h, v);
             a += h * w;
 
             this.m_positions[i].a = a;
