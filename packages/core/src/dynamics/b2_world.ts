@@ -280,13 +280,11 @@ export class b2World {
         ++this.m_jointCount;
 
         // Connect to the bodies' doubly linked lists.
-        // j.m_edgeA.other = j.m_bodyB; // done in b2Joint constructor
         j.m_edgeA.prev = null;
         j.m_edgeA.next = j.m_bodyA.m_jointList;
         if (j.m_bodyA.m_jointList) j.m_bodyA.m_jointList.prev = j.m_edgeA;
         j.m_bodyA.m_jointList = j.m_edgeA;
 
-        // j.m_edgeB.other = j.m_bodyA; // done in b2Joint constructor
         j.m_edgeB.prev = null;
         j.m_edgeB.next = j.m_bodyB.m_jointList;
         if (j.m_bodyB.m_jointList) j.m_bodyB.m_jointList.prev = j.m_edgeB;
@@ -354,7 +352,8 @@ export class b2World {
             bodyA.m_jointList = j.m_edgeA.next;
         }
 
-        j.m_edgeA.Reset();
+        j.m_edgeA.prev = null;
+        j.m_edgeA.next = null;
 
         // Remove from body 2
         if (j.m_edgeB.prev) {
@@ -369,7 +368,8 @@ export class b2World {
             bodyB.m_jointList = j.m_edgeB.next;
         }
 
-        j.m_edgeB.Reset();
+        j.m_edgeB.prev = null;
+        j.m_edgeB.next = null;
 
         // DEBUG: b2Assert(this.m_jointCount > 0);
         --this.m_jointCount;
@@ -427,18 +427,22 @@ export class b2World {
         step.warmStarting = this.m_warmStarting;
 
         // Update contacts. This is where some contacts are destroyed.
-        const timer = b2World.Step_s_timer.Reset();
-        this.m_contactManager.Collide();
-        this.m_profile.collide = timer.GetMilliseconds();
+        {
+            const timer = b2World.Step_s_timer.Reset();
+            this.m_contactManager.Collide();
+            this.m_profile.collide = timer.GetMilliseconds();
+        }
 
         // Integrate velocities, solve velocity constraints, and integrate positions.
         if (this.m_stepComplete && step.dt > 0) {
+            const timer = b2World.Step_s_timer.Reset();
             this.Solve(step);
             this.m_profile.solve = timer.GetMilliseconds();
         }
 
         // Handle TOI events.
         if (this.m_continuousPhysics && step.dt > 0) {
+            const timer = b2World.Step_s_timer.Reset();
             this.SolveTOI(step);
             this.m_profile.solveTOI = timer.GetMilliseconds();
         }
@@ -464,7 +468,7 @@ export class b2World {
     /// ClearForces after all sub-steps are complete in one pass of your game loop.
     /// @see SetAutoClearForces
     public ClearForces(): void {
-        for (let body = this.m_bodyList; body; body = body.m_next) {
+        for (let body = this.m_bodyList; body; body = body.GetNext()) {
             body.m_force.SetZero();
             body.m_torque = 0;
         }
@@ -1012,7 +1016,7 @@ export class b2World {
 
                     const typeA = bA.m_type;
                     const typeB = bB.m_type;
-                    // DEBUG: b2Assert(typeA !== b2BodyType.b2_staticBody || typeB !== b2BodyType.b2_staticBody);
+                    // DEBUG: b2Assert(typeA === b2BodyType.b2_dynamicBody || typeB === b2BodyType.b2_dynamicBody);
 
                     const activeA = bA.IsAwake() && typeA !== b2BodyType.b2_staticBody;
                     const activeB = bB.IsAwake() && typeB !== b2BodyType.b2_staticBody;

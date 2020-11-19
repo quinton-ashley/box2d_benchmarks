@@ -18,7 +18,6 @@
 
 // DEBUG: import { b2Assert } from "../common/b2_common";
 import { XY } from "../common/b2_math";
-import { b2Assert } from "../common/b2_common";
 import type { b2Body } from "./b2_body";
 import { b2SolverData } from "./b2_time_step";
 
@@ -43,17 +42,7 @@ export enum b2JointType {
 /// maintained in each attached body. Each joint has two joint
 /// nodes, one for each attached body.
 export class b2JointEdge {
-    private m_other: b2Body | null = null; /// < provides quick access to the other body attached.
-
-    public get other(): b2Body {
-        b2Assert(this.m_other !== null);
-        return this.m_other;
-    }
-
-    public set other(value: b2Body) {
-        b2Assert(this.m_other === null);
-        this.m_other = value;
-    }
+    public readonly other: b2Body; /// < provides quick access to the other body attached.
 
     public readonly joint: b2Joint; /// < the joint
 
@@ -61,14 +50,9 @@ export class b2JointEdge {
 
     public next: b2JointEdge | null = null; /// < the next joint edge in the body's joint list
 
-    constructor(joint: b2Joint) {
+    constructor(joint: b2Joint, other: b2Body) {
         this.joint = joint;
-    }
-
-    public Reset(): void {
-        this.m_other = null;
-        this.prev = null;
-        this.next = null;
+        this.other = other;
     }
 }
 
@@ -172,9 +156,9 @@ export abstract class b2Joint {
 
     public m_next: b2Joint | null = null;
 
-    public readonly m_edgeA = new b2JointEdge(this);
+    public readonly m_edgeA: b2JointEdge;
 
-    public readonly m_edgeB = new b2JointEdge(this);
+    public readonly m_edgeB: b2JointEdge;
 
     public m_bodyA: b2Body;
 
@@ -192,8 +176,8 @@ export abstract class b2Joint {
         // DEBUG: b2Assert(def.bodyA !== def.bodyB);
 
         this.m_type = def.type;
-        this.m_edgeA.other = def.bodyB; // nope
-        this.m_edgeB.other = def.bodyA; // nope
+        this.m_edgeA = new b2JointEdge(this, def.bodyB);
+        this.m_edgeB = new b2JointEdge(this, def.bodyA);
         this.m_bodyA = def.bodyA;
         this.m_bodyB = def.bodyB;
 
