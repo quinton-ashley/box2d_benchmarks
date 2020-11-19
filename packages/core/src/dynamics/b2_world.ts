@@ -1133,7 +1133,7 @@ export class b2World {
                             break;
                         }
 
-                        if (island.m_contactCount === island.m_contactCapacity) {
+                        if (island.m_contactCount === b2_maxTOIContacts) {
                             break;
                         }
 
