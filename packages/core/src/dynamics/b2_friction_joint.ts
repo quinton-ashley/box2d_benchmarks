@@ -43,12 +43,16 @@ export interface b2IFrictionJointDef extends b2IJointDef {
 
 /// Friction joint definition.
 export class b2FrictionJointDef extends b2JointDef implements b2IFrictionJointDef {
+    /// The local anchor point relative to bodyA's origin.
     public readonly localAnchorA = new b2Vec2();
 
+    /// The local anchor point relative to bodyB's origin.
     public readonly localAnchorB = new b2Vec2();
 
+    /// The maximum friction force in N.
     public maxForce = 0;
 
+    /// The maximum friction torque in N-m.
     public maxTorque = 0;
 
     constructor() {
@@ -63,6 +67,8 @@ export class b2FrictionJointDef extends b2JointDef implements b2IFrictionJointDe
     }
 }
 
+/// Friction joint. This is used for top-down friction.
+/// It provides 2D translational friction and angular friction.
 export class b2FrictionJoint extends b2Joint {
     public readonly m_localAnchorA = new b2Vec2();
 
@@ -136,8 +142,8 @@ export class b2FrictionJoint extends b2Joint {
         qB.Set(aB);
 
         // Compute the effective mass matrix.
-        const rA = b2Rot.MultiplyVec2(qA, b2Vec2.Subtract(this.m_localAnchorA, this.m_localCenterA, lalcA), this.m_rA);
-        const rB = b2Rot.MultiplyVec2(qB, b2Vec2.Subtract(this.m_localAnchorB, this.m_localCenterB, lalcB), this.m_rB);
+        b2Rot.MultiplyVec2(qA, b2Vec2.Subtract(this.m_localAnchorA, this.m_localCenterA, lalcA), this.m_rA);
+        b2Rot.MultiplyVec2(qB, b2Vec2.Subtract(this.m_localAnchorB, this.m_localCenterB, lalcB), this.m_rB);
 
         // J = [-I -r1_skew I r2_skew]
         //     [ 0       -1 0       1]
@@ -154,10 +160,10 @@ export class b2FrictionJoint extends b2Joint {
         const iB = this.m_invIB;
 
         const K = this.m_linearMass;
-        K.ex.x = mA + mB + iA * rA.y * rA.y + iB * rB.y * rB.y;
-        K.ex.y = -iA * rA.x * rA.y - iB * rB.x * rB.y;
+        K.ex.x = mA + mB + iA * this.m_rA.y * this.m_rA.y + iB * this.m_rB.y * this.m_rB.y;
+        K.ex.y = -iA * this.m_rA.x * this.m_rA.y - iB * this.m_rB.x * this.m_rB.y;
         K.ey.x = K.ex.y;
-        K.ey.y = mA + mB + iA * rA.x * rA.x + iB * rB.x * rB.x;
+        K.ey.y = mA + mB + iA * this.m_rA.x * this.m_rA.x + iB * this.m_rB.x * this.m_rB.x;
 
         K.Inverse();
 
@@ -276,6 +282,7 @@ export class b2FrictionJoint extends b2Joint {
     }
 
     public SetMaxForce(force: number): void {
+        // DEBUG: b2Assert(Number.isFinite(force) && force >= 0);
         this.m_maxForce = force;
     }
 
@@ -284,6 +291,7 @@ export class b2FrictionJoint extends b2Joint {
     }
 
     public SetMaxTorque(torque: number): void {
+        // DEBUG: b2Assert(Number.isFinite(torque) && torque >= 0);
         this.m_maxTorque = torque;
     }
 
