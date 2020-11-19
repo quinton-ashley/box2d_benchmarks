@@ -217,9 +217,11 @@ export class b2Fixture {
         }
 
         const world = this.m_body.GetWorld();
-        if (world) {
-            // Touch each proxy so that new pairs may be created
-            this.TouchProxies(world.m_contactManager.m_broadPhase);
+
+        // Touch each proxy so that new pairs may be created
+        const broadPhase = world.m_contactManager.m_broadPhase;
+        for (const proxy of this.m_proxies) {
+            broadPhase.TouchProxy(proxy.treeNode);
         }
     }
 
@@ -302,6 +304,10 @@ export class b2Fixture {
         this.m_restitution = restitution;
     }
 
+    public SetRestitutionThreshold(threshold: number): void {
+        this.m_restitutionThreshold = threshold;
+    }
+
     /// Get the fixture's AABB. This AABB may be enlarge and/or stale.
     /// If you need a more accurate AABB, compute it using the shape and
     /// the body transform.
@@ -328,23 +334,20 @@ export class b2Fixture {
         this.m_proxies.length = 0;
     }
 
-    public TouchProxies(broadPhase: b2BroadPhase<b2FixtureProxy>): void {
-        for (const proxy of this.m_proxies) {
-            broadPhase.TouchProxy(proxy.treeNode);
-        }
-    }
-
     public Synchronize(broadPhase: b2BroadPhase<b2FixtureProxy>, transform1: b2Transform, transform2: b2Transform) {
         const { c1, c2 } = temp;
+        const displacement = Synchronize_s_displacement;
         for (const proxy of this.m_proxies) {
             // Compute an AABB that covers the swept shape (may miss some rotation effect).
             const aabb1 = Synchronize_s_aabb1;
             const aabb2 = Synchronize_s_aabb2;
             this.m_shape.ComputeAABB(aabb1, transform1, proxy.childIndex);
             this.m_shape.ComputeAABB(aabb2, transform2, proxy.childIndex);
+
             proxy.aabb.Combine2(aabb1, aabb2);
-            const displacement = Synchronize_s_displacement;
+
             b2Vec2.Subtract(aabb2.GetCenter(c2), aabb1.GetCenter(c1), displacement);
+
             broadPhase.MoveProxy(proxy.treeNode, proxy.aabb, displacement);
         }
     }

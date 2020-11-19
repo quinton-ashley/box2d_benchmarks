@@ -125,7 +125,7 @@ export class b2Body {
 
     public m_torque = 0;
 
-    public m_world: b2World;
+    public readonly m_world: b2World;
 
     public m_prev: b2Body | null = null;
 
@@ -783,7 +783,9 @@ export class b2Body {
         // Touch the proxies so that new contacts will be created (when appropriate)
         const broadPhase = this.m_world.m_contactManager.m_broadPhase;
         for (let f: b2Fixture | null = this.m_fixtureList; f; f = f.m_next) {
-            f.TouchProxies(broadPhase);
+            for (const proxy of f.m_proxies) {
+                broadPhase.TouchProxy(proxy.treeNode);
+            }
         }
     }
 
