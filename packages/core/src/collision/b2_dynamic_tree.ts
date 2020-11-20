@@ -43,6 +43,7 @@ let nextNodeid = 0;
 export class b2TreeNode<T> {
     public readonly m_id: number;
 
+    /// Enlarged AABB
     public readonly aabb = new b2AABB();
 
     public userData: T | null = null;
@@ -123,8 +124,6 @@ export class b2DynamicTree<T> {
 
     public m_freeList: b2TreeNode<T> | null = null;
 
-    public m_path = 0;
-
     public m_insertionCount = 0;
 
     public Query(aabb: b2AABB, callback: (node: b2TreeNode<T>) => boolean): void {
@@ -185,8 +184,8 @@ export class b2DynamicTree<T> {
         let { maxFraction } = input;
 
         // Build a bounding box for the segment.
-        const { segmentAABB, subInput, c, h } = temp;
-        const t = temp.t.Set(p1.x + maxFraction * (p2.x - p1.x), p1.y + maxFraction * (p2.y - p1.y));
+        const { segmentAABB, subInput, c, h, t } = temp;
+        b2Vec2.AddScaled(p1, maxFraction, b2Vec2.Subtract(p2, p1, t), t);
         b2Vec2.Min(p1, t, segmentAABB.lowerBound);
         b2Vec2.Max(p1, t, segmentAABB.upperBound);
 
@@ -225,7 +224,7 @@ export class b2DynamicTree<T> {
                 if (value > 0) {
                     // Update segment bounding box.
                     maxFraction = value;
-                    t.Set(p1.x + maxFraction * (p2.x - p1.x), p1.y + maxFraction * (p2.y - p1.y));
+                    b2Vec2.AddScaled(p1, maxFraction, b2Vec2.Subtract(p2, p1, t), t);
                     b2Vec2.Min(p1, t, segmentAABB.lowerBound);
                     b2Vec2.Max(p1, t, segmentAABB.upperBound);
                 }
@@ -263,8 +262,9 @@ export class b2DynamicTree<T> {
         const node = this.AllocateNode();
 
         // Fatten the aabb.
-        node.aabb.lowerBound.Set(aabb.lowerBound.x - b2_aabbExtension, aabb.lowerBound.y - b2_aabbExtension);
-        node.aabb.upperBound.Set(aabb.upperBound.x + b2_aabbExtension, aabb.upperBound.y + b2_aabbExtension);
+        const r = b2_aabbExtension;
+        node.aabb.lowerBound.Set(aabb.lowerBound.x - r, aabb.lowerBound.y - r);
+        node.aabb.upperBound.Set(aabb.upperBound.x + r, aabb.upperBound.y + r);
         node.userData = userData;
         node.height = 0;
         node.moved = true;
@@ -286,20 +286,21 @@ export class b2DynamicTree<T> {
 
         // Extend AABB
         const { fatAABB, hugeAABB } = temp;
-        fatAABB.lowerBound.Set(aabb.lowerBound.x - b2_aabbExtension, aabb.lowerBound.y - b2_aabbExtension);
-        fatAABB.upperBound.Set(aabb.upperBound.x + b2_aabbExtension, aabb.upperBound.y + b2_aabbExtension);
+        const r = b2_aabbExtension;
+        fatAABB.lowerBound.Set(aabb.lowerBound.x - r, aabb.lowerBound.y - r);
+        fatAABB.upperBound.Set(aabb.upperBound.x + r, aabb.upperBound.y + r);
 
         // Predict AABB movement
         const d_x = b2_aabbMultiplier * displacement.x;
         const d_y = b2_aabbMultiplier * displacement.y;
 
-        if (d_x < 0.0) {
+        if (d_x < 0) {
             fatAABB.lowerBound.x += d_x;
         } else {
             fatAABB.upperBound.x += d_x;
         }
 
-        if (d_y < 0.0) {
+        if (d_y < 0) {
             fatAABB.lowerBound.y += d_y;
         } else {
             fatAABB.upperBound.y += d_y;
@@ -454,7 +455,7 @@ export class b2DynamicTree<T> {
         }
 
         const parent = b2Verify(leaf.parent);
-        const grandParent = parent?.parent;
+        const grandParent = parent.parent;
         const sibling = b2Verify(parent.child1 === leaf ? parent.child2 : parent.child1);
 
         if (grandParent !== null) {
@@ -468,17 +469,17 @@ export class b2DynamicTree<T> {
             this.FreeNode(parent);
 
             // Adjust ancestor bounds.
-            let index: b2TreeNode<T> | null = grandParent;
-            while (index !== null) {
-                index = this.Balance(index);
+            let node: b2TreeNode<T> | null = grandParent;
+            while (node !== null) {
+                node = this.Balance(node);
 
-                const child1 = b2Verify(index.child1);
-                const child2 = b2Verify(index.child2);
+                const child1 = b2Verify(node.child1);
+                const child2 = b2Verify(node.child2);
 
-                index.aabb.Combine2(child1.aabb, child2.aabb);
-                index.height = 1 + Math.max(child1.height, child2.height);
+                node.aabb.Combine2(child1.aabb, child2.aabb);
+                node.height = 1 + Math.max(child1.height, child2.height);
 
-                index = index.parent;
+                node = node.parent;
             }
         } else {
             this.m_root = sibling;
@@ -644,8 +645,8 @@ export class b2DynamicTree<T> {
         const child1 = b2Verify(node.child1);
         const child2 = b2Verify(node.child2);
 
-        // DEBUG: b2Assert(child1.parent === index);
-        // DEBUG: b2Assert(child2.parent === index);
+        // DEBUG: b2Assert(child1.parent === node);
+        // DEBUG: b2Assert(child2.parent === node);
 
         this.ValidateStructure(child1);
         this.ValidateStructure(child2);
@@ -685,9 +686,9 @@ export class b2DynamicTree<T> {
         // DEBUG: this.ValidateStructure(this.m_root);
         // DEBUG: this.ValidateMetrics(this.m_root);
         // let freeCount = 0;
-        // let freeIndex: b2TreeNode<T> | null = this.m_freeList;
-        // while (freeIndex !== null) {
-        //   freeIndex = freeIndex.parent; // freeIndex = freeIndex.next;
+        // let freeNode: b2TreeNode<T> | null = this.m_freeList;
+        // while (freeNode !== null) {
+        //   freeNode = freeNode.parent;
         //   ++freeCount;
         // }
         // DEBUG: b2Assert(this.GetHeight() === this.ComputeHeight());
@@ -703,6 +704,7 @@ export class b2DynamicTree<T> {
 
     /// Build an optimal tree. Very expensive. For testing.
     public RebuildBottomUp(): void {
+        throw new Error("Not implemented");
         /*
     int32* nodes = (int32*)b2Alloc(m_nodeCount * sizeof(int32));
     int32 count = 0;
