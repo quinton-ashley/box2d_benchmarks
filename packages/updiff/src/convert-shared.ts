@@ -165,11 +165,33 @@ const opNameMap: { [s: string]: string } = {
     "()": "opCall",
 };
 
+const knownFilenames: { [s: string]: string } = {
+    "b2Vec2_opAdd": "b2Vec2_Add",
+    "b2Vec2_opMultiply": "b2Vec2_Scale",
+    "b2Vec2_opSubtract": "b2Vec2_Subtract",
+    "b2Vec3_opAdd": "b2Vec3_Add",
+    "b2Vec3_opMultiply": "b2Vec3_Scale",
+    "b2Vec3_opSubtract": "b2Vec3_Subtract",
+    "b2Transform_Set": "b2Transform_SetPositionAngle",
+    "b2Mat22_Set": "b2Mat22_SetColumns",
+    "b2EPAxis__Type": "b2EPAxisType",
+    "b2ContactFeature__Type": "b2ContactFeatureType",
+    "b2Manifold__Type": "b2ManifoldType",
+    "b2DistanceProxy_Set_": "b2DistanceProxy_SetVerticesRadius",
+    "b2Island_Add": "b2Island_AddBody",
+    "b2Island_Add_": "b2Island_AddContact",
+    "b2Island_Add__": "b2Island_AddJoint",
+    "b2SeparationFunction__Type": "b2SeparationFunctionType",
+    "b2TOIOutput__State": "b2TOIOutputState",
+};
+
 export function writeModule(type: "cpp" | "ts", name: string, module: ModuleType) {
     const writeFile = (subType: string, subName: string, lines: string[]) => {
         const folder = `dist/${type}-mod/${name}/${subType}/`;
         if (!fs.existsSync(folder)) fs.mkdirSync(folder, { recursive: true });
-        const filename = `${folder}/${subName.replace(invalidFileChars, "_")}.txt`;
+        let subNameClean = subName.replace(invalidFileChars, "_");
+        subNameClean = knownFilenames[subNameClean] ?? subNameClean;
+        const filename = `${folder}/${subNameClean}.txt`;
         if (fs.existsSync(filename)) throw new Error(`file exists already: ${filename} => ${subName}!`);
         fs.writeFileSync(filename, `${lines.join("\n").trim()}\n`);
     };
