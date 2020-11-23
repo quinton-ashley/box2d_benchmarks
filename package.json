@@ -24,7 +24,7 @@
     "lint:scss": "stylelint --ignore-path .prettierignore 'packages/*/src/**/*.scss'",
     "lint:scss:fix": "yarn run lint:scss --fix",
     "lint:style": "yarn run lint:style:base --check",
-    "lint:style:base": "prettier 'packages/*/src/**/*.{ts,tsx,js,json}' 'packages/*/*.{ts,tsx,js,json}'",
+    "lint:style:base": "prettier 'packages/*/src/**/*.{ts,tsx,js,json,scss}' 'packages/*/*.{ts,tsx,js,json,scss}'",
     "lint:style:fix": "yarn run lint:style:base --write",
     "release": "lerna publish",
     "start": "yarn workspace @box2d/testbed start",
