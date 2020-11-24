@@ -126,18 +126,18 @@ export class b2BroadPhase<T> {
 
     private QueryCallback = (proxy: b2TreeNode<T>) => {
         // A proxy cannot form a pair with itself.
-        if (proxy.m_id === this.m_queryProxy.m_id) {
+        if (proxy.id === this.m_queryProxy.id) {
             return true;
         }
 
-        if (proxy.moved && proxy.m_id > this.m_queryProxy.m_id) {
+        if (proxy.moved && proxy.id > this.m_queryProxy.id) {
             // Both proxies are moving. Avoid duplicate pairs.
             return true;
         }
 
         // Grows the pair buffer as needed.
         this.m_pairBuffer[this.m_pairCount] =
-            proxy.m_id < this.m_queryProxy.m_id ? [proxy, this.m_queryProxy] : [this.m_queryProxy, proxy];
+            proxy.id < this.m_queryProxy.id ? [proxy, this.m_queryProxy] : [this.m_queryProxy, proxy];
         ++this.m_pairCount;
 
         return true;

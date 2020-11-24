@@ -1,4 +1,3 @@
-/* eslint-disable dot-notation */
 /*
  * Copyright (c) 2006-2011 Erin Catto http://www.box2d.org
  *

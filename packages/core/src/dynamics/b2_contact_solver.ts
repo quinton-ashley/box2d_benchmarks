@@ -102,7 +102,7 @@ export class b2ContactVelocityConstraint {
     }
 }
 
-export class b2ContactPositionConstraint {
+class b2ContactPositionConstraint {
     public readonly localPoints = b2Vec2.MakeArray(b2_maxManifoldPoints);
 
     public readonly localNormal = new b2Vec2();
@@ -152,7 +152,7 @@ export class b2ContactSolverDef {
     public velocities!: b2Velocity[];
 }
 
-export class b2PositionSolverManifold {
+class b2PositionSolverManifold {
     public readonly normal = new b2Vec2();
 
     public readonly point = new b2Vec2();

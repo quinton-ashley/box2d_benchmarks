@@ -41,7 +41,7 @@ let nextNodeid = 0;
 
 /// A node in the dynamic tree. The client does not interact with this directly.
 export class b2TreeNode<T> {
-    public readonly m_id: number;
+    public readonly id: number;
 
     /// Enlarged AABB
     public readonly aabb = new b2AABB();
@@ -59,7 +59,7 @@ export class b2TreeNode<T> {
     public moved = false;
 
     constructor() {
-        this.m_id = nextNodeid++;
+        this.id = nextNodeid++;
     }
 
     public Reset(): void {

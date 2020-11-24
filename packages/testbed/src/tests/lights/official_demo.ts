@@ -146,9 +146,10 @@ export class OfficialDemo extends Test {
                 },
             });
             const fixture = boxBody.CreateFixture(def);
-            fixture.m_filter.categoryBits = Category.MARBLE;
-            fixture.m_filter.maskBits = Mask.MARBLE;
-            fixture.SetFilterData(fixture.m_filter);
+            fixture.SetFilterData({
+                categoryBits: Category.MARBLE,
+                maskBits: Mask.MARBLE,
+            });
             return new Marble(new Sprite(gl, this.shader, textures.marble.texture), boxBody);
         };
 
@@ -306,9 +307,10 @@ export class OfficialDemo extends Test {
             type: b2BodyType.b2_staticBody,
         });
         const fixture = this.groundBody.CreateFixture({ shape: chainShape, density: 0 });
-        fixture.m_filter.categoryBits = Category.WORLD;
-        fixture.m_filter.maskBits = Mask.WORLD;
-        fixture.Refilter();
+        fixture.SetFilterData({
+            categoryBits: Category.WORLD,
+            maskBits: Mask.WORLD,
+        });
     }
 
     private clearLights() {

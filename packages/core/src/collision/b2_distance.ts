@@ -196,7 +196,7 @@ export const b2Gjk = {
     },
 };
 
-export class b2SimplexVertex {
+class b2SimplexVertex {
     public readonly wA = new b2Vec2(); // support point in proxyA
 
     public readonly wB = new b2Vec2(); // support point in proxyB
@@ -220,7 +220,7 @@ export class b2SimplexVertex {
     }
 }
 
-export class b2Simplex {
+class b2Simplex {
     public readonly m_v1 = new b2SimplexVertex();
 
     public readonly m_v2 = new b2SimplexVertex();
