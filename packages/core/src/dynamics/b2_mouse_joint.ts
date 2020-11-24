@@ -17,6 +17,7 @@
  */
 
 // DEBUG: import { b2Assert, b2_epsilon } from "../common/b2_common";
+import { b2Draw, debugColors } from "../common/b2_draw";
 import { b2Vec2, b2Mat22, b2Rot, b2Transform, XY } from "../common/b2_math";
 import { b2Joint, b2JointDef, b2JointType, b2IJointDef } from "./b2_joint";
 import { b2SolverData } from "./b2_time_step";
@@ -27,6 +28,8 @@ const temp = {
     Cdot: new b2Vec2(),
     impulse: new b2Vec2(),
     oldImpulse: new b2Vec2(),
+    pA: new b2Vec2(),
+    pB: new b2Vec2(),
 };
 
 export interface b2IMouseJointDef extends b2IJointDef {
@@ -261,5 +264,13 @@ export class b2MouseJoint extends b2Joint {
 
     public ShiftOrigin(newOrigin: XY) {
         this.m_targetA.Subtract(newOrigin);
+    }
+
+    public Draw(draw: b2Draw): void {
+        const p1 = this.GetAnchorA(temp.pA);
+        const p2 = this.GetAnchorB(temp.pB);
+        draw.DrawPoint(p1, 4, debugColors.joint7);
+        draw.DrawPoint(p2, 4, debugColors.joint7);
+        draw.DrawSegment(p1, p2, debugColors.joint8);
     }
 }

@@ -21,6 +21,7 @@
 // SOFTWARE.
 
 import { b2Assert, b2MakeNumberArray } from "../common/b2_common";
+import { b2Color, b2Draw, debugColors } from "../common/b2_draw";
 import { b2Vec2, XY } from "../common/b2_math";
 
 const temp = {
@@ -806,5 +807,18 @@ export class b2Rope {
             this.m_vs[c.i2].AddScaled(c.invMass2 * impulse, J2);
             this.m_vs[c.i3].AddScaled(c.invMass3 * impulse, J3);
         }
+    }
+
+    public Draw(draw: b2Draw): void {
+        for (let i = 0; i < this.m_count - 1; ++i) {
+            draw.DrawSegment(this.m_ps[i], this.m_ps[i + 1], debugColors.rope);
+
+            const pc: Readonly<b2Color> = this.m_invMasses[i] > 0.0 ? debugColors.ropePointD : debugColors.ropePointG;
+            draw.DrawPoint(this.m_ps[i], 5.0, pc);
+        }
+
+        const pc: Readonly<b2Color> =
+            this.m_invMasses[this.m_count - 1] > 0.0 ? debugColors.ropePointD : debugColors.ropePointG;
+        draw.DrawPoint(this.m_ps[this.m_count - 1], 5.0, pc);
     }
 }

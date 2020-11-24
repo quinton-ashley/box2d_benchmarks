@@ -18,6 +18,7 @@
 
 // DEBUG: import { b2Assert, b2_epsilon_sq } from "../common/b2_common";
 import { b2Assert, b2_linearSlop, b2_polygonRadius } from "../common/b2_common";
+import { b2Color, b2Draw } from "../common/b2_draw";
 import { b2Vec2, b2Rot, b2Transform, XY } from "../common/b2_math";
 import { b2_maxPolygonVertices } from "../common/b2_settings";
 import { b2AABB, b2RayCastInput, b2RayCastOutput } from "./b2_collision";
@@ -488,5 +489,11 @@ export class b2PolygonShape extends b2Shape {
         proxy.m_vertices = this.m_vertices;
         proxy.m_count = this.m_count;
         proxy.m_radius = this.m_radius;
+    }
+
+    public Draw(draw: b2Draw, color: b2Color): void {
+        const vertexCount = this.m_count;
+        const vertices = this.m_vertices;
+        draw.DrawSolidPolygon(vertices, vertexCount, color);
     }
 }

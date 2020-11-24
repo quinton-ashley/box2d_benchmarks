@@ -17,10 +17,11 @@
  */
 
 import { b2_linearSlop, b2_maxFloat } from "../common/b2_common";
-import { b2Clamp, b2Vec2, b2Rot, XY } from "../common/b2_math";
+import { b2Clamp, b2Vec2, b2Rot, XY, b2Transform } from "../common/b2_math";
 import { b2Joint, b2JointDef, b2JointType, b2IJointDef } from "./b2_joint";
 import { b2SolverData } from "./b2_time_step";
 import type { b2Body } from "./b2_body";
+import { b2Draw, debugColors } from "../common/b2_draw";
 
 const temp = {
     worldPointA: new b2Vec2(),
@@ -33,6 +34,14 @@ const temp = {
     qB: new b2Rot(),
     lalcA: new b2Vec2(),
     lalcB: new b2Vec2(),
+    Draw: {
+        pA: new b2Vec2(),
+        pB: new b2Vec2(),
+        axis: new b2Vec2(),
+        pRest: new b2Vec2(),
+        p1: new b2Vec2(),
+        p2: new b2Vec2(),
+    },
 };
 
 export interface b2IDistanceJointDef extends b2IJointDef {
@@ -453,5 +462,28 @@ export class b2DistanceJoint extends b2Joint {
         data.positions[this.m_indexB].a = aB;
 
         return Math.abs(C) < b2_linearSlop;
+    }
+
+    public Draw(draw: b2Draw): void {
+        const { pA, pB, axis, pRest } = temp.Draw;
+        const xfA = this.m_bodyA.GetTransform();
+        const xfB = this.m_bodyB.GetTransform();
+        b2Transform.MultiplyVec2(xfA, this.m_localAnchorA, pA);
+        b2Transform.MultiplyVec2(xfB, this.m_localAnchorB, pB);
+        b2Vec2.Subtract(pB, pA, axis);
+        axis.Normalize();
+        draw.DrawSegment(pA, pB, debugColors.joint5);
+        b2Vec2.AddScaled(pA, this.m_length, axis, pRest);
+        draw.DrawPoint(pRest, 8.0, debugColors.joint1);
+        if (this.m_minLength !== this.m_maxLength) {
+            if (this.m_minLength > b2_linearSlop) {
+                const pMin = b2Vec2.AddScaled(pA, this.m_minLength, axis, temp.Draw.p1);
+                draw.DrawPoint(pMin, 4.0, debugColors.joint2);
+            }
+            if (this.m_maxLength < b2_maxFloat) {
+                const pMax = b2Vec2.AddScaled(pA, this.m_maxLength, axis, temp.Draw.p1);
+                draw.DrawPoint(pMax, 4.0, debugColors.joint3);
+            }
+        }
     }
 }

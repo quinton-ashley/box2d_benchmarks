@@ -28,7 +28,6 @@ import {
     b2BendingModel,
     b2StretchingModel,
     b2RopeDef,
-    DrawRope,
     XY,
 } from "@box2d/core";
 
@@ -319,8 +318,8 @@ export class Rope extends Test {
 
         super.Step(settings, timeStep);
 
-        DrawRope(g_debugDraw, this.m_rope1);
-        DrawRope(g_debugDraw, this.m_rope2);
+        this.m_rope1.Draw(g_debugDraw);
+        this.m_rope2.Draw(g_debugDraw);
     }
 }
 // class Rope : public Test

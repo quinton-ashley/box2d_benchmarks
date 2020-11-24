@@ -18,6 +18,7 @@
 
 // DEBUG: import { b2Assert } from "../common/b2_common";
 import { b2_polygonRadius } from "../common/b2_common";
+import { b2Color, b2Draw } from "../common/b2_draw";
 import { b2Vec2, b2Rot, b2Transform, XY } from "../common/b2_math";
 import { b2AABB, b2RayCastInput, b2RayCastOutput } from "./b2_collision";
 import { b2DistanceProxy } from "./b2_distance";
@@ -198,5 +199,16 @@ export class b2EdgeShape extends b2Shape {
         proxy.m_vertices[1].Copy(this.m_vertex2);
         proxy.m_count = 2;
         proxy.m_radius = this.m_radius;
+    }
+
+    public Draw(draw: b2Draw, color: b2Color): void {
+        const v1 = this.m_vertex1;
+        const v2 = this.m_vertex2;
+        draw.DrawSegment(v1, v2, color);
+
+        if (this.m_oneSided === false) {
+            draw.DrawPoint(v1, 4.0, color);
+            draw.DrawPoint(v2, 4.0, color);
+        }
     }
 }

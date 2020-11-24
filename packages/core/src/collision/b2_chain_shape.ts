@@ -23,6 +23,7 @@ import { b2AABB, b2RayCastInput, b2RayCastOutput } from "./b2_collision";
 import { b2DistanceProxy } from "./b2_distance";
 import { b2MassData, b2Shape, b2ShapeType } from "./b2_shape";
 import { b2EdgeShape } from "./b2_edge_shape";
+import { b2Color, b2Draw } from "../common/b2_draw";
 
 /// A chain shape is a free form sequence of line segments.
 /// The chain has one-sided collision, with the surface normal pointing to the right of the edge.
@@ -213,5 +214,15 @@ export class b2ChainShape extends b2Shape {
         }
         proxy.m_count = 2;
         proxy.m_radius = this.m_radius;
+    }
+
+    public Draw(draw: b2Draw, color: b2Color): void {
+        const vertices = this.m_vertices;
+        let v1 = vertices[0];
+        for (let i = 1; i < vertices.length; ++i) {
+            const v2 = vertices[i];
+            draw.DrawSegment(v1, v2, color);
+            v1 = v2;
+        }
     }
 }

@@ -196,3 +196,27 @@ export interface b2Draw {
 
     DrawPoint(p: XY, size: number, color: RGBA): void;
 }
+
+export const debugColors = {
+    badBody: new b2Color(1.0, 0.0, 0.0),
+    disabledBody: new b2Color(0.5, 0.5, 0.3),
+    staticBody: new b2Color(0.5, 0.9, 0.5),
+    kinematicBody: new b2Color(0.5, 0.5, 0.9),
+    sleepingBody: new b2Color(0.6, 0.6, 0.6),
+    body: new b2Color(0.9, 0.7, 0.7),
+    pair: new b2Color(0.3, 0.9, 0.9),
+    aabb: new b2Color(0.9, 0.3, 0.9),
+
+    joint1: new b2Color(0.7, 0.7, 0.7),
+    joint2: new b2Color(0.3, 0.9, 0.3),
+    joint3: new b2Color(0.9, 0.3, 0.3),
+    joint4: new b2Color(0.3, 0.3, 0.9),
+    joint5: new b2Color(0.4, 0.4, 0.4),
+    joint6: new b2Color(0.5, 0.8, 0.8),
+    joint7: new b2Color(0.0, 1, 0.0),
+    joint8: new b2Color(0.8, 0.8, 0.8),
+
+    rope: new b2Color(0.4, 0.5, 0.7),
+    ropePointG: new b2Color(0.1, 0.8, 0.1),
+    ropePointD: new b2Color(0.7, 0.2, 0.4),
+};

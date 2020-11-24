@@ -17,9 +17,15 @@
  */
 
 // DEBUG: import { b2Assert } from "../common/b2_common";
-import { XY } from "../common/b2_math";
+import { b2Draw, debugColors } from "../common/b2_draw";
+import { b2Vec2, XY } from "../common/b2_math";
 import type { b2Body } from "./b2_body";
 import { b2SolverData } from "./b2_time_step";
+
+const temp = {
+    pA: new b2Vec2(),
+    pB: new b2Vec2(),
+};
 
 export enum b2JointType {
     e_unknownJoint,
@@ -249,4 +255,14 @@ export abstract class b2Joint {
 
     // This returns true if the position errors are within tolerance.
     public abstract SolvePositionConstraints(data: b2SolverData): boolean;
+
+    public Draw(draw: b2Draw): void {
+        const x1 = this.m_bodyA.GetTransform().p;
+        const x2 = this.m_bodyB.GetTransform().p;
+        const p1 = this.GetAnchorA(temp.pA);
+        const p2 = this.GetAnchorB(temp.pB);
+        draw.DrawSegment(x1, p1, debugColors.joint6);
+        draw.DrawSegment(p1, p2, debugColors.joint6);
+        draw.DrawSegment(x2, p2, debugColors.joint6);
+    }
 }

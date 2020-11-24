@@ -17,7 +17,8 @@
  */
 
 import { b2_linearSlop, b2_angularSlop } from "../common/b2_common";
-import { b2Clamp, b2Vec2, b2Mat22, b2Vec3, b2Mat33, b2Rot, XY } from "../common/b2_math";
+import { b2Draw, debugColors } from "../common/b2_draw";
+import { b2Clamp, b2Vec2, b2Mat22, b2Vec3, b2Mat33, b2Rot, XY, b2Transform } from "../common/b2_math";
 import { b2Body } from "./b2_body";
 import { b2Joint, b2JointDef, b2JointType, b2IJointDef } from "./b2_joint";
 import { b2SolverData } from "./b2_time_step";
@@ -50,6 +51,16 @@ const temp = {
         impulse: new b2Vec3(),
         impulse1: new b2Vec2(),
         P: new b2Vec2(),
+    },
+    Draw: {
+        p1: new b2Vec2(),
+        p2: new b2Vec2(),
+        pA: new b2Vec2(),
+        pB: new b2Vec2(),
+        axis: new b2Vec2(),
+        lower: new b2Vec2(),
+        upper: new b2Vec2(),
+        perp: new b2Vec2(),
     },
 };
 
@@ -720,5 +731,40 @@ export class b2PrismaticJoint extends b2Joint {
 
     public GetMotorForce(inv_dt: number): number {
         return inv_dt * this.m_motorImpulse;
+    }
+
+    public Draw(draw: b2Draw): void {
+        const { p1, p2, pA, pB, axis } = temp.Draw;
+        const xfA = this.m_bodyA.GetTransform();
+        const xfB = this.m_bodyB.GetTransform();
+        b2Transform.MultiplyVec2(xfA, this.m_localAnchorA, pA);
+        b2Transform.MultiplyVec2(xfB, this.m_localAnchorB, pB);
+
+        b2Rot.MultiplyVec2(xfA.q, this.m_localXAxisA, axis);
+
+        draw.DrawSegment(pA, pB, debugColors.joint5);
+
+        if (this.m_enableLimit) {
+            const { lower, upper, perp } = temp.Draw;
+            b2Vec2.AddScaled(pA, this.m_lowerTranslation, axis, lower);
+            b2Vec2.AddScaled(pA, this.m_upperTranslation, axis, upper);
+            b2Rot.MultiplyVec2(xfA.q, this.m_localYAxisA, perp);
+            draw.DrawSegment(lower, upper, debugColors.joint1);
+            draw.DrawSegment(
+                b2Vec2.SubtractScaled(lower, 0.5, perp, p1),
+                b2Vec2.AddScaled(lower, 0.5, perp, p2),
+                debugColors.joint2,
+            );
+            draw.DrawSegment(
+                b2Vec2.SubtractScaled(upper, 0.5, perp, p1),
+                b2Vec2.AddScaled(upper, 0.5, perp, p2),
+                debugColors.joint3,
+            );
+        } else {
+            draw.DrawSegment(b2Vec2.Subtract(pA, axis, p1), b2Vec2.Add(pA, axis, p2), debugColors.joint1);
+        }
+
+        draw.DrawPoint(pA, 5.0, debugColors.joint1);
+        draw.DrawPoint(pB, 5.0, debugColors.joint4);
     }
 }

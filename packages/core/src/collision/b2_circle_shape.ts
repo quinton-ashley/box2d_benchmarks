@@ -18,6 +18,7 @@
 
 // DEBUG: import { b2Assert } from "../common/b2_common";
 import { b2_epsilon } from "../common/b2_common";
+import { b2Color, b2Draw } from "../common/b2_draw";
 import { b2Vec2, b2Transform, XY } from "../common/b2_math";
 import { b2AABB, b2RayCastInput, b2RayCastOutput } from "./b2_collision";
 import { b2DistanceProxy } from "./b2_distance";
@@ -140,5 +141,12 @@ export class b2CircleShape extends b2Shape {
         proxy.m_vertices[0].Copy(this.m_p);
         proxy.m_count = 1;
         proxy.m_radius = this.m_radius;
+    }
+
+    public Draw(draw: b2Draw, color: b2Color): void {
+        const center = this.m_p;
+        const radius = this.m_radius;
+        const axis = b2Vec2.UNITX;
+        draw.DrawSolidCircle(center, radius, axis, color);
     }
 }

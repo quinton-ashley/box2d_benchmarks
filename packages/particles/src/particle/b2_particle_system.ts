@@ -5517,6 +5517,8 @@ export class b2ParticleSystem_CompositeShape extends b2Shape {
     public SetupDistanceProxy(_proxy: b2DistanceProxy, _index: number): void {
         // DEBUG: b2Assert(false);
     }
+
+    public Draw() {}
 }
 
 export class b2ParticleSystem_ReactiveFilter extends b2ParticleSystem_ConnectionFilter {

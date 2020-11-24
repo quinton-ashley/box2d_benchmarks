@@ -17,7 +17,8 @@
  */
 
 import { b2_linearSlop, b2_angularSlop, b2_maxAngularCorrection } from "../common/b2_common";
-import { b2Clamp, b2Vec2, b2Mat22, b2Rot, XY } from "../common/b2_math";
+import { b2Draw, debugColors } from "../common/b2_draw";
+import { b2Clamp, b2Vec2, b2Mat22, b2Rot, XY, b2Transform } from "../common/b2_math";
 import { b2Body } from "./b2_body";
 import { b2Joint, b2JointDef, b2JointType, b2IJointDef } from "./b2_joint";
 import { b2SolverData } from "./b2_time_step";
@@ -31,6 +32,12 @@ const temp = {
     Cdot: new b2Vec2(),
     C: new b2Vec2(),
     impulse: new b2Vec2(),
+    p2: new b2Vec2(),
+    r: new b2Vec2(),
+    pA: new b2Vec2(),
+    pB: new b2Vec2(),
+    rlo: new b2Vec2(),
+    rhi: new b2Vec2(),
 };
 
 export interface b2IRevoluteJointDef extends b2IJointDef {
@@ -541,5 +548,38 @@ export class b2RevoluteJoint extends b2Joint {
             this.m_bodyB.SetAwake(true);
             this.m_motorSpeed = speed;
         }
+    }
+
+    public Draw(draw: b2Draw): void {
+        const { p2, r, pA, pB } = temp;
+        const xfA = this.m_bodyA.GetTransform();
+        const xfB = this.m_bodyB.GetTransform();
+        b2Transform.MultiplyVec2(xfA, this.m_localAnchorA, pA);
+        b2Transform.MultiplyVec2(xfB, this.m_localAnchorB, pB);
+
+        draw.DrawPoint(pA, 5.0, debugColors.joint4);
+        draw.DrawPoint(pB, 5.0, debugColors.joint5);
+
+        const aA = this.m_bodyA.GetAngle();
+        const aB = this.m_bodyB.GetAngle();
+        const angle = aB - aA - this.m_referenceAngle;
+
+        const L = 0.5;
+
+        r.Set(Math.cos(angle), Math.sin(angle)).Scale(L);
+        draw.DrawSegment(pB, b2Vec2.Add(pB, r, p2), debugColors.joint1);
+        draw.DrawCircle(pB, L, debugColors.joint1);
+
+        if (this.m_enableLimit) {
+            const { rlo, rhi } = temp;
+            rlo.Set(Math.cos(this.m_lowerAngle), Math.sin(this.m_lowerAngle)).Scale(L);
+            rhi.Set(Math.cos(this.m_upperAngle), Math.sin(this.m_upperAngle)).Scale(L);
+            draw.DrawSegment(pB, b2Vec2.Add(pB, rlo, p2), debugColors.joint2);
+            draw.DrawSegment(pB, b2Vec2.Add(pB, rhi, p2), debugColors.joint3);
+        }
+
+        draw.DrawSegment(xfA.p, pA, debugColors.joint6);
+        draw.DrawSegment(pA, pB, debugColors.joint6);
+        draw.DrawSegment(xfB.p, pB, debugColors.joint6);
     }
 }

@@ -17,6 +17,7 @@
  */
 
 // DEBUG: import { b2Assert } from "../common/b2_common";
+import { b2Color, b2Draw } from "../common/b2_draw";
 import { b2Vec2, b2Transform, XY } from "../common/b2_math";
 import { b2AABB, b2RayCastInput, b2RayCastOutput } from "./b2_collision";
 import { b2DistanceProxy } from "./b2_distance";
@@ -106,4 +107,6 @@ export abstract class b2Shape {
 
     // Fixme: check the logic of the implementations. Seems strange
     public abstract SetupDistanceProxy(proxy: b2DistanceProxy, index: number): void;
+
+    public abstract Draw(draw: b2Draw, color: b2Color): void;
 }

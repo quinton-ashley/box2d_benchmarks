@@ -18,6 +18,7 @@
 
 // DEBUG: import { b2Assert, b2_epsilon } from "../common/b2_common";
 import { b2_linearSlop } from "../common/b2_common";
+import { b2Draw, debugColors } from "../common/b2_draw";
 import { b2Vec2, b2Rot, XY } from "../common/b2_math";
 import { b2Body } from "./b2_body";
 import { b2Joint, b2JointDef, b2JointType, b2IJointDef } from "./b2_joint";
@@ -35,6 +36,8 @@ const temp = {
     PB: new b2Vec2(),
     vpA: new b2Vec2(),
     vpB: new b2Vec2(),
+    pA: new b2Vec2(),
+    pB: new b2Vec2(),
 };
 
 export interface b2IPulleyJointDef extends b2IJointDef {
@@ -405,5 +408,15 @@ export class b2PulleyJoint extends b2Joint {
     public ShiftOrigin(newOrigin: b2Vec2) {
         this.m_groundAnchorA.Subtract(newOrigin);
         this.m_groundAnchorB.Subtract(newOrigin);
+    }
+
+    public DrawJoint(draw: b2Draw): void {
+        const p1 = this.GetAnchorA(temp.pA);
+        const p2 = this.GetAnchorB(temp.pB);
+        const s1 = (this as b2PulleyJoint).GetGroundAnchorA();
+        const s2 = (this as b2PulleyJoint).GetGroundAnchorB();
+        draw.DrawSegment(s1, p1, debugColors.joint6);
+        draw.DrawSegment(s2, p2, debugColors.joint6);
+        draw.DrawSegment(s1, s2, debugColors.joint6);
     }
 }
