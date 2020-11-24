@@ -54,7 +54,7 @@ export class ShapeEditing extends Test {
 
     getHotkeys(): HotKey[] {
         return [
-            hotKeyPress([], "c", "Create a Shape", () => {
+            hotKeyPress("c", "Create a Shape", () => {
                 if (this.m_fixture2 === null) {
                     const shape = new b2CircleShape();
                     shape.m_radius = 3.0;
@@ -63,14 +63,14 @@ export class ShapeEditing extends Test {
                     this.m_body.SetAwake(true);
                 }
             }),
-            hotKeyPress([], "d", "Destroy a Shape", () => {
+            hotKeyPress("d", "Destroy a Shape", () => {
                 if (this.m_fixture2 !== null) {
                     this.m_body.DestroyFixture(this.m_fixture2);
                     this.m_fixture2 = null;
                     this.m_body.SetAwake(true);
                 }
             }),
-            hotKeyPress([], "s", "Toggle Sensor", () => {
+            hotKeyPress("s", "Toggle Sensor", () => {
                 if (this.m_fixture2 !== null) {
                     this.m_sensor = !this.m_sensor;
                     this.m_fixture2.SetSensor(this.m_sensor);

@@ -134,11 +134,11 @@ export class SliderCrank extends Test {
 
     getHotkeys(): HotKey[] {
         return [
-            hotKeyPress([], "f", "Toggle Friction", () => {
+            hotKeyPress("f", "Toggle Friction", () => {
                 this.m_joint2.EnableMotor(!this.m_joint2.IsMotorEnabled());
                 this.m_joint2.GetBodyB().SetAwake(true);
             }),
-            hotKeyPress([], "m", "Toggle Motor", () => {
+            hotKeyPress("m", "Toggle Motor", () => {
                 this.m_joint1.EnableMotor(!this.m_joint1.IsMotorEnabled());
                 this.m_joint1.GetBodyB().SetAwake(true);
             }),

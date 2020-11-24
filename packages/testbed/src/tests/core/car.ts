@@ -269,8 +269,8 @@ export class Car extends Test {
 
     getHotkeys(): HotKey[] {
         return [
-            hotKey([], "a", "Accelerate", (down) => this.m_spring1.SetMotorSpeed(down ? this.m_speed : 0)),
-            hotKey([], "d", "Decelerate", (down) => this.m_spring1.SetMotorSpeed(down ? -this.m_speed : 0)),
+            hotKey("a", "Decelerate", (down) => this.m_spring1.SetMotorSpeed(down ? this.m_speed : 0)),
+            hotKey("d", "Accelerate", (down) => this.m_spring1.SetMotorSpeed(down ? -this.m_speed : 0)),
         ];
     }
 

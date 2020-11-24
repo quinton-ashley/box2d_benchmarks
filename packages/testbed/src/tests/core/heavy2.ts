@@ -73,6 +73,6 @@ export class HeavyOnLightTwo extends Test {
     }
 
     getHotkeys(): HotKey[] {
-        return [hotKeyPress([], "h", "Toggle Heavy", () => this.ToggleHeavy())];
+        return [hotKeyPress("h", "Toggle Heavy", () => this.ToggleHeavy())];
     }
 }

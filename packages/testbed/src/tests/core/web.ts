@@ -188,7 +188,7 @@ export class Web extends Test {
 
     getHotkeys(): HotKey[] {
         return [
-            hotKeyPress([], "b", "Delete a Body", () => {
+            hotKeyPress("b", "Delete a Body", () => {
                 for (let i = 0; i < 4; ++i) {
                     const body = this.m_bodies[i];
                     if (body) {
@@ -198,7 +198,7 @@ export class Web extends Test {
                     }
                 }
             }),
-            hotKeyPress([], "j", "Delete a Joint", () => {
+            hotKeyPress("j", "Delete a Joint", () => {
                 for (let i = 0; i < 8; ++i) {
                     const joint = this.m_joints[i];
                     if (joint) {

@@ -125,9 +125,9 @@ export class BodyTypes extends Test {
 
     getHotkeys(): HotKey[] {
         return [
-            hotKeyPress([], "d", "Set Dynamic Body", () => this.m_platform.SetType(b2BodyType.b2_dynamicBody)),
-            hotKeyPress([], "s", "Set Static Body", () => this.m_platform.SetType(b2BodyType.b2_staticBody)),
-            hotKeyPress([], "k", "Set Kinematic Body", () => {
+            hotKeyPress("d", "Set Dynamic Body", () => this.m_platform.SetType(b2BodyType.b2_dynamicBody)),
+            hotKeyPress("s", "Set Static Body", () => this.m_platform.SetType(b2BodyType.b2_staticBody)),
+            hotKeyPress("k", "Set Kinematic Body", () => {
                 this.m_platform.SetType(b2BodyType.b2_kinematicBody);
                 this.m_platform.SetLinearVelocity(new b2Vec2(-this.m_speed, 0.0));
                 this.m_platform.SetAngularVelocity(0.0);

@@ -402,10 +402,10 @@ export class TopdownCar extends Test {
 
     getHotkeys(): HotKey[] {
         return [
-            hotKey([], "a", "Turn Left", (down) => this.SetControlState(TDC_LEFT, down)),
-            hotKey([], "d", "Turn Right", (down) => this.SetControlState(TDC_RIGHT, down)),
-            hotKey([], "w", "Move Forward", (down) => this.SetControlState(TDC_UP, down)),
-            hotKey([], "s", "Move Backward", (down) => this.SetControlState(TDC_DOWN, down)),
+            hotKey("a", "Turn Left", (down) => this.SetControlState(TDC_LEFT, down)),
+            hotKey("d", "Turn Right", (down) => this.SetControlState(TDC_RIGHT, down)),
+            hotKey("w", "Move Forward", (down) => this.SetControlState(TDC_UP, down)),
+            hotKey("s", "Move Backward", (down) => this.SetControlState(TDC_DOWN, down)),
         ];
     }
 

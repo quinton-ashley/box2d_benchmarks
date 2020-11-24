@@ -278,10 +278,10 @@ export class Rope extends Test {
 
     getHotkeys(): HotKey[] {
         return [
-            hotKey([], ",", "Move Left", (down) => {
+            hotKey("a", "Move Left", (down) => {
                 this.m_move_x = down ? -1 : 0;
             }),
-            hotKey([], ".", "Move Right", (down) => {
+            hotKey("d", "Move Right", (down) => {
                 this.m_move_x = down ? 1 : 0;
             }),
         ];

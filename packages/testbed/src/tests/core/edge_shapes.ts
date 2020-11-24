@@ -164,12 +164,12 @@ export class EdgeShapes extends Test {
 
     getHotkeys(): HotKey[] {
         return [
-            hotKeyPress([], "1", "Create Triangle", () => this.CreateBody(0)),
-            hotKeyPress([], "2", "Create Flat Triangle", () => this.CreateBody(1)),
-            hotKeyPress([], "3", "Create Octagon", () => this.CreateBody(2)),
-            hotKeyPress([], "4", "Create Box", () => this.CreateBody(3)),
-            hotKeyPress([], "5", "Create Circle", () => this.CreateBody(4)),
-            hotKeyPress([], "d", "Destroy Body", () => this.DestroyBody()),
+            hotKeyPress("1", "Create Triangle", () => this.CreateBody(0)),
+            hotKeyPress("2", "Create Flat Triangle", () => this.CreateBody(1)),
+            hotKeyPress("3", "Create Octagon", () => this.CreateBody(2)),
+            hotKeyPress("4", "Create Box", () => this.CreateBody(3)),
+            hotKeyPress("5", "Create Circle", () => this.CreateBody(4)),
+            hotKeyPress("d", "Destroy Body", () => this.DestroyBody()),
         ];
     }
 

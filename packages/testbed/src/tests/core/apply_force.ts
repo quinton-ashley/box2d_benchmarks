@@ -195,10 +195,10 @@ export class ApplyForce extends Test {
 
     getHotkeys(): HotKey[] {
         return [
-            hotKeyPress([], "w", "Apply Force", () => this.ApplyForce(-250)),
-            hotKeyPress([], "s", "Apply Backward Force", () => this.ApplyForce(250)),
-            hotKeyPress([], "a", "Apply Torque Counter-Clockwise", () => this.m_body.ApplyTorque(40.0)),
-            hotKeyPress([], "d", "Apply Torque Clockwise", () => this.m_body.ApplyTorque(-40.0)),
+            hotKeyPress("w", "Apply Force", () => this.ApplyForce(-250)),
+            hotKeyPress("s", "Apply Backward Force", () => this.ApplyForce(250)),
+            hotKeyPress("a", "Apply Torque Counter-Clockwise", () => this.m_body.ApplyTorque(40.0)),
+            hotKeyPress("d", "Apply Torque Clockwise", () => this.m_body.ApplyTorque(-40.0)),
         ];
     }
 

@@ -74,7 +74,7 @@ export class MotorJoint extends Test {
 
     getHotkeys(): HotKey[] {
         return [
-            hotKeyPress([], "s", "Start/Stop", () => {
+            hotKeyPress("s", "Start/Stop", () => {
                 this.m_go = !this.m_go;
             }),
         ];

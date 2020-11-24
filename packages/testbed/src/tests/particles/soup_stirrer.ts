@@ -82,7 +82,7 @@ export class SoupStirrer extends Soup {
     }
 
     getHotkeys(): HotKey[] {
-        return [hotKeyPress([], "t", "Toggle Joint", () => this.ToggleJoint())];
+        return [hotKeyPress("t", "Toggle Joint", () => this.ToggleJoint())];
     }
 
     /**

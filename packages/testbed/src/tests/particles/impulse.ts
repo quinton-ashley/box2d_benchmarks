@@ -87,10 +87,10 @@ export class Impulse extends Test {
 
     getHotkeys(): HotKey[] {
         return [
-            hotKeyPress([], "l", "Use Linear Impulse", () => {
+            hotKeyPress("l", "Use Linear Impulse", () => {
                 this.m_useLinearImpulse = true;
             }),
-            hotKeyPress([], "f", "Use Force", () => {
+            hotKeyPress("f", "Use Force", () => {
                 this.m_useLinearImpulse = false;
             }),
         ];

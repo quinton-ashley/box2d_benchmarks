@@ -262,10 +262,10 @@ export class TheoJansen extends Test {
 
     getHotkeys(): HotKey[] {
         return [
-            hotKeyPress([], "a", "Left", () => this.m_motorJoint.SetMotorSpeed(-this.m_motorSpeed)),
-            hotKeyPress([], "s", "Brake", () => this.m_motorJoint.SetMotorSpeed(0)),
-            hotKeyPress([], "d", "Right", () => this.m_motorJoint.SetMotorSpeed(this.m_motorSpeed)),
-            hotKeyPress([], "m", "Toggle Enabled", () =>
+            hotKeyPress("a", "Left", () => this.m_motorJoint.SetMotorSpeed(-this.m_motorSpeed)),
+            hotKeyPress("s", "Brake", () => this.m_motorJoint.SetMotorSpeed(0)),
+            hotKeyPress("d", "Right", () => this.m_motorJoint.SetMotorSpeed(this.m_motorSpeed)),
+            hotKeyPress("m", "Toggle Enabled", () =>
                 this.m_motorJoint.EnableMotor(!this.m_motorJoint.IsMotorEnabled()),
             ),
         ];

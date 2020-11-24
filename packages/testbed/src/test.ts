@@ -171,7 +171,7 @@ export class Test extends b2ContactListener {
 
     getBaseHotkeys(): HotKey[] {
         return [
-            hotKeyPress([], " ", "Launch Bomb", () => {
+            hotKeyPress(" ", "Launch Bomb", () => {
                 this.LaunchBomb();
             }),
         ];

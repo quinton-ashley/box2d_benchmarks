@@ -220,27 +220,27 @@ export class OfficialDemo extends Test {
 
     getHotkeys(): HotKey[] {
         return [
-            hotKeyPress([], "1", "Point Light", () => this.setLightsType(LightsType.POINT)),
-            hotKeyPress([], "2", "Cone Light", () => this.setLightsType(LightsType.CONE)),
-            hotKeyPress([], "3", "Chain Light", () => this.setLightsType(LightsType.CHAIN)),
-            hotKeyPress([], "4", "Directional Light", () => this.setLightsType(LightsType.DIRECTIONAL)),
-            hotKeyPress([], "7", "Default Blending (1.3)", () => this.setBlending("default")),
-            hotKeyPress([], "8", "Over-Burn Blending (default in 1.2)", () => this.setBlending("overburn")),
-            hotKeyPress([], "9", "Some other Blending", () => this.setBlending("other")),
-            hotKeyPress([], "c", "Random Light Colors", () => {
+            hotKeyPress("1", "Point Light", () => this.setLightsType(LightsType.POINT)),
+            hotKeyPress("2", "Cone Light", () => this.setLightsType(LightsType.CONE)),
+            hotKeyPress("3", "Chain Light", () => this.setLightsType(LightsType.CHAIN)),
+            hotKeyPress("4", "Directional Light", () => this.setLightsType(LightsType.DIRECTIONAL)),
+            hotKeyPress("7", "Default Blending (1.3)", () => this.setBlending("default")),
+            hotKeyPress("8", "Over-Burn Blending (default in 1.2)", () => this.setBlending("overburn")),
+            hotKeyPress("9", "Some other Blending", () => this.setBlending("other")),
+            hotKeyPress("c", "Random Light Colors", () => {
                 for (const marble of this.marbles) {
                     setRandomLightColor(marble.light);
                 }
             }),
-            hotKeyPress([], "d", "Random Light Distance", () => {
+            hotKeyPress("d", "Random Light Distance", () => {
                 for (const marble of this.marbles) {
                     marble.light.setDistance(random(LIGHT_DISTANCE * 0.5, LIGHT_DISTANCE * 2));
                 }
             }),
-            hotKeyPress([], "l", "Toggle Light Debug Drawing", () => {
+            hotKeyPress("l", "Toggle Light Debug Drawing", () => {
                 this.drawDebugLight = !this.drawDebugLight;
             }),
-            hotKeyPress([], "s", "Toggle Soft Shadows", () => {
+            hotKeyPress("s", "Toggle Soft Shadows", () => {
                 this.soft = !this.soft;
                 this.directionalLight?.setSoft(this.soft);
                 for (const marble of this.marbles) {

@@ -184,26 +184,26 @@ export class Maxwell extends Test {
 
     getHotkeys(): HotKey[] {
         return [
-            hotKeyPress([], "a", "Toggle Barrier", () => this.ToggleBarrier()),
-            hotKeyPress([], "=", "Increase the Particle Density", () => {
+            hotKeyPress("a", "Toggle Barrier", () => this.ToggleBarrier()),
+            hotKeyPress("m", "Increase the Particle Density", () => {
                 this.m_density = Math.min(this.m_density * Maxwell.k_densityStep, Maxwell.k_densityMax);
                 this.Reset();
             }),
-            hotKeyPress([], "-", "Reduce the Particle Density", () => {
+            hotKeyPress("n", "Reduce the Particle Density", () => {
                 this.m_density = Math.max(this.m_density / Maxwell.k_densityStep, Maxwell.k_densityMin);
                 this.Reset();
             }),
-            hotKeyPress([], ".", "Move the location of the divider up", () =>
+            hotKeyPress("w", "Move the location of the divider up", () =>
                 this.MoveDivider(this.m_position + Maxwell.k_barrierMovementIncrement),
             ),
-            hotKeyPress([], ",", "Move the location of the divider down", () =>
+            hotKeyPress("s", "Move the location of the divider down", () =>
                 this.MoveDivider(this.m_position - Maxwell.k_barrierMovementIncrement),
             ),
-            hotKeyPress([], ";", "Reduce the temperature (velocity of particles)", () => {
+            hotKeyPress("h", "Reduce the temperature (velocity of particles)", () => {
                 this.m_temperature = Math.max(this.m_temperature - Maxwell.k_temperatureStep, Maxwell.k_temperatureMin);
                 this.Reset();
             }),
-            hotKeyPress([], "'", "Increase the temperature (velocity of particles)", () => {
+            hotKeyPress("j", "Increase the temperature (velocity of particles)", () => {
                 this.m_temperature = Math.min(this.m_temperature + Maxwell.k_temperatureStep, Maxwell.k_temperatureMax);
                 this.Reset();
             }),

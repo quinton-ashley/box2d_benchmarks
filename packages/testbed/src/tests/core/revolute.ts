@@ -152,8 +152,8 @@ export class Revolute extends Test {
 
     getHotkeys(): HotKey[] {
         return [
-            hotKeyPress([], "l", "Toggle Limit", () => this.m_joint.EnableLimit(!this.m_joint.IsLimitEnabled())),
-            hotKeyPress([], "m", "Start/Stop", () => this.m_joint.EnableMotor(!this.m_joint.IsMotorEnabled())),
+            hotKeyPress("l", "Toggle Limit", () => this.m_joint.EnableLimit(!this.m_joint.IsLimitEnabled())),
+            hotKeyPress("m", "Start/Stop", () => this.m_joint.EnableMotor(!this.m_joint.IsMotorEnabled())),
         ];
     }
 

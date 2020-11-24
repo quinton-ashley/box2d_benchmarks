@@ -681,11 +681,11 @@ export class Fracker extends Test {
 
     getHotkeys(): HotKey[] {
         return [
-            hotKeyPress([], "a", "Left", () => this.AdjustPlayerPosition(-1, 0)),
-            hotKeyPress([], "d", "Right", () => this.AdjustPlayerPosition(1, 0)),
-            hotKeyPress([], "w", "Up", () => this.AdjustPlayerPosition(0, 1)),
-            hotKeyPress([], "s", "Down", () => this.AdjustPlayerPosition(0, -1)),
-            hotKeyPress([], "e", "Deploy Fracking", () => {
+            hotKeyPress("a", "Left", () => this.AdjustPlayerPosition(-1, 0)),
+            hotKeyPress("d", "Right", () => this.AdjustPlayerPosition(1, 0)),
+            hotKeyPress("w", "Up", () => this.AdjustPlayerPosition(0, 1)),
+            hotKeyPress("s", "Down", () => this.AdjustPlayerPosition(0, -1)),
+            hotKeyPress("e", "Deploy Fracking", () => {
                 // Start charging the fracking fluid.
                 if (this.m_frackingFluidChargeTime < 0.0) {
                     this.m_frackingFluidChargeTime = 0.0;

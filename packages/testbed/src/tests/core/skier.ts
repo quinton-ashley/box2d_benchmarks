@@ -116,7 +116,7 @@ export class Skier extends Test {
 
     getHotkeys(): HotKey[] {
         return [
-            hotKeyPress([], "c", "Switch Camera Fixed/Tracking", () => {
+            hotKeyPress("c", "Switch Camera Fixed/Tracking", () => {
                 this.m_fixed_camera = !this.m_fixed_camera;
                 if (this.m_fixed_camera) {
                     g_camera.setPosition(this.m_platform_width / 2.0, 0.0);

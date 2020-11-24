@@ -4,7 +4,7 @@ import { Signal } from "typed-signals";
 
 import { g_camera } from "./utils/camera";
 import { DebugDraw, g_debugDraw } from "./utils/draw";
-import { hotKeyPress, HotKey, HotKeyMod } from "./utils/hotkeys";
+import { hotKeyPress, HotKey } from "./utils/hotkeys";
 import { PreloadedTextures, preloadTextures } from "./utils/gl/preload";
 import { createDefaultShader } from "./utils/gl/defaultShader";
 import { clearGlCanvas, initGlCanvas, resizeGlCanvas } from "./utils/gl/glUtils";
@@ -14,11 +14,8 @@ import { FpsCalculator } from "./utils/FpsCalculator";
 import { g_testEntriesFlat } from "./tests";
 import type { TextTable, TextTableSetter } from "./ui/Main";
 
-const modifiers: HotKeyMod[] = ["ctrl", "alt", "shift"];
-
 function hotKeyToText(hotKey: HotKey) {
-    const key = hotKey.key === " " ? "Space" : hotKey.key;
-    return [...modifiers.filter((mod) => hotKey[mod]), key].join(" + ");
+    return hotKey.key === " " ? "Space" : hotKey.key;
 }
 
 export class TestManager {
@@ -70,18 +67,18 @@ export class TestManager {
 
     public constructor() {
         this.ownHotKeys = [
-            hotKeyPress([], "0", "Reset Camera", () => this.HomeCamera()),
-            hotKeyPress([], "+", "Zoom In", () => this.ZoomCamera(1.1)),
-            hotKeyPress([], "-", "Zoom Out", () => this.ZoomCamera(0.9)),
-            hotKeyPress([], "r", "Reload Test", () => this.LoadTest()),
-            hotKeyPress([], "o", "Single Step", () => this.SingleStep()),
-            hotKeyPress([], "p", "Pause/Continue", () => this.SetPause(!this.m_settings.m_pause)),
-            hotKeyPress([], "PageUp", "Previous Test", () => this.DecrementTest()),
-            hotKeyPress([], "PageDown", "Next Test", () => this.IncrementTest()),
-            hotKeyPress(["shift"], ",", "Previous Particle Parameter", () => {
+            hotKeyPress("0", "Reset Camera", () => this.HomeCamera()),
+            hotKeyPress("+", "Zoom In", () => this.ZoomCamera(1.1)),
+            hotKeyPress("-", "Zoom Out", () => this.ZoomCamera(0.9)),
+            hotKeyPress("r", "Reload Test", () => this.LoadTest()),
+            hotKeyPress("o", "Single Step", () => this.SingleStep()),
+            hotKeyPress("p", "Pause/Continue", () => this.SetPause(!this.m_settings.m_pause)),
+            hotKeyPress("PageUp", "Previous Test", () => this.DecrementTest()),
+            hotKeyPress("PageDown", "Next Test", () => this.IncrementTest()),
+            hotKeyPress(",", "Previous Particle Parameter", () => {
                 Test.particleParameter.Decrement();
             }),
-            hotKeyPress(["shift"], ".", "Next Particle Parameter", () => {
+            hotKeyPress(".", "Next Particle Parameter", () => {
                 Test.particleParameter.Increment();
             }),
         ];
@@ -230,11 +227,8 @@ export class TestManager {
     private HandleKey(e: KeyboardEvent, down: boolean): void {
         if (this.m_hoveringCanvas || !down) {
             // fixme: remember state and only call if changed
-            const { key, ctrlKey, shiftKey, altKey } = e;
-            const match = (hk: HotKey) =>
-                hk.key === key && hk.ctrl === ctrlKey && hk.alt === altKey && hk.shift === shiftKey;
-            const hotKey =
-                this.ownHotKeys.find(match) ?? this.testBaseHotKeys.find(match) ?? this.testHotKeys.find(match);
+            const { key } = e;
+            const hotKey = this.allHotKeys.find((hk) => hk.key === key);
             if (hotKey) {
                 const wasDown = !!this.m_keyMap[key];
                 if (wasDown !== down) {
@@ -279,6 +273,12 @@ export class TestManager {
         this.testBaseHotKeys = this.m_test.getBaseHotkeys();
         this.testHotKeys = this.m_test.getHotkeys();
         this.allHotKeys = [...this.ownHotKeys, ...this.testBaseHotKeys, ...this.testHotKeys];
+        for (const hk of this.allHotKeys) {
+            const firstHk = this.allHotKeys.find((hk2) => hk.key === hk2.key);
+            if (firstHk && hk !== firstHk) {
+                console.error(`Conflicting keys "${hk.description}" and "${firstHk.description}"`);
+            }
+        }
         if (!restartTest) {
             this.HomeCamera();
         }

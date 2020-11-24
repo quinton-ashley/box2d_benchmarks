@@ -167,12 +167,12 @@ export class DynamicTreeTest extends Test {
 
     getHotkeys(): HotKey[] {
         return [
-            hotKeyPress([], "a", "Toggle Automated", () => {
+            hotKeyPress("a", "Toggle Automated", () => {
                 this.m_automated = !this.m_automated;
             }),
-            hotKeyPress([], "c", "Create Proxy", () => this.CreateProxy()),
-            hotKeyPress([], "d", "Destroy Proxy", () => this.DestroyProxy()),
-            hotKeyPress([], "m", "Move Proxy", () => this.MoveProxy()),
+            hotKeyPress("c", "Create Proxy", () => this.CreateProxy()),
+            hotKeyPress("d", "Destroy Proxy", () => this.DestroyProxy()),
+            hotKeyPress("m", "Move Proxy", () => this.MoveProxy()),
         ];
     }
 

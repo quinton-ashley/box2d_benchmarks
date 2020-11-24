@@ -73,12 +73,12 @@ export class DistanceTest extends Test {
 
     getHotkeys(): HotKey[] {
         return [
-            hotKeyPress([], "a", "Move Left", () => this.Adjust(-0.1, 0, 0)),
-            hotKeyPress([], "d", "Move Right", () => this.Adjust(0.1, 0, 0)),
-            hotKeyPress([], "s", "Move Down", () => this.Adjust(0, -0.1, 0)),
-            hotKeyPress([], "w", "Move Up", () => this.Adjust(0, 0.1, 0)),
-            hotKeyPress([], "q", "Turn Left", () => this.Adjust(0, 0, 0.1 * Math.PI)),
-            hotKeyPress([], "e", "Turn Right", () => this.Adjust(0, 0, -0.1 * Math.PI)),
+            hotKeyPress("a", "Move Left", () => this.Adjust(-0.1, 0, 0)),
+            hotKeyPress("d", "Move Right", () => this.Adjust(0.1, 0, 0)),
+            hotKeyPress("s", "Move Down", () => this.Adjust(0, -0.1, 0)),
+            hotKeyPress("w", "Move Up", () => this.Adjust(0, 0.1, 0)),
+            hotKeyPress("q", "Turn Left", () => this.Adjust(0, 0, 0.1 * Math.PI)),
+            hotKeyPress("e", "Turn Right", () => this.Adjust(0, 0, -0.1 * Math.PI)),
         ];
     }
 

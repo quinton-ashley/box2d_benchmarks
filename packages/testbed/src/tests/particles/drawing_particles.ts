@@ -187,28 +187,26 @@ export class DrawingParticles extends Test {
 
         const { b2_solidParticleGroup, b2_rigidParticleGroup } = b2ParticleGroupFlag;
         return [
-            hotKeyPress([], "x", "Move", () => this.SetFlags(0, 0, false)),
-            hotKeyPress([], "e", "Elastic", () => this.SetFlags(b2_elasticParticle, b2_solidParticleGroup, true)),
-            hotKeyPress([], "p", "Powder", () => this.SetFlags(b2_powderParticle, 0, true)),
-            hotKeyPress([], "r", "Rigid", () => this.SetFlags(0, b2_rigidParticleGroup | b2_solidParticleGroup, true)),
-            hotKeyPress([], "s", "Spring", () => this.SetFlags(b2_springParticle, b2_solidParticleGroup, true)),
-            hotKeyPress([], "t", "Tensile", () => this.SetFlags(b2_tensileParticle, 0, true)),
-            hotKeyPress([], "v", "Viscous", () => this.SetFlags(b2_viscousParticle, 0, true)),
-            hotKeyPress([], "w", "Wall", () => this.SetFlags(b2_wallParticle, b2_solidParticleGroup, true)),
-            hotKeyPress([], "b", "Wall Barrier", () => this.SetFlags(b2_barrierParticle | b2_wallParticle, 0, true)),
+            hotKeyPress("x", "No drawing", () => this.SetFlags(0, 0, false)),
+            hotKeyPress("e", "Elastic", () => this.SetFlags(b2_elasticParticle, b2_solidParticleGroup, true)),
+            hotKeyPress("q", "Powder", () => this.SetFlags(b2_powderParticle, 0, true)),
+            hotKeyPress("d", "Rigid", () => this.SetFlags(0, b2_rigidParticleGroup | b2_solidParticleGroup, true)),
+            hotKeyPress("s", "Spring", () => this.SetFlags(b2_springParticle, b2_solidParticleGroup, true)),
+            hotKeyPress("t", "Tensile", () => this.SetFlags(b2_tensileParticle, 0, true)),
+            hotKeyPress("v", "Viscous", () => this.SetFlags(b2_viscousParticle, 0, true)),
+            hotKeyPress("w", "Wall", () => this.SetFlags(b2_wallParticle, b2_solidParticleGroup, true)),
+            hotKeyPress("b", "Wall Barrier", () => this.SetFlags(b2_barrierParticle | b2_wallParticle, 0, true)),
 
-            hotKeyPress([], "h", "Rigid Barrier", () => this.SetFlags(b2_barrierParticle, b2_rigidParticleGroup, true)),
-            hotKeyPress([], "n", "Elastic Barrier", () =>
+            hotKeyPress("h", "Rigid Barrier", () => this.SetFlags(b2_barrierParticle, b2_rigidParticleGroup, true)),
+            hotKeyPress("n", "Elastic Barrier", () =>
                 this.SetFlags(b2_barrierParticle | b2_elasticParticle, b2_solidParticleGroup, true),
             ),
-            hotKeyPress([], "m", "Spring Barrier", () =>
+            hotKeyPress("m", "Spring Barrier", () =>
                 this.SetFlags(b2_barrierParticle | b2_springParticle, b2_solidParticleGroup, true),
             ),
-            hotKeyPress([], "f", "Repulsive Wall", () =>
-                this.SetFlags(b2_wallParticle | b2_repulsiveParticle, 0, true),
-            ),
-            hotKeyPress([], "c", "Color Mixing", () => this.SetFlags(b2_colorMixingParticle, 0, true)),
-            hotKeyPress([], "z", "Erase", () => this.SetFlags(b2_zombieParticle, 0, true)),
+            hotKeyPress("f", "Repulsive Wall", () => this.SetFlags(b2_wallParticle | b2_repulsiveParticle, 0, true)),
+            hotKeyPress("c", "Color Mixing", () => this.SetFlags(b2_colorMixingParticle, 0, true)),
+            hotKeyPress("z", "Erase", () => this.SetFlags(b2_zombieParticle, 0, true)),
         ];
     }
 

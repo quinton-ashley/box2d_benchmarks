@@ -160,7 +160,7 @@ export class Pinball extends Test {
 
     getHotkeys(): HotKey[] {
         return [
-            hotKey([], "a", "Hold Flipper", (down) => {
+            hotKey("a", "Hold Flipper", (down) => {
                 this.m_button = down;
             }),
         ];

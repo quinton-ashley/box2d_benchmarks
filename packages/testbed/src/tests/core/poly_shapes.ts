@@ -153,12 +153,12 @@ export class PolyShapes extends Test {
 
     getHotkeys(): HotKey[] {
         return [
-            hotKeyPress([], "1", "Create Triangle", () => this.CreateBody(0)),
-            hotKeyPress([], "2", "Create Flat Triangle", () => this.CreateBody(1)),
-            hotKeyPress([], "3", "Create Octagon", () => this.CreateBody(2)),
-            hotKeyPress([], "4", "Create Box", () => this.CreateBody(3)),
-            hotKeyPress([], "5", "Create Circle", () => this.CreateBody(4)),
-            hotKeyPress([], "a", "Toggle Enabled of Even Bodies", () => {
+            hotKeyPress("1", "Create Triangle", () => this.CreateBody(0)),
+            hotKeyPress("2", "Create Flat Triangle", () => this.CreateBody(1)),
+            hotKeyPress("3", "Create Octagon", () => this.CreateBody(2)),
+            hotKeyPress("4", "Create Box", () => this.CreateBody(3)),
+            hotKeyPress("5", "Create Circle", () => this.CreateBody(4)),
+            hotKeyPress("a", "Toggle Enabled of Even Bodies", () => {
                 for (let i = 0; i < PolyShapes.e_maxBodies; i += 2) {
                     const body = this.m_bodies[i];
                     if (body) {
@@ -166,7 +166,7 @@ export class PolyShapes extends Test {
                     }
                 }
             }),
-            hotKeyPress([], "d", "Destroy Body", () => this.DestroyBody()),
+            hotKeyPress("d", "Destroy Body", () => this.DestroyBody()),
         ];
     }
 

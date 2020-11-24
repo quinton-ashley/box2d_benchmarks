@@ -603,11 +603,11 @@ export class Sandbox extends Test {
 
     getHotkeys(): HotKey[] {
         return [
-            hotKeyPress([], "a", "Remove All Flags (Water)", () => this.ResetFlags()),
-            hotKeyPress([], "q", "Toggle Powder Flag", () => this.ToggleFlag(b2ParticleFlag.b2_powderParticle)),
-            hotKeyPress([], "t", "Toggle Tensile Flag", () => this.ToggleFlag(b2ParticleFlag.b2_tensileParticle)),
-            hotKeyPress([], "v", "Toggle Viscous Flag", () => this.ToggleFlag(b2ParticleFlag.b2_viscousParticle)),
-            hotKeyPress([], "q", "Toggle Wall Flag", () => this.ToggleFlag(b2ParticleFlag.b2_wallParticle)),
+            hotKeyPress("a", "Remove All Flags (Water)", () => this.ResetFlags()),
+            hotKeyPress("q", "Toggle Powder Flag", () => this.ToggleFlag(b2ParticleFlag.b2_powderParticle)),
+            hotKeyPress("t", "Toggle Tensile Flag", () => this.ToggleFlag(b2ParticleFlag.b2_tensileParticle)),
+            hotKeyPress("v", "Toggle Viscous Flag", () => this.ToggleFlag(b2ParticleFlag.b2_viscousParticle)),
+            hotKeyPress("w", "Toggle Wall Flag", () => this.ToggleFlag(b2ParticleFlag.b2_wallParticle)),
         ];
     }
 

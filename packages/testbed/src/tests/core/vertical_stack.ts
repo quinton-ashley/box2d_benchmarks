@@ -84,7 +84,7 @@ export class VerticalStack extends Test {
     }
 
     getHotkeys(): HotKey[] {
-        return [hotKeyPress([], ",", "Launch a bullet", () => this.LaunchBullet())];
+        return [hotKeyPress("Enter", "Launch a bullet", () => this.LaunchBullet())];
     }
 
     private LaunchBullet() {

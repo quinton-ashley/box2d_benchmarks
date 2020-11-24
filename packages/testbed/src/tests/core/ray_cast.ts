@@ -163,14 +163,14 @@ export class RayCast extends Test {
 
     getHotkeys(): HotKey[] {
         return [
-            hotKeyPress([], "1", "Create Triangle", () => this.CreateBody(0)),
-            hotKeyPress([], "2", "Create Flat Triangle", () => this.CreateBody(1)),
-            hotKeyPress([], "3", "Create Octagon", () => this.CreateBody(2)),
-            hotKeyPress([], "4", "Create Box", () => this.CreateBody(3)),
-            hotKeyPress([], "5", "Create Circle", () => this.CreateBody(4)),
-            hotKeyPress([], "6", "Create Edge", () => this.CreateBody(5)),
-            hotKeyPress([], "d", "Destroy Body", () => this.DestroyBody()),
-            hotKeyPress([], "m", "Change Raycast Mode", () => {
+            hotKeyPress("1", "Create Triangle", () => this.CreateBody(0)),
+            hotKeyPress("2", "Create Flat Triangle", () => this.CreateBody(1)),
+            hotKeyPress("3", "Create Octagon", () => this.CreateBody(2)),
+            hotKeyPress("4", "Create Box", () => this.CreateBody(3)),
+            hotKeyPress("5", "Create Circle", () => this.CreateBody(4)),
+            hotKeyPress("6", "Create Edge", () => this.CreateBody(5)),
+            hotKeyPress("d", "Destroy Body", () => this.DestroyBody()),
+            hotKeyPress("m", "Change Raycast Mode", () => {
                 if (this.m_mode === RayCastMode.e_closest) {
                     this.m_mode = RayCastMode.e_any;
                 } else if (this.m_mode === RayCastMode.e_any) {

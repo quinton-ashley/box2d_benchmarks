@@ -313,26 +313,22 @@ export class Faucet extends Test {
 
     getHotkeys(): HotKey[] {
         return [
-            hotKeyPress([], "w", "Set Water", () => Test.SetParticleParameterValue(b2ParticleFlag.b2_waterParticle)),
-            hotKeyPress([], "q", "Set Powder", () => Test.SetParticleParameterValue(b2ParticleFlag.b2_powderParticle)),
-            hotKeyPress([], "t", "Set Tensile", () =>
-                Test.SetParticleParameterValue(b2ParticleFlag.b2_tensileParticle),
-            ),
-            hotKeyPress([], "v", "Set Viscous", () =>
-                Test.SetParticleParameterValue(b2ParticleFlag.b2_viscousParticle),
-            ),
-            hotKeyPress([], "c", "Set Color Mixing", () =>
+            hotKeyPress("w", "Set Water", () => Test.SetParticleParameterValue(b2ParticleFlag.b2_waterParticle)),
+            hotKeyPress("q", "Set Powder", () => Test.SetParticleParameterValue(b2ParticleFlag.b2_powderParticle)),
+            hotKeyPress("t", "Set Tensile", () => Test.SetParticleParameterValue(b2ParticleFlag.b2_tensileParticle)),
+            hotKeyPress("v", "Set Viscous", () => Test.SetParticleParameterValue(b2ParticleFlag.b2_viscousParticle)),
+            hotKeyPress("c", "Set Color Mixing", () =>
                 Test.SetParticleParameterValue(b2ParticleFlag.b2_colorMixingParticle),
             ),
-            hotKeyPress([], "s", "Set Static Pressure", () =>
+            hotKeyPress("s", "Set Static Pressure", () =>
                 Test.SetParticleParameterValue(b2ParticleFlag.b2_staticPressureParticle),
             ),
-            hotKeyPress(["ctrl"], "+", "Increase Flow", () =>
+            hotKeyPress("m", "Increase Flow", () =>
                 this.SetEmitRate(
                     Math.max(Faucet.k_emitRateMin, this.m_emitter.GetEmitRate() * Faucet.k_emitRateChangeFactor),
                 ),
             ),
-            hotKeyPress(["ctrl"], "-", "Decrease Flow", () =>
+            hotKeyPress("n", "Decrease Flow", () =>
                 this.SetEmitRate(
                     Math.min(Faucet.k_emitRateMax, this.m_emitter.GetEmitRate() / Faucet.k_emitRateChangeFactor),
                 ),

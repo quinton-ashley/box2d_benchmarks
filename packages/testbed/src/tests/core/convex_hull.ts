@@ -59,10 +59,10 @@ export class ConvexHull extends Test {
 
     getHotkeys(): HotKey[] {
         return [
-            hotKeyPress([], "a", "Toggle Autogeneration", () => {
+            hotKeyPress("a", "Toggle Autogeneration", () => {
                 this.m_auto = !this.m_auto;
             }),
-            hotKeyPress([], "g", "Generate a new random convex hull", () => this.Generate()),
+            hotKeyPress("g", "Generate a new random convex hull", () => this.Generate()),
         ];
     }
 

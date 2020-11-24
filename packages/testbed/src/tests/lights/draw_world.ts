@@ -117,16 +117,16 @@ export class DrawWorld extends Test {
 
     getHotkeys(): HotKey[] {
         return [
-            hotKeyPress([], "7", "Default Blending (1.3)", () => this.setBlending("default")),
-            hotKeyPress([], "8", "Over-Burn Blending (default in 1.2)", () => this.setBlending("overburn")),
-            hotKeyPress([], "a", "Place current light", () => {
+            hotKeyPress("7", "Default Blending (1.3)", () => this.setBlending("default")),
+            hotKeyPress("8", "Over-Burn Blending (default in 1.2)", () => this.setBlending("overburn")),
+            hotKeyPress("a", "Place current light", () => {
                 this.lights.push(this.mouseLight);
                 this.mouseLight = this.createLight();
             }),
-            hotKeyPress([], "l", "Toggle Light Debug Drawing", () => {
+            hotKeyPress("l", "Toggle Light Debug Drawing", () => {
                 this.drawDebugLight = !this.drawDebugLight;
             }),
-            hotKeyPress([], "s", "Toggle Soft Shadows", () => {
+            hotKeyPress("s", "Toggle Soft Shadows", () => {
                 this.soft = !this.soft;
                 this.mouseLight.setSoft(this.soft);
                 for (const light of this.lights) {

@@ -67,22 +67,22 @@ export class PolyCollision extends Test {
 
     getHotkeys(): HotKey[] {
         return [
-            hotKey([], "a", "Move Left", (down) => {
+            hotKey("a", "Move Left", (down) => {
                 this.move.x = down ? -0.1 : 0;
             }),
-            hotKey([], "d", "Move Right", (down) => {
+            hotKey("d", "Move Right", (down) => {
                 this.move.x = down ? 0.1 : 0;
             }),
-            hotKey([], "s", "Move Down", (down) => {
+            hotKey("s", "Move Down", (down) => {
                 this.move.y = down ? -0.1 : 0;
             }),
-            hotKey([], "w", "Move Up", (down) => {
+            hotKey("w", "Move Up", (down) => {
                 this.move.y = down ? 0.1 : 0;
             }),
-            hotKey([], "q", "Turn Left", (down) => {
+            hotKey("q", "Turn Left", (down) => {
                 this.move.angle = down ? 0.02 * Math.PI : 0;
             }),
-            hotKey([], "e", "Turn Right", (down) => {
+            hotKey("e", "Turn Right", (down) => {
                 this.move.angle = down ? -0.02 * Math.PI : 0;
             }),
         ];

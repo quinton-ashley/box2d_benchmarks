@@ -158,8 +158,8 @@ export class ParticleCollisionFilter extends Test {
 
     getHotkeys(): HotKey[] {
         return [
-            hotKeyPress([], "a", "Toggle Fixture Collisions", () => this.ToggleFixtureCollisions()),
-            hotKeyPress([], "s", "Toggle Particle Collisions", () => this.ToggleParticleCollisions()),
+            hotKeyPress("a", "Toggle Fixture Collisions", () => this.ToggleFixtureCollisions()),
+            hotKeyPress("s", "Toggle Particle Collisions", () => this.ToggleParticleCollisions()),
         ];
     }
 

@@ -109,7 +109,7 @@ export class Confined extends Test {
     }
 
     getHotkeys(): HotKey[] {
-        return [hotKeyPress([], "c", "Create Circle", () => this.CreateCircle())];
+        return [hotKeyPress("c", "Create Circle", () => this.CreateCircle())];
     }
 
     public Step(settings: Settings, timeStep: number): void {

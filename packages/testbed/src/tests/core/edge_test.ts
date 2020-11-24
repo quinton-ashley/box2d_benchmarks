@@ -266,11 +266,11 @@ export class EdgeTest extends Test {
 
     getHotkeys(): HotKey[] {
         return [
-            hotKeyPress([], "a", "Apply Force Left", () => {
+            hotKeyPress("a", "Apply Force Left", () => {
                 this.m_body1?.ApplyForceToCenter(new b2Vec2(-200.0, 0.0), true);
                 this.m_body2?.ApplyForceToCenter(new b2Vec2(-200.0, 0.0), true);
             }),
-            hotKeyPress([], "d", "Apply Force Right", () => {
+            hotKeyPress("d", "Apply Force Right", () => {
                 this.m_body1?.ApplyForceToCenter(new b2Vec2(200.0, 0.0), true);
                 this.m_body2?.ApplyForceToCenter(new b2Vec2(200.0, 0.0), true);
             }),
