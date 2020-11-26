@@ -31,7 +31,7 @@ class MotorJoint2 extends Test {
             ground = this.m_world.CreateBody();
 
             const shape = new b2EdgeShape();
-            shape.SetTwoSided(new b2Vec2(-20.0, 0.0), new b2Vec2(20.0, 0.0));
+            shape.SetTwoSided(new b2Vec2(-20, 0), new b2Vec2(20, 0));
 
             ground.CreateFixture({ shape });
         }
@@ -41,16 +41,16 @@ class MotorJoint2 extends Test {
         {
             body1 = this.m_world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
-                position: { x: 0.0, y: 4.0 },
+                position: { x: 0, y: 4 },
             });
 
             const shape = new b2CircleShape();
-            shape.m_radius = 1.0;
+            shape.m_radius = 1;
 
             body1.CreateFixture({
                 shape,
                 friction: 0.6,
-                density: 2.0,
+                density: 2,
             });
         }
 
@@ -59,24 +59,24 @@ class MotorJoint2 extends Test {
         {
             body2 = this.m_world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
-                position: { x: 4.0, y: 8.0 },
+                position: { x: 4, y: 8 },
             });
 
             const shape = new b2CircleShape();
-            shape.m_radius = 1.0;
+            shape.m_radius = 1;
 
             body2.CreateFixture({
                 shape,
                 friction: 0.6,
-                density: 2.0,
+                density: 2,
             });
         }
 
         {
             const mjd = new b2MotorJointDef();
             mjd.Initialize(body1, body2);
-            mjd.maxForce = 1000.0;
-            mjd.maxTorque = 1000.0;
+            mjd.maxForce = 1000;
+            mjd.maxTorque = 1000;
             this.m_joint = this.m_world.CreateJoint(mjd) as b2MotorJoint;
         }
     }

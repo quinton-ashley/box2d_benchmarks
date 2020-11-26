@@ -41,30 +41,30 @@ class MultipleParticleSystems extends Test {
     /**
      * Mass of the box.
      */
-    public static readonly k_boxMass = 1.0;
+    public static readonly k_boxMass = 1;
 
     /**
      * Emit rate of the emitters in particles per second.
      */
-    public static readonly k_emitRate = 100.0;
+    public static readonly k_emitRate = 100;
 
     /**
      * Location of the left emitter (the position of the right one
      * is mirrored along the y-axis).
      */
-    public static readonly k_emitterPosition = new b2Vec2(-5.0, 4.0);
+    public static readonly k_emitterPosition = new b2Vec2(-5, 4);
 
     /**
      * Starting velocity of particles from the left emitter (the
      * velocity of particles from the right emitter are mirrored
      * along the y-axis).
      */
-    public static readonly k_emitterVelocity = new b2Vec2(7.0, -4.0);
+    public static readonly k_emitterVelocity = new b2Vec2(7, -4);
 
     /**
      * Size of particle emitters.
      */
-    public static readonly k_emitterSize = new b2Vec2(1.0, 1.0);
+    public static readonly k_emitterSize = new b2Vec2(1, 1);
 
     /**
      * Color of the left emitter's particles.
@@ -100,7 +100,7 @@ class MultipleParticleSystems extends Test {
         {
             const ground = this.m_world.CreateBody();
             const shape = new b2PolygonShape();
-            shape.SetAsBox(5.0, 0.1);
+            shape.SetAsBox(5, 0.1);
             ground.CreateFixture({ shape });
         }
 
@@ -110,25 +110,25 @@ class MultipleParticleSystems extends Test {
                 type: b2BodyType.b2_dynamicBody,
             });
             const shape = new b2PolygonShape();
-            const center = new b2Vec2(0.0, 1.2);
+            const center = new b2Vec2(0, 1.2);
             shape.SetAsBox(
                 MultipleParticleSystems.k_dynamicBoxSize.x,
                 MultipleParticleSystems.k_dynamicBoxSize.y,
                 center,
-                0.0,
+                0,
             );
             body.CreateFixture({ shape });
-            ///  b2MassData massData = { MultipleParticleSystems.k_boxMass, center, 0.0 };
+            ///  b2MassData massData = { MultipleParticleSystems.k_boxMass, center, 0 };
             const massData = new b2MassData();
             massData.mass = MultipleParticleSystems.k_boxMass;
             massData.center.Copy(center);
-            massData.I = 0.0;
+            massData.I = 0;
             body.SetMassData(massData);
         }
 
         // Initialize the emitters.
         for (let i = 0; i < this.m_emitters.length; ++i) {
-            const mirrorAlongY = i & 1 ? -1.0 : 1.0;
+            const mirrorAlongY = i & 1 ? -1 : 1;
             const emitter = this.m_emitters[i];
             emitter.SetPosition(
                 new b2Vec2(
@@ -152,9 +152,9 @@ class MultipleParticleSystems extends Test {
     }
 
     public Step(settings: Settings, timeStep: number) {
-        let dt = settings.m_hertz > 0.0 ? 1.0 / settings.m_hertz : 0.0;
+        let dt = settings.m_hertz > 0 ? 1 / settings.m_hertz : 0;
         if (settings.m_pause && !settings.m_singleStep) {
-            dt = 0.0;
+            dt = 0;
         }
 
         super.Step(settings, timeStep);

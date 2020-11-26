@@ -38,18 +38,18 @@ class ShapeEditing extends Test {
             const ground = this.m_world.CreateBody();
 
             const shape = new b2EdgeShape();
-            shape.SetTwoSided(new b2Vec2(-40.0, 0.0), new b2Vec2(40.0, 0.0));
+            shape.SetTwoSided(new b2Vec2(-40, 0), new b2Vec2(40, 0));
             ground.CreateFixture({ shape });
         }
 
         this.m_body = this.m_world.CreateBody({
             type: b2BodyType.b2_dynamicBody,
-            position: { x: 0.0, y: 10.0 },
+            position: { x: 0, y: 10 },
         });
 
         const shape = new b2PolygonShape();
-        shape.SetAsBox(4.0, 4.0, new b2Vec2(), 0.0);
-        this.m_fixture1 = this.m_body.CreateFixture({ shape, density: 10.0 });
+        shape.SetAsBox(4, 4, new b2Vec2(), 0);
+        this.m_fixture1 = this.m_body.CreateFixture({ shape, density: 10 });
     }
 
     getHotkeys(): HotKey[] {
@@ -57,9 +57,9 @@ class ShapeEditing extends Test {
             hotKeyPress("c", "Create a Shape", () => {
                 if (this.m_fixture2 === null) {
                     const shape = new b2CircleShape();
-                    shape.m_radius = 3.0;
-                    shape.m_p.Set(0.5, -4.0);
-                    this.m_fixture2 = this.m_body.CreateFixture({ shape, density: 10.0 });
+                    shape.m_radius = 3;
+                    shape.m_p.Set(0.5, -4);
+                    this.m_fixture2 = this.m_body.CreateFixture({ shape, density: 10 });
                     this.m_body.SetAwake(true);
                 }
             }),

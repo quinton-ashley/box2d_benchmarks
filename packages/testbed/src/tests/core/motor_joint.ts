@@ -39,7 +39,7 @@ class MotorJoint extends Test {
             ground = this.m_world.CreateBody();
 
             const shape = new b2EdgeShape();
-            shape.SetTwoSided(new b2Vec2(-20.0, 0.0), new b2Vec2(20.0, 0.0));
+            shape.SetTwoSided(new b2Vec2(-20, 0), new b2Vec2(20, 0));
 
             ground.CreateFixture({ shape });
         }
@@ -48,27 +48,27 @@ class MotorJoint extends Test {
         {
             const body = this.m_world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
-                position: { x: 0.0, y: 8.0 },
+                position: { x: 0, y: 8 },
             });
 
             const shape = new b2PolygonShape();
-            shape.SetAsBox(2.0, 0.5);
+            shape.SetAsBox(2, 0.5);
 
             body.CreateFixture({
                 shape,
                 friction: 0.6,
-                density: 2.0,
+                density: 2,
             });
 
             const mjd = new b2MotorJointDef();
             mjd.Initialize(ground, body);
-            mjd.maxForce = 1000.0;
-            mjd.maxTorque = 1000.0;
+            mjd.maxForce = 1000;
+            mjd.maxTorque = 1000;
             this.m_joint = this.m_world.CreateJoint(mjd);
         }
 
         this.m_go = false;
-        this.m_time = 0.0;
+        this.m_time = 0;
     }
 
     getHotkeys(): HotKey[] {
@@ -80,20 +80,20 @@ class MotorJoint extends Test {
     }
 
     public Step(settings: Settings, timeStep: number): void {
-        if (this.m_go && settings.m_hertz > 0.0) {
-            this.m_time += 1.0 / settings.m_hertz;
+        if (this.m_go && settings.m_hertz > 0) {
+            this.m_time += 1 / settings.m_hertz;
         }
 
         const linearOffset = new b2Vec2();
-        linearOffset.x = 6.0 * Math.sin(2.0 * this.m_time);
-        linearOffset.y = 8.0 + 4.0 * Math.sin(1.0 * this.m_time);
+        linearOffset.x = 6 * Math.sin(2 * this.m_time);
+        linearOffset.y = 8 + 4 * Math.sin(1 * this.m_time);
 
-        const angularOffset = 4.0 * this.m_time;
+        const angularOffset = 4 * this.m_time;
 
         this.m_joint.SetLinearOffset(linearOffset);
         this.m_joint.SetAngularOffset(angularOffset);
 
-        g_debugDraw.DrawPoint(linearOffset, 4.0, new b2Color(0.9, 0.9, 0.9));
+        g_debugDraw.DrawPoint(linearOffset, 4, new b2Color(0.9, 0.9, 0.9));
 
         super.Step(settings, timeStep);
     }

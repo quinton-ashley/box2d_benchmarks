@@ -32,9 +32,9 @@ class MobileBalanced extends Test {
         });
 
         const a = 0.5;
-        const h = new b2Vec2(0.0, a);
+        const h = new b2Vec2(0, a);
 
-        const root = this.AddNode(ground, b2Vec2.ZERO, 0, 3.0, a);
+        const root = this.AddNode(ground, b2Vec2.ZERO, 0, 3, a);
 
         const jointDef = new b2RevoluteJointDef();
         jointDef.bodyA = ground;
@@ -56,8 +56,8 @@ class MobileBalanced extends Test {
     }
 
     public AddNode(parent: b2Body, localAnchor: XY, depth: number, offset: number, a: number): b2Body {
-        const density = 20.0;
-        const h = new b2Vec2(0.0, a);
+        const density = 20;
+        const h = new b2Vec2(0, a);
 
         //  b2Vec2 p = parent->GetPosition() + localAnchor - h;
         const p = parent.GetPosition().Clone().Add(localAnchor).Subtract(h);
@@ -75,7 +75,7 @@ class MobileBalanced extends Test {
             return body;
         }
 
-        shape.SetAsBox(offset, 0.25 * a, new b2Vec2(0, -a), 0.0);
+        shape.SetAsBox(offset, 0.25 * a, new b2Vec2(0, -a), 0);
         body.CreateFixture({ shape, density });
 
         const a1 = new b2Vec2(offset, -a);

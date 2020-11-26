@@ -87,7 +87,7 @@ class DrawWorld extends Test {
             shape.SetTwoSided({ x: line.x1, y: line.y1 }, { x: line.x2, y: line.y2 });
             heartBody.CreateFixture({
                 shape,
-                density: 0.0,
+                density: 0,
                 restitution: 0,
             });
         }
@@ -167,7 +167,7 @@ class DrawWorld extends Test {
             shape.SetTwoSided(this.dragStart, p);
             this.currentEdgeFixture = this.currentEdgeBody.CreateFixture({
                 shape,
-                density: 0.0,
+                density: 0,
                 restitution: 0,
             });
         }

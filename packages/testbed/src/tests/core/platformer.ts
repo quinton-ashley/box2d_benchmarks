@@ -38,11 +38,11 @@ enum OneSidedPlatform_State {
 }
 
 class Platformer extends Test {
-    public m_radius = 0.0;
+    public m_radius = 0;
 
-    public m_top = 0.0;
+    public m_top = 0;
 
-    public m_bottom = 0.0;
+    public m_bottom = 0;
 
     public m_state = OneSidedPlatform_State.e_unknown;
 
@@ -58,37 +58,37 @@ class Platformer extends Test {
             const ground = this.m_world.CreateBody();
 
             const shape = new b2EdgeShape();
-            shape.SetTwoSided(new b2Vec2(-40.0, 0.0), new b2Vec2(40.0, 0.0));
+            shape.SetTwoSided(new b2Vec2(-40, 0), new b2Vec2(40, 0));
             ground.CreateFixture({ shape });
         }
 
         // Platform
         {
             const body = this.m_world.CreateBody({
-                position: { x: 0.0, y: 10.0 },
+                position: { x: 0, y: 10 },
             });
 
             const shape = new b2PolygonShape();
-            shape.SetAsBox(3.0, 0.5);
+            shape.SetAsBox(3, 0.5);
             this.m_platform = body.CreateFixture({ shape });
 
-            this.m_bottom = 10.0 - 0.5;
-            this.m_top = 10.0 + 0.5;
+            this.m_bottom = 10 - 0.5;
+            this.m_top = 10 + 0.5;
         }
 
         // Actor
         {
             const body = this.m_world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
-                position: { x: 0.0, y: 12.0 },
+                position: { x: 0, y: 12 },
             });
 
             this.m_radius = 0.5;
             const shape = new b2CircleShape();
             shape.m_radius = this.m_radius;
-            this.m_character = body.CreateFixture({ shape, density: 20.0 });
+            this.m_character = body.CreateFixture({ shape, density: 20 });
 
-            body.SetLinearVelocity(new b2Vec2(0.0, -50.0));
+            body.SetLinearVelocity(new b2Vec2(0, -50));
 
             this.m_state = OneSidedPlatform_State.e_unknown;
         }
@@ -121,7 +121,7 @@ class Platformer extends Test {
 
         const position = this.m_character.GetBody().GetPosition();
 
-        if (position.y < this.m_top + this.m_radius - 3.0 * b2_linearSlop) {
+        if (position.y < this.m_top + this.m_radius - 3 * b2_linearSlop) {
             contact.SetEnabled(false);
         }
     }

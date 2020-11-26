@@ -1,7 +1,7 @@
 /** *****************************************************************************
  * Copyright 2011 See AUTHORS file.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
+ * Licensed under the Apache License, Version 2 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
@@ -15,7 +15,7 @@
  ***************************************************************************** */
 
 /** <p>
- * Encapsulates OpenGL ES 2.0 frame buffer objects. This is a simple helper class which should cover most FBO uses. It will
+ * Encapsulates OpenGL ES 2 frame buffer objects. This is a simple helper class which should cover most FBO uses. It will
  * automatically create a texture for the color attachment and a renderbuffer for the depth buffer. You can get a hold of the
  * texture by {@link FrameBuffer#getColorBufferTexture()}. This class will only work with OpenGL ES 2.0.
  * </p>
@@ -46,7 +46,7 @@ export class FrameBuffer {
 
     /** Creates a new FrameBuffer having the given dimensions and potentially a depth and a stencil buffer attached.
      *
-     * @param format the format of the color buffer; according to the OpenGL ES 2.0 spec, only RGB565, RGBA4444 and RGB5_A1 are
+     * @param format the format of the color buffer; according to the OpenGL ES 2 spec, only RGB565, RGBA4444 and RGB5_A1 are
      *           color-renderable
      * @param width the width of the framebuffer in pixels
      * @param height the height of the framebuffer in pixels

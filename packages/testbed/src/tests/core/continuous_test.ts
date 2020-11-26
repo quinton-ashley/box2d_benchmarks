@@ -24,7 +24,7 @@ import { Settings } from "../../settings";
 class ContinuousTest extends Test {
     public m_body: b2Body;
 
-    public m_angularVelocity = 0.0;
+    public m_angularVelocity = 0;
 
     constructor() {
         super();
@@ -34,28 +34,28 @@ class ContinuousTest extends Test {
 
             const edge = new b2EdgeShape();
 
-            edge.SetTwoSided(new b2Vec2(-10.0, 0.0), new b2Vec2(10.0, 0.0));
+            edge.SetTwoSided(new b2Vec2(-10, 0), new b2Vec2(10, 0));
             body.CreateFixture({ shape: edge });
 
             const shape = new b2PolygonShape();
-            shape.SetAsBox(0.2, 1.0, new b2Vec2(0.5, 1.0), 0.0);
+            shape.SetAsBox(0.2, 1, new b2Vec2(0.5, 1), 0);
             body.CreateFixture({ shape });
         }
 
         {
             const shape = new b2PolygonShape();
-            shape.SetAsBox(2.0, 0.1);
+            shape.SetAsBox(2, 0.1);
 
             this.m_body = this.m_world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
-                position: { x: 0.0, y: 20.0 },
+                position: { x: 0, y: 20 },
                 // angle: 0.1,
             });
-            this.m_body.CreateFixture({ shape, density: 1.0 });
+            this.m_body.CreateFixture({ shape, density: 1 });
 
-            this.m_angularVelocity = b2RandomRange(-50.0, 50.0);
+            this.m_angularVelocity = b2RandomRange(-50, 50);
             // this.m_angularVelocity = 46.661274;
-            this.m_body.SetLinearVelocity(new b2Vec2(0.0, -100.0));
+            this.m_body.SetLinearVelocity(new b2Vec2(0, -100));
             this.m_body.SetAngularVelocity(this.m_angularVelocity);
         }
         /*
@@ -63,19 +63,19 @@ class ContinuousTest extends Test {
     {
       const body = this.m_world.CreateBody({
         type: b2BodyType.b2_dynamicBody,
-        position: { y: 0.0, y:2.0}
+        position: { y: 0, y:2}
       });
       const shape = new b2CircleShape();
       shape.m_p.SetZero();
       shape.m_radius = 0.5;
-      body.CreateFixture({ shape, density: 1.0 });
+      body.CreateFixture({ shape, density: 1 });
       body = this.m_world.CreateBody({
         type: b2BodyType.b2_dynamicBody,
         bullet: true,
-        position: { y: 0.0, y:10.0}
+        position: { y: 0, y:10}
       });
-      body.CreateFixture({ shape, density: 1.0 });
-      body.SetLinearVelocity(new b2Vec2(0.0, -100.0));
+      body.CreateFixture({ shape, density: 1 });
+      body.SetLinearVelocity(new b2Vec2(0, -100));
     }
     */
 
@@ -87,8 +87,8 @@ class ContinuousTest extends Test {
         // b2Toi.iters = 0;
         // b2Toi.rootIters = 0;
         // b2Toi.maxRootIters = 0;
-        // b2Toi.time = 0.0;
-        // b2Toi.maxTime = 0.0;
+        // b2Toi.time = 0;
+        // b2Toi.maxTime = 0;
         b2Toi.reset();
     }
 
@@ -101,13 +101,13 @@ class ContinuousTest extends Test {
         // b2Toi.iters = 0;
         // b2Toi.rootIters = 0;
         // b2Toi.maxRootIters = 0;
-        // b2Toi.time = 0.0;
-        // b2Toi.maxTime = 0.0;
+        // b2Toi.time = 0;
+        // b2Toi.maxTime = 0;
         b2Toi.reset();
 
-        this.m_body.SetTransformVec(new b2Vec2(0.0, 20.0), 0.0);
-        this.m_angularVelocity = b2RandomRange(-50.0, 50.0);
-        this.m_body.SetLinearVelocity(new b2Vec2(0.0, -100.0));
+        this.m_body.SetTransformVec(new b2Vec2(0, 20), 0);
+        this.m_angularVelocity = b2RandomRange(-50, 50);
+        this.m_body.SetLinearVelocity(new b2Vec2(0, -100));
         this.m_body.SetAngularVelocity(this.m_angularVelocity);
     }
 
@@ -134,7 +134,7 @@ class ContinuousTest extends Test {
 
             this.addDebug(
                 "Toi Time in ms [ave] (max)",
-                `[${((1000.0 * b2Toi.time) / b2Toi.calls).toFixed(1)}] (${(1000.0 * b2Toi.maxTime).toFixed(1)})`,
+                `[${((1000 * b2Toi.time) / b2Toi.calls).toFixed(1)}] (${(1000 * b2Toi.maxTime).toFixed(1)})`,
             );
         }
 

@@ -346,7 +346,7 @@ export class b2Rope {
     }
 
     public Step(dt: number, iterations: number, position: Readonly<b2Vec2>): void {
-        if (dt === 0.0) {
+        if (dt === 0) {
             return;
         }
 
@@ -813,12 +813,12 @@ export class b2Rope {
         for (let i = 0; i < this.m_count - 1; ++i) {
             draw.DrawSegment(this.m_ps[i], this.m_ps[i + 1], debugColors.rope);
 
-            const pc: Readonly<b2Color> = this.m_invMasses[i] > 0.0 ? debugColors.ropePointD : debugColors.ropePointG;
-            draw.DrawPoint(this.m_ps[i], 5.0, pc);
+            const pc: Readonly<b2Color> = this.m_invMasses[i] > 0 ? debugColors.ropePointD : debugColors.ropePointG;
+            draw.DrawPoint(this.m_ps[i], 5, pc);
         }
 
         const pc: Readonly<b2Color> =
-            this.m_invMasses[this.m_count - 1] > 0.0 ? debugColors.ropePointD : debugColors.ropePointG;
-        draw.DrawPoint(this.m_ps[this.m_count - 1], 5.0, pc);
+            this.m_invMasses[this.m_count - 1] > 0 ? debugColors.ropePointD : debugColors.ropePointG;
+        draw.DrawPoint(this.m_ps[this.m_count - 1], 5, pc);
     }
 }

@@ -371,11 +371,11 @@ export function b2TimeOfImpact(output: b2TOIOutput, input: b2TOIInput): void {
 #if 0
     // Dump the curve seen by the root finder {
       const int32 N = 100;
-      float32 dx = 1.0f / N;
+      float32 dx = 1   / N;
       float32 xs[N+1];
       float32 fs[N+1];
 
-      float32 x = 0.0f;
+      float32 x = 0  ;
 
       for (int32 i = 0; i <= N; ++i) {
         sweepA.GetTransform(&xfA, x);
@@ -434,7 +434,7 @@ export function b2TimeOfImpact(output: b2TOIOutput, input: b2TOIInput): void {
 
             // Check for touching
             if (s1 <= target + tolerance) {
-                // Victory! t1 should hold the TOI (could be 0.0).
+                // Victory! t1 should hold the TOI (could be 0).
                 output.state = b2TOIOutputState.e_touching;
                 output.t = t1;
                 done = true;

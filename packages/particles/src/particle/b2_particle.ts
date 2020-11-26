@@ -91,7 +91,7 @@ export class b2ParticleDef implements b2IParticleDef {
 
     public readonly color = new b2Color(0, 0, 0, 0);
 
-    public lifetime = 0.0;
+    public lifetime = 0;
 
     public userData: any = null;
 

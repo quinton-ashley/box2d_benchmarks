@@ -52,7 +52,7 @@ class CollisionFiltering extends Test {
         // Ground body
         {
             const shape = new b2EdgeShape();
-            shape.SetTwoSided(new b2Vec2(-40.0, 0.0), new b2Vec2(40.0, 0.0));
+            shape.SetTwoSided(new b2Vec2(-40, 0), new b2Vec2(40, 0));
 
             const ground = this.m_world.CreateBody();
             ground.CreateFixture({
@@ -63,9 +63,9 @@ class CollisionFiltering extends Test {
 
         // Small triangle
         const vertices = [];
-        vertices[0] = new b2Vec2(-1.0, 0.0);
-        vertices[1] = new b2Vec2(1.0, 0.0);
-        vertices[2] = new b2Vec2(0.0, 2.0);
+        vertices[0] = new b2Vec2(-1, 0);
+        vertices[1] = new b2Vec2(1, 0);
+        vertices[2] = new b2Vec2(0, 2);
         const polygon = new b2PolygonShape();
         polygon.Set(vertices, 3);
 
@@ -76,23 +76,23 @@ class CollisionFiltering extends Test {
         };
         const triangleShapeDef: b2FixtureDef = {
             shape: polygon,
-            density: 1.0,
+            density: 1,
             filter: triangleFilter,
         };
 
         const body1 = this.m_world.CreateBody({
             type: b2BodyType.b2_dynamicBody,
             position: {
-                x: -5.0,
-                y: 2.0,
+                x: -5,
+                y: 2,
             },
         });
         body1.CreateFixture(triangleShapeDef);
 
         // Large triangle (recycle definitions)
-        vertices[0].Scale(2.0);
-        vertices[1].Scale(2.0);
-        vertices[2].Scale(2.0);
+        vertices[0].Scale(2);
+        vertices[1].Scale(2);
+        vertices[2].Scale(2);
         polygon.Set(vertices, 3);
         triangleFilter.groupIndex = CollisionFiltering.k_largeGroup;
 
@@ -100,8 +100,8 @@ class CollisionFiltering extends Test {
             type: b2BodyType.b2_dynamicBody,
             fixedRotation: true, // look at me!
             position: {
-                x: -5.0,
-                y: 6.0,
+                x: -5,
+                y: 6,
             },
         });
         body2.CreateFixture(triangleShapeDef);
@@ -109,28 +109,28 @@ class CollisionFiltering extends Test {
         {
             const body = this.m_world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
-                position: { x: -5.0, y: 10.0 },
+                position: { x: -5, y: 10 },
             });
 
             const p = new b2PolygonShape();
-            p.SetAsBox(0.5, 1.0);
-            body.CreateFixture({ shape: p, density: 1.0 });
+            p.SetAsBox(0.5, 1);
+            body.CreateFixture({ shape: p, density: 1 });
 
             const jd = new b2PrismaticJointDef();
             jd.bodyA = body2;
             jd.bodyB = body;
             jd.enableLimit = true;
-            jd.localAnchorA.Set(0.0, 4.0);
+            jd.localAnchorA.Set(0, 4);
             jd.localAnchorB.SetZero();
-            jd.localAxisA.Set(0.0, 1.0);
-            jd.lowerTranslation = -1.0;
-            jd.upperTranslation = 1.0;
+            jd.localAxisA.Set(0, 1);
+            jd.lowerTranslation = -1;
+            jd.upperTranslation = 1;
 
             this.m_world.CreateJoint(jd);
         }
 
         // Small box
-        polygon.SetAsBox(1.0, 0.5);
+        polygon.SetAsBox(1, 0.5);
         const boxFilter: b2Filter = {
             groupIndex: CollisionFiltering.k_smallGroup,
             categoryBits: CollisionFiltering.k_boxCategory,
@@ -138,30 +138,30 @@ class CollisionFiltering extends Test {
         };
         const boxShapeDef: b2FixtureDef = {
             shape: polygon,
-            density: 1.0,
+            density: 1,
             restitution: 0.1,
             filter: boxFilter,
         };
 
         const body3 = this.m_world.CreateBody({
             type: b2BodyType.b2_dynamicBody,
-            position: { x: 0.0, y: 2.0 },
+            position: { x: 0, y: 2 },
         });
         body3.CreateFixture(boxShapeDef);
 
         // Large box (recycle definitions)
-        polygon.SetAsBox(2.0, 1.0);
+        polygon.SetAsBox(2, 1);
         boxFilter.groupIndex = CollisionFiltering.k_largeGroup;
 
         const body4 = this.m_world.CreateBody({
             type: b2BodyType.b2_dynamicBody,
-            position: { x: 0.0, y: 6.0 },
+            position: { x: 0, y: 6 },
         });
         body4.CreateFixture(boxShapeDef);
 
         // Small circle
         const circle = new b2CircleShape();
-        circle.m_radius = 1.0;
+        circle.m_radius = 1;
 
         const circleFilter: b2Filter = {
             groupIndex: CollisionFiltering.k_smallGroup,
@@ -170,23 +170,23 @@ class CollisionFiltering extends Test {
         };
         const circleShapeDef: b2FixtureDef = {
             shape: circle,
-            density: 1.0,
+            density: 1,
             filter: circleFilter,
         };
 
         const body5 = this.m_world.CreateBody({
             type: b2BodyType.b2_dynamicBody,
-            position: { x: 5.0, y: 2.0 },
+            position: { x: 5, y: 2 },
         });
         body5.CreateFixture(circleShapeDef);
 
         // Large circle
-        circle.m_radius *= 2.0;
+        circle.m_radius *= 2;
         circleFilter.groupIndex = CollisionFiltering.k_largeGroup;
 
         const body6 = this.m_world.CreateBody({
             type: b2BodyType.b2_dynamicBody,
-            position: { x: 5.0, y: 6.0 },
+            position: { x: 5, y: 6 },
         });
         body6.CreateFixture(circleShapeDef);
     }

@@ -31,19 +31,19 @@ class Ramp extends Test {
             // Construct a ramp out of many polygons to ensure there's no
             // issue with particles moving across vertices
 
-            const xstep = 5.0;
-            const ystep = 5.0;
+            const xstep = 5;
+            const ystep = 5;
 
-            for (let y = 30.0; y > 0.0; y -= ystep) {
+            for (let y = 30; y > 0; y -= ystep) {
                 const shape = new b2PolygonShape();
-                const vertices = [new b2Vec2(-25.0, y), new b2Vec2(-25.0, y - ystep), new b2Vec2(0.0, 15.0)];
+                const vertices = [new b2Vec2(-25, y), new b2Vec2(-25, y - ystep), new b2Vec2(0, 15)];
                 shape.Set(vertices, 3);
                 ground.CreateFixture({ shape });
             }
 
-            for (let x = -25.0; x < 25.0; x += xstep) {
+            for (let x = -25; x < 25; x += xstep) {
                 const shape = new b2PolygonShape();
-                const vertices = [new b2Vec2(x, 0.0), new b2Vec2(x + xstep, 0.0), new b2Vec2(0.0, 15.0)];
+                const vertices = [new b2Vec2(x, 0), new b2Vec2(x + xstep, 0), new b2Vec2(0, 15)];
                 shape.Set(vertices, 3);
                 ground.CreateFixture({ shape });
             }

@@ -32,23 +32,23 @@ class CircleStack extends Test {
             const ground = this.m_world.CreateBody();
 
             const shape = new b2EdgeShape();
-            shape.SetTwoSided(new b2Vec2(-40.0, 0.0), new b2Vec2(40.0, 0.0));
+            shape.SetTwoSided(new b2Vec2(-40, 0), new b2Vec2(40, 0));
             ground.CreateFixture({ shape });
         }
 
         {
             const shape = new b2CircleShape();
-            shape.m_radius = 1.0;
+            shape.m_radius = 1;
 
             for (let i = 0; i < CircleStack.e_count; ++i) {
                 this.m_bodies[i] = this.m_world.CreateBody({
                     type: b2BodyType.b2_dynamicBody,
-                    position: { x: 0.0, y: 4.0 + 3.0 * i },
+                    position: { x: 0, y: 4 + 3 * i },
                 });
 
-                this.m_bodies[i].CreateFixture({ shape, density: 1.0 });
+                this.m_bodies[i].CreateFixture({ shape, density: 1 });
 
-                this.m_bodies[i].SetLinearVelocity(new b2Vec2(0.0, -50.0));
+                this.m_bodies[i].SetLinearVelocity(new b2Vec2(0, -50));
             }
         }
     }

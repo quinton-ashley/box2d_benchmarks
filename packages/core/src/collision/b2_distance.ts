@@ -180,7 +180,7 @@ export class b2ShapeCastOutput {
 
     public readonly normal = new b2Vec2();
 
-    public lambda = 0.0;
+    public lambda = 0;
 
     public iterations = 0;
 }

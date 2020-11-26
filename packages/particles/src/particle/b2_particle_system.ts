@@ -389,11 +389,11 @@ export class b2ParticleBodyContact {
 
     public fixture!: b2Fixture; // The specific fixture making contact
 
-    public weight = 0.0; // Weight of the contact. A value between 0.0f and 1.0f.
+    public weight = 0; // Weight of the contact. A value between 0   and 1  .
 
     public normal = new b2Vec2(); // The normalized direction from the particle to the body.
 
-    public mass = 0.0; // The effective mass used in calculating force.
+    public mass = 0; // The effective mass used in calculating force.
 }
 
 export class b2ParticlePair {
@@ -403,9 +403,9 @@ export class b2ParticlePair {
 
     public flags: b2ParticleFlag = 0; // The logical sum of the particle flags. See the b2ParticleFlag enum.
 
-    public strength = 0.0; // The strength of cohesion among the particles.
+    public strength = 0; // The strength of cohesion among the particles.
 
-    public distance = 0.0; // The initial distance of the particles.
+    public distance = 0; // The initial distance of the particles.
 }
 
 export class b2ParticleTriad {
@@ -417,7 +417,7 @@ export class b2ParticleTriad {
 
     public flags: b2ParticleFlag = 0; // The logical sum of the particle flags. See the b2ParticleFlag enum.
 
-    public strength = 0.0; // The strength of cohesion among the particles.
+    public strength = 0; // The strength of cohesion among the particles.
 
     public pa = new b2Vec2(); // Values used for calculation.
 
@@ -425,13 +425,13 @@ export class b2ParticleTriad {
 
     public pc = new b2Vec2();
 
-    public ka = 0.0;
+    public ka = 0;
 
-    public kb = 0.0;
+    public kb = 0;
 
-    public kc = 0.0;
+    public kc = 0;
 
-    public s = 0.0;
+    public s = 0;
 }
 
 export class b2ParticleSystemDef {
@@ -448,18 +448,18 @@ export class b2ParticleSystemDef {
      * Set the particle density.
      * See SetDensity for details.
      */
-    public density = 1.0;
+    public density = 1;
 
     /**
      * Change the particle gravity scale. Adjusts the effect of the
-     * global gravity vector on particles. Default value is 1.0f.
+     * global gravity vector on particles. Default value is 1  .
      */
-    public gravityScale = 1.0;
+    public gravityScale = 1;
 
     /**
      * Particles behave as circles with this radius. In Box2D units.
      */
-    public radius = 1.0;
+    public radius = 1;
 
     /**
      * Set the maximum number of particles.
@@ -480,7 +480,7 @@ export class b2ParticleSystemDef {
      * Reduces velocity along the collision normal
      * Smaller value reduces less
      */
-    public dampingStrength = 1.0;
+    public dampingStrength = 1;
 
     /**
      * Restores shape of elastic particle groups
@@ -517,9 +517,9 @@ export class b2ParticleSystemDef {
      * Produces additional pressure on repulsive particles
      * Larger values repulse more
      * Negative values mean attraction. The range where particles
-     * behave stably is about -0.2 to 2.0.
+     * behave stably is about -0.2 to 2.
      */
-    public repulsiveStrength = 1.0;
+    public repulsiveStrength = 1;
 
     /**
      * Produces repulsion between powder particles
@@ -556,8 +556,8 @@ export class b2ParticleSystemDef {
 
     /**
      * Determines how fast colors are mixed
-     * 1.0f ==> mixed immediately
-     * 0.5f ==> mixed half way each simulation step (see
+     * 1   ==> mixed immediately
+     * 0.5  ==> mixed half way each simulation step (see
      * b2World::Step())
      */
     public colorMixingStrength = 0.5;
@@ -571,13 +571,13 @@ export class b2ParticleSystemDef {
 
     /**
      * Granularity of particle lifetimes in seconds.  By default
-     * this is set to (1.0f / 60.0f) seconds.  b2ParticleSystem uses
+     * this is set to (1   / 60  ) seconds.  b2ParticleSystem uses
      * a 32-bit signed value to track particle lifetimes so the
-     * maximum lifetime of a particle is (2^32 - 1) / (1.0f /
+     * maximum lifetime of a particle is (2^32 - 1) / (1   /
      * lifetimeGranularity) seconds. With the value set to 1/60 the
      * maximum lifetime or age of a particle is 2.27 years.
      */
-    public lifetimeGranularity = 1.0 / 60.0;
+    public lifetimeGranularity = 1 / 60;
 
     public Copy(def: b2ParticleSystemDef): b2ParticleSystemDef {
         this.strictContactCheck = def.strictContactCheck;
@@ -626,13 +626,13 @@ export class b2ParticleSystem {
 
     public m_iterationIndex = 0;
 
-    public m_inverseDensity = 0.0;
+    public m_inverseDensity = 0;
 
-    public m_particleDiameter = 0.0;
+    public m_particleDiameter = 0;
 
-    public m_inverseDiameter = 0.0;
+    public m_inverseDiameter = 0;
 
-    public m_squaredDiameter = 0.0;
+    public m_squaredDiameter = 0;
 
     public m_count = 0;
 
@@ -815,7 +815,7 @@ export class b2ParticleSystem {
         this.SetGravityScale(def.gravityScale);
         this.SetRadius(def.radius);
         this.SetMaxParticleCount(def.maxCount);
-        // DEBUG: b2Assert(def.lifetimeGranularity > 0.0);
+        // DEBUG: b2Assert(def.lifetimeGranularity > 0);
         this.m_def = def.Clone();
         this.m_world = world;
         this.SetDestructionByAge(this.m_def.destroyByAge);
@@ -919,8 +919,8 @@ export class b2ParticleSystem {
 
         // If particle lifetimes are enabled or the lifetime is set in the particle
         // definition, initialize the lifetime.
-        const lifetime = def.lifetime ?? 0.0;
-        const finiteLifetime = lifetime > 0.0;
+        const lifetime = def.lifetime ?? 0;
+        const finiteLifetime = lifetime > 0;
         if (this.m_expirationTimeBuffer.data || finiteLifetime) {
             this.SetParticleLifetime(
                 index,
@@ -1302,7 +1302,7 @@ export class b2ParticleSystem {
 
     /**
      * Damping is used to reduce the velocity of particles. The
-     * damping parameter can be larger than 1.0f but the damping
+     * damping parameter can be larger than 1   but the damping
      * effect becomes sensitive to the time step when the damping
      * parameter is large.
      */
@@ -1663,7 +1663,7 @@ export class b2ParticleSystem {
 
     /**
      * Set the lifetime (in seconds) of a particle relative to the
-     * current time.  A lifetime of less than or equal to 0.0f
+     * current time.  A lifetime of less than or equal to 0
      * results in the particle living forever until it's manually
      * destroyed by the application.
      */
@@ -1685,7 +1685,7 @@ export class b2ParticleSystem {
         // Use a negative lifetime so that it's possible to track which
         // of the infinite lifetime particles are older.
         const newExpirationTime =
-            quantizedLifetime > 0.0 ? this.GetQuantizedTimeElapsed() + quantizedLifetime : quantizedLifetime;
+            quantizedLifetime > 0 ? this.GetQuantizedTimeElapsed() + quantizedLifetime : quantizedLifetime;
         if (newExpirationTime !== this.m_expirationTimeBuffer.data[index]) {
             this.m_expirationTimeBuffer.data[index] = newExpirationTime;
             this.m_expirationTimeBufferRequiresSorting = true;
@@ -1694,8 +1694,8 @@ export class b2ParticleSystem {
 
     /**
      * Get the lifetime (in seconds) of a particle relative to the
-     * current time.  A value > 0.0f is returned if the particle is
-     * scheduled to be destroyed in the future, values <= 0.0f
+     * current time.  A value > 0   is returned if the particle is
+     * scheduled to be destroyed in the future, values <= 0
      * indicate the particle has an infinite lifetime.
      */
     public GetParticleLifetime(index: number): number {
@@ -2619,9 +2619,9 @@ export class b2ParticleSystem {
                         Math.min(groupA ? groupA.m_strength : 1, groupB ? groupB.m_strength : 1),
                         groupC ? groupC.m_strength : 1,
                     );
-                    /// let midPoint = b2Vec2.Scale(1.0 / 3.0, b2Vec2.Add(pa, b2Vec2.Add(pb, pc, new b2Vec2()), new b2Vec2()), new b2Vec2());
-                    const midPoint_x = (pa.x + pb.x + pc.x) / 3.0;
-                    const midPoint_y = (pa.y + pb.y + pc.y) / 3.0;
+                    /// let midPoint = b2Vec2.Scale(1 / 3, b2Vec2.Add(pa, b2Vec2.Add(pb, pc, new b2Vec2()), new b2Vec2()), new b2Vec2());
+                    const midPoint_x = (pa.x + pb.x + pc.x) / 3;
+                    const midPoint_y = (pa.y + pb.y + pc.y) / 3;
                     /// triad.pa = b2Vec2.Subtract(pa, midPoint, new b2Vec2());
                     triad.pa.x = pa.x - midPoint_x;
                     triad.pa.y = pa.y - midPoint_y;
@@ -3676,7 +3676,7 @@ export class b2ParticleSystem {
                 if (this.m_flagsBuffer.data[i] & b2ParticleFlag.b2_staticPressureParticle) {
                     const wh = this.m_accumulationBuffer[i];
                     const h = (wh + pressurePerWeight * (w - b2_minParticleWeight)) / (w + relaxation);
-                    this.m_staticPressureBuffer[i] = b2Clamp(h, 0.0, maxPressure);
+                    this.m_staticPressureBuffer[i] = b2Clamp(h, 0, maxPressure);
                 } else {
                     this.m_staticPressureBuffer[i] = 0;
                 }
@@ -3717,7 +3717,7 @@ export class b2ParticleSystem {
         const maxPressure = b2_maxParticlePressure * criticalPressure;
         for (let i = 0; i < this.m_count; i++) {
             const w = this.m_weightBuffer[i];
-            const h = pressurePerWeight * Math.max(0.0, w - b2_minParticleWeight);
+            const h = pressurePerWeight * Math.max(0, w - b2_minParticleWeight);
             this.m_accumulationBuffer[i] = Math.min(h, maxPressure);
         }
         // ignores particles which have their own repulsive force
@@ -3813,7 +3813,7 @@ export class b2ParticleSystem {
             const v = b2Vec2.Subtract(vel_data[b], vel_data[a], s_v);
             const vn = b2Vec2.Dot(v, n);
             if (vn < 0) {
-                /// float32 damping = Math.max(linearDamping * w, Math.min(- quadraticDamping * vn, 0.5f));
+                /// float32 damping = Math.max(linearDamping * w, Math.min(- quadraticDamping * vn, 0.5 ));
                 const damping = Math.max(linearDamping * w, Math.min(-quadraticDamping * vn, 0.5));
                 /// b2Vec2 f = damping * vn * n;
                 const f = b2Vec2.Scale(damping * vn, n, s_f);
@@ -3834,12 +3834,12 @@ export class b2ParticleSystem {
         const s_t1 = b2ParticleSystem.SolveRigidDamping_s_t1;
         const s_p = b2ParticleSystem.SolveRigidDamping_s_p;
         const s_v = b2ParticleSystem.SolveRigidDamping_s_v;
-        const invMassA = [0.0];
-        const invInertiaA = [0.0];
-        const tangentDistanceA = [0.0]; // TODO: static
-        const invMassB = [0.0];
-        const invInertiaB = [0.0];
-        const tangentDistanceB = [0.0]; // TODO: static
+        const invMassA = [0];
+        const invInertiaA = [0];
+        const tangentDistanceA = [0]; // TODO: static
+        const invMassB = [0];
+        const invInertiaB = [0];
+        const tangentDistanceB = [0]; // TODO: static
         // Apply impulse to rigid particle groups colliding with other objects
         // to reduce relative velocity at the colliding point.
         const pos_data = this.m_positionBuffer.data;
@@ -3886,10 +3886,10 @@ export class b2ParticleSystem {
                         p,
                         n,
                     );
-                    /// float32 f = damping * Math.min(w, 1.0) * this.ComputeDampingImpulse(invMassA, invInertiaA, tangentDistanceA, invMassB, invInertiaB, tangentDistanceB, vn);
+                    /// float32 f = damping * Math.min(w, 1) * this.ComputeDampingImpulse(invMassA, invInertiaA, tangentDistanceA, invMassB, invInertiaB, tangentDistanceB, vn);
                     const f =
                         damping *
-                        Math.min(w, 1.0) *
+                        Math.min(w, 1) *
                         this.ComputeDampingImpulse(
                             invMassA[0],
                             invInertiaA[0],
@@ -3917,7 +3917,7 @@ export class b2ParticleSystem {
             const aRigid = this.IsRigidGroup(aGroup);
             const bRigid = this.IsRigidGroup(bGroup);
             if (aGroup !== bGroup && (aRigid || bRigid)) {
-                /// b2Vec2 p = 0.5f * (this.m_positionBuffer.data[a] + this.m_positionBuffer.data[b]);
+                /// b2Vec2 p = 0.5  * (this.m_positionBuffer.data[a] + this.m_positionBuffer.data[b]);
                 const p = b2Vec2.Mid(pos_data[a], pos_data[b], s_p);
                 /// b2Vec2 v = GetLinearVelocity(bGroup, b, p) - GetLinearVelocity(aGroup, a, p);
                 const v = b2Vec2.Subtract(
@@ -4001,7 +4001,7 @@ export class b2ParticleSystem {
                 /// float32 vn = b2Dot(v, n);
                 const vn = b2Vec2.Dot(v, n);
                 if (vn < 0) {
-                    /// b2Vec2 f = 0.5f * m * vn * n;
+                    /// b2Vec2 f = 0.5  * m * vn * n;
                     const f = b2Vec2.Scale(0.5 * m * vn, n, s_f);
                     /// m_velocityBuffer.data[a] += GetParticleInvMass() * f;
                     vel_data[a].AddScaled(inv_mass, f);
@@ -4107,8 +4107,8 @@ export class b2ParticleSystem {
                 /// pc += step.dt * vc;
                 pc.AddScaled(step.dt, vc);
                 /// b2Vec2 midPoint = (float32) 1 / 3 * (pa + pb + pc);
-                const midPoint_x = (pa.x + pb.x + pc.x) / 3.0;
-                const midPoint_y = (pa.y + pb.y + pc.y) / 3.0;
+                const midPoint_x = (pa.x + pb.x + pc.x) / 3;
+                const midPoint_y = (pa.y + pb.y + pc.y) / 3;
                 /// pa -= midPoint;
                 pa.x -= midPoint_x;
                 pa.y -= midPoint_y;
@@ -4347,7 +4347,7 @@ export class b2ParticleSystem {
         const pos_data = this.m_positionBuffer.data;
         const vel_data = this.m_velocityBuffer.data;
         const powderStrength = this.m_def.powderStrength * this.GetCriticalVelocity(step);
-        const minWeight = 1.0 - b2_particleStride;
+        const minWeight = 1 - b2_particleStride;
         const inv_mass = this.GetParticleInvMass();
         for (let k = 0; k < this.m_bodyContactBuffer.count; k++) {
             const contact = this.m_bodyContactBuffer.data[k];
@@ -4656,21 +4656,21 @@ export class b2ParticleSystem {
              * Compare the lifetime of particleIndexA and particleIndexB
              * returning true if the lifetime of A is greater than B for
              * particles that will expire.  If either particle's lifetime is
-             * infinite (<= 0.0f) this function return true if the lifetime
+             * infinite (<= 0  ) this function return true if the lifetime
              * of A is lesser than B. When used with std::sort() this
              * results in an array of particle indicies sorted in reverse
              * order by particle lifetime.
              *
              * For example, the set of lifetimes
-             * (1.0, 0.7, 0.3, 0.0, -1.0, 2.0)
+             * (1, 0.7, 0.3, 0, -1, 2)
              * would be sorted as
-             * (0.0, 1.0, -2.0, 1.0, 0.7, 0.3)
+             * (0, 1, -2, 1, 0.7, 0.3)
              */
             std_sort(expirationTimeIndices, 0, particleCount, (particleIndexA, particleIndexB) => {
                 const expirationTimeA = expirationTimes[particleIndexA];
                 const expirationTimeB = expirationTimes[particleIndexB];
-                const infiniteExpirationTimeA = expirationTimeA <= 0.0;
-                const infiniteExpirationTimeB = expirationTimeB <= 0.0;
+                const infiniteExpirationTimeA = expirationTimeA <= 0;
+                const infiniteExpirationTimeB = expirationTimeB <= 0;
                 return infiniteExpirationTimeA === infiniteExpirationTimeB
                     ? expirationTimeA > expirationTimeB
                     : infiniteExpirationTimeA;
@@ -4842,7 +4842,7 @@ export class b2ParticleSystem {
     public GetParticleInvMass(): number {
         /// return 1.777777 * this.m_inverseDensity * this.m_inverseDiameter * this.m_inverseDiameter;
         // mass = density * stride^2, so we take the inverse of this.
-        const inverseStride = this.m_inverseDiameter * (1.0 / b2_particleStride);
+        const inverseStride = this.m_inverseDiameter * (1 / b2_particleStride);
         return this.m_inverseDensity * inverseStride * inverseStride;
     }
 

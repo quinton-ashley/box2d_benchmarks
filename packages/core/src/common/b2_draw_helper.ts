@@ -30,7 +30,7 @@ const temp = {
 };
 
 export function GetShapeColor(b: b2Body) {
-    if (b.GetType() === b2BodyType.b2_dynamicBody && b.m_mass === 0.0) {
+    if (b.GetType() === b2BodyType.b2_dynamicBody && b.m_mass === 0) {
         // Bad body
         return debugColors.badBody;
     }

@@ -102,7 +102,7 @@ class ApplyForce extends Test {
 
             this.m_body = this.m_world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
-                position: { x: 0, y: 3.0 },
+                position: { x: 0, y: 3 },
                 angle: Math.PI,
                 allowSleep: false,
             });

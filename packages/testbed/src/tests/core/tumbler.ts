@@ -37,25 +37,25 @@ class Tumbler extends Test {
             const body = this.m_world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
                 allowSleep: false,
-                position: { x: 0.0, y: 10.0 },
+                position: { x: 0, y: 10 },
             });
 
             const shape = new b2PolygonShape();
-            shape.SetAsBox(0.5, 10.0, new b2Vec2(10.0, 0.0), 0.0);
-            body.CreateFixture({ shape, density: 5.0 });
-            shape.SetAsBox(0.5, 10.0, new b2Vec2(-10.0, 0.0), 0.0);
-            body.CreateFixture({ shape, density: 5.0 });
-            shape.SetAsBox(10.0, 0.5, new b2Vec2(0.0, 10.0), 0.0);
-            body.CreateFixture({ shape, density: 5.0 });
-            shape.SetAsBox(10.0, 0.5, new b2Vec2(0.0, -10.0), 0.0);
-            body.CreateFixture({ shape, density: 5.0 });
+            shape.SetAsBox(0.5, 10, new b2Vec2(10, 0), 0);
+            body.CreateFixture({ shape, density: 5 });
+            shape.SetAsBox(0.5, 10, new b2Vec2(-10, 0), 0);
+            body.CreateFixture({ shape, density: 5 });
+            shape.SetAsBox(10, 0.5, new b2Vec2(0, 10), 0);
+            body.CreateFixture({ shape, density: 5 });
+            shape.SetAsBox(10, 0.5, new b2Vec2(0, -10), 0);
+            body.CreateFixture({ shape, density: 5 });
 
             const jd = new b2RevoluteJointDef();
             jd.bodyA = ground;
             jd.bodyB = body;
-            jd.localAnchorA.Set(0.0, 10.0);
-            jd.localAnchorB.Set(0.0, 0.0);
-            jd.referenceAngle = 0.0;
+            jd.localAnchorA.Set(0, 10);
+            jd.localAnchorB.Set(0, 0);
+            jd.referenceAngle = 0;
             jd.motorSpeed = 0.05 * Math.PI;
             jd.maxMotorTorque = 1e8;
             jd.enableMotor = true;
@@ -78,12 +78,12 @@ class Tumbler extends Test {
         if (this.m_count < Tumbler.e_count) {
             const body = this.m_world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
-                position: { x: 0.0, y: 10.0 },
+                position: { x: 0, y: 10 },
             });
 
             const shape = new b2PolygonShape();
             shape.SetAsBox(0.125, 0.125);
-            body.CreateFixture({ shape, density: 1.0 });
+            body.CreateFixture({ shape, density: 1 });
 
             ++this.m_count;
         }

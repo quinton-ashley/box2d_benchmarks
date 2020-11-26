@@ -1138,7 +1138,7 @@ export class b2Sweep {
     /// @param beta is a factor in [0,1], where 0 indicates alpha0.
     // https://fgiesen.wordpress.com/2012/08/15/linear-interpolation-past-present-and-future/
     public GetTransform(xf: b2Transform, beta: number) {
-        const oneMinusBeta = 1.0 - beta;
+        const oneMinusBeta = 1 - beta;
         xf.p.x = oneMinusBeta * this.c0.x + beta * this.c.x;
         xf.p.y = oneMinusBeta * this.c0.y + beta * this.c.y;
         const angle = oneMinusBeta * this.a0 + beta * this.a;
@@ -1153,7 +1153,7 @@ export class b2Sweep {
     /// @param alpha the new initial time.
     public Advance(alpha: number) {
         // DEBUG: b2Assert(this.alpha0 < 1);
-        const beta = (alpha - this.alpha0) / (1.0 - this.alpha0);
+        const beta = (alpha - this.alpha0) / (1 - this.alpha0);
         this.c0.x += beta * (this.c.x - this.c0.x);
         this.c0.y += beta * (this.c.y - this.c0.y);
         this.a0 += beta * (this.a - this.a0);

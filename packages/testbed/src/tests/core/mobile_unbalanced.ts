@@ -28,13 +28,13 @@ class Mobile extends Test {
 
         // Create ground body.
         const ground = this.m_world.CreateBody({
-            position: { x: 0.0, y: 20.0 },
+            position: { x: 0, y: 20 },
         });
 
         const a = 0.5;
-        const h = new b2Vec2(0.0, a);
+        const h = new b2Vec2(0, a);
 
-        const root = this.AddNode(ground, b2Vec2.ZERO, 0, 3.0, a);
+        const root = this.AddNode(ground, b2Vec2.ZERO, 0, 3, a);
 
         const jointDef = new b2RevoluteJointDef();
         jointDef.bodyA = ground;
@@ -56,8 +56,8 @@ class Mobile extends Test {
     }
 
     public AddNode(parent: b2Body, localAnchor: XY, depth: number, offset: number, a: number): b2Body {
-        const density = 20.0;
-        const h = new b2Vec2(0.0, a);
+        const density = 20;
+        const h = new b2Vec2(0, a);
 
         const body = this.m_world.CreateBody({
             type: b2BodyType.b2_dynamicBody,

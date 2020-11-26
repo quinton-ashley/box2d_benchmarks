@@ -25,27 +25,27 @@ class EyeCandy extends Test {
         });
 
         const shape = new b2PolygonShape();
-        shape.SetAsBox(0.5, 10.0, new b2Vec2(20.0, 0.0), 0.0);
-        body.CreateFixture({ shape, density: 5.0 });
-        shape.SetAsBox(0.5, 10.0, new b2Vec2(-20.0, 0.0), 0.0);
-        body.CreateFixture({ shape, density: 5.0 });
-        shape.SetAsBox(0.5, 20.0, new b2Vec2(0.0, 10.0), Math.PI / 2.0);
-        body.CreateFixture({ shape, density: 5.0 });
-        shape.SetAsBox(0.5, 20.0, new b2Vec2(0.0, -10.0), Math.PI / 2.0);
-        body.CreateFixture({ shape, density: 5.0 });
+        shape.SetAsBox(0.5, 10, new b2Vec2(20, 0), 0);
+        body.CreateFixture({ shape, density: 5 });
+        shape.SetAsBox(0.5, 10, new b2Vec2(-20, 0), 0);
+        body.CreateFixture({ shape, density: 5 });
+        shape.SetAsBox(0.5, 20, new b2Vec2(0, 10), Math.PI / 2);
+        body.CreateFixture({ shape, density: 5 });
+        shape.SetAsBox(0.5, 20, new b2Vec2(0, -10), Math.PI / 2);
+        body.CreateFixture({ shape, density: 5 });
 
         this.m_mover = this.m_world.CreateBody({
             type: b2BodyType.b2_dynamicBody,
         });
-        shape.SetAsBox(1.0, 5.0, new b2Vec2(0.0, 2.0), 0.0);
-        this.m_mover.CreateFixture({ shape, density: 5.0 });
+        shape.SetAsBox(1, 5, new b2Vec2(0, 2), 0);
+        this.m_mover.CreateFixture({ shape, density: 5 });
 
         const jd = new b2RevoluteJointDef();
         jd.bodyA = ground;
         jd.bodyB = this.m_mover;
-        jd.localAnchorA.Set(0.0, 0.0);
-        jd.localAnchorB.Set(0.0, 5.0);
-        jd.referenceAngle = 0.0;
+        jd.localAnchorA.Set(0, 0);
+        jd.localAnchorB.Set(0, 5);
+        jd.referenceAngle = 0;
         jd.motorSpeed = 0;
         jd.maxMotorTorque = 1e7;
         jd.enableMotor = true;
@@ -55,7 +55,7 @@ class EyeCandy extends Test {
         pd.flags = b2ParticleFlag.b2_waterParticle;
 
         const shape2 = new b2PolygonShape();
-        shape2.SetAsBox(9.0, 9.0, new b2Vec2(), 0.0);
+        shape2.SetAsBox(9, 9, new b2Vec2(), 0);
 
         pd.shape = shape2;
         this.m_particleSystem.CreateParticleGroup(pd);

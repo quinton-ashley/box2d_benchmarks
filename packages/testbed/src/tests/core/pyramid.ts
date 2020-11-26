@@ -31,7 +31,7 @@ class Pyramid extends Test {
             const ground = this.m_world.CreateBody();
 
             const shape = new b2EdgeShape();
-            shape.SetTwoSided(new b2Vec2(-40.0, 0.0), new b2Vec2(40.0, 0.0));
+            shape.SetTwoSided(new b2Vec2(-40, 0), new b2Vec2(40, 0));
             ground.CreateFixture({ shape });
         }
 
@@ -40,10 +40,10 @@ class Pyramid extends Test {
             const shape = new b2PolygonShape();
             shape.SetAsBox(a, a);
 
-            const x = new b2Vec2(-7.0, 0.75);
+            const x = new b2Vec2(-7, 0.75);
             const y = new b2Vec2();
             const deltaX = new b2Vec2(0.5625, 1.25);
-            const deltaY = new b2Vec2(1.125, 0.0);
+            const deltaY = new b2Vec2(1.125, 0);
 
             for (let i = 0; i < Pyramid.e_count; ++i) {
                 y.Copy(x);
@@ -53,7 +53,7 @@ class Pyramid extends Test {
                         type: b2BodyType.b2_dynamicBody,
                         position: y,
                     });
-                    body.CreateFixture({ shape, density: 5.0 });
+                    body.CreateFixture({ shape, density: 5 });
 
                     y.Add(deltaY);
                 }

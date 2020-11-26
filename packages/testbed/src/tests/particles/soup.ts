@@ -104,12 +104,12 @@ export class Soup extends Test {
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(0, 2), new b2Vec2(0.1, 2.1));
             body.CreateFixture({ shape, density: 1 });
-            ///  b2MassData massData = {0.1f, 0.5f * (shape.m_vertex1 + shape.m_vertex2), 0.0f};
+            ///  b2MassData massData = {0.1, 0.5 * (shape.m_vertex1 + shape.m_vertex2), 0};
             const massData = new b2MassData();
             massData.mass = 0.1;
             massData.center.x = 0.5 * shape.m_vertex1.x + shape.m_vertex2.x;
             massData.center.y = 0.5 * shape.m_vertex1.y + shape.m_vertex2.y;
-            massData.I = 0.0;
+            massData.I = 0;
             body.SetMassData(massData);
         }
 
@@ -118,14 +118,14 @@ export class Soup extends Test {
                 type: b2BodyType.b2_dynamicBody,
             });
             const shape = new b2EdgeShape();
-            shape.SetTwoSided(new b2Vec2(0.3, 2.0), new b2Vec2(0.4, 2.1));
+            shape.SetTwoSided(new b2Vec2(0.3, 2), new b2Vec2(0.4, 2.1));
             body.CreateFixture({ shape, density: 1 });
-            ///  b2MassData massData = {0.1f, 0.5f * (shape.m_vertex1 + shape.m_vertex2), 0.0f};
+            ///  b2MassData massData = {0.1, 0.5 * (shape.m_vertex1 + shape.m_vertex2), 0};
             const massData = new b2MassData();
             massData.mass = 0.1;
             massData.center.x = 0.5 * shape.m_vertex1.x + shape.m_vertex2.x;
             massData.center.y = 0.5 * shape.m_vertex1.y + shape.m_vertex2.y;
-            massData.I = 0.0;
+            massData.I = 0;
             body.SetMassData(massData);
         }
 
@@ -134,14 +134,14 @@ export class Soup extends Test {
                 type: b2BodyType.b2_dynamicBody,
             });
             const shape = new b2EdgeShape();
-            shape.SetTwoSided(new b2Vec2(-0.3, 2.1), new b2Vec2(-0.2, 2.0));
+            shape.SetTwoSided(new b2Vec2(-0.3, 2.1), new b2Vec2(-0.2, 2));
             body.CreateFixture({ shape, density: 1 });
-            ///  b2MassData massData = {0.1f, 0.5f * (shape.m_vertex1 + shape.m_vertex2), 0.0f};
+            ///  b2MassData massData = {0.1, 0.5 * (shape.m_vertex1 + shape.m_vertex2), 0};
             const massData = new b2MassData();
             massData.mass = 0.1;
             massData.center.x = 0.5 * shape.m_vertex1.x + shape.m_vertex2.x;
             massData.center.y = 0.5 * shape.m_vertex1.y + shape.m_vertex2.y;
-            massData.I = 0.0;
+            massData.I = 0;
             body.SetMassData(massData);
         }
     }

@@ -46,7 +46,7 @@ class RevoluteJoint extends Test {
             ground = this.m_world.CreateBody();
 
             const shape = new b2EdgeShape();
-            shape.SetTwoSided(new b2Vec2(-40.0, 0.0), new b2Vec2(40.0, 0.0));
+            shape.SetTwoSided(new b2Vec2(-40, 0), new b2Vec2(40, 0));
 
             ground.CreateFixture({
                 shape,
@@ -63,17 +63,17 @@ class RevoluteJoint extends Test {
             const body = this.m_world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
 
-                position: { x: -10.0, y: 20.0 },
+                position: { x: -10, y: 20 },
             });
-            body.CreateFixture({ shape, density: 5.0 });
+            body.CreateFixture({ shape, density: 5 });
 
-            const w = 100.0;
+            const w = 100;
             body.SetAngularVelocity(w);
-            body.SetLinearVelocity(new b2Vec2(-8.0 * w, 0.0));
+            body.SetLinearVelocity(new b2Vec2(-8 * w, 0));
 
-            rjd.Initialize(ground, body, new b2Vec2(-10.0, 12.0));
-            rjd.motorSpeed = 1.0 * Math.PI;
-            rjd.maxMotorTorque = 10000.0;
+            rjd.Initialize(ground, body, new b2Vec2(-10, 12));
+            rjd.motorSpeed = 1 * Math.PI;
+            rjd.maxMotorTorque = 10000;
             rjd.enableMotor = false;
             rjd.lowerAngle = -0.25 * Math.PI;
             rjd.upperAngle = 0.5 * Math.PI;
@@ -85,14 +85,14 @@ class RevoluteJoint extends Test {
 
         {
             const circle_shape = new b2CircleShape();
-            circle_shape.m_radius = 3.0;
+            circle_shape.m_radius = 3;
 
             this.m_ball = this.m_world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
-                position: { x: 5.0, y: 30.0 },
+                position: { x: 5, y: 30 },
             });
             this.m_ball.CreateFixture({
-                density: 5.0,
+                density: 5,
                 filter: {
                     maskBits: 1,
                 },
@@ -100,19 +100,19 @@ class RevoluteJoint extends Test {
             });
 
             const polygon_shape = new b2PolygonShape();
-            polygon_shape.SetAsBox(10.0, 0.2, new b2Vec2(-10.0, 0.0), 0.0);
+            polygon_shape.SetAsBox(10, 0.2, new b2Vec2(-10, 0), 0);
 
             const polygon_body = this.m_world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
-                position: { x: 20.0, y: 10.0 },
+                position: { x: 20, y: 10 },
                 bullet: true,
             });
-            polygon_body.CreateFixture({ shape: polygon_shape, density: 2.0 });
+            polygon_body.CreateFixture({ shape: polygon_shape, density: 2 });
 
             const rjd = new b2RevoluteJointDef();
-            rjd.Initialize(ground, polygon_body, new b2Vec2(20.0, 10.0));
+            rjd.Initialize(ground, polygon_body, new b2Vec2(20, 10));
             rjd.lowerAngle = -0.25 * Math.PI;
-            rjd.upperAngle = 0.0 * Math.PI;
+            rjd.upperAngle = 0 * Math.PI;
             rjd.enableLimit = true;
             this.m_world.CreateJoint(rjd);
         }
@@ -156,7 +156,7 @@ class RevoluteJoint extends Test {
         super.Step(settings, timeStep);
 
         // if (this.m_stepCount === 360) {
-        //   this.m_ball.SetTransformVec(new b2Vec2(0.0, 0.5), 0.0);
+        //   this.m_ball.SetTransformVec(new b2Vec2(0, 0.5), 0);
         // }
 
         // const torque1 = this.m_joint.GetMotorTorque(settings.hz);

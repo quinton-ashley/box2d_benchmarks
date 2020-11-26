@@ -94,7 +94,7 @@ export abstract class Light {
      * @param color
      *            light color
      * @param distance
-     *            light distance (if applicable), soft shadow length is set to distance * 0.1f
+     *            light distance (if applicable), soft shadow length is set to distance * 0.1
      * @param directionDegree
      *            direction in degrees (if applicable)
      */
@@ -143,7 +143,7 @@ export abstract class Light {
     /**
      * Sets light distance
      *
-     * <p>NOTE: MIN value should be capped to 0.1f meter
+     * <p>NOTE: MIN value should be capped to 0.1  meter
      */
     public abstract setDistance(dist: number): void;
 
@@ -348,7 +348,7 @@ export abstract class Light {
 
     /**
      * @return softness value for beams tips
-     *         <p>Default: {@code 2.5f}
+     *         <p>Default: {@code 2.5 }
      */
     public getSoftShadowLength() {
         return this.softShadowLength;
@@ -357,7 +357,7 @@ export abstract class Light {
     /**
      * Sets softness value for beams tips
      *
-     * <p>Default: {@code 2.5f}
+     * <p>Default: {@code 2.5 }
      */
     public setSoftnessLength(softShadowLength: number) {
         this.softShadowLength = softShadowLength;

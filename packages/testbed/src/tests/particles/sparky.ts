@@ -37,11 +37,11 @@ interface SparkUserData {
 }
 
 class ParticleVFX {
-    private m_initialLifetime = 0.0;
+    private m_initialLifetime = 0;
 
-    private m_remainingLifetime = 0.0;
+    private m_remainingLifetime = 0;
 
-    private m_halfLifetime = 0.0;
+    private m_halfLifetime = 0;
 
     private m_pg: b2ParticleGroup;
 
@@ -70,7 +70,7 @@ class ParticleVFX {
         //   Math.random(),
         //   Math.random(),
         //   Math.random(),
-        //   1.0);
+        //   1);
         function hue2rgb(p: number, q: number, t: number) {
             if (t < 0) {
                 t += 1;
@@ -134,14 +134,14 @@ class ParticleVFX {
 
     public ColorCoeff() {
         if (this.m_remainingLifetime >= this.m_halfLifetime) {
-            return 1.0;
+            return 1;
         }
-        return 1.0 - (this.m_halfLifetime - this.m_remainingLifetime) / this.m_halfLifetime;
+        return 1 - (this.m_halfLifetime - this.m_remainingLifetime) / this.m_halfLifetime;
     }
 
     public Step(dt: number) {
-        if (dt > 0 && this.m_remainingLifetime > 0.0) {
-            this.m_remainingLifetime = Math.max(this.m_remainingLifetime - dt, 0.0);
+        if (dt > 0 && this.m_remainingLifetime > 0) {
+            this.m_remainingLifetime = Math.max(this.m_remainingLifetime - dt, 0);
             const coeff = this.ColorCoeff();
 
             const colors = this.m_particleSystem.GetColorBuffer();
@@ -159,7 +159,7 @@ class ParticleVFX {
     }
 
     public IsDone() {
-        return this.m_remainingLifetime <= 0.0;
+        return this.m_remainingLifetime <= 0;
     }
 }
 
@@ -199,7 +199,7 @@ class Sparky extends Test {
                 type: b2BodyType.b2_dynamicBody,
             });
             const shape = new b2CircleShape();
-            shape.m_p.Set(3.0 * RandomFloat(), Sparky.SHAPE_HEIGHT_OFFSET + Sparky.SHAPE_OFFSET * i);
+            shape.m_p.Set(3 * RandomFloat(), Sparky.SHAPE_HEIGHT_OFFSET + Sparky.SHAPE_OFFSET * i);
             shape.m_radius = 2;
             const f = body.CreateFixture({ shape, density: 0.5 });
             // Tag this as a sparkable body.
@@ -232,9 +232,9 @@ class Sparky extends Test {
 
     public Step(settings: Settings, timeStep: number): void {
         const particleFlags = Test.GetParticleParameterValue();
-        let dt = settings.m_hertz > 0.0 ? 1.0 / settings.m_hertz : 0.0;
+        let dt = settings.m_hertz > 0 ? 1 / settings.m_hertz : 0;
         if (settings.m_pause && !settings.m_singleStep) {
-            dt = 0.0;
+            dt = 0;
         }
 
         super.Step(settings, timeStep);
@@ -271,9 +271,9 @@ class Sparky extends Test {
         this.m_VFX[this.m_VFXIndex] = new ParticleVFX(
             this.m_particleSystem,
             p,
-            RandomFloat(1.0, 2.0),
-            RandomFloat(10.0, 20.0),
-            RandomFloat(0.5, 1.0),
+            RandomFloat(1, 2),
+            RandomFloat(10, 20),
+            RandomFloat(0.5, 1),
             particleFlags,
         );
         if (++this.m_VFXIndex >= Sparky.c_maxVFX) {

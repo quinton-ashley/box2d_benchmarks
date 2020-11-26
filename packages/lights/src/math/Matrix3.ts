@@ -102,7 +102,7 @@ export class Matrix3 {
         const det = this.det();
         if (det === 0) throw new Error("Can't invert a singular matrix");
 
-        const inv_det = 1.0 / det;
+        const inv_det = 1 / det;
         const val = this.data;
 
         return this.set(

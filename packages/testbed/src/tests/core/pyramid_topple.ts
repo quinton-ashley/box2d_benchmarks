@@ -28,15 +28,15 @@ class PyramidTopple extends Test {
                 shape,
                 density: mass / (WIDTH * HEIGHT),
                 friction: 0.6,
-                restitution: 0.0,
+                restitution: 0,
             });
         };
 
         const world = this.m_world;
         /// settings.positionIterations = 30; // cpSpaceSetIterations(space, 30);
         /// world.SetGravity(new b2Vec2(0, -300)); // cpSpaceSetGravity(space, cpv(0, -300));
-        /// b2_timeToSleep = 0.5; // cpSpaceSetSleepTimeThreshold(space, 0.5f);
-        /// b2_linearSlop = 0.5; // cpSpaceSetCollisionSlop(space, 0.5f);
+        /// b2_timeToSleep = 0.5; // cpSpaceSetSleepTimeThreshold(space, 0.5 );
+        /// b2_linearSlop = 0.5; // cpSpaceSetCollisionSlop(space, 0.5 );
 
         // Add a floor.
         const body = world.CreateBody();
@@ -44,8 +44,8 @@ class PyramidTopple extends Test {
         shape.SetTwoSided(new b2Vec2(-600, -240), new b2Vec2(600, -240));
         body.CreateFixture({
             shape,
-            friction: 1.0,
-            restitution: 1.0,
+            friction: 1,
+            restitution: 1,
         });
 
         // Add the dominoes.

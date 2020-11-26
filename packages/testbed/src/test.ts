@@ -300,7 +300,7 @@ export class Test extends b2ContactListener {
         });
 
         if (hit_fixture) {
-            const frequencyHz = 5.0;
+            const frequencyHz = 5;
             const dampingRatio = 0.7;
 
             const body = hit_fixture.GetBody();
@@ -386,8 +386,8 @@ export class Test extends b2ContactListener {
         const circle = new b2CircleShape();
         circle.m_radius = 25 / this.GetDefaultViewZoom();
 
-        // b2Vec2 minV = position - b2Vec2(0.3f,0.3f);
-        // b2Vec2 maxV = position + b2Vec2(0.3f,0.3f);
+        // b2Vec2 minV = position - b2Vec2(0.3,0.3 );
+        // b2Vec2 maxV = position + b2Vec2(0.3,0.3 );
 
         // b2AABB aabb;
         // aabb.lowerBound = minV;

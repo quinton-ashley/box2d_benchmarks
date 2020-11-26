@@ -39,12 +39,7 @@ class Ragdolls extends Test {
             const ground = this.m_world.CreateBody();
 
             const shape = new b2ChainShape();
-            shape.CreateLoop([
-                new b2Vec2(-30.0, 0.0),
-                new b2Vec2(-30.0, 40.0),
-                new b2Vec2(30.0, 40.0),
-                new b2Vec2(30.0, 0.0),
-            ]);
+            shape.CreateLoop([new b2Vec2(-30, 0), new b2Vec2(-30, 40), new b2Vec2(30, 40), new b2Vec2(30, 0)]);
             ground.CreateFixture({ shape });
         }
 
@@ -56,8 +51,8 @@ class Ragdolls extends Test {
 
         // Add 2 ragdolls along the top
         for (let i = 0; i < 2; ++i) {
-            const startX = -20.0 + Math.random() * 2.0 + 40.0 * i;
-            const startY = 30.0 + Math.random() * 5.0;
+            const startX = -20 + Math.random() * 2 + 40 * i;
+            const startY = 30 + Math.random() * 5;
 
             // BODIES
             // Set these to dynamic bodies
@@ -66,7 +61,7 @@ class Ragdolls extends Test {
             // Head
             const fd: b2FixtureDef = {
                 shape: new b2CircleShape(1.25),
-                density: 1.0,
+                density: 1,
                 friction: 0.4,
                 restitution: 0.3,
             };
@@ -76,7 +71,7 @@ class Ragdolls extends Test {
             // if (i === 0)
             // {
             head.ApplyLinearImpulse(
-                new b2Vec2(Math.random() * 1000.0 - 500.0, Math.random() * 1000.0 - 500.0),
+                new b2Vec2(Math.random() * 1000 - 500, Math.random() * 1000 - 500),
                 head.GetWorldCenter(),
             );
             // }
@@ -84,56 +79,56 @@ class Ragdolls extends Test {
             // Torso1
             const shape = new b2PolygonShape();
             fd.shape = shape;
-            shape.SetAsBox(1.5, 1.0);
-            fd.density = 1.0;
+            shape.SetAsBox(1.5, 1);
+            fd.density = 1;
             fd.friction = 0.4;
             fd.restitution = 0.1;
             position.Set(startX, startY - 2.8);
             const torso1 = this.m_world.CreateBody(bd);
             torso1.CreateFixture(fd);
             // Torso2
-            shape.SetAsBox(1.5, 1.0);
+            shape.SetAsBox(1.5, 1);
             position.Set(startX, startY - 4.3);
             const torso2 = this.m_world.CreateBody(bd);
             torso2.CreateFixture(fd);
             // Torso3
-            shape.SetAsBox(1.5, 1.0);
+            shape.SetAsBox(1.5, 1);
             position.Set(startX, startY - 5.8);
             const torso3 = this.m_world.CreateBody(bd);
             torso3.CreateFixture(fd);
 
             // UpperArm
-            fd.density = 1.0;
+            fd.density = 1;
             fd.friction = 0.4;
             fd.restitution = 0.1;
             // L
             shape.SetAsBox(1.8, 0.65);
-            position.Set(startX - 3.0, startY - 2.0);
+            position.Set(startX - 3, startY - 2);
             const upperArmL = this.m_world.CreateBody(bd);
             upperArmL.CreateFixture(fd);
             // R
             shape.SetAsBox(1.8, 0.65);
-            position.Set(startX + 3.0, startY - 2.0);
+            position.Set(startX + 3, startY - 2);
             const upperArmR = this.m_world.CreateBody(bd);
             upperArmR.CreateFixture(fd);
 
             // LowerArm
-            fd.density = 1.0;
+            fd.density = 1;
             fd.friction = 0.4;
             fd.restitution = 0.1;
             // L
             shape.SetAsBox(1.7, 0.6);
-            position.Set(startX - 5.7, startY - 2.0);
+            position.Set(startX - 5.7, startY - 2);
             const lowerArmL = this.m_world.CreateBody(bd);
             lowerArmL.CreateFixture(fd);
             // R
             shape.SetAsBox(1.7, 0.6);
-            position.Set(startX + 5.7, startY - 2.0);
+            position.Set(startX + 5.7, startY - 2);
             const lowerArmR = this.m_world.CreateBody(bd);
             lowerArmR.CreateFixture(fd);
 
             // UpperLeg
-            fd.density = 1.0;
+            fd.density = 1;
             fd.friction = 0.4;
             fd.restitution = 0.1;
             // L
@@ -148,17 +143,17 @@ class Ragdolls extends Test {
             upperLegR.CreateFixture(fd);
 
             // LowerLeg
-            fd.density = 1.0;
+            fd.density = 1;
             fd.friction = 0.4;
             fd.restitution = 0.1;
             // L
-            shape.SetAsBox(0.6, 2.0);
-            position.Set(startX - 0.8, startY - 12.0);
+            shape.SetAsBox(0.6, 2);
+            position.Set(startX - 0.8, startY - 12);
             const lowerLegL = this.m_world.CreateBody(bd);
             lowerLegL.CreateFixture(fd);
             // R
-            shape.SetAsBox(0.6, 2.0);
-            position.Set(startX + 0.8, startY - 12.0);
+            shape.SetAsBox(0.6, 2);
+            position.Set(startX + 0.8, startY - 12);
             const lowerLegR = this.m_world.CreateBody(bd);
             lowerLegR.CreateFixture(fd);
 
@@ -166,65 +161,65 @@ class Ragdolls extends Test {
             jd.enableLimit = true;
 
             // Head to shoulders
-            jd.lowerAngle = b2DegToRad(-40.0);
-            jd.upperAngle = b2DegToRad(40.0);
+            jd.lowerAngle = b2DegToRad(-40);
+            jd.upperAngle = b2DegToRad(40);
             jd.Initialize(torso1, head, new b2Vec2(startX, startY - 1.5));
             this.m_world.CreateJoint(jd);
 
             // Upper arm to shoulders
             // L
-            jd.lowerAngle = b2DegToRad(-85.0);
-            jd.upperAngle = b2DegToRad(130.0);
-            jd.Initialize(torso1, upperArmL, new b2Vec2(startX - 1.8, startY - 2.0));
+            jd.lowerAngle = b2DegToRad(-85);
+            jd.upperAngle = b2DegToRad(130);
+            jd.Initialize(torso1, upperArmL, new b2Vec2(startX - 1.8, startY - 2));
             this.m_world.CreateJoint(jd);
             // R
-            jd.lowerAngle = b2DegToRad(-130.0);
-            jd.upperAngle = b2DegToRad(85.0);
-            jd.Initialize(torso1, upperArmR, new b2Vec2(startX + 1.8, startY - 2.0));
+            jd.lowerAngle = b2DegToRad(-130);
+            jd.upperAngle = b2DegToRad(85);
+            jd.Initialize(torso1, upperArmR, new b2Vec2(startX + 1.8, startY - 2));
             this.m_world.CreateJoint(jd);
 
             // Lower arm to upper arm
             // L
-            jd.lowerAngle = b2DegToRad(-130.0);
-            jd.upperAngle = b2DegToRad(10.0);
-            jd.Initialize(upperArmL, lowerArmL, new b2Vec2(startX - 4.5, startY - 2.0));
+            jd.lowerAngle = b2DegToRad(-130);
+            jd.upperAngle = b2DegToRad(10);
+            jd.Initialize(upperArmL, lowerArmL, new b2Vec2(startX - 4.5, startY - 2));
             this.m_world.CreateJoint(jd);
             // R
-            jd.lowerAngle = b2DegToRad(-10.0);
-            jd.upperAngle = b2DegToRad(130.0);
-            jd.Initialize(upperArmR, lowerArmR, new b2Vec2(startX + 4.5, startY - 2.0));
+            jd.lowerAngle = b2DegToRad(-10);
+            jd.upperAngle = b2DegToRad(130);
+            jd.Initialize(upperArmR, lowerArmR, new b2Vec2(startX + 4.5, startY - 2));
             this.m_world.CreateJoint(jd);
 
             // Shoulders/stomach
-            jd.lowerAngle = b2DegToRad(-15.0);
-            jd.upperAngle = b2DegToRad(15.0);
+            jd.lowerAngle = b2DegToRad(-15);
+            jd.upperAngle = b2DegToRad(15);
             jd.Initialize(torso1, torso2, new b2Vec2(startX, startY - 3.5));
             this.m_world.CreateJoint(jd);
             // Stomach/hips
-            jd.Initialize(torso2, torso3, new b2Vec2(startX, startY - 5.0));
+            jd.Initialize(torso2, torso3, new b2Vec2(startX, startY - 5));
             this.m_world.CreateJoint(jd);
 
             // Torso to upper leg
             // L
-            jd.lowerAngle = b2DegToRad(-25.0);
-            jd.upperAngle = b2DegToRad(45.0);
+            jd.lowerAngle = b2DegToRad(-25);
+            jd.upperAngle = b2DegToRad(45);
             jd.Initialize(torso3, upperLegL, new b2Vec2(startX - 0.8, startY - 7.2));
             this.m_world.CreateJoint(jd);
             // R
-            jd.lowerAngle = b2DegToRad(-45.0);
-            jd.upperAngle = b2DegToRad(25.0);
+            jd.lowerAngle = b2DegToRad(-45);
+            jd.upperAngle = b2DegToRad(25);
             jd.Initialize(torso3, upperLegR, new b2Vec2(startX + 0.8, startY - 7.2));
             this.m_world.CreateJoint(jd);
 
             // Upper leg to lower leg
             // L
-            jd.lowerAngle = b2DegToRad(-25.0);
-            jd.upperAngle = b2DegToRad(115.0);
+            jd.lowerAngle = b2DegToRad(-25);
+            jd.upperAngle = b2DegToRad(115);
             jd.Initialize(upperLegL, lowerLegL, new b2Vec2(startX - 0.8, startY - 10.5));
             this.m_world.CreateJoint(jd);
             // R
-            jd.lowerAngle = b2DegToRad(-115.0);
-            jd.upperAngle = b2DegToRad(25.0);
+            jd.lowerAngle = b2DegToRad(-115);
+            jd.upperAngle = b2DegToRad(25);
             jd.Initialize(upperLegR, lowerLegR, new b2Vec2(startX + 0.8, startY - 10.5));
             this.m_world.CreateJoint(jd);
         }
@@ -234,27 +229,27 @@ class Ragdolls extends Test {
         const shape = new b2PolygonShape();
         const fd: b2FixtureDef = {
             shape,
-            density: 0.0,
+            density: 0,
             friction: 0.4,
             restitution: 0.3,
         };
 
         // Add stairs on the left
         for (let j = 1; j <= 10; ++j) {
-            shape.SetAsBox(1.0 * j, 1.0);
-            position.Set(1.0 * j - 30.0, 21.0 - 2.0 * j);
+            shape.SetAsBox(1 * j, 1);
+            position.Set(1 * j - 30, 21 - 2 * j);
             this.m_world.CreateBody(bd).CreateFixture(fd);
         }
 
         // Add stairs on the right
         for (let k = 1; k <= 10; ++k) {
-            shape.SetAsBox(1.0 * k, 1.0);
-            position.Set(30.0 - 1.0 * k, 21.0 - 2.0 * k);
+            shape.SetAsBox(1 * k, 1);
+            position.Set(30 - 1 * k, 21 - 2 * k);
             this.m_world.CreateBody(bd).CreateFixture(fd);
         }
 
-        shape.SetAsBox(3.0, 4.0);
-        position.Set(0.0, 4.0);
+        shape.SetAsBox(3, 4);
+        position.Set(0, 4);
         this.m_world.CreateBody(bd).CreateFixture(fd);
     }
 

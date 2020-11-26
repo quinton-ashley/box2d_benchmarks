@@ -228,7 +228,7 @@ export class ChainLight extends Light {
     /**
      * Sets light distance
      *
-     * <p>MIN value capped to 0.1f meter
+     * <p>MIN value capped to 0.1  meter
      * <p>Actual recalculations will be done only on {@link #update()} call
      */
 

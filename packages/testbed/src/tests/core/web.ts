@@ -47,7 +47,7 @@ class Web extends Test {
             ground = this.m_world.CreateBody();
 
             const shape = new b2EdgeShape();
-            shape.SetTwoSided(new b2Vec2(-40.0, 0.0), new b2Vec2(40.0, 0.0));
+            shape.SetTwoSided(new b2Vec2(-40, 0), new b2Vec2(40, 0));
             ground.CreateFixture({ shape });
         }
 
@@ -57,40 +57,40 @@ class Web extends Test {
 
             const body0 = (this.m_bodies[0] = this.m_world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
-                position: { x: -5.0, y: 5.0 },
+                position: { x: -5, y: 5 },
             }));
-            body0.CreateFixture({ shape, density: 5.0 });
+            body0.CreateFixture({ shape, density: 5 });
 
             const body1 = (this.m_bodies[1] = this.m_world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
-                position: { x: 5.0, y: 5.0 },
+                position: { x: 5, y: 5 },
             }));
-            body1.CreateFixture({ shape, density: 5.0 });
+            body1.CreateFixture({ shape, density: 5 });
 
             const body2 = (this.m_bodies[2] = this.m_world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
-                position: { x: 5.0, y: 15.0 },
+                position: { x: 5, y: 15 },
             }));
-            body2.CreateFixture({ shape, density: 5.0 });
+            body2.CreateFixture({ shape, density: 5 });
 
             const body3 = (this.m_bodies[3] = this.m_world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
-                position: { x: -5.0, y: 15.0 },
+                position: { x: -5, y: 15 },
             }));
-            body3.CreateFixture({ shape, density: 5.0 });
+            body3.CreateFixture({ shape, density: 5 });
 
             const jd = new b2DistanceJointDef();
             let p1;
             let p2;
             let d;
 
-            const frequencyHz = 2.0;
-            const dampingRatio = 0.0;
+            const frequencyHz = 2;
+            const dampingRatio = 0;
 
             jd.bodyA = ground;
             jd.bodyB = body0;
             b2LinearStiffness(jd, frequencyHz, dampingRatio, jd.bodyA, jd.bodyB);
-            jd.localAnchorA.Set(-10.0, 0.0);
+            jd.localAnchorA.Set(-10, 0);
             jd.localAnchorB.Set(-0.5, -0.5);
             p1 = jd.bodyA.GetWorldPoint(jd.localAnchorA, new b2Vec2());
             p2 = jd.bodyB.GetWorldPoint(jd.localAnchorB, new b2Vec2());
@@ -101,7 +101,7 @@ class Web extends Test {
             jd.bodyA = ground;
             jd.bodyB = body1;
             b2LinearStiffness(jd, frequencyHz, dampingRatio, jd.bodyA, jd.bodyB);
-            jd.localAnchorA.Set(10.0, 0.0);
+            jd.localAnchorA.Set(10, 0);
             jd.localAnchorB.Set(0.5, -0.5);
             p1 = jd.bodyA.GetWorldPoint(jd.localAnchorA, new b2Vec2());
             p2 = jd.bodyB.GetWorldPoint(jd.localAnchorB, new b2Vec2());
@@ -112,7 +112,7 @@ class Web extends Test {
             jd.bodyA = ground;
             jd.bodyB = body2;
             b2LinearStiffness(jd, frequencyHz, dampingRatio, jd.bodyA, jd.bodyB);
-            jd.localAnchorA.Set(10.0, 20.0);
+            jd.localAnchorA.Set(10, 20);
             jd.localAnchorB.Set(0.5, 0.5);
             p1 = jd.bodyA.GetWorldPoint(jd.localAnchorA, new b2Vec2());
             p2 = jd.bodyB.GetWorldPoint(jd.localAnchorB, new b2Vec2());
@@ -123,7 +123,7 @@ class Web extends Test {
             jd.bodyA = ground;
             jd.bodyB = body3;
             b2LinearStiffness(jd, frequencyHz, dampingRatio, jd.bodyA, jd.bodyB);
-            jd.localAnchorA.Set(-10.0, 20.0);
+            jd.localAnchorA.Set(-10, 20);
             jd.localAnchorB.Set(-0.5, 0.5);
             p1 = jd.bodyA.GetWorldPoint(jd.localAnchorA, new b2Vec2());
             p2 = jd.bodyB.GetWorldPoint(jd.localAnchorB, new b2Vec2());
@@ -134,8 +134,8 @@ class Web extends Test {
             jd.bodyA = body0;
             jd.bodyB = body1;
             b2LinearStiffness(jd, frequencyHz, dampingRatio, jd.bodyA, jd.bodyB);
-            jd.localAnchorA.Set(0.5, 0.0);
-            jd.localAnchorB.Set(-0.5, 0.0);
+            jd.localAnchorA.Set(0.5, 0);
+            jd.localAnchorB.Set(-0.5, 0);
             p1 = jd.bodyA.GetWorldPoint(jd.localAnchorA, new b2Vec2());
             p2 = jd.bodyB.GetWorldPoint(jd.localAnchorB, new b2Vec2());
             d = b2Vec2.Subtract(p2, p1, new b2Vec2());
@@ -145,8 +145,8 @@ class Web extends Test {
             jd.bodyA = body1;
             jd.bodyB = body2;
             b2LinearStiffness(jd, frequencyHz, dampingRatio, jd.bodyA, jd.bodyB);
-            jd.localAnchorA.Set(0.0, 0.5);
-            jd.localAnchorB.Set(0.0, -0.5);
+            jd.localAnchorA.Set(0, 0.5);
+            jd.localAnchorB.Set(0, -0.5);
             p1 = jd.bodyA.GetWorldPoint(jd.localAnchorA, new b2Vec2());
             p2 = jd.bodyB.GetWorldPoint(jd.localAnchorB, new b2Vec2());
             d = b2Vec2.Subtract(p2, p1, new b2Vec2());
@@ -156,8 +156,8 @@ class Web extends Test {
             jd.bodyA = body2;
             jd.bodyB = body3;
             b2LinearStiffness(jd, frequencyHz, dampingRatio, jd.bodyA, jd.bodyB);
-            jd.localAnchorA.Set(-0.5, 0.0);
-            jd.localAnchorB.Set(0.5, 0.0);
+            jd.localAnchorA.Set(-0.5, 0);
+            jd.localAnchorB.Set(0.5, 0);
             p1 = jd.bodyA.GetWorldPoint(jd.localAnchorA, new b2Vec2());
             p2 = jd.bodyB.GetWorldPoint(jd.localAnchorB, new b2Vec2());
             d = b2Vec2.Subtract(p2, p1, new b2Vec2());
@@ -167,8 +167,8 @@ class Web extends Test {
             jd.bodyA = body3;
             jd.bodyB = body0;
             b2LinearStiffness(jd, frequencyHz, dampingRatio, jd.bodyA, jd.bodyB);
-            jd.localAnchorA.Set(0.0, -0.5);
-            jd.localAnchorB.Set(0.0, 0.5);
+            jd.localAnchorA.Set(0, -0.5);
+            jd.localAnchorB.Set(0, 0.5);
             p1 = jd.bodyA.GetWorldPoint(jd.localAnchorA, new b2Vec2());
             p2 = jd.bodyB.GetWorldPoint(jd.localAnchorB, new b2Vec2());
             d = b2Vec2.Subtract(p2, p1, new b2Vec2());

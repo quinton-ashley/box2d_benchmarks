@@ -56,13 +56,13 @@ export interface b2BodyDef {
     angularVelocity?: number;
 
     /// Linear damping is use to reduce the linear velocity. The damping parameter
-    /// can be larger than 1.0f but the damping effect becomes sensitive to the
+    /// can be larger than 1   but the damping effect becomes sensitive to the
     /// time step when the damping parameter is large.
     /// Units are 1/time
     linearDamping?: number;
 
     /// Angular damping is use to reduce the angular velocity. The damping parameter
-    /// can be larger than 1.0f but the damping effect becomes sensitive to the
+    /// can be larger than 1   but the damping effect becomes sensitive to the
     /// time step when the damping parameter is large.
     /// Units are 1/time
     angularDamping?: number;

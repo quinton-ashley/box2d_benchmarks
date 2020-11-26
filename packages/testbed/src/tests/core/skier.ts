@@ -21,41 +21,41 @@ class Skier extends Test {
 
         const ground = this.m_world.CreateBody();
 
-        const PlatformWidth = 8.0;
+        const PlatformWidth = 8;
 
         /*
     First angle is from the horizontal and should be negative for a downward slope.
     Second angle is relative to the preceding slope, and should be positive, creating a kind of
     loose 'Z'-shape from the 3 edges.
     If A1 = -10, then A2 <= ~1.5 will result in the collision glitch.
-    If A1 = -30, then A2 <= ~10.0 will result in the glitch.
+    If A1 = -30, then A2 <= ~10 will result in the glitch.
     */
-        const Angle1Degrees = -30.0;
-        const Angle2Degrees = 10.0;
+        const Angle1Degrees = -30;
+        const Angle2Degrees = 10;
 
         /*
     The larger the value of SlopeLength, the less likely the glitch will show up.
     */
-        const SlopeLength = 2.0;
+        const SlopeLength = 2;
 
         const SurfaceFriction = 0.2;
 
         // Convert to radians
-        const Slope1Incline = (-Angle1Degrees * Math.PI) / 180.0;
-        const Slope2Incline = Slope1Incline - (Angle2Degrees * Math.PI) / 180.0;
+        const Slope1Incline = (-Angle1Degrees * Math.PI) / 180;
+        const Slope2Incline = Slope1Incline - (Angle2Degrees * Math.PI) / 180;
         //
 
         this.m_platform_width = PlatformWidth;
 
         // Horizontal platform
-        const v1 = new b2Vec2(-PlatformWidth, 0.0);
+        const v1 = new b2Vec2(-PlatformWidth, 0);
         const v2 = new b2Vec2();
         const v3 = new b2Vec2(SlopeLength * Math.cos(Slope1Incline), -SlopeLength * Math.sin(Slope1Incline));
         const v4 = new b2Vec2(
             v3.x + SlopeLength * Math.cos(Slope2Incline),
             v3.y - SlopeLength * Math.sin(Slope2Incline),
         );
-        const v5 = new b2Vec2(v4.x, v4.y - 1.0);
+        const v5 = new b2Vec2(v4.x, v4.y - 1);
 
         const vertices = [v5, v4, v3, v2, v1];
 
@@ -63,21 +63,21 @@ class Skier extends Test {
         shape.CreateLoop(vertices);
         ground.CreateFixture({
             shape,
-            density: 0.0,
+            density: 0,
             friction: SurfaceFriction,
         });
 
         {
-            // const BodyWidth = 1.0;
+            // const BodyWidth = 1;
             const BodyHeight = 2.5;
-            const SkiLength = 3.0;
+            const SkiLength = 3;
 
             /*
       Larger values for this seem to alleviate the issue to some extent.
       */
             const SkiThickness = 0.3;
 
-            const SkiFriction = 0.0;
+            const SkiFriction = 0;
             const SkiRestitution = 0.15;
 
             const initial_y = BodyHeight / 2 + SkiThickness;
@@ -95,18 +95,18 @@ class Skier extends Test {
             ski.Set(verts);
 
             skier.CreateFixture({
-                density: 1.0,
+                density: 1,
                 friction: SkiFriction,
                 restitution: SkiRestitution,
                 shape: ski,
             });
 
-            skier.SetLinearVelocity(new b2Vec2(0.5, 0.0));
+            skier.SetLinearVelocity(new b2Vec2(0.5, 0));
 
             this.m_skier = skier;
         }
 
-        g_camera.setPositionAndZoom(this.m_platform_width / 2.0, 0.0, 0.4);
+        g_camera.setPositionAndZoom(this.m_platform_width / 2, 0, 0.4);
         this.m_fixed_camera = true;
     }
 
@@ -119,7 +119,7 @@ class Skier extends Test {
             hotKeyPress("c", "Switch Camera Fixed/Tracking", () => {
                 this.m_fixed_camera = !this.m_fixed_camera;
                 if (this.m_fixed_camera) {
-                    g_camera.setPosition(this.m_platform_width / 2.0, 0.0);
+                    g_camera.setPosition(this.m_platform_width / 2, 0);
                 }
             }),
         ];

@@ -38,7 +38,7 @@ class CompoundShapes extends Test {
             const body = this.m_world.CreateBody();
 
             const shape = new b2EdgeShape();
-            shape.SetTwoSided(new b2Vec2(50.0, 0.0), new b2Vec2(-50.0, 0.0));
+            shape.SetTwoSided(new b2Vec2(50, 0), new b2Vec2(-50, 0));
 
             body.CreateFixture({ shape });
         }
@@ -58,11 +58,11 @@ class CompoundShapes extends Test {
                     type: b2BodyType.b2_dynamicBody,
                     angle: b2RandomRange(-Math.PI, Math.PI),
                     position: {
-                        x: x + 5.0,
+                        x: x + 5,
                         y: 1.05 + 2.5 * i,
                     },
                 });
-                body.CreateFixture({ shape: circle1, density: 2.0 });
+                body.CreateFixture({ shape: circle1, density: 2 });
                 body.CreateFixture({ shape: circle2 });
             }
         }
@@ -72,41 +72,41 @@ class CompoundShapes extends Test {
             polygon1.SetAsBox(0.25, 0.5);
 
             const polygon2 = new b2PolygonShape();
-            polygon2.SetAsBox(0.25, 0.5, new b2Vec2(0.0, -0.5), 0.5 * Math.PI);
+            polygon2.SetAsBox(0.25, 0.5, new b2Vec2(0, -0.5), 0.5 * Math.PI);
 
             for (let i = 0; i < 10; ++i) {
                 const x = b2RandomRange(-0.1, 0.1);
                 const body = this.m_world.CreateBody({
                     type: b2BodyType.b2_dynamicBody,
                     angle: b2RandomRange(-Math.PI, Math.PI),
-                    position: { x: x - 5.0, y: 1.05 + 2.5 * i },
+                    position: { x: x - 5, y: 1.05 + 2.5 * i },
                 });
-                body.CreateFixture({ shape: polygon1, density: 2.0 });
-                body.CreateFixture({ shape: polygon2, density: 2.0 });
+                body.CreateFixture({ shape: polygon1, density: 2 });
+                body.CreateFixture({ shape: polygon2, density: 2 });
             }
         }
 
         {
             const xf1 = new b2Transform();
             xf1.q.Set(0.3524 * Math.PI);
-            xf1.p.Copy(b2Rot.MultiplyVec2(xf1.q, new b2Vec2(1.0, 0.0), new b2Vec2()));
+            xf1.p.Copy(b2Rot.MultiplyVec2(xf1.q, new b2Vec2(1, 0), new b2Vec2()));
 
             const vertices = [];
 
             const triangle1 = new b2PolygonShape();
-            vertices[0] = b2Transform.MultiplyVec2(xf1, new b2Vec2(-1.0, 0.0), new b2Vec2());
-            vertices[1] = b2Transform.MultiplyVec2(xf1, new b2Vec2(1.0, 0.0), new b2Vec2());
-            vertices[2] = b2Transform.MultiplyVec2(xf1, new b2Vec2(0.0, 0.5), new b2Vec2());
+            vertices[0] = b2Transform.MultiplyVec2(xf1, new b2Vec2(-1, 0), new b2Vec2());
+            vertices[1] = b2Transform.MultiplyVec2(xf1, new b2Vec2(1, 0), new b2Vec2());
+            vertices[2] = b2Transform.MultiplyVec2(xf1, new b2Vec2(0, 0.5), new b2Vec2());
             triangle1.Set(vertices, 3);
 
             const xf2 = new b2Transform();
             xf2.q.Set(-0.3524 * Math.PI);
-            xf2.p.Copy(b2Rot.MultiplyVec2(xf2.q, new b2Vec2(-1.0, 0.0), new b2Vec2()));
+            xf2.p.Copy(b2Rot.MultiplyVec2(xf2.q, new b2Vec2(-1, 0), new b2Vec2()));
 
             const triangle2 = new b2PolygonShape();
-            vertices[0] = b2Transform.MultiplyVec2(xf2, new b2Vec2(-1.0, 0.0), new b2Vec2());
-            vertices[1] = b2Transform.MultiplyVec2(xf2, new b2Vec2(1.0, 0.0), new b2Vec2());
-            vertices[2] = b2Transform.MultiplyVec2(xf2, new b2Vec2(0.0, 0.5), new b2Vec2());
+            vertices[0] = b2Transform.MultiplyVec2(xf2, new b2Vec2(-1, 0), new b2Vec2());
+            vertices[1] = b2Transform.MultiplyVec2(xf2, new b2Vec2(1, 0), new b2Vec2());
+            vertices[2] = b2Transform.MultiplyVec2(xf2, new b2Vec2(0, 0.5), new b2Vec2());
             triangle2.Set(vertices, 3);
 
             for (let i = 0; i < 10; ++i) {
@@ -115,8 +115,8 @@ class CompoundShapes extends Test {
                     position: { x: b2RandomRange(-0.1, 0.1), y: 2.05 + 2.5 * i },
                     angle: 0,
                 });
-                body.CreateFixture({ shape: triangle1, density: 2.0 });
-                body.CreateFixture({ shape: triangle2, density: 2.0 });
+                body.CreateFixture({ shape: triangle1, density: 2 });
+                body.CreateFixture({ shape: triangle2, density: 2 });
             }
         }
 
@@ -132,11 +132,11 @@ class CompoundShapes extends Test {
 
             const body = this.m_world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
-                position: { x: 0.0, y: 2.0 },
+                position: { x: 0, y: 2 },
             });
-            body.CreateFixture({ shape: bottom, density: 4.0 });
-            body.CreateFixture({ shape: left, density: 4.0 });
-            body.CreateFixture({ shape: right, density: 4.0 });
+            body.CreateFixture({ shape: bottom, density: 4 });
+            body.CreateFixture({ shape: left, density: 4 });
+            body.CreateFixture({ shape: right, density: 4 });
         }
     }
 

@@ -32,7 +32,7 @@ class CharacterCollision extends Test {
             const ground = this.m_world.CreateBody();
 
             const shape = new b2EdgeShape();
-            shape.SetTwoSided(new b2Vec2(-20.0, 0.0), new b2Vec2(20.0, 0.0));
+            shape.SetTwoSided(new b2Vec2(-20, 0), new b2Vec2(20, 0));
             ground.CreateFixture({ shape });
         }
 
@@ -43,11 +43,11 @@ class CharacterCollision extends Test {
             const ground = this.m_world.CreateBody();
 
             const shape = new b2EdgeShape();
-            shape.SetTwoSided(new b2Vec2(-8.0, 1.0), new b2Vec2(-6.0, 1.0));
+            shape.SetTwoSided(new b2Vec2(-8, 1), new b2Vec2(-6, 1));
             ground.CreateFixture({ shape });
-            shape.SetTwoSided(new b2Vec2(-6.0, 1.0), new b2Vec2(-4.0, 1.0));
+            shape.SetTwoSided(new b2Vec2(-6, 1), new b2Vec2(-4, 1));
             ground.CreateFixture({ shape });
-            shape.SetTwoSided(new b2Vec2(-4.0, 1.0), new b2Vec2(-2.0, 1.0));
+            shape.SetTwoSided(new b2Vec2(-4, 1), new b2Vec2(-2, 1));
             ground.CreateFixture({ shape });
         }
 
@@ -58,10 +58,10 @@ class CharacterCollision extends Test {
             });
 
             const vs = b2Vec2.MakeArray(4);
-            vs[0].Set(5.0, 7.0);
-            vs[1].Set(8.0, 7.0);
-            vs[2].Set(7.0, 8.0);
-            vs[3].Set(6.0, 8.0);
+            vs[0].Set(5, 7);
+            vs[1].Set(8, 7);
+            vs[2].Set(7, 8);
+            vs[3].Set(6, 8);
 
             const shape = new b2ChainShape();
             shape.CreateLoop(vs, 4);
@@ -75,11 +75,11 @@ class CharacterCollision extends Test {
             const ground = this.m_world.CreateBody();
 
             const shape = new b2PolygonShape();
-            shape.SetAsBox(1.0, 1.0, new b2Vec2(4.0, 3.0), 0.0);
+            shape.SetAsBox(1, 1, new b2Vec2(4, 3), 0);
             ground.CreateFixture({ shape });
-            shape.SetAsBox(1.0, 1.0, new b2Vec2(6.0, 3.0), 0.0);
+            shape.SetAsBox(1, 1, new b2Vec2(6, 3), 0);
             ground.CreateFixture({ shape });
-            shape.SetAsBox(1.0, 1.0, new b2Vec2(8.0, 3.0), 0.0);
+            shape.SetAsBox(1, 1, new b2Vec2(8, 3), 0);
             ground.CreateFixture({ shape });
         }
 
@@ -88,10 +88,10 @@ class CharacterCollision extends Test {
             const ground = this.m_world.CreateBody();
 
             const vs = b2Vec2.MakeArray(4);
-            vs[0].Set(-1.0, 3.0);
-            vs[1].Set(1.0, 3.0);
-            vs[2].Set(1.0, 5.0);
-            vs[3].Set(-1.0, 5.0);
+            vs[0].Set(-1, 3);
+            vs[1].Set(1, 3);
+            vs[2].Set(1, 5);
+            vs[3].Set(-1, 5);
 
             const shape = new b2ChainShape();
             shape.CreateLoop(vs, 4);
@@ -101,20 +101,20 @@ class CharacterCollision extends Test {
         // Edge loop. Collision should be smooth.
         {
             const ground = this.m_world.CreateBody({
-                position: { x: -10.0, y: 4.0 },
+                position: { x: -10, y: 4 },
             });
 
             const vs = b2Vec2.MakeArray(10);
-            vs[0].Set(0.0, 0.0);
-            vs[1].Set(6.0, 0.0);
-            vs[2].Set(6.0, 2.0);
-            vs[3].Set(4.0, 1.0);
-            vs[4].Set(2.0, 2.0);
-            vs[5].Set(0.0, 2.0);
-            vs[6].Set(-2.0, 2.0);
-            vs[7].Set(-4.0, 3.0);
-            vs[8].Set(-6.0, 2.0);
-            vs[9].Set(-6.0, 0.0);
+            vs[0].Set(0, 0);
+            vs[1].Set(6, 0);
+            vs[2].Set(6, 2);
+            vs[3].Set(4, 1);
+            vs[4].Set(2, 2);
+            vs[5].Set(0, 2);
+            vs[6].Set(-2, 2);
+            vs[7].Set(-4, 3);
+            vs[8].Set(-6, 2);
+            vs[9].Set(-6, 0);
 
             const shape = new b2ChainShape();
             shape.CreateLoop(vs, 10);
@@ -127,7 +127,7 @@ class CharacterCollision extends Test {
                 type: b2BodyType.b2_dynamicBody,
                 fixedRotation: true,
                 allowSleep: false,
-                position: { x: -3.0, y: 8.0 },
+                position: { x: -3, y: 8 },
             });
 
             const shape = new b2PolygonShape();
@@ -135,7 +135,7 @@ class CharacterCollision extends Test {
 
             body.CreateFixture({
                 shape,
-                density: 20.0,
+                density: 20,
             });
         }
 
@@ -145,7 +145,7 @@ class CharacterCollision extends Test {
                 type: b2BodyType.b2_dynamicBody,
                 fixedRotation: true,
                 allowSleep: false,
-                position: { x: -5.0, y: 5.0 },
+                position: { x: -5, y: 5 },
             });
 
             const shape = new b2PolygonShape();
@@ -153,7 +153,7 @@ class CharacterCollision extends Test {
 
             body.CreateFixture({
                 shape,
-                density: 20.0,
+                density: 20,
             });
         }
 
@@ -163,11 +163,11 @@ class CharacterCollision extends Test {
                 type: b2BodyType.b2_dynamicBody,
                 fixedRotation: true,
                 allowSleep: false,
-                position: { x: -5.0, y: 8.0 },
+                position: { x: -5, y: 8 },
             });
 
-            let angle = 0.0;
-            const delta = Math.PI / 3.0;
+            let angle = 0;
+            const delta = Math.PI / 3;
             const vertices = b2Vec2.MakeArray(6);
             for (let i = 0; i < 6; ++i) {
                 vertices[i].Set(0.5 * Math.cos(angle), 0.5 * Math.sin(angle));
@@ -179,7 +179,7 @@ class CharacterCollision extends Test {
 
             body.CreateFixture({
                 shape,
-                density: 20.0,
+                density: 20,
             });
         }
 
@@ -189,7 +189,7 @@ class CharacterCollision extends Test {
                 type: b2BodyType.b2_dynamicBody,
                 fixedRotation: true,
                 allowSleep: false,
-                position: { x: 3.0, y: 5.0 },
+                position: { x: 3, y: 5 },
             });
 
             const shape = new b2CircleShape();
@@ -197,7 +197,7 @@ class CharacterCollision extends Test {
 
             body.CreateFixture({
                 shape,
-                density: 20.0,
+                density: 20,
             });
         }
 
@@ -206,7 +206,7 @@ class CharacterCollision extends Test {
             this.m_character = this.m_world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
                 allowSleep: false,
-                position: { x: -7.0, y: 6.0 },
+                position: { x: -7, y: 6 },
             });
 
             const shape = new b2CircleShape();
@@ -214,8 +214,8 @@ class CharacterCollision extends Test {
 
             this.m_character.CreateFixture({
                 shape,
-                density: 20.0,
-                friction: 1.0,
+                density: 20,
+                friction: 1,
             });
         }
     }

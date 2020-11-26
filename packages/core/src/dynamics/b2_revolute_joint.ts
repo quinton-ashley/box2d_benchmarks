@@ -376,7 +376,7 @@ export class b2RevoluteJoint extends b2Joint {
         // Solve angular limit constraint
         if (this.m_enableLimit && !fixedRotation) {
             const angle = aB - aA - this.m_referenceAngle;
-            let C = 0.0;
+            let C = 0;
 
             if (Math.abs(this.m_upperAngle - this.m_lowerAngle) < 2 * b2_angularSlop) {
                 // Prevent large angular corrections
@@ -557,8 +557,8 @@ export class b2RevoluteJoint extends b2Joint {
         b2Transform.MultiplyVec2(xfA, this.m_localAnchorA, pA);
         b2Transform.MultiplyVec2(xfB, this.m_localAnchorB, pB);
 
-        draw.DrawPoint(pA, 5.0, debugColors.joint4);
-        draw.DrawPoint(pB, 5.0, debugColors.joint5);
+        draw.DrawPoint(pA, 5, debugColors.joint4);
+        draw.DrawPoint(pB, 5, debugColors.joint5);
 
         const aA = this.m_bodyA.GetAngle();
         const aB = this.m_bodyB.GetAngle();

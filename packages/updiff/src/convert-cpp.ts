@@ -58,6 +58,7 @@ function sanitizeBody(body: string) {
         .replace(/\bnullptr\b/g, "null")
         .replace(/\b(const )?(float|int32|uint8|uint16|int16|int8|double|bool)\b/g, "var")
         .replace(/\.0f/g, "")
+        .replace(/(\.0)f/g, "")
         .replace(/(\.[0-9]+)f/g, "$1")
         .replace(/\)[\s\r\n]*\{/g, ") {")
         .replace(/\}\s*else\s*\{/g, "} else {")

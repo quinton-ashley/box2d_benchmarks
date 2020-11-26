@@ -178,10 +178,10 @@ class Segway extends Test {
     }
 
     public Step(settings: Settings, timeStep: number): void {
-        let dt = settings.m_hertz > 0.0 ? 1.0 / settings.m_hertz : 0.0;
+        let dt = settings.m_hertz > 0 ? 1 / settings.m_hertz : 0;
 
         if (settings.m_pause && !settings.m_singleStep) {
-            dt = 0.0;
+            dt = 0;
         }
 
         super.Step(settings, timeStep);
@@ -202,7 +202,7 @@ class Segway extends Test {
             // positionController.step(world.lastTimeStep);
             this.positionController.step(dt);
             let targetLinAccel = this.positionController.output;
-            // targetLinAccel = clamp(targetLinAccel, -10.0, 10.0);
+            // targetLinAccel = clamp(targetLinAccel, -10, 10);
             targetLinAccel = b2Clamp(targetLinAccel, -10, 10);
             // targetAngle = targetLinAccel / world.gravity[1];
             targetAngle = targetLinAccel / this.m_world.GetGravity().y;
@@ -290,7 +290,7 @@ class Segway extends Test {
 //             positionController.currentError = targetPosition - posAvg;
 //             positionController.step(world.lastTimeStep);
 //             var targetLinAccel = positionController.output;
-//             targetLinAccel = clamp(targetLinAccel, -10.0, 10.0);
+//             targetLinAccel = clamp(targetLinAccel, -10, 10);
 //             targetAngle = targetLinAccel / world.gravity[1];
 //             targetAngle = clamp(targetAngle, -15 * DEGTORAD, 15 * DEGTORAD);
 //         }

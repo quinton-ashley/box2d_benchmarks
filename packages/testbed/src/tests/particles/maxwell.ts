@@ -46,15 +46,15 @@ class Maxwell extends Test {
 
     public m_particleGroup: b2ParticleGroup | null = null;
 
-    public static readonly k_containerWidth = 2.0;
+    public static readonly k_containerWidth = 2;
 
-    public static readonly k_containerHeight = 4.0;
+    public static readonly k_containerHeight = 4;
 
-    public static readonly k_containerHalfWidth = Maxwell.k_containerWidth / 2.0;
+    public static readonly k_containerHalfWidth = Maxwell.k_containerWidth / 2;
 
-    public static readonly k_containerHalfHeight = Maxwell.k_containerHeight / 2.0;
+    public static readonly k_containerHalfHeight = Maxwell.k_containerHeight / 2;
 
-    public static readonly k_barrierHeight = Maxwell.k_containerHalfHeight / 100.0;
+    public static readonly k_barrierHeight = Maxwell.k_containerHalfHeight / 100;
 
     public static readonly k_barrierMovementIncrement = Maxwell.k_containerHalfHeight * 0.1;
 
@@ -70,9 +70,9 @@ class Maxwell extends Test {
 
     public static readonly k_temperatureMin = 0.4;
 
-    public static readonly k_temperatureMax = 10.0;
+    public static readonly k_temperatureMax = 10;
 
-    public static readonly k_temperatureDefault = 5.0;
+    public static readonly k_temperatureDefault = 5;
 
     constructor() {
         super(b2Vec2.ZERO);
@@ -91,7 +91,7 @@ class Maxwell extends Test {
             ground.CreateFixture({
                 shape,
                 density: 0,
-                restitution: 1.0,
+                restitution: 1,
             });
         }
 
@@ -127,7 +127,7 @@ class Maxwell extends Test {
             this.m_barrierBody.CreateFixture({
                 shape: barrierShape,
                 density: 0,
-                restitution: 1.0,
+                restitution: 1,
             });
         }
     }
@@ -152,7 +152,7 @@ class Maxwell extends Test {
             this.m_particleGroup = null;
         }
 
-        this.m_particleSystem.SetRadius(Maxwell.k_containerHalfWidth / 20.0);
+        this.m_particleSystem.SetRadius(Maxwell.k_containerHalfWidth / 20);
         {
             const shape = new b2PolygonShape();
             shape.SetAsBox(
@@ -174,7 +174,7 @@ class Maxwell extends Test {
             for (let i = 0; i < this.m_particleGroup.GetParticleCount(); ++i) {
                 ///  b2Vec2& v = *(velocities + i);
                 const v = velocities[index + i];
-                v.Set(RandomFloat() + 1.0, RandomFloat() + 1.0);
+                v.Set(RandomFloat() + 1, RandomFloat() + 1);
                 v.Normalize();
                 ///  v *= this.m_temperature;
                 v.Scale(this.m_temperature);
@@ -217,7 +217,7 @@ class Maxwell extends Test {
         return (
             p.x >= -Maxwell.k_containerHalfWidth &&
             p.x <= Maxwell.k_containerHalfWidth &&
-            p.y >= 0.0 &&
+            p.y >= 0 &&
             p.y <= Maxwell.k_containerHalfHeight * 2.0
         );
     }
@@ -279,7 +279,7 @@ class Maxwell extends Test {
         // upper and lower divisions of the container.
         const topPressure = top / (Maxwell.k_containerHeight - this.m_position);
         const botPressure = bottom / this.m_position;
-        this.addDebug("Score", topPressure > 0.0 ? botPressure / topPressure - 1.0 : 0.0);
+        this.addDebug("Score", topPressure > 0 ? botPressure / topPressure - 1 : 0);
     }
 
     /**

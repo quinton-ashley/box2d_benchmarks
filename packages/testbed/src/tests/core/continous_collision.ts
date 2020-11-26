@@ -28,12 +28,7 @@ class ContinousCollision extends Test {
             const ground = this.m_world.CreateBody();
 
             const shape = new b2ChainShape();
-            shape.CreateLoop([
-                new b2Vec2(-30.0, 0.0),
-                new b2Vec2(-30.0, 40.0),
-                new b2Vec2(30.0, 40.0),
-                new b2Vec2(30.0, 0.0),
-            ]);
+            shape.CreateLoop([new b2Vec2(-30, 0), new b2Vec2(-30, 40), new b2Vec2(30, 40), new b2Vec2(30, 0)]);
             ground.CreateFixture({ shape });
         }
 
@@ -45,14 +40,14 @@ class ContinousCollision extends Test {
             const body = this.m_world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
                 bullet: true,
-                position: { x: 15.0, y: 5.0 },
+                position: { x: 15, y: 5 },
             });
 
             const sd_bottom = new b2PolygonShape();
             sd_bottom.SetAsBox(4.5, 0.45);
             // These values are used for all the parts of the 'basket'
             const fd: b2FixtureDef = {
-                density: 4.0,
+                density: 4,
                 restitution: 1.4,
                 shape: sd_bottom,
             };
@@ -72,19 +67,19 @@ class ContinousCollision extends Test {
 
         // add some small circles for effect
         for (let i = 0; i < 5; i++) {
-            const cd = new b2CircleShape(Math.random() * 1.0 + 0.5);
+            const cd = new b2CircleShape(Math.random() * 1 + 0.5);
             const body = this.m_world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
                 bullet: true,
                 position: {
-                    x: Math.random() * 30.0 - 25.0,
-                    y: Math.random() * 32.0 + 2.0,
+                    x: Math.random() * 30 - 25,
+                    y: Math.random() * 32 + 2,
                 },
             });
             body.CreateFixture({
                 shape: cd,
                 friction: 0.3,
-                density: 1.0,
+                density: 1,
                 restitution: 1.1,
             });
         }

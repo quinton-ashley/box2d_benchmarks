@@ -39,7 +39,7 @@ class DamBreak extends Test {
 
         {
             const shape = new b2PolygonShape();
-            shape.SetAsBox(0.8, 1.0, new b2Vec2(-1.2, 1.01), 0);
+            shape.SetAsBox(0.8, 1, new b2Vec2(-1.2, 1.01), 0);
             const pd = new b2ParticleGroupDef();
             pd.flags = Test.GetParticleParameterValue();
             pd.shape = shape;

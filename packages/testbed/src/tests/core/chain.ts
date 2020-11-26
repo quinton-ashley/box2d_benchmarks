@@ -34,7 +34,7 @@ class Chain extends Test {
             ground = this.m_world.CreateBody();
 
             const shape = new b2EdgeShape();
-            shape.SetTwoSided(new b2Vec2(-40.0, 0.0), new b2Vec2(40.0, 0.0));
+            shape.SetTwoSided(new b2Vec2(-40, 0), new b2Vec2(40, 0));
             ground.CreateFixture({ shape });
         }
 
@@ -44,14 +44,14 @@ class Chain extends Test {
 
             const fd: b2FixtureDef = {
                 shape,
-                density: 20.0,
+                density: 20,
                 friction: 0.2,
             };
 
             const jd = new b2RevoluteJointDef();
             jd.collideConnected = false;
 
-            const y = 25.0;
+            const y = 25;
             let prevBody = ground;
             for (let i = 0; i < Chain.e_count; ++i) {
                 const body = this.m_world.CreateBody({
@@ -61,9 +61,9 @@ class Chain extends Test {
 
                 if (TEST_BAD_BODY) {
                     if (i === 10) {
-                        fd.density = 0.0;
+                        fd.density = 0;
                     } else {
-                        fd.density = 20.0;
+                        fd.density = 20;
                     }
                 }
 

@@ -41,10 +41,10 @@ class Pointy extends Test {
             // Construct a triangle out of many polygons to ensure there's no
             // issue with particles falling directly on an ambiguous corner
 
-            const xstep = 1.0;
-            for (let x = -10.0; x < 10.0; x += xstep) {
+            const xstep = 1;
+            for (let x = -10; x < 10; x += xstep) {
                 const shape = new b2PolygonShape();
-                const vertices = [new b2Vec2(x, -10.0), new b2Vec2(x + xstep, -10.0), new b2Vec2(0.0, 25.0)];
+                const vertices = [new b2Vec2(x, -10), new b2Vec2(x + xstep, -10), new b2Vec2(0, 25)];
                 shape.Set(vertices, 3);
                 ground.CreateFixture({ shape });
             }
@@ -58,7 +58,7 @@ class Pointy extends Test {
 
         // Create killfield shape and transform
         this.m_killfieldShape = new b2PolygonShape();
-        this.m_killfieldShape.SetAsBox(50.0, 1.0);
+        this.m_killfieldShape.SetAsBox(50, 1);
 
         // Put this at the bottom of the world
         this.m_killfieldTransform = new b2Transform();
@@ -72,13 +72,13 @@ class Pointy extends Test {
         const flags = Test.GetParticleParameterValue();
         const pd = new b2ParticleDef();
 
-        pd.position.Set(0.0, 33.0);
-        pd.velocity.Set(0.0, -1.0);
+        pd.position.Set(0, 33);
+        pd.velocity.Set(0, -1);
         pd.flags = flags;
 
         if (flags & (b2ParticleFlag.b2_springParticle | b2ParticleFlag.b2_elasticParticle)) {
             const count = this.m_particleSystem.GetParticleCount();
-            pd.velocity.Set(count & 1 ? -1.0 : 1.0, -5.0);
+            pd.velocity.Set(count & 1 ? -1 : 1, -5);
             pd.flags |= b2ParticleFlag.b2_reactiveParticle;
         }
 

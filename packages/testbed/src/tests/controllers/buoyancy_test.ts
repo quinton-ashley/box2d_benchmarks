@@ -34,21 +34,21 @@ class BuoyancyTest extends Test {
         const bc = new b2BuoyancyController();
         this.m_controller = bc;
 
-        bc.normal.Set(0.0, 1.0);
-        bc.offset = 20.0;
-        bc.density = 2.0;
-        bc.linearDrag = 5.0;
-        bc.angularDrag = 2.0;
+        bc.normal.Set(0, 1);
+        bc.offset = 20;
+        bc.density = 2;
+        bc.linearDrag = 5;
+        bc.angularDrag = 2;
 
         const ground = this.m_world.CreateBody();
 
         {
             const shape = new b2EdgeShape();
-            shape.SetTwoSided(new b2Vec2(-40.0, 0.0), new b2Vec2(40.0, 0.0));
+            shape.SetTwoSided(new b2Vec2(-40, 0), new b2Vec2(40, 0));
             ground.CreateFixture({ shape });
-            shape.SetTwoSided(new b2Vec2(-40.0, 0.0), new b2Vec2(-40.0, 25.0));
+            shape.SetTwoSided(new b2Vec2(-40, 0), new b2Vec2(-40, 25));
             ground.CreateFixture({ shape });
-            shape.SetTwoSided(new b2Vec2(40.0, 0.0), new b2Vec2(40.0, 25.0));
+            shape.SetTwoSided(new b2Vec2(40, 0), new b2Vec2(40, 25));
             ground.CreateFixture({ shape });
         }
 
@@ -58,16 +58,16 @@ class BuoyancyTest extends Test {
                 type: b2BodyType.b2_dynamicBody,
                 // isBullet: true,
                 position: {
-                    x: Math.random() * 40.0 - 20.0,
-                    y: Math.random() * 15.0 + 5.0,
+                    x: Math.random() * 40 - 20,
+                    y: Math.random() * 15 + 5,
                 },
                 angle: Math.random() * Math.PI,
             });
 
             const polygon = new b2PolygonShape();
-            polygon.SetAsBox(Math.random() * 0.5 + 1.0, Math.random() * 0.5 + 1.0);
+            polygon.SetAsBox(Math.random() * 0.5 + 1, Math.random() * 0.5 + 1);
             body.CreateFixture({
-                density: 1.0,
+                density: 1,
                 // Override the default friction.
                 friction: 0.3,
                 restitution: 0.1,
@@ -82,18 +82,18 @@ class BuoyancyTest extends Test {
                 type: b2BodyType.b2_dynamicBody,
                 // isBullet: true,
                 position: {
-                    x: Math.random() * 40.0 - 20.0,
-                    y: Math.random() * 15.0 + 5.0,
+                    x: Math.random() * 40 - 20,
+                    y: Math.random() * 15 + 5,
                 },
                 angle: Math.random() * Math.PI,
             });
 
             body.CreateFixture({
-                density: 1.0,
+                density: 1,
                 // Override the default friction.
                 friction: 0.3,
                 restitution: 0.1,
-                shape: new b2CircleShape(Math.random() * 0.5 + 1.0),
+                shape: new b2CircleShape(Math.random() * 0.5 + 1),
             });
 
             this.m_bodies.push(body);
@@ -104,8 +104,8 @@ class BuoyancyTest extends Test {
                 type: b2BodyType.b2_dynamicBody,
                 // isBullet: true,
                 position: {
-                    x: Math.random() * 40.0 - 20.0,
-                    y: Math.random() * 15.0 + 5.0,
+                    x: Math.random() * 40 - 20,
+                    y: Math.random() * 15 + 5,
                 },
                 angle: Math.random() * Math.PI,
             });
@@ -113,16 +113,16 @@ class BuoyancyTest extends Test {
             const polygon = new b2PolygonShape();
             if (Math.random() > 0.66) {
                 polygon.Set([
-                    new b2Vec2(-1.0 - Math.random() * 1.0, 1.0 + Math.random() * 1.0),
-                    new b2Vec2(-0.5 - Math.random() * 1.0, -1.0 - Math.random() * 1.0),
-                    new b2Vec2(0.5 + Math.random() * 1.0, -1.0 - Math.random() * 1.0),
-                    new b2Vec2(1.0 + Math.random() * 1.0, 1.0 + Math.random() * 1.0),
+                    new b2Vec2(-1 - Math.random() * 1, 1 + Math.random() * 1),
+                    new b2Vec2(-0.5 - Math.random() * 1, -1 - Math.random() * 1),
+                    new b2Vec2(0.5 + Math.random() * 1, -1 - Math.random() * 1),
+                    new b2Vec2(1 + Math.random() * 1, 1 + Math.random() * 1),
                 ]);
             } else if (Math.random() > 0.5) {
                 const array = [];
-                array[0] = new b2Vec2(0.0, 1.0 + Math.random() * 1.0);
-                array[2] = new b2Vec2(-0.5 - Math.random() * 1.0, -1.0 - Math.random() * 1.0);
-                array[3] = new b2Vec2(0.5 + Math.random() * 1.0, -1.0 - Math.random() * 1.0);
+                array[0] = new b2Vec2(0, 1 + Math.random() * 1);
+                array[2] = new b2Vec2(-0.5 - Math.random() * 1, -1 - Math.random() * 1);
+                array[3] = new b2Vec2(0.5 + Math.random() * 1, -1 - Math.random() * 1);
                 array[1] = new b2Vec2(array[0].x + array[2].x, array[0].y + array[2].y);
                 array[1].Scale(Math.random() / 2 + 0.8);
                 array[4] = new b2Vec2(array[3].x + array[0].x, array[3].y + array[0].y);
@@ -130,13 +130,13 @@ class BuoyancyTest extends Test {
                 polygon.Set(array);
             } else {
                 polygon.Set([
-                    new b2Vec2(0.0, 1.0 + Math.random() * 1.0),
-                    new b2Vec2(-0.5 - Math.random() * 1.0, -1.0 - Math.random() * 1.0),
-                    new b2Vec2(0.5 + Math.random() * 1.0, -1.0 - Math.random() * 1.0),
+                    new b2Vec2(0, 1 + Math.random() * 1),
+                    new b2Vec2(-0.5 - Math.random() * 1, -1 - Math.random() * 1),
+                    new b2Vec2(0.5 + Math.random() * 1, -1 - Math.random() * 1),
                 ]);
             }
             body.CreateFixture({
-                density: 1.0,
+                density: 1,
                 friction: 0.3,
                 restitution: 0.1,
                 shape: polygon,
@@ -149,14 +149,14 @@ class BuoyancyTest extends Test {
         {
             const body = this.m_world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
-                position: { x: 0.0, y: 40.0 },
+                position: { x: 0, y: 40 },
                 angle: 0,
             });
 
             const polygon = new b2PolygonShape();
-            polygon.SetAsBox(4.0, 1.0);
+            polygon.SetAsBox(4, 1);
             body.CreateFixture({
-                density: 3.0,
+                density: 3,
                 shape: polygon,
             });
 
@@ -167,31 +167,31 @@ class BuoyancyTest extends Test {
             const body = this.m_world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
                 position: {
-                    x: 0.0,
-                    y: 30.0,
+                    x: 0,
+                    y: 30,
                 },
             });
 
             const circle = new b2CircleShape(0.7);
             const fd: b2FixtureDef = {
-                density: 2.0,
+                density: 2,
                 shape: circle,
             };
-            circle.m_p.Set(3.0, 0.0);
+            circle.m_p.Set(3, 0);
             body.CreateFixture(fd);
-            circle.m_p.Set(-3.0, 0.0);
+            circle.m_p.Set(-3, 0);
             body.CreateFixture(fd);
-            circle.m_p.Set(0.0, 3.0);
+            circle.m_p.Set(0, 3);
             body.CreateFixture(fd);
-            circle.m_p.Set(0.0, -3.0);
+            circle.m_p.Set(0, -3);
             body.CreateFixture(fd);
 
-            fd.density = 2.0;
+            fd.density = 2;
             const polygon = new b2PolygonShape();
             fd.shape = polygon;
-            polygon.SetAsBox(3.0, 0.2);
+            polygon.SetAsBox(3, 0.2);
             body.CreateFixture(fd);
-            polygon.SetAsBox(0.2, 3.0);
+            polygon.SetAsBox(0.2, 3);
             body.CreateFixture(fd);
 
             this.m_bodies.push(body);

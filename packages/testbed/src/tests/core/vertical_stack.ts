@@ -43,14 +43,14 @@ class VerticalStack extends Test {
             const ground = this.m_world.CreateBody();
 
             const shape = new b2EdgeShape();
-            shape.SetTwoSided(new b2Vec2(-40.0, 0.0), new b2Vec2(40.0, 0.0));
+            shape.SetTwoSided(new b2Vec2(-40, 0), new b2Vec2(40, 0));
             ground.CreateFixture({ shape });
 
-            shape.SetTwoSided(new b2Vec2(20.0, 0.0), new b2Vec2(20.0, 20.0));
+            shape.SetTwoSided(new b2Vec2(20, 0), new b2Vec2(20, 20));
             ground.CreateFixture({ shape });
         }
 
-        const xs = [0.0, -10.0, -5.0, 5.0, 10.0];
+        const xs = [0, -10, -5, 5, 10];
 
         for (let j = 0; j < VerticalStack.e_columnCount; ++j) {
             const shape = new b2PolygonShape();
@@ -58,7 +58,7 @@ class VerticalStack extends Test {
 
             const fd: b2FixtureDef = {
                 shape,
-                density: 1.0,
+                density: 1,
                 friction: 0.3,
             };
 
@@ -67,7 +67,7 @@ class VerticalStack extends Test {
                 // DEBUG: b2Assert(n < VerticalStack.e_rowCount * VerticalStack.e_columnCount);
                 this.m_indices[n] = n;
 
-                const x = 0.0;
+                const x = 0;
                 // const x = b2RandomRange(-0.02, 0.02);
                 // const x = i % 2 === 0 ? -0.01 : 0.01;
                 const body = this.m_world.CreateBody({
@@ -99,18 +99,18 @@ class VerticalStack extends Test {
 
             const fd: b2FixtureDef = {
                 shape,
-                density: 20.0,
+                density: 20,
                 restitution: 0.05,
             };
 
             this.m_bullet = this.m_world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
                 bullet: true,
-                position: { x: -31.0, y: 5.0 },
+                position: { x: -31, y: 5 },
             });
             this.m_bullet.CreateFixture(fd);
 
-            this.m_bullet.SetLinearVelocity(new b2Vec2(400.0, 0.0));
+            this.m_bullet.SetLinearVelocity(new b2Vec2(400, 0));
         }
     }
 
@@ -130,15 +130,15 @@ class VerticalStack extends Test {
         //         this.m_bullet = this.m_world.CreateBody({
         //             type: b2BodyType.b2_dynamicBody,
         //             bullet: true,
-        //             position: { x: -31.0, y: 5.0 },
+        //             position: { x: -31, y: 5 },
         //         });
         //         this.m_bullet.CreateFixture({
         //             shape,
-        //             density: 20.0,
+        //             density: 20,
         //             restitution: 0.05,
         //         });
 
-        //         this.m_bullet.SetLinearVelocity(new b2Vec2(400.0, 0.0));
+        //         this.m_bullet.SetLinearVelocity(new b2Vec2(400, 0));
         //     }
         // }
     }

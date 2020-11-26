@@ -36,25 +36,25 @@ class WaveMachine extends Test {
             const body = this.m_world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
                 allowSleep: false,
-                position: { x: 0.0, y: 1.0 },
+                position: { x: 0, y: 1 },
             });
 
             const shape = new b2PolygonShape();
-            shape.SetAsBox(0.05, 1.0, new b2Vec2(2.0, 0.0), 0.0);
-            body.CreateFixture({ shape, density: 5.0 });
-            shape.SetAsBox(0.05, 1.0, new b2Vec2(-2.0, 0.0), 0.0);
-            body.CreateFixture({ shape, density: 5.0 });
-            shape.SetAsBox(2.0, 0.05, new b2Vec2(0.0, 1.0), 0.0);
-            body.CreateFixture({ shape, density: 5.0 });
-            shape.SetAsBox(2.0, 0.05, new b2Vec2(0.0, -1.0), 0.0);
-            body.CreateFixture({ shape, density: 5.0 });
+            shape.SetAsBox(0.05, 1, new b2Vec2(2, 0), 0);
+            body.CreateFixture({ shape, density: 5 });
+            shape.SetAsBox(0.05, 1, new b2Vec2(-2, 0), 0);
+            body.CreateFixture({ shape, density: 5 });
+            shape.SetAsBox(2, 0.05, new b2Vec2(0, 1), 0);
+            body.CreateFixture({ shape, density: 5 });
+            shape.SetAsBox(2, 0.05, new b2Vec2(0, -1), 0);
+            body.CreateFixture({ shape, density: 5 });
 
             const jd = new b2RevoluteJointDef();
             jd.bodyA = ground;
             jd.bodyB = body;
-            jd.localAnchorA.Set(0.0, 1.0);
-            jd.localAnchorB.Set(0.0, 0.0);
-            jd.referenceAngle = 0.0;
+            jd.localAnchorA.Set(0, 1);
+            jd.localAnchorB.Set(0, 0);
+            jd.referenceAngle = 0;
             jd.motorSpeed = 0.05 * Math.PI;
             jd.maxMotorTorque = 1e7;
             jd.enableMotor = true;
@@ -70,7 +70,7 @@ class WaveMachine extends Test {
             pd.flags = particleType;
 
             const shape = new b2PolygonShape();
-            shape.SetAsBox(0.9, 0.9, new b2Vec2(0.0, 1.0), 0.0);
+            shape.SetAsBox(0.9, 0.9, new b2Vec2(0, 1), 0);
 
             pd.shape = shape;
             const group = this.m_particleSystem.CreateParticleGroup(pd);

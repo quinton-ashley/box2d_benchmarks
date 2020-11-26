@@ -92,7 +92,7 @@ class EmitterTracker {
         for (const el of this.m_emitterLifetime) {
             ///  const float32 lifetime = it.second - dt;
             const lifetime = el.lifetime - dt;
-            if (lifetime <= 0.0) {
+            if (lifetime <= 0) {
                 emittersToDestroy.push(el.emitter);
             }
             ///  m_emitterLifetime[emitter] = lifetime;
@@ -161,9 +161,9 @@ class FrackerSettings {
     /**
      * Center of the world in world coordinates.
      */
-    public static readonly k_worldCenterX = 0.0;
+    public static readonly k_worldCenterX = 0;
 
-    public static readonly k_worldCenterY = 2.0;
+    public static readonly k_worldCenterY = 2;
 
     /**
      * Size of each tile in world units.
@@ -189,17 +189,17 @@ class FrackerSettings {
     /**
      * Colors of tiles.
      */
-    public static readonly k_playerColor = new b2Color(1.0, 1.0, 1.0);
+    public static readonly k_playerColor = new b2Color(1, 1, 1);
 
-    public static readonly k_playerFrackColor = new b2Color(1.0, 0.5, 0.5);
+    public static readonly k_playerFrackColor = new b2Color(1, 0.5, 0.5);
 
     public static readonly k_wellColor = new b2Color(0.5, 0.5, 0.5);
 
-    public static readonly k_oilColor = new b2Color(1.0, 0.0, 0.0);
+    public static readonly k_oilColor = new b2Color(1, 0, 0);
 
-    public static readonly k_waterColor = new b2Color(0.0, 0.2, 1.0);
+    public static readonly k_waterColor = new b2Color(0, 0.2, 1);
 
-    public static readonly k_frackingFluidColor = new b2Color(0.8, 0.4, 0.0);
+    public static readonly k_frackingFluidColor = new b2Color(0.8, 0.4, 0);
 
     /**
      * Default density of each body.
@@ -213,7 +213,7 @@ class FrackerSettings {
 
     /**
      * Probability (0..100%) of generating each tile (must sum to
-     * 1.0).
+     * 1).
      */
     public static readonly k_dirtProbability = 80;
 
@@ -226,23 +226,23 @@ class FrackerSettings {
     /**
      * Lifetime of a fracking fluid emitter in seconds.
      */
-    public static readonly k_frackingFluidEmitterLifetime = 5.0;
+    public static readonly k_frackingFluidEmitterLifetime = 5;
 
     /**
      * Speed particles are sucked up the well.
      */
-    public static readonly k_wellSuckSpeedInside = FrackerSettings.k_tileHeight * 5.0;
+    public static readonly k_wellSuckSpeedInside = FrackerSettings.k_tileHeight * 5;
 
     /**
      * Speed particle are sucket towards the well bottom.
      */
-    public static readonly k_wellSuckSpeedOutside = FrackerSettings.k_tileWidth * 1.0;
+    public static readonly k_wellSuckSpeedOutside = FrackerSettings.k_tileWidth * 1;
 
     /**
      * Time mouse button must be held before emitting fracking
      * fluid.
      */
-    public static readonly k_frackingFluidChargeTime = 1.0;
+    public static readonly k_frackingFluidChargeTime = 1;
 
     /**
      * Scores.
@@ -361,7 +361,7 @@ class Fracker extends Test {
 
     public m_allowInput = false;
 
-    public m_frackingFluidChargeTime = -1.0;
+    public m_frackingFluidChargeTime = -1;
 
     public m_material: Fracker_Material[] = [];
 
@@ -473,7 +473,7 @@ class Fracker extends Test {
                     continue;
                 }
                 // Choose a tile at random.
-                const chance = Math.random() * 100.0;
+                const chance = Math.random() * 100;
                 // Create dirt if this is the bottom row or chance dictates it.
                 if (chance < FrackerSettings.k_dirtProbability || y === 0) {
                     this.CreateDirtBlock(x, y);
@@ -589,10 +589,10 @@ class Fracker extends Test {
         emitter.SetGroup(group);
         emitter.SetParticleSystem(this.m_particleSystem);
         emitter.SetPosition(Fracker.CenteredPosition(position));
-        emitter.SetVelocity(new b2Vec2(0.0, -FrackerSettings.k_tileHalfHeight));
+        emitter.SetVelocity(new b2Vec2(0, -FrackerSettings.k_tileHalfHeight));
         emitter.SetSpeed(FrackerSettings.k_tileHalfWidth * 0.1);
         emitter.SetSize(new b2Vec2(FrackerSettings.k_tileHalfWidth, FrackerSettings.k_tileHalfHeight));
-        emitter.SetEmitRate(20.0);
+        emitter.SetEmitRate(20);
         emitter.SetColor(FrackerSettings.k_frackingFluidColor);
         emitter.SetParticleFlags(b2ParticleFlag.b2_tensileParticle | b2ParticleFlag.b2_viscousParticle);
         this.m_tracker.Add(emitter, FrackerSettings.k_frackingFluidEmitterLifetime);
@@ -635,7 +635,7 @@ class Fracker extends Test {
             this.CreateFrackingFluidEmitter(playerPosition);
             deployed = true;
         }
-        this.m_frackingFluidChargeTime = -1.0;
+        this.m_frackingFluidChargeTime = -1;
         return deployed;
     }
 
@@ -687,8 +687,8 @@ class Fracker extends Test {
             hotKeyPress("s", "Down", () => this.AdjustPlayerPosition(0, -1)),
             hotKeyPress("e", "Deploy Fracking", () => {
                 // Start charging the fracking fluid.
-                if (this.m_frackingFluidChargeTime < 0.0) {
-                    this.m_frackingFluidChargeTime = 0.0;
+                if (this.m_frackingFluidChargeTime < 0) {
+                    this.m_frackingFluidChargeTime = 0;
                 } else {
                     // KeyboardUp() in freeglut (at least on OSX) is called
                     // repeatedly while a key is held.  This means there isn't
@@ -717,7 +717,7 @@ class Fracker extends Test {
 
     public MouseDown(p: b2Vec2): void {
         super.MouseDown(p);
-        this.m_frackingFluidChargeTime = 0.0;
+        this.m_frackingFluidChargeTime = 0;
     }
 
     /**
@@ -741,9 +741,9 @@ class Fracker extends Test {
             const absDistX = Math.abs(distance.x);
             const absDistY = Math.abs(distance.y);
             if (absDistX > absDistY && absDistX >= FrackerSettings.k_tileHalfWidth) {
-                playerX[0] += distance.x > 0.0 ? 1 : -1;
+                playerX[0] += distance.x > 0 ? 1 : -1;
             } else if (absDistY >= FrackerSettings.k_tileHalfWidth) {
-                playerY[0] += distance.y > 0.0 ? 1 : -1;
+                playerY[0] += distance.y > 0 ? 1 : -1;
             }
             this.SetPlayerPosition(playerX[0], playerY[0]);
         }
@@ -751,9 +751,9 @@ class Fracker extends Test {
     }
 
     public Step(settings: Settings, timeStep: number): void {
-        let dt = settings.m_hertz > 0.0 ? 1.0 / settings.m_hertz : 0.0;
+        let dt = settings.m_hertz > 0 ? 1 / settings.m_hertz : 0;
         if (settings.m_pause && !settings.m_singleStep) {
-            dt = 0.0;
+            dt = 0;
         }
 
         super.Step(settings, timeStep);
@@ -762,7 +762,7 @@ class Fracker extends Test {
         // Allow the user to move again.
         this.m_allowInput = true;
         // Charge up fracking fluid.
-        if (this.m_frackingFluidChargeTime >= 0.0) {
+        if (this.m_frackingFluidChargeTime >= 0) {
             this.m_frackingFluidChargeTime += dt;
         }
 
@@ -803,7 +803,7 @@ class Fracker extends Test {
                 if (
                     absDistX < FrackerSettings.k_tileWidth &&
                     // If the particles are just below the well bottom.
-                    distance.y > FrackerSettings.k_tileWidth * -2.0 &&
+                    distance.y > FrackerSettings.k_tileWidth * -2 &&
                     distance.y < 0.0
                 ) {
                     // Suck the particles towards the end of the well.
@@ -812,7 +812,7 @@ class Fracker extends Test {
                     velocity.Normalize();
                     ///  velocityBuffer[i] = velocity * FrackerSettings.k_wellSuckSpeedOutside;
                     velocityBuffer[index + i].Copy(velocity.Scale(FrackerSettings.k_wellSuckSpeedOutside));
-                } else if (absDistX <= FrackerSettings.k_tileHalfWidth && distance.y > 0.0) {
+                } else if (absDistX <= FrackerSettings.k_tileHalfWidth && distance.y > 0) {
                     // Suck the particles up the well with a random
                     // x component moving them side to side in the well.
                     const randomX = Math.random() * FrackerSettings.k_tileHalfWidth - distance.x;
@@ -848,7 +848,7 @@ class Fracker extends Test {
             Fracker.LerpColor(
                 FrackerSettings.k_playerColor,
                 FrackerSettings.k_playerFrackColor,
-                Math.max(this.m_frackingFluidChargeTime / FrackerSettings.k_frackingFluidChargeTime, 0.0),
+                Math.max(this.m_frackingFluidChargeTime / FrackerSettings.k_frackingFluidChargeTime, 0),
             ),
             true,
         );
@@ -980,7 +980,7 @@ class Fracker extends Test {
      * Interpolate between a and b using t.
      */
     public static Lerp(a: number, b: number, t: number): number {
-        return a * (1.0 - t) + b * t;
+        return a * (1 - t) + b * t;
     }
 }
 

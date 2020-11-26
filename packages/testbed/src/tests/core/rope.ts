@@ -54,7 +54,7 @@ class Rope extends Test {
 
     public readonly m_position2 = new b2Vec2();
 
-    public m_speed = 0.0;
+    public m_speed = 0;
 
     constructor() {
         super();
@@ -66,36 +66,36 @@ class Rope extends Test {
         const masses = b2MakeNumberArray(N);
 
         for (let i = 0; i < N; ++i) {
-            vertices[i].Set(0.0, L * (N - i));
-            masses[i] = 1.0;
+            vertices[i].Set(0, L * (N - i));
+            masses[i] = 1;
         }
-        masses[0] = 0.0;
-        masses[1] = 0.0;
+        masses[0] = 0;
+        masses[1] = 0;
 
-        this.m_tuning1.bendHertz = 30.0;
-        this.m_tuning1.bendDamping = 4.0;
-        this.m_tuning1.bendStiffness = 1.0;
+        this.m_tuning1.bendHertz = 30;
+        this.m_tuning1.bendDamping = 4;
+        this.m_tuning1.bendStiffness = 1;
         this.m_tuning1.bendingModel = b2BendingModel.b2_xpbdAngleBendingModel;
         this.m_tuning1.isometric = true;
 
-        this.m_tuning1.stretchHertz = 30.0;
-        this.m_tuning1.stretchDamping = 4.0;
-        this.m_tuning1.stretchStiffness = 1.0;
+        this.m_tuning1.stretchHertz = 30;
+        this.m_tuning1.stretchDamping = 4;
+        this.m_tuning1.stretchStiffness = 1;
         this.m_tuning1.stretchingModel = b2StretchingModel.b2_xpbdStretchingModel;
 
-        this.m_tuning2.bendHertz = 30.0;
+        this.m_tuning2.bendHertz = 30;
         this.m_tuning2.bendDamping = 0.7;
-        this.m_tuning2.bendStiffness = 1.0;
+        this.m_tuning2.bendStiffness = 1;
         this.m_tuning2.bendingModel = b2BendingModel.b2_pbdHeightBendingModel;
         this.m_tuning2.isometric = true;
 
-        this.m_tuning2.stretchHertz = 30.0;
-        this.m_tuning2.stretchDamping = 1.0;
-        this.m_tuning2.stretchStiffness = 1.0;
+        this.m_tuning2.stretchHertz = 30;
+        this.m_tuning2.stretchDamping = 1;
+        this.m_tuning2.stretchStiffness = 1;
         this.m_tuning2.stretchingModel = b2StretchingModel.b2_pbdStretchingModel;
 
-        this.m_position1.Set(-5.0, 15.0);
-        this.m_position2.Set(5.0, 15.0);
+        this.m_position1.Set(-5, 15);
+        this.m_position2.Set(5, 15);
 
         const def: b2RopeDef = {
             position: this.m_position1,
@@ -117,7 +117,7 @@ class Rope extends Test {
         this.m_iterations1 = 8;
         this.m_iterations2 = 8;
 
-        this.m_speed = 10.0;
+        this.m_speed = 10;
     }
 
     public GetDefaultViewZoom() {
@@ -133,13 +133,13 @@ class Rope extends Test {
 
     // void UpdateUI() override
     // {
-    // 	ImGui::SetNextWindowPos(ImVec2(10.0, 100.0));
-    // 	ImGui::SetNextWindowSize(ImVec2(200.0, 700.0));
+    // 	ImGui::SetNextWindowPos(ImVec2(10, 100));
+    // 	ImGui::SetNextWindowSize(ImVec2(200, 700));
     // 	ImGui::Begin("Tuning", nullptr, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
 
     // 	ImGui::Separator();
 
-    //       ImGui::PushItemWidth(ImGui::GetWindowWidth() * 0.5f);
+    //       ImGui::PushItemWidth(ImGui::GetWindowWidth() * 0.5 );
 
     // 	const ImGuiComboFlags comboFlags = 0;
     // 	const char* bendModels[] = { "Spring", "PBD Ang", "XPBD Ang", "PBD Dist", "PBD Height" };
@@ -166,9 +166,9 @@ class Rope extends Test {
     // 		ImGui::EndCombo();
     // 	}
 
-    // 	ImGui::SliderFloat("Damping##B1", &this.m_tuning1.bendDamping, 0.0, 4.0, "%.1f");
-    // 	ImGui::SliderFloat("Hertz##B1", &this.m_tuning1.bendHertz, 0.0, 60.0, "%.0");
-    // 	ImGui::SliderFloat("Stiffness##B1", &this.m_tuning1.bendStiffness, 0.0, 1.0, "%.1f");
+    // 	ImGui::SliderFloat("Damping##B1", &this.m_tuning1.bendDamping, 0, 4, "%.1f");
+    // 	ImGui::SliderFloat("Hertz##B1", &this.m_tuning1.bendHertz, 0, 60, "%.0");
+    // 	ImGui::SliderFloat("Stiffness##B1", &this.m_tuning1.bendStiffness, 0, 1, "%.1f");
 
     // 	ImGui::Checkbox("Isometric##1", &this.m_tuning1.isometric);
     // 	ImGui::Checkbox("Fixed Mass##1", &this.m_tuning1.fixedEffectiveMass);
@@ -194,9 +194,9 @@ class Rope extends Test {
     // 		ImGui::EndCombo();
     // 	}
 
-    // 	ImGui::SliderFloat("Damping##S1", &this.m_tuning1.stretchDamping, 0.0, 4.0, "%.1f");
-    // 	ImGui::SliderFloat("Hertz##S1", &this.m_tuning1.stretchHertz, 0.0, 60.0, "%.0");
-    // 	ImGui::SliderFloat("Stiffness##S1", &this.m_tuning1.stretchStiffness, 0.0, 1.0, "%.1f");
+    // 	ImGui::SliderFloat("Damping##S1", &this.m_tuning1.stretchDamping, 0, 4, "%.1f");
+    // 	ImGui::SliderFloat("Hertz##S1", &this.m_tuning1.stretchHertz, 0, 60, "%.0");
+    // 	ImGui::SliderFloat("Stiffness##S1", &this.m_tuning1.stretchStiffness, 0, 1, "%.1f");
 
     // 	ImGui::SliderInt("Iterations##1", &this.m_iterations1, 1, 100, "%d");
 
@@ -223,9 +223,9 @@ class Rope extends Test {
     // 		ImGui::EndCombo();
     // 	}
 
-    // 	ImGui::SliderFloat("Damping##B2", &this.m_tuning2.bendDamping, 0.0, 4.0, "%.1f");
-    // 	ImGui::SliderFloat("Hertz##B2", &this.m_tuning2.bendHertz, 0.0, 60.0, "%.0");
-    // 	ImGui::SliderFloat("Stiffness##B2", &this.m_tuning2.bendStiffness, 0.0, 1.0, "%.1f");
+    // 	ImGui::SliderFloat("Damping##B2", &this.m_tuning2.bendDamping, 0, 4, "%.1f");
+    // 	ImGui::SliderFloat("Hertz##B2", &this.m_tuning2.bendHertz, 0, 60, "%.0");
+    // 	ImGui::SliderFloat("Stiffness##B2", &this.m_tuning2.bendStiffness, 0, 1, "%.1f");
 
     // 	ImGui::Checkbox("Isometric##2", &this.m_tuning2.isometric);
     // 	ImGui::Checkbox("Fixed Mass##2", &this.m_tuning2.fixedEffectiveMass);
@@ -251,20 +251,20 @@ class Rope extends Test {
     // 		ImGui::EndCombo();
     // 	}
 
-    // 	ImGui::SliderFloat("Damping##S2", &this.m_tuning2.stretchDamping, 0.0, 4.0, "%.1f");
-    // 	ImGui::SliderFloat("Hertz##S2", &this.m_tuning2.stretchHertz, 0.0, 60.0, "%.0");
-    // 	ImGui::SliderFloat("Stiffness##S2", &this.m_tuning2.stretchStiffness, 0.0, 1.0, "%.1f");
+    // 	ImGui::SliderFloat("Damping##S2", &this.m_tuning2.stretchDamping, 0, 4, "%.1f");
+    // 	ImGui::SliderFloat("Hertz##S2", &this.m_tuning2.stretchHertz, 0, 60, "%.0");
+    // 	ImGui::SliderFloat("Stiffness##S2", &this.m_tuning2.stretchStiffness, 0, 1, "%.1f");
 
     // 	ImGui::SliderInt("Iterations##2", &this.m_iterations2, 1, 100, "%d");
 
     // 	ImGui::Separator();
 
-    // 	ImGui::SliderFloat("Speed", &this.m_speed, 10.0, 100.0, "%.0");
+    // 	ImGui::SliderFloat("Speed", &this.m_speed, 10, 100, "%.0");
 
     // 	if (ImGui::Button("Reset"))
     // 	{
-    // 		this.m_position1.Set(-5.0, 15.0);
-    // 		this.m_position2.Set(5.0, 15.0);
+    // 		this.m_position1.Set(-5, 15);
+    // 		this.m_position2.Set(5, 15);
     // 		this.m_rope1.Reset(this.m_position1);
     // 		this.m_rope2.Reset(this.m_position2);
     // 	}
@@ -274,7 +274,7 @@ class Rope extends Test {
     // 	ImGui::End();
     // }
 
-    public m_move_x = 0.0;
+    public m_move_x = 0;
 
     getHotkeys(): HotKey[] {
         return [
@@ -288,10 +288,10 @@ class Rope extends Test {
     }
 
     public Step(settings: Settings, timeStep: number): void {
-        let dt = settings.m_hertz > 0.0 ? 1.0 / settings.m_hertz : 0.0;
+        let dt = settings.m_hertz > 0 ? 1 / settings.m_hertz : 0;
 
         if (settings.m_pause === true && settings.m_singleStep === false) {
-            dt = 0.0;
+            dt = 0;
         }
 
         // if (glfwGetKey(g_mainWindow, GLFW_KEY_COMMA) == GLFW_PRESS)
@@ -328,47 +328,47 @@ class Rope extends Test {
 // 	Rope()
 // 	{
 // 		const int32 N = 20;
-// 		const float L = 0.5f;
+// 		const float L = 0.5 ;
 // 		b2Vec2 vertices[N];
 // 		float masses[N];
 
 // 		for (let i = 0; i < N; ++i)
 // 		{
-// 			vertices[i].Set(0.0, L * (N - i));
-// 			masses[i] = 1.0;
+// 			vertices[i].Set(0, L * (N - i));
+// 			masses[i] = 1;
 // 		}
-// 		masses[0] = 0.0;
-// 		masses[1] = 0.0;
+// 		masses[0] = 0;
+// 		masses[1] = 0;
 
-// 		this.m_tuning1.bendHertz = 30.0;
-// 		this.m_tuning1.bendDamping = 4.0;
-// 		this.m_tuning1.bendStiffness = 1.0;
+// 		this.m_tuning1.bendHertz = 30;
+// 		this.m_tuning1.bendDamping = 4;
+// 		this.m_tuning1.bendStiffness = 1;
 // 		this.m_tuning1.bendingModel = b2_xpbdAngleBendingModel;
 // 		this.m_tuning1.isometric = true;
 
-// 		this.m_tuning1.stretchHertz = 30.0;
-// 		this.m_tuning1.stretchDamping = 4.0;
-// 		this.m_tuning1.stretchStiffness = 1.0;
+// 		this.m_tuning1.stretchHertz = 30;
+// 		this.m_tuning1.stretchDamping = 4;
+// 		this.m_tuning1.stretchStiffness = 1;
 // 		this.m_tuning1.stretchingModel = b2_xpbdStretchingModel;
 
-// 		this.m_tuning2.bendHertz = 30.0;
-// 		this.m_tuning2.bendDamping = 0.7f;
-// 		this.m_tuning2.bendStiffness = 1.0;
+// 		this.m_tuning2.bendHertz = 30;
+// 		this.m_tuning2.bendDamping = 0.7 ;
+// 		this.m_tuning2.bendStiffness = 1;
 // 		this.m_tuning2.bendingModel = b2_pbdHeightBendingModel;
 // 		this.m_tuning2.isometric = true;
 
-// 		this.m_tuning2.stretchHertz = 30.0;
-// 		this.m_tuning2.stretchDamping = 1.0;
-// 		this.m_tuning2.stretchStiffness = 1.0;
+// 		this.m_tuning2.stretchHertz = 30;
+// 		this.m_tuning2.stretchDamping = 1;
+// 		this.m_tuning2.stretchStiffness = 1;
 // 		this.m_tuning2.stretchingModel = b2_pbdStretchingModel;
 
-// 		this.m_position1.Set(-5.0, 15.0);
-// 		this.m_position2.Set(5.0, 15.0);
+// 		this.m_position1.Set(-5, 15);
+// 		this.m_position2.Set(5, 15);
 
 // 		b2RopeDef def;
 // 		def.vertices = vertices;
 // 		def.count = N;
-// 		def.gravity.Set(0.0, -10.0);
+// 		def.gravity.Set(0, -10);
 // 		def.masses = masses;
 
 // 		def.position = this.m_position1;
@@ -382,18 +382,18 @@ class Rope extends Test {
 // 		this.m_iterations1 = 8;
 // 		this.m_iterations2 = 8;
 
-// 		this.m_speed = 10.0;
+// 		this.m_speed = 10;
 // 	}
 
 // 	void UpdateUI() override
 // 	{
-// 		ImGui::SetNextWindowPos(ImVec2(10.0, 100.0));
-// 		ImGui::SetNextWindowSize(ImVec2(200.0, 700.0));
+// 		ImGui::SetNextWindowPos(ImVec2(10, 100));
+// 		ImGui::SetNextWindowSize(ImVec2(200, 700));
 // 		ImGui::Begin("Tuning", nullptr, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
 
 // 		ImGui::Separator();
 
-//         ImGui::PushItemWidth(ImGui::GetWindowWidth() * 0.5f);
+//         ImGui::PushItemWidth(ImGui::GetWindowWidth() * 0.5 );
 
 // 		const ImGuiComboFlags comboFlags = 0;
 // 		const char* bendModels[] = { "Spring", "PBD Ang", "XPBD Ang", "PBD Dist", "PBD Height" };
@@ -420,9 +420,9 @@ class Rope extends Test {
 // 			ImGui::EndCombo();
 // 		}
 
-// 		ImGui::SliderFloat("Damping##B1", &this.m_tuning1.bendDamping, 0.0, 4.0, "%.1f");
-// 		ImGui::SliderFloat("Hertz##B1", &this.m_tuning1.bendHertz, 0.0, 60.0, "%.0");
-// 		ImGui::SliderFloat("Stiffness##B1", &this.m_tuning1.bendStiffness, 0.0, 1.0, "%.1f");
+// 		ImGui::SliderFloat("Damping##B1", &this.m_tuning1.bendDamping, 0, 4, "%.1f");
+// 		ImGui::SliderFloat("Hertz##B1", &this.m_tuning1.bendHertz, 0, 60, "%.0");
+// 		ImGui::SliderFloat("Stiffness##B1", &this.m_tuning1.bendStiffness, 0, 1, "%.1f");
 
 // 		ImGui::Checkbox("Isometric##1", &this.m_tuning1.isometric);
 // 		ImGui::Checkbox("Fixed Mass##1", &this.m_tuning1.fixedEffectiveMass);
@@ -448,9 +448,9 @@ class Rope extends Test {
 // 			ImGui::EndCombo();
 // 		}
 
-// 		ImGui::SliderFloat("Damping##S1", &this.m_tuning1.stretchDamping, 0.0, 4.0, "%.1f");
-// 		ImGui::SliderFloat("Hertz##S1", &this.m_tuning1.stretchHertz, 0.0, 60.0, "%.0");
-// 		ImGui::SliderFloat("Stiffness##S1", &this.m_tuning1.stretchStiffness, 0.0, 1.0, "%.1f");
+// 		ImGui::SliderFloat("Damping##S1", &this.m_tuning1.stretchDamping, 0, 4, "%.1f");
+// 		ImGui::SliderFloat("Hertz##S1", &this.m_tuning1.stretchHertz, 0, 60, "%.0");
+// 		ImGui::SliderFloat("Stiffness##S1", &this.m_tuning1.stretchStiffness, 0, 1, "%.1f");
 
 // 		ImGui::SliderInt("Iterations##1", &this.m_iterations1, 1, 100, "%d");
 
@@ -477,9 +477,9 @@ class Rope extends Test {
 // 			ImGui::EndCombo();
 // 		}
 
-// 		ImGui::SliderFloat("Damping##B2", &this.m_tuning2.bendDamping, 0.0, 4.0, "%.1f");
-// 		ImGui::SliderFloat("Hertz##B2", &this.m_tuning2.bendHertz, 0.0, 60.0, "%.0");
-// 		ImGui::SliderFloat("Stiffness##B2", &this.m_tuning2.bendStiffness, 0.0, 1.0, "%.1f");
+// 		ImGui::SliderFloat("Damping##B2", &this.m_tuning2.bendDamping, 0, 4, "%.1f");
+// 		ImGui::SliderFloat("Hertz##B2", &this.m_tuning2.bendHertz, 0, 60, "%.0");
+// 		ImGui::SliderFloat("Stiffness##B2", &this.m_tuning2.bendStiffness, 0, 1, "%.1f");
 
 // 		ImGui::Checkbox("Isometric##2", &this.m_tuning2.isometric);
 // 		ImGui::Checkbox("Fixed Mass##2", &this.m_tuning2.fixedEffectiveMass);
@@ -505,20 +505,20 @@ class Rope extends Test {
 // 			ImGui::EndCombo();
 // 		}
 
-// 		ImGui::SliderFloat("Damping##S2", &this.m_tuning2.stretchDamping, 0.0, 4.0, "%.1f");
-// 		ImGui::SliderFloat("Hertz##S2", &this.m_tuning2.stretchHertz, 0.0, 60.0, "%.0");
-// 		ImGui::SliderFloat("Stiffness##S2", &this.m_tuning2.stretchStiffness, 0.0, 1.0, "%.1f");
+// 		ImGui::SliderFloat("Damping##S2", &this.m_tuning2.stretchDamping, 0, 4, "%.1f");
+// 		ImGui::SliderFloat("Hertz##S2", &this.m_tuning2.stretchHertz, 0, 60, "%.0");
+// 		ImGui::SliderFloat("Stiffness##S2", &this.m_tuning2.stretchStiffness, 0, 1, "%.1f");
 
 // 		ImGui::SliderInt("Iterations##2", &this.m_iterations2, 1, 100, "%d");
 
 // 		ImGui::Separator();
 
-// 		ImGui::SliderFloat("Speed", &this.m_speed, 10.0, 100.0, "%.0");
+// 		ImGui::SliderFloat("Speed", &this.m_speed, 10, 100, "%.0");
 
 // 		if (ImGui::Button("Reset"))
 // 		{
-// 			this.m_position1.Set(-5.0, 15.0);
-// 			this.m_position2.Set(5.0, 15.0);
+// 			this.m_position1.Set(-5, 15);
+// 			this.m_position2.Set(5, 15);
 // 			this.m_rope1.Reset(this.m_position1);
 // 			this.m_rope2.Reset(this.m_position2);
 // 		}
@@ -530,11 +530,11 @@ class Rope extends Test {
 
 // 	void Step(Settings& settings) override
 // 	{
-// 		float dt = settings.m_hertz > 0.0 ? 1.0 / settings.m_hertz : 0.0;
+// 		float dt = settings.m_hertz > 0 ? 1 / settings.m_hertz : 0;
 
 // 		if (settings.m_pause == 1 && settings.m_singleStep == 0)
 // 		{
-// 			dt = 0.0;
+// 			dt = 0;
 // 		}
 
 // 		if (glfwGetKey(g_mainWindow, GLFW_KEY_COMMA) == GLFW_PRESS)
@@ -580,7 +580,7 @@ class Rope extends Test {
 
 // class OldRope extends Test {
 //   // public this.m_rope = new b2Rope();
-//   public m_angle = 0.0;
+//   public m_angle = 0;
 
 //   constructor() {
 //     super();
@@ -593,25 +593,25 @@ class Rope extends Test {
 //     const masses = b2MakeNumberArray(N);
 
 //     for (let i = 0; i < N; ++i) {
-//       vertices[i].Set(0.0, 20.0 - 0.25 * i);
-//       masses[i] = 1.0;
+//       vertices[i].Set(0, 20 - 0.25 * i);
+//       masses[i] = 1;
 //     }
-//     masses[0] = 0.0;
-//     masses[1] = 0.0;
+//     masses[0] = 0;
+//     masses[1] = 0;
 
 //     /*b2RopeDef*/
 //     // const def = new b2RopeDef();
 //     // def.vertices = vertices;
 //     // def.count = N;
-//     // def.gravity.Set(0.0, -10.0);
+//     // def.gravity.Set(0, -10);
 //     // def.masses = masses;
 //     // def.damping = 0.1;
-//     // def.k2 = 1.0;
+//     // def.k2 = 1;
 //     // def.k3 = 0.5;
 
 //     // this.m_rope.Initialize(def);
 
-//     this.m_angle = 0.0;
+//     this.m_angle = 0;
 //     // this.m_rope.SetAngle(this.m_angle);
 //   }
 
@@ -630,9 +630,9 @@ class Rope extends Test {
 //   }
 
 //   public Step(settings: Settings, timeStep: number): void {
-//     // let dt = settings.m_hertz > 0.0 ? 1.0 / settings.m_hertz : 0.0;
+//     // let dt = settings.m_hertz > 0 ? 1 / settings.m_hertz : 0;
 //     // if (settings.m_pause && !settings.m_singleStep) {
-//     //   dt = 0.0;
+//     //   dt = 0;
 //     // }
 
 //     // this.m_rope.Step(dt, 1);
@@ -641,7 +641,7 @@ class Rope extends Test {
 
 //     // this.m_rope.Draw(g_debugDraw);
 
-//     this.addDebug("Target Angle", `${(this.m_angle * 180.0 / Math.PI).toFixed(2)} degrees`);
+//     this.addDebug("Target Angle", `${(this.m_angle * 180 / Math.PI).toFixed(2)} degrees`);
 //   }
 // }
 

@@ -764,7 +764,7 @@ export class b2PrismaticJoint extends b2Joint {
             draw.DrawSegment(b2Vec2.Subtract(pA, axis, p1), b2Vec2.Add(pA, axis, p2), debugColors.joint1);
         }
 
-        draw.DrawPoint(pA, 5.0, debugColors.joint1);
-        draw.DrawPoint(pB, 5.0, debugColors.joint4);
+        draw.DrawPoint(pA, 5, debugColors.joint1);
+        draw.DrawPoint(pB, 5, debugColors.joint4);
     }
 }

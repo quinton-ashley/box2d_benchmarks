@@ -8,7 +8,7 @@ class DominoTower extends Test {
 
         const DOMINO_WIDTH = 0.2;
         const DOMINO_FRICTION = 0.1;
-        const DOMINO_HEIGHT = 1.0;
+        const DOMINO_HEIGHT = 1;
         const BASE_COUNT = 25;
 
         /**
@@ -24,7 +24,7 @@ class DominoTower extends Test {
             const myBody = world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
                 position: { x, y },
-                angle: horizontal ? Math.PI / 2.0 : 0,
+                angle: horizontal ? Math.PI / 2 : 0,
             });
             myBody.CreateFixture({
                 shape: sd,
@@ -51,28 +51,28 @@ class DominoTower extends Test {
             const sd = new b2PolygonShape();
             sd.SetAsBox(0.7, 0.7);
             const fd: b2FixtureDef = {
-                density: 35.0,
+                density: 35,
                 shape: sd,
-                friction: 0.0,
+                friction: 0,
                 restitution: 0.85,
             };
             let b = world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
                 bullet: true,
-                position: { x: 30.0, y: 5.0 },
+                position: { x: 30, y: 5 },
             });
             b.CreateFixture(fd);
-            b.SetLinearVelocity(new b2Vec2(-25.0, -25.0));
+            b.SetLinearVelocity(new b2Vec2(-25, -25));
             b.SetAngularVelocity(6.7);
 
-            fd.density = 25.0;
+            fd.density = 25;
             b = world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
                 bullet: true,
-                position: { x: -30.0, y: 25.0 },
+                position: { x: -30, y: 25 },
             });
             b.CreateFixture(fd);
-            b.SetLinearVelocity(new b2Vec2(35.0, -10.0));
+            b.SetLinearVelocity(new b2Vec2(35, -10));
             b.SetAngularVelocity(-8.3);
         }
 
@@ -81,8 +81,8 @@ class DominoTower extends Test {
             // Make base
             for (let i = 0; i < BASE_COUNT; ++i) {
                 currX = i * 1.5 * DOMINO_HEIGHT - (1.5 * DOMINO_HEIGHT * BASE_COUNT) / 2;
-                makeDomino(currX, DOMINO_HEIGHT / 2.0, false);
-                makeDomino(currX, DOMINO_HEIGHT + DOMINO_WIDTH / 2.0, true);
+                makeDomino(currX, DOMINO_HEIGHT / 2, false);
+                makeDomino(currX, DOMINO_HEIGHT + DOMINO_WIDTH / 2, true);
             }
             currX = BASE_COUNT * 1.5 * DOMINO_HEIGHT - (1.5 * DOMINO_HEIGHT * BASE_COUNT) / 2;
 

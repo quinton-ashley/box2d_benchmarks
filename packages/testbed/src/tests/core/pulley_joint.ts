@@ -27,22 +27,22 @@ class PulleyJoint extends Test {
     constructor() {
         super();
 
-        const y = 16.0;
-        const L = 12.0;
-        const a = 1.0;
-        const b = 2.0;
+        const y = 16;
+        const L = 12;
+        const a = 1;
+        const b = 2;
 
         let ground = null;
         {
             ground = this.m_world.CreateBody();
 
             const circle = new b2CircleShape();
-            circle.m_radius = 2.0;
+            circle.m_radius = 2;
 
-            circle.m_p.Set(-10.0, y + b + L);
+            circle.m_p.Set(-10, y + b + L);
             ground.CreateFixture({ shape: circle });
 
-            circle.m_p.Set(10.0, y + b + L);
+            circle.m_p.Set(10, y + b + L);
             ground.CreateFixture({ shape: circle });
         }
 
@@ -53,22 +53,22 @@ class PulleyJoint extends Test {
             const body1 = this.m_world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
                 // fixedRotation: true,
-                position: { x: -10.0, y },
+                position: { x: -10, y },
             });
-            body1.CreateFixture({ shape, density: 5.0 });
+            body1.CreateFixture({ shape, density: 5 });
 
             const body2 = this.m_world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
                 // fixedRotation: true,
-                position: { x: 10.0, y },
+                position: { x: 10, y },
             });
-            body2.CreateFixture({ shape, density: 5.0 });
+            body2.CreateFixture({ shape, density: 5 });
 
             const pulleyDef = new b2PulleyJointDef();
-            const anchor1 = new b2Vec2(-10.0, y + b);
-            const anchor2 = new b2Vec2(10.0, y + b);
-            const groundAnchor1 = new b2Vec2(-10.0, y + b + L);
-            const groundAnchor2 = new b2Vec2(10.0, y + b + L);
+            const anchor1 = new b2Vec2(-10, y + b);
+            const anchor2 = new b2Vec2(10, y + b);
+            const groundAnchor1 = new b2Vec2(-10, y + b + L);
+            const groundAnchor2 = new b2Vec2(10, y + b + L);
             pulleyDef.Initialize(body1, body2, groundAnchor1, groundAnchor2, anchor1, anchor2, 1.5);
 
             this.m_joint1 = this.m_world.CreateJoint(pulleyDef);

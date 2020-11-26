@@ -36,19 +36,19 @@ class Confined extends Test {
             const shape = new b2EdgeShape();
 
             // Floor
-            shape.SetTwoSided(new b2Vec2(-10.0, 0.0), new b2Vec2(10.0, 0.0));
+            shape.SetTwoSided(new b2Vec2(-10, 0), new b2Vec2(10, 0));
             ground.CreateFixture({ shape });
 
             // Left wall
-            shape.SetTwoSided(new b2Vec2(-10.0, 0.0), new b2Vec2(-10.0, 20.0));
+            shape.SetTwoSided(new b2Vec2(-10, 0), new b2Vec2(-10, 20));
             ground.CreateFixture({ shape });
 
             // Right wall
-            shape.SetTwoSided(new b2Vec2(10.0, 0.0), new b2Vec2(10.0, 20.0));
+            shape.SetTwoSided(new b2Vec2(10, 0), new b2Vec2(10, 20));
             ground.CreateFixture({ shape });
 
             // Roof
-            shape.SetTwoSided(new b2Vec2(-10.0, 20.0), new b2Vec2(10.0, 20.0));
+            shape.SetTwoSided(new b2Vec2(-10, 20), new b2Vec2(10, 20));
             ground.CreateFixture({ shape });
         }
 
@@ -59,7 +59,7 @@ class Confined extends Test {
 
         const fd: b2FixtureDef = {
             shape,
-            density: 1.0,
+            density: 1,
             friction: 0.1,
         };
 
@@ -67,7 +67,7 @@ class Confined extends Test {
             for (let i = 0; i < Confined.e_rowCount; ++i) {
                 const body = this.m_world.CreateBody({
                     type: b2BodyType.b2_dynamicBody,
-                    position: { x: -10.0 + (2.1 * j + 1.0 + 0.01 * i) * radius, y: (2.0 * i + 1.0) * radius },
+                    position: { x: -10 + (2.1 * j + 1 + 0.01 * i) * radius, y: (2 * i + 1) * radius },
                 });
 
                 body.CreateFixture(fd);
@@ -87,7 +87,7 @@ class Confined extends Test {
     }
 
     public CreateCircle() {
-        const radius = 2.0;
+        const radius = 2;
         const shape = new b2CircleShape();
         shape.m_p.SetZero();
         shape.m_radius = radius;
@@ -97,14 +97,14 @@ class Confined extends Test {
             type: b2BodyType.b2_dynamicBody,
             position: {
                 x: b2Random(),
-                y: 3.0 + b2Random(),
+                y: 3 + b2Random(),
             },
         });
 
         body.CreateFixture({
             shape,
-            density: 1.0,
-            friction: 0.0,
+            density: 1,
+            friction: 0,
         });
     }
 
@@ -140,8 +140,8 @@ class Confined extends Test {
             }
 
             // const p = b.GetPosition();
-            // if (p.x <= -10.0 || 10.0 <= p.x || p.y <= 0.0 || 20.0 <= p.y) {
-            //   p.x += 0.0;
+            // if (p.x <= -10 || 10 <= p.x || p.y <= 0 || 20 <= p.y) {
+            //   p.x += 0;
             // }
         }
     }

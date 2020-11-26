@@ -37,12 +37,7 @@ class TestStack extends Test {
             const ground = this.m_world.CreateBody();
 
             const shape = new b2ChainShape();
-            shape.CreateLoop([
-                new b2Vec2(-30.0, 0.0),
-                new b2Vec2(-30.0, 40.0),
-                new b2Vec2(30.0, 40.0),
-                new b2Vec2(30.0, 0.0),
-            ]);
+            shape.CreateLoop([new b2Vec2(-30, 0), new b2Vec2(-30, 40), new b2Vec2(30, 40), new b2Vec2(30, 0)]);
             ground.CreateFixture({ shape });
         }
 
@@ -56,36 +51,36 @@ class TestStack extends Test {
         const polygon = new b2PolygonShape();
         const fd: b2FixtureDef = {
             shape: polygon,
-            density: 1.0,
+            density: 1,
             friction: 0.5,
             restitution: 0.1,
         };
-        polygon.SetAsBox(1.0, 1.0);
+        polygon.SetAsBox(1, 1);
         // Create 3 stacks
         for (let i = 0; i < 10; ++i) {
-            position.Set(0.0 + Math.random() * 0.2 - 0.1, 30.0 - i * 2.5);
+            position.Set(0 + Math.random() * 0.2 - 0.1, 30 - i * 2.5);
             this.m_world.CreateBody(bd).CreateFixture(fd);
         }
         for (let i = 0; i < 10; ++i) {
-            position.Set(10.0 + Math.random() * 0.2 - 0.1, 30.0 - i * 2.5);
+            position.Set(10 + Math.random() * 0.2 - 0.1, 30 - i * 2.5);
             this.m_world.CreateBody(bd).CreateFixture(fd);
         }
         for (let i = 0; i < 10; ++i) {
-            position.Set(20.0 + Math.random() * 0.2 - 0.1, 30.0 - i * 2.5);
+            position.Set(20 + Math.random() * 0.2 - 0.1, 30 - i * 2.5);
             this.m_world.CreateBody(bd).CreateFixture(fd);
         }
         // Create ramp
         bd.type = b2BodyType.b2_staticBody;
-        position.Set(0.0, 0.0);
-        const vxs = [new b2Vec2(-30.0, 0.0), new b2Vec2(-10.0, 0.0), new b2Vec2(-30.0, 10.0)];
+        position.Set(0, 0);
+        const vxs = [new b2Vec2(-30, 0), new b2Vec2(-10, 0), new b2Vec2(-30, 10)];
         polygon.Set(vxs, vxs.length);
         fd.density = 0;
         this.m_world.CreateBody(bd).CreateFixture(fd);
 
         // Create ball
         bd.type = b2BodyType.b2_dynamicBody;
-        position.Set(-25.0, 20.0);
-        fd.shape = new b2CircleShape(4.0);
+        position.Set(-25, 20);
+        fd.shape = new b2CircleShape(4);
         fd.density = 2;
         fd.restitution = 0.2;
         fd.friction = 0.5;

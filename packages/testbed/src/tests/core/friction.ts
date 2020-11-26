@@ -28,16 +28,16 @@ class Friction extends Test {
             const ground = this.m_world.CreateBody();
 
             const shape = new b2EdgeShape();
-            shape.SetTwoSided(new b2Vec2(-40.0, 0.0), new b2Vec2(40.0, 0.0));
+            shape.SetTwoSided(new b2Vec2(-40, 0), new b2Vec2(40, 0));
             ground.CreateFixture({ shape });
         }
 
         {
             const shape = new b2PolygonShape();
-            shape.SetAsBox(13.0, 0.25);
+            shape.SetAsBox(13, 0.25);
 
             const ground = this.m_world.CreateBody({
-                position: { x: -4.0, y: 22.0 },
+                position: { x: -4, y: 22 },
                 angle: -0.25,
             });
             ground.CreateFixture({ shape });
@@ -45,19 +45,19 @@ class Friction extends Test {
 
         {
             const shape = new b2PolygonShape();
-            shape.SetAsBox(0.25, 1.0);
+            shape.SetAsBox(0.25, 1);
 
             const ground = this.m_world.CreateBody({
-                position: { x: 10.5, y: 19.0 },
+                position: { x: 10.5, y: 19 },
             });
             ground.CreateFixture({ shape });
         }
 
         {
             const shape = new b2PolygonShape();
-            shape.SetAsBox(13.0, 0.25);
+            shape.SetAsBox(13, 0.25);
             const ground = this.m_world.CreateBody({
-                position: { x: 4.0, y: 14.0 },
+                position: { x: 4, y: 14 },
                 angle: 0.25,
             });
             ground.CreateFixture({ shape });
@@ -65,19 +65,19 @@ class Friction extends Test {
 
         {
             const shape = new b2PolygonShape();
-            shape.SetAsBox(0.25, 1.0);
+            shape.SetAsBox(0.25, 1);
 
             const ground = this.m_world.CreateBody({
-                position: { x: -10.5, y: 11.0 },
+                position: { x: -10.5, y: 11 },
             });
             ground.CreateFixture({ shape });
         }
 
         {
             const shape = new b2PolygonShape();
-            shape.SetAsBox(13.0, 0.25);
+            shape.SetAsBox(13, 0.25);
             const ground = this.m_world.CreateBody({
-                position: { x: -4.0, y: 6.0 },
+                position: { x: -4, y: 6 },
                 angle: -0.25,
             });
             ground.CreateFixture({ shape });
@@ -89,15 +89,15 @@ class Friction extends Test {
 
             const fd: b2FixtureDef = {
                 shape,
-                density: 25.0,
+                density: 25,
             };
 
-            const friction = [0.75, 0.5, 0.35, 0.1, 0.0];
+            const friction = [0.75, 0.5, 0.35, 0.1, 0];
 
             for (let i = 0; i < 5; ++i) {
                 const body = this.m_world.CreateBody({
                     type: b2BodyType.b2_dynamicBody,
-                    position: { x: -15.0 + 4.0 * i, y: 28.0 },
+                    position: { x: -15 + 4 * i, y: 28 },
                 });
 
                 fd.friction = friction[i];

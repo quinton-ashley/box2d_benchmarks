@@ -59,7 +59,7 @@ export class RadialEmitter {
     /**
      * Speed particles are emitted
      */
-    public m_speed = 0.0;
+    public m_speed = 0;
 
     /**
      * Half width / height of particle emitter
@@ -69,7 +69,7 @@ export class RadialEmitter {
     /**
      * Particles per second
      */
-    public m_emitRate = 1.0;
+    public m_emitRate = 1;
 
     /**
      * Initial color of particle emitted.
@@ -79,7 +79,7 @@ export class RadialEmitter {
     /**
      * Number particles to emit on the next frame
      */
-    public m_emitRemainder = 0.0;
+    public m_emitRemainder = 0;
 
     /**
      * Flags for created particles, see b2ParticleFlag.
@@ -90,13 +90,6 @@ export class RadialEmitter {
      * Group to put newly created particles in.
      */
     public m_group: b2ParticleGroup | null = null;
-
-    /**
-     * Calculate a random number 0.0..1.0.
-     */
-    public static Random(): number {
-        return Math.random();
-    }
 
     public Destroy(): void {
         this.SetGroup(null);
@@ -280,13 +273,13 @@ export class RadialEmitter {
 
         // Keep emitting particles on this frame until we only have a
         // fractional particle left.
-        while (this.m_emitRemainder > 1.0) {
-            this.m_emitRemainder -= 1.0;
+        while (this.m_emitRemainder > 1) {
+            this.m_emitRemainder -= 1;
 
             // Randomly pick a position within the emitter's radius.
-            const angle = RadialEmitter.Random() * 2.0 * Math.PI;
+            const angle = Math.random() * 2 * Math.PI;
             // Distance from the center of the circle.
-            const distance = RadialEmitter.Random();
+            const distance = Math.random();
             const positionOnUnitCircle = new b2Vec2(Math.sin(angle), Math.cos(angle));
 
             // Initial position.
@@ -296,7 +289,7 @@ export class RadialEmitter {
             );
             // Send it flying
             pd.velocity.Copy(this.m_startingVelocity);
-            if (this.m_speed !== 0.0) {
+            if (this.m_speed !== 0) {
                 ///  pd.velocity += positionOnUnitCircle * m_speed;
                 pd.velocity.AddScaled(this.m_speed, positionOnUnitCircle);
             }

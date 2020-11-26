@@ -474,15 +474,15 @@ export class b2DistanceJoint extends b2Joint {
         axis.Normalize();
         draw.DrawSegment(pA, pB, debugColors.joint5);
         b2Vec2.AddScaled(pA, this.m_length, axis, pRest);
-        draw.DrawPoint(pRest, 8.0, debugColors.joint1);
+        draw.DrawPoint(pRest, 8, debugColors.joint1);
         if (this.m_minLength !== this.m_maxLength) {
             if (this.m_minLength > b2_linearSlop) {
                 const pMin = b2Vec2.AddScaled(pA, this.m_minLength, axis, temp.Draw.p1);
-                draw.DrawPoint(pMin, 4.0, debugColors.joint2);
+                draw.DrawPoint(pMin, 4, debugColors.joint2);
             }
             if (this.m_maxLength < b2_maxFloat) {
                 const pMax = b2Vec2.AddScaled(pA, this.m_maxLength, axis, temp.Draw.p1);
-                draw.DrawPoint(pMax, 4.0, debugColors.joint3);
+                draw.DrawPoint(pMax, 4, debugColors.joint3);
             }
         }
     }

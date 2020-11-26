@@ -44,13 +44,13 @@ class ConvexHull extends Test {
 
     public Generate(): void {
         for (let i = 0; i < ConvexHull.e_count; ++i) {
-            let x = b2RandomRange(-10.0, 10.0);
-            let y = b2RandomRange(-10.0, 10.0);
+            let x = b2RandomRange(-10, 10);
+            let y = b2RandomRange(-10, 10);
 
             // Clamp onto a square to help create collinearities.
             // This will stress the convex hull algorithm.
-            x = b2Clamp(x, -8.0, 8.0);
-            y = b2Clamp(y, -8.0, 8.0);
+            x = b2Clamp(x, -8, 8);
+            y = b2Clamp(y, -8, 8);
             this.m_test_points[i] = new b2Vec2(x, y);
         }
 
@@ -75,7 +75,7 @@ class ConvexHull extends Test {
         g_debugDraw.DrawPolygon(shape.m_vertices, shape.m_count, new b2Color(0.9, 0.9, 0.9));
 
         for (let i = 0; i < this.m_count; ++i) {
-            g_debugDraw.DrawPoint(this.m_test_points[i], 3.0, new b2Color(0.3, 0.9, 0.3));
+            g_debugDraw.DrawPoint(this.m_test_points[i], 3, new b2Color(0.3, 0.9, 0.3));
             g_debugDraw.DrawStringWorld(this.m_test_points[i].x + 0.05, this.m_test_points[i].y + 0.05, `${i}`);
         }
 

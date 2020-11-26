@@ -40,21 +40,21 @@ class AntiPointy extends Test {
             // issue with particles falling directly on an ambiguous set of
             // fixture corners.
 
-            const step = 1.0;
+            const step = 1;
 
-            for (let i = -10.0; i < 10.0; i += step) {
+            for (let i = -10; i < 10; i += step) {
                 const shape = new b2PolygonShape();
-                const vertices = [new b2Vec2(i, -10.0), new b2Vec2(i + step, -10.0), new b2Vec2(0.0, 15.0)];
+                const vertices = [new b2Vec2(i, -10), new b2Vec2(i + step, -10), new b2Vec2(0, 15)];
                 shape.Set(vertices, 3);
                 ground.CreateFixture({ shape });
             }
-            for (let i = -10.0; i < 35.0; i += step) {
+            for (let i = -10; i < 35; i += step) {
                 const shape = new b2PolygonShape();
-                const vertices = [new b2Vec2(-10.0, i), new b2Vec2(-10.0, i + step), new b2Vec2(0.0, 15.0)];
+                const vertices = [new b2Vec2(-10, i), new b2Vec2(-10, i + step), new b2Vec2(0, 15)];
                 shape.Set(vertices, 3);
                 ground.CreateFixture({ shape });
 
-                const vertices2 = [new b2Vec2(10.0, i), new b2Vec2(10.0, i + step), new b2Vec2(0.0, 15.0)];
+                const vertices2 = [new b2Vec2(10, i), new b2Vec2(10, i + step), new b2Vec2(0, 15)];
                 shape.Set(vertices2, 3);
                 ground.CreateFixture({ shape });
             }
@@ -82,13 +82,13 @@ class AntiPointy extends Test {
         const flags = Test.GetParticleParameterValue();
         const pd = new b2ParticleDef();
 
-        pd.position.Set(0.0, 40.0);
-        pd.velocity.Set(0.0, -1.0);
+        pd.position.Set(0, 40);
+        pd.velocity.Set(0, -1);
         pd.flags = flags;
 
         if (flags & (b2ParticleFlag.b2_springParticle | b2ParticleFlag.b2_elasticParticle)) {
             const count = this.m_particleSystem.GetParticleCount();
-            pd.velocity.Set(count & 1 ? -1.0 : 1.0, -5.0);
+            pd.velocity.Set(count & 1 ? -1 : 1, -5);
             pd.flags |= b2ParticleFlag.b2_reactiveParticle;
         }
 

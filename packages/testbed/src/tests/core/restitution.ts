@@ -20,7 +20,7 @@ import { b2EdgeShape, b2Vec2, b2CircleShape, b2FixtureDef, b2BodyType } from "@b
 
 import { registerTest, Test } from "../../test";
 
-// Note: even with a restitution of 1.0, there is some energy change
+// Note: even with a restitution of 1, there is some energy change
 // due to position correction.
 
 class VaryingRestitution extends Test {
@@ -31,25 +31,25 @@ class VaryingRestitution extends Test {
             const ground = this.m_world.CreateBody();
 
             const shape = new b2EdgeShape();
-            shape.SetTwoSided(new b2Vec2(-40.0, 0.0), new b2Vec2(40.0, 0.0));
+            shape.SetTwoSided(new b2Vec2(-40, 0), new b2Vec2(40, 0));
             ground.CreateFixture({ shape });
         }
 
         {
             const shape = new b2CircleShape();
-            shape.m_radius = 1.0;
+            shape.m_radius = 1;
 
             const fd: b2FixtureDef = {
                 shape,
-                density: 1.0,
+                density: 1,
             };
 
-            const restitution = [0.0, 0.1, 0.3, 0.5, 0.75, 0.9, 1.0];
+            const restitution = [0, 0.1, 0.3, 0.5, 0.75, 0.9, 1];
 
             for (let i = 0; i < 7; ++i) {
                 const body = this.m_world.CreateBody({
                     type: b2BodyType.b2_dynamicBody,
-                    position: { x: -10.0 + 3.0 * i, y: 20.0 },
+                    position: { x: -10 + 3 * i, y: 20 },
                 });
 
                 fd.restitution = restitution[i];

@@ -32,7 +32,7 @@ class Tiles extends Test {
 
     public m_fixtureCount = 0;
 
-    public m_createTime = 0.0;
+    public m_createTime = 0;
 
     constructor() {
         super();
@@ -52,17 +52,17 @@ class Tiles extends Test {
                 const N = 200;
                 const M = 10;
                 const position = new b2Vec2();
-                position.y = 0.0;
+                position.y = 0;
                 for (let j = 0; j < M; ++j) {
                     position.x = -N * a;
                     for (let i = 0; i < N; ++i) {
                         const shape = new b2PolygonShape();
-                        shape.SetAsBox(a, a, position, 0.0);
+                        shape.SetAsBox(a, a, position, 0);
                         ground.CreateFixture({ shape });
                         ++this.m_fixtureCount;
-                        position.x += 2.0 * a;
+                        position.x += 2 * a;
                     }
-                    position.y -= 2.0 * a;
+                    position.y -= 2 * a;
                 }
             }
             //    else
@@ -73,15 +73,15 @@ class Tiles extends Test {
             //      position.x = -N * a;
             //      for (/*int32*/ let i = 0; i < N; ++i)
             //      {
-            //        position.y = 0.0;
+            //        position.y = 0;
             //        for (/*int32*/ let j = 0; j < M; ++j)
             //        {
             //          /*b2PolygonShape*/ const shape = new b2PolygonShape();
-            //          shape.SetAsBox(a, a, position, 0.0);
+            //          shape.SetAsBox(a, a, position, 0);
             //          ground.CreateFixture({ shape });
-            //          position.y -= 2.0 * a;
+            //          position.y -= 2 * a;
             //        }
-            //        position.x += 2.0 * a;
+            //        position.x += 2 * a;
             //      }
             //    }
         }
@@ -91,10 +91,10 @@ class Tiles extends Test {
             const shape = new b2PolygonShape();
             shape.SetAsBox(a, a);
 
-            const x = new b2Vec2(-7.0, 0.75);
+            const x = new b2Vec2(-7, 0.75);
             const y = new b2Vec2();
             const deltaX = new b2Vec2(0.5625, 1.25);
-            const deltaY = new b2Vec2(1.125, 0.0);
+            const deltaY = new b2Vec2(1.125, 0);
 
             for (let i = 0; i < Tiles.e_count; ++i) {
                 y.Copy(x);
@@ -105,7 +105,7 @@ class Tiles extends Test {
                         position: y,
                         // allowSleep: i !== 0 || j !== 0,
                     });
-                    body.CreateFixture({ shape, density: 5.0 });
+                    body.CreateFixture({ shape, density: 5 });
                     ++this.m_fixtureCount;
                     y.Add(deltaY);
                 }
@@ -123,7 +123,7 @@ class Tiles extends Test {
         const height = cm.m_broadPhase.GetTreeHeight();
         const leafCount = cm.m_broadPhase.GetProxyCount();
         const minimumNodeCount = 2 * leafCount - 1;
-        const minimumHeight = Math.ceil(Math.log(minimumNodeCount) / Math.log(2.0));
+        const minimumHeight = Math.ceil(Math.log(minimumNodeCount) / Math.log(2));
         this.addDebug("Dynamic Tree Height", height);
         this.addDebug("Min Height", minimumHeight);
 

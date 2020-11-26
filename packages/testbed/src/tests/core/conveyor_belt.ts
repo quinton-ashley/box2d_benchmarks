@@ -31,18 +31,18 @@ class ConveyorBelt extends Test {
             const ground = this.m_world.CreateBody();
 
             const shape = new b2EdgeShape();
-            shape.SetTwoSided(new b2Vec2(-20.0, 0.0), new b2Vec2(20.0, 0.0));
+            shape.SetTwoSided(new b2Vec2(-20, 0), new b2Vec2(20, 0));
             ground.CreateFixture({ shape });
         }
 
         // Platform
         {
             const body = this.m_world.CreateBody({
-                position: { x: -5.0, y: 5.0 },
+                position: { x: -5, y: 5 },
             });
 
             const shape = new b2PolygonShape();
-            shape.SetAsBox(10.0, 0.5);
+            shape.SetAsBox(10, 0.5);
 
             this.m_platform = body.CreateFixture({
                 shape,
@@ -54,12 +54,12 @@ class ConveyorBelt extends Test {
         for (let i = 0; i < 5; ++i) {
             const body = this.m_world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
-                position: { x: -10.0 + 2.0 * i, y: 7.0 },
+                position: { x: -10 + 2 * i, y: 7 },
             });
 
             const shape = new b2PolygonShape();
             shape.SetAsBox(0.5, 0.5);
-            body.CreateFixture({ shape, density: 20.0 });
+            body.CreateFixture({ shape, density: 20 });
         }
     }
 
@@ -75,11 +75,11 @@ class ConveyorBelt extends Test {
         const fixtureB = contact.GetFixtureB();
 
         if (fixtureA === this.m_platform) {
-            contact.SetTangentSpeed(5.0);
+            contact.SetTangentSpeed(5);
         }
 
         if (fixtureB === this.m_platform) {
-            contact.SetTangentSpeed(-5.0);
+            contact.SetTangentSpeed(-5);
         }
     }
 }

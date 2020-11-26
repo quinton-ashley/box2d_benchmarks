@@ -25,7 +25,7 @@ export class ConeLight extends PositionalLight {
      * @param color
      *            color, set to {@code null} to use the default color
      * @param distance
-     *            distance of cone light, soft shadow length is set to distance * 0.1f
+     *            distance of cone light, soft shadow length is set to distance * 0.1
      * @param x
      *            axis position
      * @param y
@@ -91,7 +91,7 @@ export class ConeLight extends PositionalLight {
     /**
      * Sets light distance
      *
-     * <p>MIN value capped to 0.1f meter
+     * <p>MIN value capped to 0.1  meter
      * <p>Actual recalculations will be done only on {@link #update()} call
      */
     public setDistance(dist: number) {

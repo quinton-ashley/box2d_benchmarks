@@ -52,7 +52,7 @@ class DistanceJoint extends Test {
 
         const ground = this.m_world.CreateBody();
         const edgeShape = new b2EdgeShape();
-        edgeShape.SetTwoSided(new b2Vec2(-40.0, 0.0), new b2Vec2(40.0, 0.0));
+        edgeShape.SetTwoSided(new b2Vec2(-40, 0), new b2Vec2(40, 0));
         ground.CreateFixture({ shape: edgeShape });
 
         const position = {
@@ -67,13 +67,13 @@ class DistanceJoint extends Test {
 
         const shape = new b2PolygonShape();
         shape.SetAsBox(0.5, 0.5);
-        body.CreateFixture({ shape, density: 5.0 });
+        body.CreateFixture({ shape, density: 5 });
 
-        this.m_hertz = 1.0;
+        this.m_hertz = 1;
         this.m_dampingRatio = 0.7;
 
         const jd = new b2DistanceJointDef();
-        jd.Initialize(ground, body, new b2Vec2(0.0, 15.0), position);
+        jd.Initialize(ground, body, new b2Vec2(0, 15), position);
         jd.collideConnected = true;
         this.m_length = jd.length;
         this.m_minLength = jd.minLength = jd.length - 3;

@@ -57,7 +57,7 @@ class Impulse extends Test {
         // Create the particles.
         {
             const shape = new b2PolygonShape();
-            shape.SetAsBox(0.8, 1.0, new b2Vec2(0.0, 1.01), 0);
+            shape.SetAsBox(0.8, 1, new b2Vec2(0, 1.01), 0);
             const pd = new b2ParticleGroupDef();
             pd.flags = Test.GetParticleParameterValue();
             pd.shape = shape;
@@ -109,7 +109,7 @@ class Impulse extends Test {
             const impulse = b2Vec2.Scale(kImpulseMagnitude * numParticles, direction, new b2Vec2());
             particleGroup.ApplyLinearImpulse(impulse);
         } else {
-            const kForceMagnitude = 1.0;
+            const kForceMagnitude = 1;
             ///  const b2Vec2 force = kForceMagnitude * direction * (float32)numParticles;
             const force = b2Vec2.Scale(kForceMagnitude * numParticles, direction, new b2Vec2());
             particleGroup.ApplyForce(force);

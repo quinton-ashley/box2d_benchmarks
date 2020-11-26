@@ -63,15 +63,15 @@ export class b2ParticleGroupDef implements b2IParticleGroupDef {
 
     public readonly position = new b2Vec2();
 
-    public angle = 0.0;
+    public angle = 0;
 
     public readonly linearVelocity = new b2Vec2();
 
-    public angularVelocity = 0.0;
+    public angularVelocity = 0;
 
     public readonly color = new b2Color();
 
-    public strength = 1.0;
+    public strength = 1;
 
     public shape?: b2Shape;
 
@@ -101,7 +101,7 @@ export class b2ParticleGroup {
 
     public m_groupFlags: b2ParticleGroupFlag = 0;
 
-    public m_strength = 1.0;
+    public m_strength = 1;
 
     public m_prev: b2ParticleGroup | null = null;
 
@@ -109,15 +109,15 @@ export class b2ParticleGroup {
 
     public m_timestamp = -1;
 
-    public m_mass = 0.0;
+    public m_mass = 0;
 
-    public m_inertia = 0.0;
+    public m_inertia = 0;
 
     public readonly m_center = new b2Vec2();
 
     public readonly m_linearVelocity = new b2Vec2();
 
-    public m_angularVelocity = 0.0;
+    public m_angularVelocity = 0;
 
     public readonly m_transform = new b2Transform();
 

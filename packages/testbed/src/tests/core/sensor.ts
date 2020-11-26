@@ -53,22 +53,22 @@ class Sensors extends Test {
 
         {
             const shape = new b2EdgeShape();
-            shape.SetTwoSided(new b2Vec2(-40.0, 0.0), new b2Vec2(40.0, 0.0));
+            shape.SetTwoSided(new b2Vec2(-40, 0), new b2Vec2(40, 0));
             ground.CreateFixture({ shape });
         }
 
         /*
     {
       const sd = new b2FixtureDef();
-      sd.SetAsBox(10.0, 2.0, new b2Vec2(0.0, 20.0), 0.0);
+      sd.SetAsBox(10, 2, new b2Vec2(0, 20), 0);
       sd.isSensor = true;
       this.m_sensor = ground.CreateFixture(sd);
     }
     */
         {
             const shape = new b2CircleShape();
-            shape.m_radius = 5.0;
-            shape.m_p.Set(0.0, 10.0);
+            shape.m_radius = 5;
+            shape.m_p.Set(0, 10);
 
             this.m_sensor = ground.CreateFixture({
                 shape,
@@ -78,17 +78,17 @@ class Sensors extends Test {
 
         {
             const shape = new b2CircleShape();
-            shape.m_radius = 1.0;
+            shape.m_radius = 1;
 
             for (let i = 0; i < Sensors.e_count; ++i) {
                 this.m_touching[i][0] = false;
                 this.m_bodies[i] = this.m_world.CreateBody({
                     type: b2BodyType.b2_dynamicBody,
-                    position: { x: -10.0 + 3.0 * i, y: 20.0 },
+                    position: { x: -10 + 3 * i, y: 20 },
                     userData: this.m_touching[i],
                 });
 
-                this.m_bodies[i].CreateFixture({ shape, density: 1.0 });
+                this.m_bodies[i].CreateFixture({ shape, density: 1 });
             }
         }
     }
@@ -166,7 +166,7 @@ class Sensors extends Test {
             }
 
             d.Normalize();
-            const F = b2Vec2.Scale(100.0, d, new b2Vec2());
+            const F = b2Vec2.Scale(100, d, new b2Vec2());
             body.ApplyForce(F, position);
         }
     }

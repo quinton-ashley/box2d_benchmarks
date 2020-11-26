@@ -40,31 +40,31 @@ class DumpShell extends Test {
         const joints = new Array(2);
         bodies[0] = this.m_world.CreateBody({
             type: b2BodyType.b2_staticBody,
-            angle: 0.0,
-            angularVelocity: 0.0,
-            linearDamping: 0.0,
-            angularDamping: 0.0,
+            angle: 0,
+            angularVelocity: 0,
+            linearDamping: 0,
+            angularDamping: 0,
             allowSleep: true,
             awake: true,
             fixedRotation: false,
             bullet: false,
             enabled: true,
-            gravityScale: 1.0,
+            gravityScale: 1,
         });
 
         {
             const shape = new b2EdgeShape();
             shape.m_radius = 0.009999999776483;
-            shape.m_vertex0.Set(0.0, 0.0);
-            shape.m_vertex1.Set(0.0, 0.0);
-            shape.m_vertex2.Set(44.521739959716797, 0.0);
-            shape.m_vertex3.Set(0.0, 0.0);
+            shape.m_vertex0.Set(0, 0);
+            shape.m_vertex1.Set(0, 0);
+            shape.m_vertex2.Set(44.521739959716797, 0);
+            shape.m_vertex3.Set(0, 0);
             // shape.m_hasVertex0 = false;
             // shape.m_hasVertex3 = false;
             bodies[0].CreateFixture({
-                friction: 10.0,
-                restitution: 0.0,
-                density: 0.0,
+                friction: 10,
+                restitution: 0,
+                density: 0,
                 isSensor: false,
                 filter: {
                     categoryBits: 1,
@@ -77,17 +77,17 @@ class DumpShell extends Test {
         {
             const shape = new b2EdgeShape();
             shape.m_radius = 0.009999999776483;
-            shape.m_vertex0.Set(0.0, 0.0);
-            shape.m_vertex1.Set(0.0, 16.695652008056641);
+            shape.m_vertex0.Set(0, 0);
+            shape.m_vertex1.Set(0, 16.695652008056641);
             shape.m_vertex2.Set(44.521739959716797, 16.695652008056641);
-            shape.m_vertex3.Set(0.0, 0.0);
+            shape.m_vertex3.Set(0, 0);
             // shape.m_hasVertex0 = false;
             // shape.m_hasVertex3 = false;
 
             bodies[0].CreateFixture({
-                friction: 10.0,
-                restitution: 0.0,
-                density: 0.0,
+                friction: 10,
+                restitution: 0,
+                density: 0,
                 isSensor: false,
                 filter: {
                     categoryBits: 1,
@@ -100,17 +100,17 @@ class DumpShell extends Test {
         {
             const shape = new b2EdgeShape();
             shape.m_radius = 0.009999999776483;
-            shape.m_vertex0.Set(0.0, 0.0);
-            shape.m_vertex1.Set(0.0, 16.695652008056641);
-            shape.m_vertex2.Set(0.0, 0.0);
-            shape.m_vertex3.Set(0.0, 0.0);
+            shape.m_vertex0.Set(0, 0);
+            shape.m_vertex1.Set(0, 16.695652008056641);
+            shape.m_vertex2.Set(0, 0);
+            shape.m_vertex3.Set(0, 0);
             // shape.m_hasVertex0 = false;
             // shape.m_hasVertex3 = false;
 
             bodies[0].CreateFixture({
-                friction: 10.0,
-                restitution: 0.0,
-                density: 0.0,
+                friction: 10,
+                restitution: 0,
+                density: 0,
                 isSensor: false,
                 filter: {
                     categoryBits: 1,
@@ -123,17 +123,17 @@ class DumpShell extends Test {
         {
             const shape = new b2EdgeShape();
             shape.m_radius = 0.009999999776483;
-            shape.m_vertex0.Set(0.0, 0.0);
+            shape.m_vertex0.Set(0, 0);
             shape.m_vertex1.Set(44.521739959716797, 16.695652008056641);
-            shape.m_vertex2.Set(44.521739959716797, 0.0);
-            shape.m_vertex3.Set(0.0, 0.0);
+            shape.m_vertex2.Set(44.521739959716797, 0);
+            shape.m_vertex3.Set(0, 0);
             // shape.m_hasVertex0 = false;
             // shape.m_hasVertex3 = false;
 
             bodies[0].CreateFixture({
-                friction: 10.0,
-                restitution: 0.0,
-                density: 0.0,
+                friction: 10,
+                restitution: 0,
+                density: 0,
                 isSensor: false,
                 filter: {
                     categoryBits: 1,
@@ -146,8 +146,8 @@ class DumpShell extends Test {
         bodies[1] = this.m_world.CreateBody({
             type: b2BodyType.b2_dynamicBody,
             position: { x: 0.847826063632965, y: 2.5 },
-            angle: 0.0,
-            angularVelocity: 0.0,
+            angle: 0,
+            angularVelocity: 0,
             linearDamping: 0.5,
             angularDamping: 0.5,
             allowSleep: true,
@@ -155,7 +155,7 @@ class DumpShell extends Test {
             fixedRotation: false,
             bullet: false,
             enabled: true,
-            gravityScale: 1.0,
+            gravityScale: 1,
         });
 
         {
@@ -168,9 +168,9 @@ class DumpShell extends Test {
             vs[3].Set(6.885900020599365, -0.364100009202957);
             shape.Set(vs, 4);
             bodies[1].CreateFixture({
-                friction: 1.0,
+                friction: 1,
                 restitution: 0.5,
-                density: 10.0,
+                density: 10,
                 isSensor: false,
                 filter: {
                     categoryBits: 1,
@@ -183,8 +183,8 @@ class DumpShell extends Test {
         bodies[2] = this.m_world.CreateBody({
             type: b2BodyType.b2_dynamicBody,
             position: { x: 13.043478012084959, y: 2.5 },
-            angle: 0.0,
-            angularVelocity: 0.0,
+            angle: 0,
+            angularVelocity: 0,
             linearDamping: 0.5,
             angularDamping: 0.5,
             allowSleep: true,
@@ -192,7 +192,7 @@ class DumpShell extends Test {
             fixedRotation: false,
             bullet: false,
             enabled: true,
-            gravityScale: 1.0,
+            gravityScale: 1,
         });
 
         {
@@ -205,9 +205,9 @@ class DumpShell extends Test {
             vs[3].Set(-6.900000095367432, -0.300000011920929);
             shape.Set(vs, 4);
             bodies[2].CreateFixture({
-                friction: 1.0,
+                friction: 1,
                 restitution: 0.5,
-                density: 10.0,
+                density: 10,
                 isSensor: false,
                 filter: {
                     categoryBits: 1,
@@ -219,16 +219,16 @@ class DumpShell extends Test {
         }
         bodies[3] = this.m_world.CreateBody({
             type: b2BodyType.b2_staticBody,
-            angle: 0.0,
-            angularVelocity: 0.0,
-            linearDamping: 0.0,
-            angularDamping: 0.0,
+            angle: 0,
+            angularVelocity: 0,
+            linearDamping: 0,
+            angularDamping: 0,
             allowSleep: true,
             awake: true,
             fixedRotation: false,
             bullet: false,
             enabled: true,
-            gravityScale: 1.0,
+            gravityScale: 1,
         });
         {
             const jd = new b2RevoluteJointDef();
@@ -237,15 +237,15 @@ class DumpShell extends Test {
             // eslint-disable-next-line prefer-destructuring
             jd.bodyB = bodies[0];
             jd.collideConnected = false;
-            jd.localAnchorA.Set(0.0, 0.0);
+            jd.localAnchorA.Set(0, 0);
             jd.localAnchorB.Set(0.847826063632965, 2.5);
-            jd.referenceAngle = 0.0;
+            jd.referenceAngle = 0;
             jd.enableLimit = false;
-            jd.lowerAngle = 0.0;
-            jd.upperAngle = 0.0;
+            jd.lowerAngle = 0;
+            jd.upperAngle = 0;
             jd.enableMotor = false;
-            jd.motorSpeed = 0.0;
-            jd.maxMotorTorque = 0.0;
+            jd.motorSpeed = 0;
+            jd.maxMotorTorque = 0;
             joints[0] = this.m_world.CreateJoint(jd);
         }
         {
@@ -255,16 +255,16 @@ class DumpShell extends Test {
             // eslint-disable-next-line prefer-destructuring
             jd.bodyB = bodies[2];
             jd.collideConnected = false;
-            jd.localAnchorA.Set(0.0, 0.0);
-            jd.localAnchorB.Set(-12.195652008056641, 0.0);
-            jd.localAxisA.Set(-1.0, 0.0);
-            jd.referenceAngle = 0.0;
+            jd.localAnchorA.Set(0, 0);
+            jd.localAnchorB.Set(-12.195652008056641, 0);
+            jd.localAxisA.Set(-1, 0);
+            jd.referenceAngle = 0;
             jd.enableLimit = true;
-            jd.lowerTranslation = -20.0;
-            jd.upperTranslation = 0.0;
+            jd.lowerTranslation = -20;
+            jd.upperTranslation = 0;
             jd.enableMotor = true;
-            jd.motorSpeed = 0.0;
-            jd.maxMotorForce = 10.0;
+            jd.motorSpeed = 0;
+            jd.maxMotorForce = 10;
             joints[1] = this.m_world.CreateJoint(jd);
         }
         // dump end

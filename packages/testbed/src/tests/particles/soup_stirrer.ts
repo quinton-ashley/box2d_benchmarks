@@ -28,12 +28,12 @@ class SoupStirrer extends Soup {
 
     public m_joint: b2Joint | null = null;
 
-    public m_oscillationOffset = 0.0;
+    public m_oscillationOffset = 0;
 
     constructor() {
         super();
 
-        this.m_particleSystem.SetDamping(1.0);
+        this.m_particleSystem.SetDamping(1);
 
         // Shape of the stirrer.
         const shape = new b2CircleShape();
@@ -44,7 +44,7 @@ class SoupStirrer extends Soup {
         this.m_stirrer = this.m_world.CreateBody({
             type: b2BodyType.b2_dynamicBody,
         });
-        this.m_stirrer.CreateFixture({ shape, density: 1.0 });
+        this.m_stirrer.CreateFixture({ shape, density: 1 });
 
         // Destroy all particles under the stirrer.
         const xf = new b2Transform();
@@ -103,7 +103,7 @@ class SoupStirrer extends Soup {
     public InSoup(pos: b2Vec2) {
         // The soup dimensions are from the container initialization in the
         // Soup test.
-        return pos.y > -1.0 && pos.y < 2.0 && pos.x > -3.0 && pos.x < 3.0;
+        return pos.y > -1 && pos.y < 2 && pos.x > -3 && pos.x < 3;
     }
 
     /**
@@ -111,20 +111,20 @@ class SoupStirrer extends Soup {
      */
     public Step(settings: Settings, timeStep: number) {
         // Magnitude of the force applied to the body.
-        const k_forceMagnitude = 10.0;
+        const k_forceMagnitude = 10;
         // How often the force vector rotates.
         const k_forceOscillationPerSecond = 0.2;
-        const k_forceOscillationPeriod = 1.0 / k_forceOscillationPerSecond;
+        const k_forceOscillationPeriod = 1 / k_forceOscillationPerSecond;
         // Maximum speed of the body.
-        const k_maxSpeed = 2.0;
+        const k_maxSpeed = 2;
 
-        this.m_oscillationOffset += 1.0 / settings.m_hertz;
+        this.m_oscillationOffset += 1 / settings.m_hertz;
         if (this.m_oscillationOffset > k_forceOscillationPeriod) {
             this.m_oscillationOffset -= k_forceOscillationPeriod;
         }
 
         // Calculate the force vector.
-        const forceAngle = this.m_oscillationOffset * k_forceOscillationPerSecond * 2.0 * Math.PI;
+        const forceAngle = this.m_oscillationOffset * k_forceOscillationPerSecond * 2 * Math.PI;
         const forceVector = new b2Vec2(Math.sin(forceAngle), Math.cos(forceAngle)).Scale(k_forceMagnitude);
 
         // Only apply force to the body when it's within the soup.

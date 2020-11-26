@@ -28,25 +28,25 @@ class HeavyOnLight extends Test {
             const ground = this.m_world.CreateBody();
 
             const shape = new b2EdgeShape();
-            shape.SetTwoSided(new b2Vec2(-40.0, 0.0), new b2Vec2(40.0, 0.0));
+            shape.SetTwoSided(new b2Vec2(-40, 0), new b2Vec2(40, 0));
             ground.CreateFixture({ shape });
         }
 
         let body = this.m_world.CreateBody({
             type: b2BodyType.b2_dynamicBody,
-            position: { x: 0.0, y: 0.5 },
+            position: { x: 0, y: 0.5 },
         });
 
         const shape = new b2CircleShape();
         shape.m_radius = 0.5;
-        body.CreateFixture({ shape, density: 10.0 });
+        body.CreateFixture({ shape, density: 10 });
 
         body = this.m_world.CreateBody({
             type: b2BodyType.b2_dynamicBody,
-            position: { x: 0.0, y: 6.0 },
+            position: { x: 0, y: 6 },
         });
-        shape.m_radius = 5.0;
-        body.CreateFixture({ shape, density: 10.0 });
+        shape.m_radius = 5;
+        body.CreateFixture({ shape, density: 10 });
     }
 }
 

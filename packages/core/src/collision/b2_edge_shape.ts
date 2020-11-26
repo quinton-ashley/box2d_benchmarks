@@ -207,8 +207,8 @@ export class b2EdgeShape extends b2Shape {
         draw.DrawSegment(v1, v2, color);
 
         if (this.m_oneSided === false) {
-            draw.DrawPoint(v1, 4.0, color);
-            draw.DrawPoint(v2, 4.0, color);
+            draw.DrawPoint(v1, 4, color);
+            draw.DrawPoint(v2, 4, color);
         }
     }
 }

@@ -43,7 +43,7 @@ class Car extends Test {
 
     public m_wheel2: b2Body;
 
-    public m_speed = 0.0;
+    public m_speed = 0;
 
     public m_spring1: b2WheelJoint;
 
@@ -52,7 +52,7 @@ class Car extends Test {
     constructor() {
         super();
 
-        this.m_speed = 50.0;
+        this.m_speed = 50;
 
         let ground: b2Body;
         {
@@ -62,18 +62,18 @@ class Car extends Test {
 
             const fd: b2FixtureDef = {
                 shape,
-                density: 0.0,
+                density: 0,
                 friction: 0.6,
             };
 
-            shape.SetTwoSided(new b2Vec2(-20.0, 0.0), new b2Vec2(20.0, 0.0));
+            shape.SetTwoSided(new b2Vec2(-20, 0), new b2Vec2(20, 0));
             ground.CreateFixture(fd);
 
-            const hs = [0.25, 1.0, 4.0, 0.0, 0.0, -1.0, -2.0, -2.0, -1.25, 0.0];
+            const hs = [0.25, 1, 4, 0, 0, -1, -2, -2, -1.25, 0];
 
-            let x = 20.0;
-            let y1 = 0.0;
-            const dx = 5.0;
+            let x = 20;
+            let y1 = 0;
+            const dx = 5;
 
             for (let i = 0; i < 10; ++i) {
                 const y2 = hs[i];
@@ -91,23 +91,23 @@ class Car extends Test {
                 x += dx;
             }
 
-            shape.SetTwoSided(new b2Vec2(x, 0.0), new b2Vec2(x + 40.0, 0.0));
+            shape.SetTwoSided(new b2Vec2(x, 0), new b2Vec2(x + 40, 0));
             ground.CreateFixture(fd);
 
-            x += 80.0;
-            shape.SetTwoSided(new b2Vec2(x, 0.0), new b2Vec2(x + 40.0, 0.0));
+            x += 80;
+            shape.SetTwoSided(new b2Vec2(x, 0), new b2Vec2(x + 40, 0));
             ground.CreateFixture(fd);
 
-            x += 40.0;
-            shape.SetTwoSided(new b2Vec2(x, 0.0), new b2Vec2(x + 10.0, 5.0));
+            x += 40;
+            shape.SetTwoSided(new b2Vec2(x, 0), new b2Vec2(x + 10, 5));
             ground.CreateFixture(fd);
 
-            x += 20.0;
-            shape.SetTwoSided(new b2Vec2(x, 0.0), new b2Vec2(x + 40.0, 0.0));
+            x += 20;
+            shape.SetTwoSided(new b2Vec2(x, 0), new b2Vec2(x + 40, 0));
             ground.CreateFixture(fd);
 
-            x += 40.0;
-            shape.SetTwoSided(new b2Vec2(x, 0.0), new b2Vec2(x, 20.0));
+            x += 40;
+            shape.SetTwoSided(new b2Vec2(x, 0), new b2Vec2(x, 20));
             ground.CreateFixture(fd);
         }
 
@@ -115,32 +115,32 @@ class Car extends Test {
         {
             const body = this.m_world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
-                position: { x: 140.0, y: 1.0 },
+                position: { x: 140, y: 1 },
             });
 
             const box = new b2PolygonShape();
-            box.SetAsBox(10.0, 0.25);
-            body.CreateFixture({ shape: box, density: 1.0 });
+            box.SetAsBox(10, 0.25);
+            body.CreateFixture({ shape: box, density: 1 });
 
             const jd = new b2RevoluteJointDef();
             jd.Initialize(ground, body, body.GetPosition());
-            jd.lowerAngle = (-8.0 * Math.PI) / 180.0;
-            jd.upperAngle = (8.0 * Math.PI) / 180.0;
+            jd.lowerAngle = (-8 * Math.PI) / 180;
+            jd.upperAngle = (8 * Math.PI) / 180;
             jd.enableLimit = true;
             this.m_world.CreateJoint(jd);
 
-            body.ApplyAngularImpulse(100.0);
+            body.ApplyAngularImpulse(100);
         }
 
         // Bridge
         {
             const N = 20;
             const shape = new b2PolygonShape();
-            shape.SetAsBox(1.0, 0.125);
+            shape.SetAsBox(1, 0.125);
 
             const fd: b2FixtureDef = {
                 shape,
-                density: 1.0,
+                density: 1,
                 friction: 0.6,
             };
             const jd = new b2RevoluteJointDef();
@@ -149,18 +149,18 @@ class Car extends Test {
             for (let i = 0; i < N; ++i) {
                 const body = this.m_world.CreateBody({
                     type: b2BodyType.b2_dynamicBody,
-                    position: { x: 161.0 + 2.0 * i, y: -0.125 },
+                    position: { x: 161 + 2 * i, y: -0.125 },
                 });
                 body.CreateFixture(fd);
 
-                const anchor = new b2Vec2(160.0 + 2.0 * i, -0.125);
+                const anchor = new b2Vec2(160 + 2 * i, -0.125);
                 jd.Initialize(prevBody, body, anchor);
                 this.m_world.CreateJoint(jd);
 
                 prevBody = body;
             }
 
-            const anchor = new b2Vec2(160.0 + 2.0 * N, -0.125);
+            const anchor = new b2Vec2(160 + 2 * N, -0.125);
             jd.Initialize(prevBody, ground, anchor);
             this.m_world.CreateJoint(jd);
         }
@@ -177,23 +177,23 @@ class Car extends Test {
                 position,
             };
 
-            position.Set(230.0, 0.5);
+            position.Set(230, 0.5);
             body = this.m_world.CreateBody(bd);
             body.CreateFixture({ shape: box, density: 0.5 });
 
-            position.Set(230.0, 1.5);
+            position.Set(230, 1.5);
             body = this.m_world.CreateBody(bd);
             body.CreateFixture({ shape: box, density: 0.5 });
 
-            position.Set(230.0, 2.5);
+            position.Set(230, 2.5);
             body = this.m_world.CreateBody(bd);
             body.CreateFixture({ shape: box, density: 0.5 });
 
-            position.Set(230.0, 3.5);
+            position.Set(230, 3.5);
             body = this.m_world.CreateBody(bd);
             body.CreateFixture({ shape: box, density: 0.5 });
 
-            position.Set(230.0, 4.5);
+            position.Set(230, 4.5);
             body = this.m_world.CreateBody(bd);
             body.CreateFixture({ shape: box, density: 0.5 });
         }
@@ -204,8 +204,8 @@ class Car extends Test {
             const vertices = b2Vec2.MakeArray(8);
             vertices[0].Set(-1.5, -0.5);
             vertices[1].Set(1.5, -0.5);
-            vertices[2].Set(1.5, 0.0);
-            vertices[3].Set(0.0, 0.9);
+            vertices[2].Set(1.5, 0);
+            vertices[3].Set(0, 0.9);
             vertices[4].Set(-1.15, 0.9);
             vertices[5].Set(-1.5, 0.2);
             chassis.Set(vertices, 6);
@@ -215,51 +215,51 @@ class Car extends Test {
 
             const position = new b2Vec2();
             const bd: b2BodyDef = { type: b2BodyType.b2_dynamicBody, position };
-            position.Set(0.0, 1.0);
+            position.Set(0, 1);
             this.m_car = this.m_world.CreateBody(bd);
-            this.m_car.CreateFixture({ shape: chassis, density: 1.0 });
+            this.m_car.CreateFixture({ shape: chassis, density: 1 });
 
             const fd: b2FixtureDef = {
                 shape: circle,
-                density: 1.0,
+                density: 1,
                 friction: 0.9,
             };
 
-            position.Set(-1.0, 0.35);
+            position.Set(-1, 0.35);
             this.m_wheel1 = this.m_world.CreateBody(bd);
             this.m_wheel1.CreateFixture(fd);
 
-            position.Set(1.0, 0.4);
+            position.Set(1, 0.4);
             this.m_wheel2 = this.m_world.CreateBody(bd);
             this.m_wheel2.CreateFixture(fd);
 
             const jd = new b2WheelJointDef();
-            const axis = new b2Vec2(0.0, 1.0);
+            const axis = new b2Vec2(0, 1);
 
             const mass1 = this.m_wheel1.GetMass();
             const mass2 = this.m_wheel2.GetMass();
 
-            const hertz = 4.0;
+            const hertz = 4;
             const dampingRatio = 0.7;
-            const omega = 2.0 * Math.PI * hertz;
+            const omega = 2 * Math.PI * hertz;
 
             jd.Initialize(this.m_car, this.m_wheel1, this.m_wheel1.GetPosition(), axis);
-            jd.motorSpeed = 0.0;
-            jd.maxMotorTorque = 20.0;
+            jd.motorSpeed = 0;
+            jd.maxMotorTorque = 20;
             jd.enableMotor = true;
             jd.stiffness = mass1 * omega * omega;
-            jd.damping = 2.0 * mass1 * dampingRatio * omega;
+            jd.damping = 2 * mass1 * dampingRatio * omega;
             jd.lowerTranslation = -0.25;
             jd.upperTranslation = 0.25;
             jd.enableLimit = true;
             this.m_spring1 = this.m_world.CreateJoint(jd);
 
             jd.Initialize(this.m_car, this.m_wheel2, this.m_wheel2.GetPosition(), axis);
-            jd.motorSpeed = 0.0;
-            jd.maxMotorTorque = 10.0;
+            jd.motorSpeed = 0;
+            jd.maxMotorTorque = 10;
             jd.enableMotor = false;
             jd.stiffness = mass2 * omega * omega;
-            jd.damping = 2.0 * mass2 * dampingRatio * omega;
+            jd.damping = 2 * mass2 * dampingRatio * omega;
             jd.lowerTranslation = -0.25;
             jd.upperTranslation = 0.25;
             jd.enableLimit = true;

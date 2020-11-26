@@ -37,26 +37,26 @@ class CollisionProcessing extends Test {
         // Ground body
         {
             const shape = new b2EdgeShape();
-            shape.SetTwoSided(new b2Vec2(-40.0, 0.0), new b2Vec2(40.0, 0.0));
+            shape.SetTwoSided(new b2Vec2(-40, 0), new b2Vec2(40, 0));
 
             const ground = this.m_world.CreateBody();
             ground.CreateFixture({ shape });
         }
 
-        const xLo = -5.0;
-        const xHi = 5.0;
-        const yLo = 2.0;
-        const yHi = 35.0;
+        const xLo = -5;
+        const xHi = 5;
+        const yLo = 2;
+        const yHi = 35;
 
         // Small triangle
-        const vertices = [new b2Vec2(-1.0, 0.0), new b2Vec2(1.0, 0.0), new b2Vec2(0.0, 2.0)];
+        const vertices = [new b2Vec2(-1, 0), new b2Vec2(1, 0), new b2Vec2(0, 2)];
 
         const polygon = new b2PolygonShape();
         polygon.Set(vertices, 3);
 
         const triangleShapeDef: b2FixtureDef = {
             shape: polygon,
-            density: 1.0,
+            density: 1,
         };
 
         const body1 = this.m_world.CreateBody({
@@ -66,9 +66,9 @@ class CollisionProcessing extends Test {
         body1.CreateFixture(triangleShapeDef);
 
         // Large triangle (recycle definitions)
-        vertices[0].Scale(2.0);
-        vertices[1].Scale(2.0);
-        vertices[2].Scale(2.0);
+        vertices[0].Scale(2);
+        vertices[1].Scale(2);
+        vertices[2].Scale(2);
         polygon.Set(vertices, 3);
 
         const body2 = this.m_world.CreateBody({
@@ -78,11 +78,11 @@ class CollisionProcessing extends Test {
         body2.CreateFixture(triangleShapeDef);
 
         // Small box
-        polygon.SetAsBox(1.0, 0.5);
+        polygon.SetAsBox(1, 0.5);
 
         const boxShapeDef: b2FixtureDef = {
             shape: polygon,
-            density: 1.0,
+            density: 1,
         };
 
         const body3 = this.m_world.CreateBody({
@@ -92,7 +92,7 @@ class CollisionProcessing extends Test {
         body3.CreateFixture(boxShapeDef);
 
         // Large box (recycle definitions)
-        polygon.SetAsBox(2.0, 1.0);
+        polygon.SetAsBox(2, 1);
 
         const body4 = this.m_world.CreateBody({
             type: b2BodyType.b2_dynamicBody,
@@ -102,11 +102,11 @@ class CollisionProcessing extends Test {
 
         // Small circle
         const circle = new b2CircleShape();
-        circle.m_radius = 1.0;
+        circle.m_radius = 1;
 
         const circleShapeDef: b2FixtureDef = {
             shape: circle,
-            density: 1.0,
+            density: 1,
         };
 
         const body5 = this.m_world.CreateBody({
@@ -116,7 +116,7 @@ class CollisionProcessing extends Test {
         body5.CreateFixture(circleShapeDef);
 
         // Large circle
-        circle.m_radius *= 2.0;
+        circle.m_radius *= 2;
 
         const body6 = this.m_world.CreateBody({
             type: b2BodyType.b2_dynamicBody,
@@ -145,7 +145,7 @@ class CollisionProcessing extends Test {
             const mass1 = body1.GetMass();
             const mass2 = body2.GetMass();
 
-            if (mass1 > 0.0 && mass2 > 0.0) {
+            if (mass1 > 0 && mass2 > 0) {
                 if (mass2 > mass1) {
                     nuke[nukeCount++] = body1;
                 } else {

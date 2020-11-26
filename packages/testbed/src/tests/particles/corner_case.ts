@@ -35,44 +35,39 @@ class CornerCase extends Test {
             // left edge
             {
                 const shape = new b2PolygonShape();
-                const vertices = [
-                    new b2Vec2(-20.0, 30.0),
-                    new b2Vec2(-20.0, 0.0),
-                    new b2Vec2(-25.0, 0.0),
-                    new b2Vec2(-25.0, 30.0),
-                ];
+                const vertices = [new b2Vec2(-20, 30), new b2Vec2(-20, 0), new b2Vec2(-25, 0), new b2Vec2(-25, 30)];
                 shape.Set(vertices);
                 ground.CreateFixture({ shape });
             }
 
-            const yrange = 30.0;
-            const ystep = yrange / 10.0;
-            const xrange = 20.0;
-            const xstep = xrange / 2.0;
+            const yrange = 30;
+            const ystep = yrange / 10;
+            const xrange = 20;
+            const xstep = xrange / 2;
 
             {
                 const shape = new b2PolygonShape();
-                const vertices = [new b2Vec2(-25.0, 0.0), new b2Vec2(20.0, 15.0), new b2Vec2(25.0, 0.0)];
+                const vertices = [new b2Vec2(-25, 0), new b2Vec2(20, 15), new b2Vec2(25, 0)];
                 shape.Set(vertices);
                 ground.CreateFixture({ shape });
             }
 
             for (let x = -xrange; x < xrange; x += xstep) {
                 const shape = new b2PolygonShape();
-                const vertices = [new b2Vec2(-25.0, 0.0), new b2Vec2(x, 15.0), new b2Vec2(x + xstep, 15.0)];
+                const vertices = [new b2Vec2(-25, 0), new b2Vec2(x, 15), new b2Vec2(x + xstep, 15)];
                 shape.Set(vertices);
                 ground.CreateFixture({ shape });
             }
 
-            for (let y = 0.0; y < yrange; y += ystep) {
+            for (let y = 0; y < yrange; y += ystep) {
                 const shape = new b2PolygonShape();
-                const vertices = [new b2Vec2(25.0, y), new b2Vec2(25.0, y + ystep), new b2Vec2(20.0, 15.0)];
+                const vertices = [new b2Vec2(25, y), new b2Vec2(25, y + ystep), new b2Vec2(20, 15)];
                 shape.Set(vertices);
                 ground.CreateFixture({ shape });
             }
         }
 
-        this.m_particleSystem.SetRadius(1.0);
+        this.m_particleSystem.SetRadius(1);
         const particleType = Test.GetParticleParameterValue();
 
         {

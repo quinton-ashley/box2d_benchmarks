@@ -51,22 +51,22 @@ class TheoJansen extends Test {
     constructor() {
         super();
 
-        this.m_offset.Set(0.0, 8.0);
+        this.m_offset.Set(0, 8);
         this.m_motorOn = true;
-        const pivot = new b2Vec2(0.0, 0.8);
+        const pivot = new b2Vec2(0, 0.8);
 
         // Ground
         {
             const ground = this.m_world.CreateBody();
 
             const shape = new b2EdgeShape();
-            shape.SetTwoSided(new b2Vec2(-50.0, 0.0), new b2Vec2(50.0, 0.0));
+            shape.SetTwoSided(new b2Vec2(-50, 0), new b2Vec2(50, 0));
             ground.CreateFixture({ shape });
 
-            shape.SetTwoSided(new b2Vec2(-50.0, 0.0), new b2Vec2(-50.0, 10.0));
+            shape.SetTwoSided(new b2Vec2(-50, 0), new b2Vec2(-50, 10));
             ground.CreateFixture({ shape });
 
-            shape.SetTwoSided(new b2Vec2(50.0, 0.0), new b2Vec2(50.0, 10.0));
+            shape.SetTwoSided(new b2Vec2(50, 0), new b2Vec2(50, 10));
             ground.CreateFixture({ shape });
         }
 
@@ -77,15 +77,15 @@ class TheoJansen extends Test {
 
             const body = this.m_world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
-                position: { x: -40.0 + 2.0 * i, y: 0.5 },
+                position: { x: -40 + 2 * i, y: 0.5 },
             });
-            body.CreateFixture({ shape, density: 1.0 });
+            body.CreateFixture({ shape, density: 1 });
         }
 
         // Chassis
         {
             const shape = new b2PolygonShape();
-            shape.SetAsBox(2.5, 1.0);
+            shape.SetAsBox(2.5, 1);
 
             this.m_chassis = this.m_world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
@@ -95,7 +95,7 @@ class TheoJansen extends Test {
                 },
             });
             this.m_chassis.CreateFixture({
-                density: 1.0,
+                density: 1,
                 shape,
                 filter: {
                     groupIndex: -1,
@@ -115,7 +115,7 @@ class TheoJansen extends Test {
                 },
             });
             this.m_wheel.CreateFixture({
-                density: 1.0,
+                density: 1,
                 shape,
                 filter: {
                     groupIndex: -1,
@@ -128,23 +128,23 @@ class TheoJansen extends Test {
             jd.Initialize(this.m_wheel, this.m_chassis, b2Vec2.Add(pivot, this.m_offset, new b2Vec2()));
             jd.collideConnected = false;
             jd.motorSpeed = this.m_motorSpeed;
-            jd.maxMotorTorque = 400.0;
+            jd.maxMotorTorque = 400;
             jd.enableMotor = this.m_motorOn;
             this.m_motorJoint = this.m_world.CreateJoint(jd);
         }
 
-        const wheelAnchor = b2Vec2.Add(pivot, new b2Vec2(0.0, -0.8), new b2Vec2());
+        const wheelAnchor = b2Vec2.Add(pivot, new b2Vec2(0, -0.8), new b2Vec2());
 
-        this.CreateLeg(-1.0, wheelAnchor);
-        this.CreateLeg(1.0, wheelAnchor);
+        this.CreateLeg(-1, wheelAnchor);
+        this.CreateLeg(1, wheelAnchor);
 
-        this.m_wheel.SetTransformVec(this.m_wheel.GetPosition(), (120.0 * Math.PI) / 180.0);
-        this.CreateLeg(-1.0, wheelAnchor);
-        this.CreateLeg(1.0, wheelAnchor);
+        this.m_wheel.SetTransformVec(this.m_wheel.GetPosition(), (120 * Math.PI) / 180);
+        this.CreateLeg(-1, wheelAnchor);
+        this.CreateLeg(1, wheelAnchor);
 
-        this.m_wheel.SetTransformVec(this.m_wheel.GetPosition(), (-120.0 * Math.PI) / 180.0);
-        this.CreateLeg(-1.0, wheelAnchor);
-        this.CreateLeg(1.0, wheelAnchor);
+        this.m_wheel.SetTransformVec(this.m_wheel.GetPosition(), (-120 * Math.PI) / 180);
+        this.CreateLeg(-1, wheelAnchor);
+        this.CreateLeg(1, wheelAnchor);
     }
 
     public CreateLeg(s: number, wheelAnchor: b2Vec2) {
@@ -152,13 +152,13 @@ class TheoJansen extends Test {
         const p2 = new b2Vec2(7.2 * s, -1.2);
         const p3 = new b2Vec2(4.3 * s, -1.9);
         const p4 = new b2Vec2(3.1 * s, 0.8);
-        const p5 = new b2Vec2(6.0 * s, 1.5);
+        const p5 = new b2Vec2(6 * s, 1.5);
         const p6 = new b2Vec2(2.5 * s, 3.7);
 
         const poly1 = new b2PolygonShape();
         const poly2 = new b2PolygonShape();
 
-        if (s > 0.0) {
+        if (s > 0) {
             const vertices = [];
 
             vertices[0] = p1;
@@ -187,22 +187,22 @@ class TheoJansen extends Test {
         const body1 = this.m_world.CreateBody({
             type: b2BodyType.b2_dynamicBody,
             position: this.m_offset,
-            angularDamping: 10.0,
+            angularDamping: 10,
         });
         const body2 = this.m_world.CreateBody({
             type: b2BodyType.b2_dynamicBody,
             position: b2Vec2.Add(p4, this.m_offset, new b2Vec2()),
-            angularDamping: 10.0,
+            angularDamping: 10,
         });
 
         body1.CreateFixture({
             filter: { groupIndex: -1 },
             shape: poly1,
-            density: 1.0,
+            density: 1,
         });
         body2.CreateFixture({
             filter: { groupIndex: -1 },
-            density: 1.0,
+            density: 1,
             shape: poly2,
         });
 
@@ -213,7 +213,7 @@ class TheoJansen extends Test {
             // It also makes the structure seem a bit more fluid by
             // acting like a suspension system.
             const dampingRatio = 0.5;
-            const frequencyHz = 10.0;
+            const frequencyHz = 10;
 
             jd.Initialize(
                 body1,

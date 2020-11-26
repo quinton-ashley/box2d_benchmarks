@@ -54,7 +54,7 @@ class PolygonCollision extends Test {
         super();
 
         this.m_polygonA.SetAsBox(0.2, 0.4);
-        this.m_transformA.SetPositionAngle(new b2Vec2(), 0.0);
+        this.m_transformA.SetPositionAngle(new b2Vec2(), 0);
         this.m_polygonB.SetAsBox(0.5, 0.5);
         this.m_positionB.Set(4, 1);
         this.m_angleB = 1.9160721;
@@ -127,7 +127,7 @@ class PolygonCollision extends Test {
         }
 
         for (let i = 0; i < manifold.pointCount; ++i) {
-            g_debugDraw.DrawPoint(worldManifold.points[i], 4.0, new b2Color(0.9, 0.3, 0.3));
+            g_debugDraw.DrawPoint(worldManifold.points[i], 4, new b2Color(0.9, 0.3, 0.3));
         }
     }
 }

@@ -63,40 +63,40 @@ class PolyShapes extends Test {
             const ground = this.m_world.CreateBody();
 
             const shape = new b2EdgeShape();
-            shape.SetTwoSided(new b2Vec2(-40.0, 0.0), new b2Vec2(40.0, 0.0));
+            shape.SetTwoSided(new b2Vec2(-40, 0), new b2Vec2(40, 0));
             ground.CreateFixture({ shape });
         }
 
         {
             const vertices = new Array(3);
-            vertices[0] = new b2Vec2(-0.5, 0.0);
-            vertices[1] = new b2Vec2(0.5, 0.0);
-            vertices[2] = new b2Vec2(0.0, 1.5);
+            vertices[0] = new b2Vec2(-0.5, 0);
+            vertices[1] = new b2Vec2(0.5, 0);
+            vertices[2] = new b2Vec2(0, 1.5);
             this.m_polygons[0].Set(vertices, 3);
         }
 
         {
             const vertices = new Array(3);
-            vertices[0] = new b2Vec2(-0.1, 0.0);
-            vertices[1] = new b2Vec2(0.1, 0.0);
-            vertices[2] = new b2Vec2(0.0, 1.5);
+            vertices[0] = new b2Vec2(-0.1, 0);
+            vertices[1] = new b2Vec2(0.1, 0);
+            vertices[2] = new b2Vec2(0, 1.5);
             this.m_polygons[1].Set(vertices, 3);
         }
 
         {
-            const w = 1.0;
-            const b = w / (2.0 + Math.sqrt(2.0));
-            const s = Math.sqrt(2.0) * b;
+            const w = 1;
+            const b = w / (2 + Math.sqrt(2));
+            const s = Math.sqrt(2) * b;
 
             const vertices = new Array(8);
-            vertices[0] = new b2Vec2(0.5 * s, 0.0);
+            vertices[0] = new b2Vec2(0.5 * s, 0);
             vertices[1] = new b2Vec2(0.5 * w, b);
             vertices[2] = new b2Vec2(0.5 * w, b + s);
             vertices[3] = new b2Vec2(0.5 * s, w);
             vertices[4] = new b2Vec2(-0.5 * s, w);
             vertices[5] = new b2Vec2(-0.5 * w, b + s);
             vertices[6] = new b2Vec2(-0.5 * w, b);
-            vertices[7] = new b2Vec2(-0.5 * s, 0.0);
+            vertices[7] = new b2Vec2(-0.5 * s, 0);
 
             this.m_polygons[2].Set(vertices, 8);
         }
@@ -118,7 +118,7 @@ class PolyShapes extends Test {
 
         body = this.m_bodies[this.m_bodyIndex] = this.m_world.CreateBody({
             type: b2BodyType.b2_dynamicBody,
-            position: { x: b2RandomRange(-2.0, 2.0), y: 10.0 },
+            position: { x: b2RandomRange(-2, 2), y: 10 },
             angle: b2RandomRange(-Math.PI, Math.PI),
             angularDamping: index === 4 ? 0.02 : 0,
         });
@@ -126,13 +126,13 @@ class PolyShapes extends Test {
         if (index < 4) {
             body.CreateFixture({
                 shape: this.m_polygons[index],
-                density: 1.0,
+                density: 1,
                 friction: 0.3,
             });
         } else {
             body.CreateFixture({
                 shape: this.m_circle,
-                density: 1.0,
+                density: 1,
                 friction: 0.3,
             });
         }
@@ -175,8 +175,8 @@ class PolyShapes extends Test {
 
         let count = 0;
         const { circle, transform } = temp.Step;
-        circle.m_radius = 2.0;
-        circle.m_p.Set(0.0, 1.1);
+        circle.m_radius = 2;
+        circle.m_p.Set(0, 1.1);
         transform.SetIdentity();
 
         const aabb = new b2AABB();
@@ -199,7 +199,7 @@ class PolyShapes extends Test {
             if (overlap) {
                 const color = new b2Color(0.95, 0.95, 0.6);
                 const center = body.GetWorldCenter();
-                g_debugDraw.DrawPoint(center, 5.0, color);
+                g_debugDraw.DrawPoint(center, 5, color);
                 ++count;
             }
 

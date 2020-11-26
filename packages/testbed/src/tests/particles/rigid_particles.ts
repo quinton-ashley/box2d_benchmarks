@@ -88,7 +88,7 @@ class RigidParticles extends Test {
             pd.groupFlags = b2ParticleGroupFlag.b2_rigidParticleGroup | b2ParticleGroupFlag.b2_solidParticleGroup;
             pd.position.Set(1, 4);
             pd.angle = -0.5;
-            pd.angularVelocity = 2.0;
+            pd.angularVelocity = 2;
             pd.shape = shape;
             pd.color.SetByteRGBA(0, 0, 255, 255);
             this.m_particleSystem.CreateParticleGroup(pd);

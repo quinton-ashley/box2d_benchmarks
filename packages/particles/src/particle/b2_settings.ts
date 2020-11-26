@@ -25,7 +25,7 @@ export const b2_maxParticleIndex = 0x7fffffff;
 export const b2_particleStride = 0.75;
 
 /// The minimum particle weight that produces pressure.
-export const b2_minParticleWeight = 1.0;
+export const b2_minParticleWeight = 1;
 
 /// The upper limit for particle pressure.
 export const b2_maxParticlePressure = 0.25;
@@ -34,7 +34,7 @@ export const b2_maxParticlePressure = 0.25;
 export const b2_maxParticleForce = 0.5;
 
 /// The maximum distance between particles in a triad, multiplied by the particle diameter.
-export const b2_maxTriadDistance = 2.0;
+export const b2_maxTriadDistance = 2;
 export const b2_maxTriadDistanceSquared = b2_maxTriadDistance * b2_maxTriadDistance;
 
 /// The initial size of particle data buffers.

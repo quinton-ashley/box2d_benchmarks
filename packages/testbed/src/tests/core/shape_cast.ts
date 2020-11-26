@@ -53,8 +53,8 @@ class ShapeCast extends Test {
         super();
 
         // #if 1
-        this.m_vAs[0] = new b2Vec2(-0.5, 1.0);
-        this.m_vAs[1] = new b2Vec2(0.5, 1.0);
+        this.m_vAs[0] = new b2Vec2(-0.5, 1);
+        this.m_vAs[1] = new b2Vec2(0.5, 1);
         this.m_vAs[2] = new b2Vec2();
         this.m_countA = 3;
         this.m_radiusA = b2_polygonRadius;
@@ -80,7 +80,7 @@ class ShapeCast extends Test {
         super.Step(settings, timeStep);
 
         const transformA = new b2Transform();
-        transformA.p.Set(0.0, 0.25);
+        transformA.p.Set(0, 0.25);
         transformA.q.SetIdentity();
 
         const transformB = new b2Transform();
@@ -91,7 +91,7 @@ class ShapeCast extends Test {
         input.proxyB.SetVerticesRadius(this.m_vBs, this.m_countB, this.m_radiusB);
         input.transformA.Copy(transformA);
         input.transformB.Copy(transformB);
-        input.translationB.Set(8.0, 0.0);
+        input.translationB.Set(8, 0);
 
         const output = new b2ShapeCastOutput();
 
@@ -135,7 +135,7 @@ class ShapeCast extends Test {
 
         if (hit) {
             const p1 = output.point;
-            g_debugDraw.DrawPoint(p1, 10.0, new b2Color(0.9, 0.3, 0.3));
+            g_debugDraw.DrawPoint(p1, 10, new b2Color(0.9, 0.3, 0.3));
             // b2Vec2 p2 = p1 + output.normal;
             const p2 = b2Vec2.Add(p1, output.normal, new b2Vec2());
             g_debugDraw.DrawSegment(p1, p2, new b2Color(0.9, 0.3, 0.3));

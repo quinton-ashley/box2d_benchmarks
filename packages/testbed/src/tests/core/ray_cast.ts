@@ -58,7 +58,7 @@ class RayCast extends Test {
             const ground = this.m_world.CreateBody();
 
             const shape = new b2EdgeShape();
-            shape.SetTwoSided(new b2Vec2(-40.0, 0.0), new b2Vec2(40.0, 0.0));
+            shape.SetTwoSided(new b2Vec2(-40, 0), new b2Vec2(40, 0));
             ground.CreateFixture({ shape });
         }
 
@@ -66,9 +66,9 @@ class RayCast extends Test {
             const vertices: b2Vec2[] = [
                 /* 3 */
             ];
-            vertices[0] = new b2Vec2(-0.5, 0.0);
-            vertices[1] = new b2Vec2(0.5, 0.0);
-            vertices[2] = new b2Vec2(0.0, 1.5);
+            vertices[0] = new b2Vec2(-0.5, 0);
+            vertices[1] = new b2Vec2(0.5, 0);
+            vertices[2] = new b2Vec2(0, 1.5);
             this.m_polygons[0].Set(vertices, 3);
         }
 
@@ -76,28 +76,28 @@ class RayCast extends Test {
             const vertices: b2Vec2[] = [
                 /* 3 */
             ];
-            vertices[0] = new b2Vec2(-0.1, 0.0);
-            vertices[1] = new b2Vec2(0.1, 0.0);
-            vertices[2] = new b2Vec2(0.0, 1.5);
+            vertices[0] = new b2Vec2(-0.1, 0);
+            vertices[1] = new b2Vec2(0.1, 0);
+            vertices[2] = new b2Vec2(0, 1.5);
             this.m_polygons[1].Set(vertices, 3);
         }
 
         {
-            const w = 1.0;
-            const b = w / (2.0 + Math.sqrt(2.0));
-            const s = Math.sqrt(2.0) * b;
+            const w = 1;
+            const b = w / (2 + Math.sqrt(2));
+            const s = Math.sqrt(2) * b;
 
             const vertices: b2Vec2[] = [
                 /* 8 */
             ];
-            vertices[0] = new b2Vec2(0.5 * s, 0.0);
+            vertices[0] = new b2Vec2(0.5 * s, 0);
             vertices[1] = new b2Vec2(0.5 * w, b);
             vertices[2] = new b2Vec2(0.5 * w, b + s);
             vertices[3] = new b2Vec2(0.5 * s, w);
             vertices[4] = new b2Vec2(-0.5 * s, w);
             vertices[5] = new b2Vec2(-0.5 * w, b + s);
             vertices[6] = new b2Vec2(-0.5 * w, b);
-            vertices[7] = new b2Vec2(-0.5 * s, 0.0);
+            vertices[7] = new b2Vec2(-0.5 * s, 0);
 
             this.m_polygons[2].Set(vertices, 8);
         }
@@ -124,7 +124,7 @@ class RayCast extends Test {
         }
 
         const new_body = (this.m_bodies[this.m_bodyIndex] = this.m_world.CreateBody({
-            position: { x: b2RandomRange(-10.0, 10.0), y: b2RandomRange(0.0, 20.0) },
+            position: { x: b2RandomRange(-10, 10), y: b2RandomRange(0, 20) },
             angle: b2RandomRange(-Math.PI, Math.PI),
             userData: { index },
             angularDamping: index === 4 ? 0.02 : 0,
@@ -187,8 +187,8 @@ class RayCast extends Test {
 
         super.Step(settings, timeStep);
 
-        const L = 11.0;
-        const point1 = new b2Vec2(0.0, 10.0);
+        const L = 11;
+        const point1 = new b2Vec2(0, 10);
         const d = new b2Vec2(L * Math.cos(this.m_angle), L * Math.sin(this.m_angle));
         const point2 = b2Vec2.Add(point1, d, new b2Vec2());
 
@@ -210,7 +210,7 @@ class RayCast extends Test {
         }
 
         if (advanceRay) {
-            this.m_angle += (0.25 * Math.PI) / 180.0;
+            this.m_angle += (0.25 * Math.PI) / 180;
         }
 
         /*
@@ -218,31 +218,31 @@ class RayCast extends Test {
       // This case was failing.
       {
         b2Vec2 vertices[4];
-        //vertices[0].Set(-22.875f, -3.0f);
-        //vertices[1].Set(22.875f, -3.0f);
-        //vertices[2].Set(22.875f, 3.0f);
-        //vertices[3].Set(-22.875f, 3.0f);
+        //vertices[0].Set(-22.875, -3  );
+        //vertices[1].Set(22.875, -3  );
+        //vertices[2].Set(22.875, 3  );
+        //vertices[3].Set(-22.875, 3  );
 
         b2PolygonShape shape;
         //shape.Set(vertices, 4);
-        shape.SetAsBox(22.875f, 3.0f);
+        shape.SetAsBox(22.875, 3  );
 
         b2RayCastInput input;
-        input.p1.Set(10.2725f,1.71372f);
-        input.p2.Set(10.2353f,2.21807f);
-        //input.maxFraction = 0.567623f;
-        input.maxFraction = 0.56762173f;
+        input.p1.Set(10.2725,1.71372 );
+        input.p2.Set(10.2353,2.21807 );
+        //input.maxFraction = 0.567623 ;
+        input.maxFraction = 0.56762173 ;
 
         b2Transform xf;
         xf.SetIdentity();
-        xf.p.Set(23.0f, 5.0f);
+        xf.p.Set(23, 5  );
 
         b2RayCastOutput output;
         bool hit;
         hit = shape.RayCast(&output, input, xf);
         hit = false;
 
-        b2Color color(1.0f, 1.0f, 1.0f);
+        b2Color color(1, 1, 1  );
         b2Vec2 vs[4];
         for (int32 i = 0; i < 4; ++i)
         {
@@ -283,7 +283,7 @@ class RayCast extends Test {
         });
 
         if (hit) {
-            g_debugDraw.DrawPoint(resultPoint, 5.0, new b2Color(0.4, 0.9, 0.4));
+            g_debugDraw.DrawPoint(resultPoint, 5, new b2Color(0.4, 0.9, 0.4));
             g_debugDraw.DrawSegment(point1, resultPoint, new b2Color(0.8, 0.8, 0.8));
             const head = b2Vec2.Add(resultPoint, b2Vec2.Scale(0.5, resultNormal, b2Vec2.s_t0), new b2Vec2());
             g_debugDraw.DrawSegment(resultPoint, head, new b2Color(0.9, 0.9, 0.4));
@@ -320,7 +320,7 @@ class RayCast extends Test {
         });
 
         if (hit) {
-            g_debugDraw.DrawPoint(resultPoint, 5.0, new b2Color(0.4, 0.9, 0.4));
+            g_debugDraw.DrawPoint(resultPoint, 5, new b2Color(0.4, 0.9, 0.4));
             g_debugDraw.DrawSegment(point1, resultPoint, new b2Color(0.8, 0.8, 0.8));
             const head = b2Vec2.Add(resultPoint, b2Vec2.Scale(0.5, resultNormal, b2Vec2.s_t0), new b2Vec2());
             g_debugDraw.DrawSegment(resultPoint, head, new b2Color(0.9, 0.9, 0.4));
@@ -369,7 +369,7 @@ class RayCast extends Test {
         for (let i = 0; i < count; ++i) {
             const p = resultPoints[i];
             const n = resultNormals[i];
-            g_debugDraw.DrawPoint(p, 5.0, new b2Color(0.4, 0.9, 0.4));
+            g_debugDraw.DrawPoint(p, 5, new b2Color(0.4, 0.9, 0.4));
             g_debugDraw.DrawSegment(point1, p, new b2Color(0.8, 0.8, 0.8));
             const head = b2Vec2.Add(p, b2Vec2.Scale(0.5, n, b2Vec2.s_t0), new b2Vec2());
             g_debugDraw.DrawSegment(p, head, new b2Color(0.9, 0.9, 0.4));

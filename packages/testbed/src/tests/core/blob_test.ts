@@ -28,25 +28,25 @@ class BlobTest extends Test {
 
         {
             const shape = new b2EdgeShape();
-            shape.SetTwoSided(new b2Vec2(-40.0, 0.0), new b2Vec2(40.0, 0.0));
+            shape.SetTwoSided(new b2Vec2(-40, 0), new b2Vec2(40, 0));
             ground.CreateFixture({ shape });
-            shape.SetTwoSided(new b2Vec2(-40.0, 0.0), new b2Vec2(-40.0, 25.0));
+            shape.SetTwoSided(new b2Vec2(-40, 0), new b2Vec2(-40, 25));
             ground.CreateFixture({ shape });
-            shape.SetTwoSided(new b2Vec2(40.0, 0.0), new b2Vec2(40.0, 25.0));
+            shape.SetTwoSided(new b2Vec2(40, 0), new b2Vec2(40, 25));
             ground.CreateFixture({ shape });
         }
 
         {
             const ajd = new b2AreaJointDef();
 
-            const cx = 0.0;
-            const cy = 10.0;
-            const rx = 5.0;
-            const ry = 5.0;
+            const cx = 0;
+            const cy = 10;
+            const rx = 5;
+            const ry = 5;
             const nBodies = 20;
             const bodyRadius = 0.5;
             for (let i = 0; i < nBodies; ++i) {
-                const angle = (i * 2.0 * Math.PI) / nBodies;
+                const angle = (i * 2 * Math.PI) / nBodies;
 
                 const body = this.m_world.CreateBody({
                     type: b2BodyType.b2_dynamicBody,
@@ -57,14 +57,14 @@ class BlobTest extends Test {
 
                 body.CreateFixture({
                     shape: new b2CircleShape(bodyRadius),
-                    density: 1.0,
+                    density: 1,
                 });
 
                 ajd.AddBody(body);
             }
 
-            const frequencyHz = 10.0;
-            const dampingRatio = 1.0;
+            const frequencyHz = 10;
+            const dampingRatio = 1;
             b2LinearStiffness(ajd, frequencyHz, dampingRatio, ajd.bodyA, ajd.bodyB);
             this.m_world.CreateJoint(ajd);
         }

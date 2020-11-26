@@ -57,24 +57,24 @@ class Pinball extends Test {
             ground = this.m_world.CreateBody();
 
             const vs = b2Vec2.MakeArray(5);
-            vs[0].Set(-8.0, 6.0);
-            vs[1].Set(-8.0, 20.0);
-            vs[2].Set(8.0, 20.0);
-            vs[3].Set(8.0, 6.0);
-            vs[4].Set(0.0, -2.0);
+            vs[0].Set(-8, 6);
+            vs[1].Set(-8, 20);
+            vs[2].Set(8, 20);
+            vs[3].Set(8, 6);
+            vs[4].Set(0, -2);
 
             const loop = new b2ChainShape();
             loop.CreateLoop(vs, 5);
             ground.CreateFixture({
                 shape: loop,
-                density: 0.0,
+                density: 0,
             });
         }
 
         // Flippers
         {
-            const p1 = new b2Vec2(-2.0, 0.0);
-            const p2 = new b2Vec2(2.0, 0.0);
+            const p1 = new b2Vec2(-2, 0);
+            const p2 = new b2Vec2(2, 0);
 
             const leftFlipper = this.m_world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
@@ -91,7 +91,7 @@ class Pinball extends Test {
 
             const fd: b2FixtureDef = {
                 shape: box,
-                density: 1.0,
+                density: 1,
             };
             leftFlipper.CreateFixture(fd);
             rightFlipper.CreateFixture(fd);
@@ -100,28 +100,28 @@ class Pinball extends Test {
             jd.bodyA = ground;
             jd.localAnchorB.SetZero();
             jd.enableMotor = true;
-            jd.maxMotorTorque = 1000.0;
+            jd.maxMotorTorque = 1000;
             jd.enableLimit = true;
 
-            jd.motorSpeed = 0.0;
+            jd.motorSpeed = 0;
             jd.localAnchorA.Copy(p1);
             jd.bodyB = leftFlipper;
-            jd.lowerAngle = (-30.0 * Math.PI) / 180.0;
-            jd.upperAngle = (5.0 * Math.PI) / 180.0;
+            jd.lowerAngle = (-30 * Math.PI) / 180;
+            jd.upperAngle = (5 * Math.PI) / 180;
             this.m_leftJoint = this.m_world.CreateJoint(jd);
 
-            jd.motorSpeed = 0.0;
+            jd.motorSpeed = 0;
             jd.localAnchorA.Copy(p2);
             jd.bodyB = rightFlipper;
-            jd.lowerAngle = (-5.0 * Math.PI) / 180.0;
-            jd.upperAngle = (30.0 * Math.PI) / 180.0;
+            jd.lowerAngle = (-5 * Math.PI) / 180;
+            jd.upperAngle = (30 * Math.PI) / 180;
             this.m_rightJoint = this.m_world.CreateJoint(jd);
         }
 
         // Circle character
         {
             this.m_ball = this.m_world.CreateBody({
-                position: { x: 1.0, y: 15.0 },
+                position: { x: 1, y: 15 },
                 type: b2BodyType.b2_dynamicBody,
                 bullet: true,
             });
@@ -131,7 +131,7 @@ class Pinball extends Test {
 
             const fd: b2FixtureDef = {
                 shape,
-                density: 1.0,
+                density: 1,
             };
             this.m_ball.CreateFixture(fd);
         }
@@ -160,11 +160,11 @@ class Pinball extends Test {
 
     public Step(settings: Settings, timeStep: number): void {
         if (this.m_button) {
-            this.m_leftJoint.SetMotorSpeed(20.0);
-            this.m_rightJoint.SetMotorSpeed(-20.0);
+            this.m_leftJoint.SetMotorSpeed(20);
+            this.m_rightJoint.SetMotorSpeed(-20);
         } else {
-            this.m_leftJoint.SetMotorSpeed(-10.0);
-            this.m_rightJoint.SetMotorSpeed(10.0);
+            this.m_leftJoint.SetMotorSpeed(-10);
+            this.m_rightJoint.SetMotorSpeed(10);
         }
 
         super.Step(settings, timeStep);

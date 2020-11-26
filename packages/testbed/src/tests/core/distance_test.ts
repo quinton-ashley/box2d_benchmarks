@@ -50,14 +50,14 @@ class DistanceTest extends Test {
         super();
 
         this.m_transformA.SetIdentity();
-        this.m_transformA.p.Set(0.0, -0.2);
-        this.m_polygonA.SetAsBox(10.0, 0.2);
+        this.m_transformA.p.Set(0, -0.2);
+        this.m_polygonA.SetAsBox(10, 0.2);
 
         this.m_positionB.Set(12.017401, 0.13678508);
         this.m_angleB = -0.0109265;
         this.m_transformB.SetPositionAngle(this.m_positionB, this.m_angleB);
 
-        this.m_polygonB.SetAsBox(2.0, 0.1);
+        this.m_polygonB.SetAsBox(2, 0.1);
     }
 
     public GetDefaultViewZoom() {
@@ -123,11 +123,11 @@ class DistanceTest extends Test {
         const x1 = output.pointA;
         const x2 = output.pointB;
 
-        const c1 = new b2Color(1.0, 0.0, 0.0);
-        g_debugDraw.DrawPoint(x1, 4.0, c1);
+        const c1 = new b2Color(1, 0, 0);
+        g_debugDraw.DrawPoint(x1, 4, c1);
 
-        const c2 = new b2Color(1.0, 1.0, 0.0);
-        g_debugDraw.DrawPoint(x2, 4.0, c2);
+        const c2 = new b2Color(1, 1, 0);
+        g_debugDraw.DrawPoint(x2, 4, c2);
     }
 }
 

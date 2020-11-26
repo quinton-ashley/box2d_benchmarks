@@ -84,7 +84,7 @@ class SandboxParams {
     /**
      * Pump radius; slightly smaller than a tile
      */
-    public static readonly k_pumpRadius = 2.0 - 0.05;
+    public static readonly k_pumpRadius = 2 - 0.05;
 
     public static readonly k_playfieldLeftEdge = -20;
 
@@ -150,12 +150,12 @@ class SpecialParticleTracker extends b2DestructionListener {
     /**
      * Current offset into this.m_colorOscillationPeriod.
      */
-    public m_colorOscillationTime = 0.0;
+    public m_colorOscillationTime = 0;
 
     /**
      * Color oscillation period in seconds.
      */
-    public m_colorOscillationPeriod = 2.0;
+    public m_colorOscillationPeriod = 2;
 
     /**
      * Register this class as a destruction listener so that it's
@@ -203,11 +203,11 @@ class SpecialParticleTracker extends b2DestructionListener {
         }
         // Oscillate the shade of color over this.m_colorOscillationPeriod seconds.
         this.m_colorOscillationTime = fmod(this.m_colorOscillationTime + dt, this.m_colorOscillationPeriod);
-        const colorCoeff = 2.0 * Math.abs(this.m_colorOscillationTime / this.m_colorOscillationPeriod - 0.5);
+        const colorCoeff = 2 * Math.abs(this.m_colorOscillationTime / this.m_colorOscillationPeriod - 0.5);
         const color = new b2Color().SetByteRGBA(
-            128 + 128.0 * (1.0 - colorCoeff),
-            128 + 256.0 * Math.abs(0.5 - colorCoeff),
-            128 + 128.0 * colorCoeff,
+            128 + 128 * (1 - colorCoeff),
+            128 + 256 * Math.abs(0.5 - colorCoeff),
+            128 + 128 * colorCoeff,
             255,
         );
         // Update the color of all special particles.
@@ -262,7 +262,7 @@ class Sandbox extends Test {
     /**
      * How long have we been pushing the pumps?
      */
-    public m_pumpTimer = 0.0;
+    public m_pumpTimer = 0;
 
     /**
      * Particle creation flags
@@ -526,7 +526,7 @@ class Sandbox extends Test {
             type,
             position: center,
         });
-        body.CreateFixture({ shape, density: 10.0 });
+        body.CreateFixture({ shape, density: 10 });
     }
 
     // Inititalizes a pump and its prismatic joint, and adds it to the world
@@ -542,7 +542,7 @@ class Sandbox extends Test {
             type: b2BodyType.b2_dynamicBody,
             angle: 0,
         });
-        body.CreateFixture({ shape, density: 5.0 });
+        body.CreateFixture({ shape, density: 5 });
 
         // Create a prismatic joint and connect to the ground, and have it
         // slide along the x axis.
@@ -570,7 +570,7 @@ class Sandbox extends Test {
         emitter.SetParticleSystem(this.m_particleSystem);
         emitter.SetPosition(center);
         emitter.SetVelocity(startingVelocity);
-        emitter.SetSize(new b2Vec2(SandboxParams.k_defaultEmitterSize, 0.0));
+        emitter.SetSize(new b2Vec2(SandboxParams.k_defaultEmitterSize, 0));
         emitter.SetEmitRate(SandboxParams.k_defaultEmitterRate);
         emitter.SetColor(color);
         this.m_emitters[this.m_faucetEmitterIndex] = emitter;
@@ -636,9 +636,9 @@ class Sandbox extends Test {
      * Per-frame step updater overridden from Test
      */
     public Step(settings: Settings, timeStep: number): void {
-        let dt = settings.m_hertz > 0.0 ? 1.0 / settings.m_hertz : 0.0;
+        let dt = settings.m_hertz > 0 ? 1 / settings.m_hertz : 0;
         if (settings.m_pause && !settings.m_singleStep) {
-            dt = 0.0;
+            dt = 0;
         }
         super.Step(settings, timeStep);
 

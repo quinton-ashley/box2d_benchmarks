@@ -43,9 +43,9 @@ const temp = {
 class DynamicTreeTest extends Test {
     public static readonly e_actorCount = 128;
 
-    public m_worldExtent = 0.0;
+    public m_worldExtent = 0;
 
-    public m_proxyExtent = 0.0;
+    public m_proxyExtent = 0;
 
     public m_tree = new b2DynamicTree<DynamicTreeTest_Actor>();
 
@@ -69,7 +69,7 @@ class DynamicTreeTest extends Test {
     constructor() {
         super();
 
-        this.m_worldExtent = 15.0;
+        this.m_worldExtent = 15;
         this.m_proxyExtent = 0.5;
 
         // srand(888);
@@ -83,14 +83,14 @@ class DynamicTreeTest extends Test {
         this.m_stepCount = 0;
 
         const h = this.m_worldExtent;
-        this.m_queryAABB.lowerBound.Set(-3.0, -4.0 + h);
-        this.m_queryAABB.upperBound.Set(5.0, 6.0 + h);
+        this.m_queryAABB.lowerBound.Set(-3, -4 + h);
+        this.m_queryAABB.upperBound.Set(5, 6 + h);
 
-        this.m_rayCastInput.p1.Set(-5.0, 5.0 + h);
-        this.m_rayCastInput.p2.Set(7.0, -4.0 + h);
-        // this.m_rayCastInput.p1.Set(0.0, 2.0 + h);
-        // this.m_rayCastInput.p2.Set(0.0, -2.0 + h);
-        this.m_rayCastInput.maxFraction = 1.0;
+        this.m_rayCastInput.p1.Set(-5, 5 + h);
+        this.m_rayCastInput.p2.Set(7, -4 + h);
+        // this.m_rayCastInput.p1.Set(0, 2 + h);
+        // this.m_rayCastInput.p2.Set(0, -2 + h);
+        this.m_rayCastInput.maxFraction = 1;
 
         this.m_automated = false;
     }
@@ -142,8 +142,8 @@ class DynamicTreeTest extends Test {
 
         const c1 = new b2Color(0.2, 0.9, 0.2);
         const c2 = new b2Color(0.9, 0.2, 0.2);
-        g_debugDraw.DrawPoint(this.m_rayCastInput.p1, 6.0, c1);
-        g_debugDraw.DrawPoint(this.m_rayCastInput.p2, 6.0, c2);
+        g_debugDraw.DrawPoint(this.m_rayCastInput.p1, 6, c1);
+        g_debugDraw.DrawPoint(this.m_rayCastInput.p2, 6, c2);
 
         if (this.m_rayActor) {
             const cr = new b2Color(0.2, 0.2, 0.9);
@@ -157,7 +157,7 @@ class DynamicTreeTest extends Test {
                 ),
                 new b2Vec2(),
             );
-            g_debugDraw.DrawPoint(p, 6.0, cr);
+            g_debugDraw.DrawPoint(p, 6, cr);
         }
 
         this.addDebug("Dynamic Tree Height", this.m_tree.GetHeight());
@@ -178,11 +178,11 @@ class DynamicTreeTest extends Test {
 
     public GetRandomAABB(aabb: b2AABB): void {
         const w = new b2Vec2();
-        w.Set(2.0 * this.m_proxyExtent, 2.0 * this.m_proxyExtent);
+        w.Set(2 * this.m_proxyExtent, 2 * this.m_proxyExtent);
         // aabb.lowerBound.x = -this.m_proxyExtent;
         // aabb.lowerBound.y = -this.m_proxyExtent + this.m_worldExtent;
         aabb.lowerBound.x = b2RandomRange(-this.m_worldExtent, this.m_worldExtent);
-        aabb.lowerBound.y = b2RandomRange(0.0, 2.0 * this.m_worldExtent);
+        aabb.lowerBound.y = b2RandomRange(0, 2 * this.m_worldExtent);
         aabb.upperBound.Copy(aabb.lowerBound);
         aabb.upperBound.Add(w);
     }
@@ -191,15 +191,15 @@ class DynamicTreeTest extends Test {
         const d = new b2Vec2();
         d.x = b2RandomRange(-0.5, 0.5);
         d.y = b2RandomRange(-0.5, 0.5);
-        // d.x = 2.0;
-        // d.y = 0.0;
+        // d.x = 2;
+        // d.y = 0;
         aabb.lowerBound.Add(d);
         aabb.upperBound.Add(d);
 
         // b2Vec2 c0 = 0.5 * (aabb.lowerBound + aabb.upperBound);
         const c0 = b2Vec2.Scale(0.5, b2Vec2.Add(aabb.lowerBound, aabb.upperBound, b2Vec2.s_t0), new b2Vec2());
-        const min = new b2Vec2(-this.m_worldExtent, 0.0);
-        const max = new b2Vec2(this.m_worldExtent, 2.0 * this.m_worldExtent);
+        const min = new b2Vec2(-this.m_worldExtent, 0);
+        const max = new b2Vec2(this.m_worldExtent, 2 * this.m_worldExtent);
         const c = b2Vec2.Clamp(c0, min, max, new b2Vec2());
 
         aabb.lowerBound.Add(b2Vec2.Subtract(c, c0, new b2Vec2()));
@@ -251,7 +251,7 @@ class DynamicTreeTest extends Test {
     public Reset(): void {
         this.m_rayActor = null;
         for (let i = 0; i < DynamicTreeTest.e_actorCount; ++i) {
-            this.m_actors[i].fraction = 1.0;
+            this.m_actors[i].fraction = 1;
             this.m_actors[i].overlap = false;
         }
     }
@@ -337,7 +337,7 @@ class DynamicTreeTest extends Test {
 class DynamicTreeTest_Actor {
     public aabb = new b2AABB();
 
-    public fraction = 0.0;
+    public fraction = 0;
 
     public overlap = false;
 

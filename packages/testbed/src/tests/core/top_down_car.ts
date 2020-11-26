@@ -165,7 +165,7 @@ class TDTire {
 
     public updateFriction(): void {
         // lateral linear velocity
-        const impulse = this.getLateralVelocity().Scale(-1.0 * this.m_body.GetMass());
+        const impulse = this.getLateralVelocity().Scale(-1 * this.m_body.GetMass());
         if (impulse.Length() > this.m_maxLateralImpulse) {
             impulse.Scale(this.m_maxLateralImpulse / impulse.Length());
         }
@@ -325,7 +325,7 @@ class TDCar {
         // control steering
         const lockAngle = 35 * DEGTORAD;
         const turnSpeedPerSec = 160 * DEGTORAD; // from lock to lock in 0.5 sec
-        const turnPerTimeStep = turnSpeedPerSec / 60.0;
+        const turnPerTimeStep = turnSpeedPerSec / 60;
         let desiredAngle = 0;
         switch (controlState & (TDC_LEFT | TDC_RIGHT)) {
             case TDC_LEFT:

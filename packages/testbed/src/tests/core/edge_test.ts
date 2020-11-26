@@ -37,20 +37,20 @@ class EdgeTest extends Test {
         super();
 
         const vertices: b2Vec2[] = [
-            new b2Vec2(10.0, -4.0),
-            new b2Vec2(10.0, 0.0),
-            new b2Vec2(6.0, 0.0),
-            new b2Vec2(4.0, 2.0),
-            new b2Vec2(2.0, 0.0),
-            new b2Vec2(-2.0, 0.0),
-            new b2Vec2(-6.0, 0.0),
-            new b2Vec2(-8.0, -3.0),
-            new b2Vec2(-10.0, 0.0),
-            new b2Vec2(-10.0, -4.0),
+            new b2Vec2(10, -4),
+            new b2Vec2(10, 0),
+            new b2Vec2(6, 0),
+            new b2Vec2(4, 2),
+            new b2Vec2(2, 0),
+            new b2Vec2(-2, 0),
+            new b2Vec2(-6, 0),
+            new b2Vec2(-8, -3),
+            new b2Vec2(-10, 0),
+            new b2Vec2(-10, -4),
         ];
 
-        this.m_offset1.Set(0.0, 8.0);
-        this.m_offset2.Set(0.0, 16.0);
+        this.m_offset1.Set(0, 8);
+        this.m_offset2.Set(0, 16);
 
         {
             const v1 = vertices[0].Clone().Add(this.m_offset1);
@@ -167,29 +167,29 @@ class EdgeTest extends Test {
             this.m_body1 = this.m_world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
                 position: {
-                    x: 8.0 + this.m_offset1.x,
+                    x: 8 + this.m_offset1.x,
                     y: 2.6 + this.m_offset1.y,
                 },
                 allowSleep: false,
             });
 
             const shape = new b2PolygonShape();
-            shape.SetAsBox(0.5, 1.0);
+            shape.SetAsBox(0.5, 1);
 
-            this.m_body1.CreateFixture({ shape, density: 1.0 });
+            this.m_body1.CreateFixture({ shape, density: 1 });
         }
 
         {
             this.m_body2 = this.m_world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
-                position: { x: 8.0 + this.m_offset2.x, y: 2.6 + this.m_offset2.y },
+                position: { x: 8 + this.m_offset2.x, y: 2.6 + this.m_offset2.y },
                 allowSleep: false,
             });
 
             const shape = new b2PolygonShape();
-            shape.SetAsBox(0.5, 1.0);
+            shape.SetAsBox(0.5, 1);
 
-            this.m_body2.CreateFixture({ shape, density: 1.0 });
+            this.m_body2.CreateFixture({ shape, density: 1 });
         }
     }
 
@@ -212,9 +212,9 @@ class EdgeTest extends Test {
         //     });
 
         //     b2CircleShape shape;
-        //     shape.this.m_radius = 0.5f;
+        //     shape.this.m_radius = 0.5 ;
 
-        //     this.m_body1.CreateFixture({ shape, density: 1.0 });
+        //     this.m_body1.CreateFixture({ shape, density: 1 });
         // }
 
         // {
@@ -225,15 +225,15 @@ class EdgeTest extends Test {
         //     });
 
         //     b2CircleShape shape;
-        //     shape.this.m_radius = 0.5f;
+        //     shape.this.m_radius = 0.5 ;
 
-        //     this.m_body2.CreateFixture({ shape, density: 1.0 });
+        //     this.m_body2.CreateFixture({ shape, density: 1 });
         // }
     }
 
     public UpdateUI(): void {
-        // 	ImGui::SetNextWindowPos(ImVec2(10.0, 100.0));
-        // 	ImGui::SetNextWindowSize(ImVec2(200.0, 100.0));
+        // 	ImGui::SetNextWindowPos(ImVec2(10, 100));
+        // 	ImGui::SetNextWindowSize(ImVec2(200, 100));
         // 	ImGui::Begin("Custom Controls", null, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
         // 	if (ImGui::RadioButton("Boxes", m_boxes == true))
         // 	{
@@ -251,14 +251,14 @@ class EdgeTest extends Test {
     public Step(settings: Settings, timeStep: number): void {
         // if (glfwGetKey(g_mainWindow, GLFW_KEY_A) == GLFW_PRESS)
         // {
-        // 	this.m_body1.ApplyForceToCenter(new b2Vec2(-10.0, 0.0), true);
-        // 	this.m_body2.ApplyForceToCenter(new b2Vec2(-10.0, 0.0), true);
+        // 	this.m_body1.ApplyForceToCenter(new b2Vec2(-10, 0), true);
+        // 	this.m_body2.ApplyForceToCenter(new b2Vec2(-10, 0), true);
         // }
 
         // if (glfwGetKey(g_mainWindow, GLFW_KEY_D) == GLFW_PRESS)
         // {
-        // 	this.m_body1.ApplyForceToCenter(new b2Vec2(10.0, 0.0), true);
-        // 	this.m_body2.ApplyForceToCenter(new b2Vec2(10.0, 0.0), true);
+        // 	this.m_body1.ApplyForceToCenter(new b2Vec2(10, 0), true);
+        // 	this.m_body2.ApplyForceToCenter(new b2Vec2(10, 0), true);
         // }
 
         super.Step(settings, timeStep);
@@ -267,12 +267,12 @@ class EdgeTest extends Test {
     getHotkeys(): HotKey[] {
         return [
             hotKeyPress("a", "Apply Force Left", () => {
-                this.m_body1?.ApplyForceToCenter(new b2Vec2(-200.0, 0.0), true);
-                this.m_body2?.ApplyForceToCenter(new b2Vec2(-200.0, 0.0), true);
+                this.m_body1?.ApplyForceToCenter(new b2Vec2(-200, 0), true);
+                this.m_body2?.ApplyForceToCenter(new b2Vec2(-200, 0), true);
             }),
             hotKeyPress("d", "Apply Force Right", () => {
-                this.m_body1?.ApplyForceToCenter(new b2Vec2(200.0, 0.0), true);
-                this.m_body2?.ApplyForceToCenter(new b2Vec2(200.0, 0.0), true);
+                this.m_body1?.ApplyForceToCenter(new b2Vec2(200, 0), true);
+                this.m_body2?.ApplyForceToCenter(new b2Vec2(200, 0), true);
             }),
         ];
     }

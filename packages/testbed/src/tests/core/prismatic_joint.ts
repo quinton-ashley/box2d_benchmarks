@@ -34,37 +34,37 @@ class PrismaticJoint extends Test {
             ground = this.m_world.CreateBody();
 
             const shape = new b2EdgeShape();
-            shape.SetTwoSided(new b2Vec2(-40.0, 0.0), new b2Vec2(40.0, 0.0));
+            shape.SetTwoSided(new b2Vec2(-40, 0), new b2Vec2(40, 0));
             ground.CreateFixture({ shape });
         }
 
         {
             const shape = new b2PolygonShape();
-            shape.SetAsBox(2.0, 0.5);
+            shape.SetAsBox(2, 0.5);
 
             const body = this.m_world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
-                position: { x: -10.0, y: 10.0 },
+                position: { x: -10, y: 10 },
                 angle: 0.5 * Math.PI,
                 allowSleep: false,
             });
-            body.CreateFixture({ shape, density: 5.0 });
+            body.CreateFixture({ shape, density: 5 });
 
             const pjd = new b2PrismaticJointDef();
 
             // Bouncy limit
-            const axis = new b2Vec2(2.0, 1.0);
+            const axis = new b2Vec2(2, 1);
             axis.Normalize();
             pjd.Initialize(ground, body, new b2Vec2(), axis);
 
             // Non-bouncy limit
-            // pjd.Initialize(ground, body, new b2Vec2(-10.0, 10.0), new b2Vec2(1.0, 0.0));
+            // pjd.Initialize(ground, body, new b2Vec2(-10, 10), new b2Vec2(1, 0));
 
-            pjd.motorSpeed = 10.0;
-            pjd.maxMotorForce = 10000.0;
+            pjd.motorSpeed = 10;
+            pjd.maxMotorForce = 10000;
             pjd.enableMotor = true;
-            pjd.lowerTranslation = 0.0;
-            pjd.upperTranslation = 20.0;
+            pjd.lowerTranslation = 0;
+            pjd.upperTranslation = 20;
             pjd.enableLimit = true;
 
             this.m_joint = this.m_world.CreateJoint(pjd);

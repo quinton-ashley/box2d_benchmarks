@@ -74,7 +74,7 @@ class ParticleCollisionFilter extends Test {
             ground.CreateFixture({
                 shape,
                 density: 0,
-                restitution: 1.0,
+                restitution: 1,
             });
         }
 
@@ -83,7 +83,7 @@ class ParticleCollisionFilter extends Test {
         {
             // b2PolygonShape shape;
             const shape = new b2PolygonShape();
-            // shape.SetAsBox(1.5f, 1.5f, b2Vec2(kBoxSizeHalf, kBoxSizeHalf + kOffset), 0.0f);
+            // shape.SetAsBox(1.5, 1.5, b2Vec2(kBoxSizeHalf, kBoxSizeHalf + kOffset), 0);
             shape.SetAsBox(
                 1.5,
                 1.5,
@@ -91,7 +91,7 @@ class ParticleCollisionFilter extends Test {
                     ParticleCollisionFilter.kBoxSizeHalf,
                     ParticleCollisionFilter.kBoxSizeHalf + ParticleCollisionFilter.kOffset,
                 ),
-                0.0,
+                0,
             );
             // b2ParticleGroupDef pd;
             const pd = new b2ParticleGroupDef();
@@ -177,15 +177,15 @@ class ParticleCollisionFilter extends Test {
 
     public m_particleGroup: b2ParticleGroup;
 
-    public static readonly kBoxSize = 10.0;
+    public static readonly kBoxSize = 10;
 
     public static readonly kBoxSizeHalf = ParticleCollisionFilter.kBoxSize / 2;
 
-    public static readonly kOffset = 20.0;
+    public static readonly kOffset = 20;
 
     public static readonly kParticlesContainerSize = ParticleCollisionFilter.kOffset + 0.5;
 
-    public static readonly kSpeedup = 8.0;
+    public static readonly kSpeedup = 8;
 }
 
 registerTest("Particles", "Particle Collisions", ParticleCollisionFilter);
