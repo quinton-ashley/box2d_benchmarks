@@ -31,12 +31,12 @@ class MobileBalanced extends Test {
             position: { x: 0, y: 20 },
         });
 
-        const /* float32 */ a = 0.5;
-        const /* b2Vec2 */ h = new b2Vec2(0.0, a);
+        const a = 0.5;
+        const h = new b2Vec2(0.0, a);
 
-        const /* b2Body */ root = this.AddNode(ground, b2Vec2.ZERO, 0, 3.0, a);
+        const root = this.AddNode(ground, b2Vec2.ZERO, 0, 3.0, a);
 
-        const /* b2RevoluteJointDef */ jointDef = new b2RevoluteJointDef();
+        const jointDef = new b2RevoluteJointDef();
         jointDef.bodyA = ground;
         jointDef.bodyB = root;
         jointDef.localAnchorA.SetZero();
@@ -56,18 +56,18 @@ class MobileBalanced extends Test {
     }
 
     public AddNode(parent: b2Body, localAnchor: XY, depth: number, offset: number, a: number): b2Body {
-        const /* float32 */ density = 20.0;
-        const /* b2Vec2 */ h = new b2Vec2(0.0, a);
+        const density = 20.0;
+        const h = new b2Vec2(0.0, a);
 
         //  b2Vec2 p = parent->GetPosition() + localAnchor - h;
-        const /* b2Vec2 */ p = parent.GetPosition().Clone().Add(localAnchor).Subtract(h);
+        const p = parent.GetPosition().Clone().Add(localAnchor).Subtract(h);
 
-        const /* b2Body */ body = this.m_world.CreateBody({
-                type: b2BodyType.b2_dynamicBody,
-                position: p,
-            });
+        const body = this.m_world.CreateBody({
+            type: b2BodyType.b2_dynamicBody,
+            position: p,
+        });
 
-        const /* b2PolygonShape */ shape = new b2PolygonShape();
+        const shape = new b2PolygonShape();
         shape.SetAsBox(0.25 * a, a);
         body.CreateFixture({ shape, density });
 
@@ -78,12 +78,12 @@ class MobileBalanced extends Test {
         shape.SetAsBox(offset, 0.25 * a, new b2Vec2(0, -a), 0.0);
         body.CreateFixture({ shape, density });
 
-        const /* b2Vec2 */ a1 = new b2Vec2(offset, -a);
-        const /* b2Vec2 */ a2 = new b2Vec2(-offset, -a);
-        const /* b2Body */ body1 = this.AddNode(body, a1, depth + 1, 0.5 * offset, a);
-        const /* b2Body */ body2 = this.AddNode(body, a2, depth + 1, 0.5 * offset, a);
+        const a1 = new b2Vec2(offset, -a);
+        const a2 = new b2Vec2(-offset, -a);
+        const body1 = this.AddNode(body, a1, depth + 1, 0.5 * offset, a);
+        const body2 = this.AddNode(body, a2, depth + 1, 0.5 * offset, a);
 
-        const /* b2RevoluteJointDef */ jointDef = new b2RevoluteJointDef();
+        const jointDef = new b2RevoluteJointDef();
         jointDef.bodyA = body;
         jointDef.localAnchorB.Copy(h);
 

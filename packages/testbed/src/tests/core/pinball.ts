@@ -51,12 +51,11 @@ class Pinball extends Test {
         super();
 
         // Ground body
-        /* b2Body */
+
         let ground = null;
         {
             ground = this.m_world.CreateBody();
 
-            /* b2Vec2 */
             const vs = b2Vec2.MakeArray(5);
             vs[0].Set(-8.0, 6.0);
             vs[1].Set(-8.0, 20.0);
@@ -64,7 +63,6 @@ class Pinball extends Test {
             vs[3].Set(8.0, 6.0);
             vs[4].Set(0.0, -2.0);
 
-            /* b2ChainShape */
             const loop = new b2ChainShape();
             loop.CreateLoop(vs, 5);
             ground.CreateFixture({
@@ -75,23 +73,19 @@ class Pinball extends Test {
 
         // Flippers
         {
-            /* b2Vec2 */
             const p1 = new b2Vec2(-2.0, 0.0);
             const p2 = new b2Vec2(2.0, 0.0);
 
-            /* b2Body */
             const leftFlipper = this.m_world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
                 position: p1,
             });
 
-            /* b2Body */
             const rightFlipper = this.m_world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
                 position: p2,
             });
 
-            /* b2PolygonShape */
             const box = new b2PolygonShape();
             box.SetAsBox(1.75, 0.1);
 
@@ -102,7 +96,6 @@ class Pinball extends Test {
             leftFlipper.CreateFixture(fd);
             rightFlipper.CreateFixture(fd);
 
-            /* b2RevoluteJointDef */
             const jd = new b2RevoluteJointDef();
             jd.bodyA = ground;
             jd.localAnchorB.SetZero();
@@ -133,7 +126,6 @@ class Pinball extends Test {
                 bullet: true,
             });
 
-            /* b2CircleShape */
             const shape = new b2CircleShape();
             shape.m_radius = 0.2;
 

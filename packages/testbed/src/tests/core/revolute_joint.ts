@@ -84,7 +84,6 @@ class RevoluteJoint extends Test {
         }
 
         {
-            /* b2CircleShape */
             const circle_shape = new b2CircleShape();
             circle_shape.m_radius = 3.0;
 
@@ -100,11 +99,9 @@ class RevoluteJoint extends Test {
                 shape: circle_shape,
             });
 
-            /* b2PolygonShape */
             const polygon_shape = new b2PolygonShape();
             polygon_shape.SetAsBox(10.0, 0.2, new b2Vec2(-10.0, 0.0), 0.0);
 
-            /* b2Body */
             const polygon_body = this.m_world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
                 position: { x: 20.0, y: 10.0 },
@@ -122,14 +119,12 @@ class RevoluteJoint extends Test {
 
         // Tests mass computation of a small object far from the origin
         {
-            /* b2Body */
             const body = this.m_world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
             });
 
-            /* b2PolygonShape */
             const polyShape = new b2PolygonShape();
-            /* b2Vec2 */
+
             const verts = b2Vec2.MakeArray(3);
             verts[0].Set(17.63, 36.31);
             verts[1].Set(17.52, 36.69);

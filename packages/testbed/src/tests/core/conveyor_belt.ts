@@ -28,7 +28,6 @@ class ConveyorBelt extends Test {
 
         // Ground
         {
-            /* b2Body */
             const ground = this.m_world.CreateBody();
 
             const shape = new b2EdgeShape();
@@ -38,7 +37,6 @@ class ConveyorBelt extends Test {
 
         // Platform
         {
-            /* b2Body */
             const body = this.m_world.CreateBody({
                 position: { x: -5.0, y: 5.0 },
             });
@@ -53,8 +51,7 @@ class ConveyorBelt extends Test {
         }
 
         // Boxes
-        for (/* int */ let i = 0; i < 5; ++i) {
-            /* b2Body */
+        for (let i = 0; i < 5; ++i) {
             const body = this.m_world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
                 position: { x: -10.0 + 2.0 * i, y: 7.0 },
@@ -73,9 +70,8 @@ class ConveyorBelt extends Test {
     public PreSolve(contact: b2Contact, oldManifold: b2Manifold) {
         super.PreSolve(contact, oldManifold);
 
-        /* b2Fixture */
         const fixtureA = contact.GetFixtureA();
-        /* b2Fixture */
+
         const fixtureB = contact.GetFixtureB();
 
         if (fixtureA === this.m_platform) {

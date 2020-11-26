@@ -38,29 +38,24 @@ class Tiles extends Test {
         super();
 
         this.m_fixtureCount = 0;
-        /* b2Timer */
+
         const timer = new b2Timer();
 
         {
-            /* float32 */
             const a = 0.5;
-            /* b2Body */
+
             const ground = this.m_world.CreateBody({
                 position: { x: 0, y: -a },
             });
 
             {
-                /* int32 */
                 const N = 200;
-                /* int32 */
                 const M = 10;
-                /* b2Vec2 */
                 const position = new b2Vec2();
                 position.y = 0.0;
-                for (/* int32 */ let j = 0; j < M; ++j) {
+                for (let j = 0; j < M; ++j) {
                     position.x = -N * a;
-                    for (/* int32 */ let i = 0; i < N; ++i) {
-                        /* b2PolygonShape */
+                    for (let i = 0; i < N; ++i) {
                         const shape = new b2PolygonShape();
                         shape.SetAsBox(a, a, position, 0.0);
                         ground.CreateFixture({ shape });
@@ -92,26 +87,19 @@ class Tiles extends Test {
         }
 
         {
-            /* float32 */
             const a = 0.5;
-            /* b2PolygonShape */
             const shape = new b2PolygonShape();
             shape.SetAsBox(a, a);
 
-            /* b2Vec2 */
             const x = new b2Vec2(-7.0, 0.75);
-            /* b2Vec2 */
             const y = new b2Vec2();
-            /* b2Vec2 */
             const deltaX = new b2Vec2(0.5625, 1.25);
-            /* b2Vec2 */
             const deltaY = new b2Vec2(1.125, 0.0);
 
-            for (/* int32 */ let i = 0; i < Tiles.e_count; ++i) {
+            for (let i = 0; i < Tiles.e_count; ++i) {
                 y.Copy(x);
 
-                for (/* int32 */ let j = i; j < Tiles.e_count; ++j) {
-                    /* b2Body */
+                for (let j = i; j < Tiles.e_count; ++j) {
                     const body = this.m_world.CreateBody({
                         type: b2BodyType.b2_dynamicBody,
                         position: y,
@@ -132,13 +120,9 @@ class Tiles extends Test {
     public Step(settings: Settings, timeStep: number): void {
         /* const b2ContactManager */
         const cm = this.m_world.GetContactManager();
-        /* int32 */
         const height = cm.m_broadPhase.GetTreeHeight();
-        /* int32 */
         const leafCount = cm.m_broadPhase.GetProxyCount();
-        /* int32 */
         const minimumNodeCount = 2 * leafCount - 1;
-        /* float32 */
         const minimumHeight = Math.ceil(Math.log(minimumNodeCount) / Math.log(2.0));
         this.addDebug("Dynamic Tree Height", height);
         this.addDebug("Min Height", minimumHeight);

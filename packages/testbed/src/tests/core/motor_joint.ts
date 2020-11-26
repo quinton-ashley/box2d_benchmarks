@@ -46,7 +46,6 @@ class MotorJoint extends Test {
 
         // Define motorized body
         {
-            /* b2Body */
             const body = this.m_world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
                 position: { x: 0.0, y: 8.0 },
@@ -85,12 +84,10 @@ class MotorJoint extends Test {
             this.m_time += 1.0 / settings.m_hertz;
         }
 
-        /* b2Vec2 */
         const linearOffset = new b2Vec2();
         linearOffset.x = 6.0 * Math.sin(2.0 * this.m_time);
         linearOffset.y = 8.0 + 4.0 * Math.sin(1.0 * this.m_time);
 
-        /* float32 */
         const angularOffset = 4.0 * this.m_time;
 
         this.m_joint.SetLinearOffset(linearOffset);

@@ -34,9 +34,9 @@ class DumpShell extends Test {
         super(b2Vec2.ZERO);
 
         // dump begin
-        /* b2Body */
+
         const bodies = new Array<b2Body>(4);
-        /* b2Joint */
+
         const joints = new Array(2);
         bodies[0] = this.m_world.CreateBody({
             type: b2BodyType.b2_staticBody,
@@ -53,7 +53,6 @@ class DumpShell extends Test {
         });
 
         {
-            /* b2EdgeShape */
             const shape = new b2EdgeShape();
             shape.m_radius = 0.009999999776483;
             shape.m_vertex0.Set(0.0, 0.0);
@@ -76,7 +75,6 @@ class DumpShell extends Test {
             });
         }
         {
-            /* b2EdgeShape */
             const shape = new b2EdgeShape();
             shape.m_radius = 0.009999999776483;
             shape.m_vertex0.Set(0.0, 0.0);
@@ -100,7 +98,6 @@ class DumpShell extends Test {
             });
         }
         {
-            /* b2EdgeShape */
             const shape = new b2EdgeShape();
             shape.m_radius = 0.009999999776483;
             shape.m_vertex0.Set(0.0, 0.0);
@@ -124,7 +121,6 @@ class DumpShell extends Test {
             });
         }
         {
-            /* b2EdgeShape */
             const shape = new b2EdgeShape();
             shape.m_radius = 0.009999999776483;
             shape.m_vertex0.Set(0.0, 0.0);
@@ -163,9 +159,8 @@ class DumpShell extends Test {
         });
 
         {
-            /* b2PolygonShape */
             const shape = new b2PolygonShape();
-            /* b2Vec2[] */
+
             const vs = b2Vec2.MakeArray(8);
             vs[0].Set(6.907599925994873, 0.327199995517731);
             vs[1].Set(-0.322800010442734, 0.282599985599518);
@@ -201,9 +196,8 @@ class DumpShell extends Test {
         });
 
         {
-            /* b2PolygonShape */
             const shape = new b2PolygonShape();
-            /* b2Vec2[] */
+
             const vs = b2Vec2.MakeArray(8);
             vs[0].Set(0.200000002980232, -0.300000011920929);
             vs[1].Set(0.200000002980232, 0.200000002980232);
@@ -237,7 +231,6 @@ class DumpShell extends Test {
             gravityScale: 1.0,
         });
         {
-            /* b2RevoluteJointDef */
             const jd = new b2RevoluteJointDef();
             // eslint-disable-next-line prefer-destructuring
             jd.bodyA = bodies[1];
@@ -256,7 +249,6 @@ class DumpShell extends Test {
             joints[0] = this.m_world.CreateJoint(jd);
         }
         {
-            /* b2PrismaticJointDef */
             const jd = new b2PrismaticJointDef();
             // eslint-disable-next-line prefer-destructuring
             jd.bodyA = bodies[1];

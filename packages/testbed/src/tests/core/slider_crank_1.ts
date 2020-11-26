@@ -24,7 +24,6 @@ class SliderCrank1 extends Test {
     constructor() {
         super();
 
-        /* b2Body */
         const ground = this.m_world.CreateBody({
             position: {
                 x: 0,
@@ -33,16 +32,13 @@ class SliderCrank1 extends Test {
         });
 
         {
-            /* b2Body */
             let prevBody = ground;
 
             // Define crank.
             {
-                /* b2PolygonShape */
                 const shape = new b2PolygonShape();
                 shape.SetAsBox(4.0, 1.0);
 
-                /* b2Body */
                 const body = this.m_world.CreateBody({
                     type: b2BodyType.b2_dynamicBody,
                     position: {
@@ -52,7 +48,6 @@ class SliderCrank1 extends Test {
                 });
                 body.CreateFixture({ shape, density: 2.0 });
 
-                /* b2RevoluteJointDef */
                 const rjd = new b2RevoluteJointDef();
                 rjd.Initialize(prevBody, body, new b2Vec2(-12.0, 20.0));
                 this.m_world.CreateJoint(rjd);
@@ -62,11 +57,9 @@ class SliderCrank1 extends Test {
 
             // Define connecting rod
             {
-                /* b2PolygonShape */
                 const shape = new b2PolygonShape();
                 shape.SetAsBox(8.0, 1.0);
 
-                /* b2Body */
                 const body = this.m_world.CreateBody({
                     type: b2BodyType.b2_dynamicBody,
                     position: {
@@ -76,7 +69,6 @@ class SliderCrank1 extends Test {
                 });
                 body.CreateFixture({ shape, density: 2.0 });
 
-                /* b2RevoluteJointDef */
                 const rjd = new b2RevoluteJointDef();
                 rjd.Initialize(prevBody, body, new b2Vec2(-4.0, 20.0));
                 this.m_world.CreateJoint(rjd);
@@ -86,11 +78,9 @@ class SliderCrank1 extends Test {
 
             // Define piston
             {
-                /* b2PolygonShape */
                 const shape = new b2PolygonShape();
                 shape.SetAsBox(3.0, 3.0);
 
-                /* b2Body */
                 const body = this.m_world.CreateBody({
                     type: b2BodyType.b2_dynamicBody,
                     fixedRotation: true,
@@ -101,12 +91,10 @@ class SliderCrank1 extends Test {
                 });
                 body.CreateFixture({ shape, density: 2.0 });
 
-                /* b2RevoluteJointDef */
                 const rjd = new b2RevoluteJointDef();
                 rjd.Initialize(prevBody, body, new b2Vec2(12.0, 20.0));
                 this.m_world.CreateJoint(rjd);
 
-                /* b2PrismaticJointDef */
                 const pjd = new b2PrismaticJointDef();
                 pjd.Initialize(ground, body, new b2Vec2(12.0, 17.0), new b2Vec2(1.0, 0.0));
                 this.m_world.CreateJoint(pjd);

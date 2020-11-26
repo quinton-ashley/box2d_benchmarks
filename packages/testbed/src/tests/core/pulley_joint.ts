@@ -36,7 +36,6 @@ class PulleyJoint extends Test {
         {
             ground = this.m_world.CreateBody();
 
-            /* b2CircleShape */
             const circle = new b2CircleShape();
             circle.m_radius = 2.0;
 

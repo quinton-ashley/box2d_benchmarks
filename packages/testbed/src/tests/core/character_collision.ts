@@ -57,13 +57,12 @@ class CharacterCollision extends Test {
                 angle: 0.25 * Math.PI,
             });
 
-            /* b2Vec2[] */
             const vs = b2Vec2.MakeArray(4);
             vs[0].Set(5.0, 7.0);
             vs[1].Set(8.0, 7.0);
             vs[2].Set(7.0, 8.0);
             vs[3].Set(6.0, 8.0);
-            /* b2ChainShape */
+
             const shape = new b2ChainShape();
             shape.CreateLoop(vs, 4);
             ground.CreateFixture({ shape });
@@ -88,13 +87,12 @@ class CharacterCollision extends Test {
         {
             const ground = this.m_world.CreateBody();
 
-            /* b2Vec2[] */
             const vs = b2Vec2.MakeArray(4);
             vs[0].Set(-1.0, 3.0);
             vs[1].Set(1.0, 3.0);
             vs[2].Set(1.0, 5.0);
             vs[3].Set(-1.0, 5.0);
-            /* b2ChainShape */
+
             const shape = new b2ChainShape();
             shape.CreateLoop(vs, 4);
             ground.CreateFixture({ shape });
@@ -106,7 +104,6 @@ class CharacterCollision extends Test {
                 position: { x: -10.0, y: 4.0 },
             });
 
-            /* b2Vec2[] */
             const vs = b2Vec2.MakeArray(10);
             vs[0].Set(0.0, 0.0);
             vs[1].Set(6.0, 0.0);
@@ -118,7 +115,7 @@ class CharacterCollision extends Test {
             vs[7].Set(-4.0, 3.0);
             vs[8].Set(-6.0, 2.0);
             vs[9].Set(-6.0, 0.0);
-            /* b2ChainShape */
+
             const shape = new b2ChainShape();
             shape.CreateLoop(vs, 10);
             ground.CreateFixture({ shape });
