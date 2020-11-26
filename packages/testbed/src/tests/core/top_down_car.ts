@@ -441,4 +441,4 @@ class TopdownCar extends Test {
     }
 }
 
-registerTest("Core", "TopDown Car", TopdownCar);
+registerTest("Examples", "TopDown Car", TopdownCar);

@@ -157,4 +157,4 @@ class Tiles extends Test {
     }
 }
 
-registerTest("Core", "Tiles", Tiles);
+registerTest("Benchmark", "Tiles", Tiles);

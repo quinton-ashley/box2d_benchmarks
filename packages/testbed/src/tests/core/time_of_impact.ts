@@ -139,4 +139,4 @@ class TimeOfImpact extends Test {
     }
 }
 
-registerTest("Core", "Time of Impact", TimeOfImpact);
+registerTest("Collision", "Time of Impact", TimeOfImpact);

@@ -148,4 +148,4 @@ class ContinuousTest extends Test {
     }
 }
 
-registerTest("Core", "Continuous Test", ContinuousTest);
+registerTest("Continuous", "Continuous Test", ContinuousTest);

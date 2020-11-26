@@ -143,4 +143,4 @@ class ShapeCast extends Test {
     }
 }
 
-registerTest("Core", "Shape Cast", ShapeCast);
+registerTest("Collision", "Shape Cast", ShapeCast);

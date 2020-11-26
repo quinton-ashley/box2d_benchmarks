@@ -87,4 +87,4 @@ class ConvexHull extends Test {
     }
 }
 
-registerTest("Core", "Convex Hull", ConvexHull);
+registerTest("Geometry", "Convex Hull", ConvexHull);

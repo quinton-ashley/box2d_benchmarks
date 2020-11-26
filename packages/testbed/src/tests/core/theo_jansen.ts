@@ -272,4 +272,4 @@ class TheoJansen extends Test {
     }
 }
 
-registerTest("Core", "Theo Jansen's Walker", TheoJansen);
+registerTest("Examples", "Theo Jansen's Walker", TheoJansen);

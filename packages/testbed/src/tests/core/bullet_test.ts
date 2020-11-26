@@ -142,4 +142,4 @@ class BulletTest extends Test {
     }
 }
 
-registerTest("Core", "Bullet Test", BulletTest);
+registerTest("Continuous", "Bullet Test", BulletTest);

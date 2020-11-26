@@ -115,4 +115,4 @@ class DominoTower extends Test {
     }
 }
 
-registerTest("Core", "Domino Tower", DominoTower);
+registerTest("Benchmark", "Domino Tower", DominoTower);

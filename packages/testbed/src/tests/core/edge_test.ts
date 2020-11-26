@@ -278,4 +278,4 @@ class EdgeTest extends Test {
     }
 }
 
-registerTest("Core", "Edge Test", EdgeTest);
+registerTest("Geometry", "Edge Test", EdgeTest);

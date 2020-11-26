@@ -85,4 +85,4 @@ class MotorJoint2 extends Test {
     public m_joint: b2MotorJoint;
 }
 
-registerTest("Core", "Motor Joint (Bug #487)", MotorJoint2);
+registerTest("Bugs", "Motor Joint (Bug #487)", MotorJoint2);

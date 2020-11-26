@@ -37,7 +37,7 @@ enum OneSidedPlatform_State {
     e_below = 2,
 }
 
-class OneSidedPlatform extends Test {
+class Platformer extends Test {
     public m_radius = 0.0;
 
     public m_top = 0.0;
@@ -127,4 +127,4 @@ class OneSidedPlatform extends Test {
     }
 }
 
-registerTest("Core", "One-Sided Platform", OneSidedPlatform);
+registerTest("Examples", "Platformer", Platformer);

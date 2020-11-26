@@ -20,7 +20,7 @@ import { b2Vec2, b2ChainShape, b2FixtureDef, b2BodyType, b2PolygonShape, b2Circl
 
 import { registerTest, Test } from "../../test";
 
-class TestCCD extends Test {
+class ContinousCollision extends Test {
     constructor() {
         super();
 
@@ -102,4 +102,4 @@ class TestCCD extends Test {
     }
 }
 
-registerTest("Core", "Continuous Collision", TestCCD);
+registerTest("Continuous", "Continuous Collision", ContinousCollision);

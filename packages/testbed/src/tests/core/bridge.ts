@@ -117,4 +117,4 @@ class Bridge extends Test {
     }
 }
 
-registerTest("Core", "Bridge", Bridge);
+registerTest("Joints", "Bridge", Bridge);

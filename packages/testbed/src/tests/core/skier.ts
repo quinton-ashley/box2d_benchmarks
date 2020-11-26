@@ -134,4 +134,4 @@ class Skier extends Test {
     }
 }
 
-registerTest("Core", "Skier", Skier);
+registerTest("Bugs", "Skier", Skier);

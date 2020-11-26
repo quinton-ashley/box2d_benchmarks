@@ -31,7 +31,7 @@ import { Settings } from "../../settings";
 import { g_debugDraw } from "../../utils/draw";
 import { HotKey, hotKey } from "../../utils/hotkeys";
 
-class PolyCollision extends Test {
+class PolygonCollision extends Test {
     public m_polygonA = new b2PolygonShape();
 
     public m_polygonB = new b2PolygonShape();
@@ -132,4 +132,4 @@ class PolyCollision extends Test {
     }
 }
 
-registerTest("Core", "PolyCollision", PolyCollision);
+registerTest("Geometry", "Polygon Collision", PolygonCollision);

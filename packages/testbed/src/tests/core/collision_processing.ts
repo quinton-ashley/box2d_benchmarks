@@ -168,4 +168,4 @@ class CollisionProcessing extends Test {
     }
 }
 
-registerTest("Core", "Collision Processing", CollisionProcessing);
+registerTest("Examples", "Collision Processing", CollisionProcessing);

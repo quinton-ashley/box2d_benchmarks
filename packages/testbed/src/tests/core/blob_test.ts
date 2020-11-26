@@ -82,4 +82,4 @@ class BlobTest extends Test {
     }
 }
 
-registerTest("Core", "Blob Test", BlobTest);
+registerTest("Examples", "Blob Test", BlobTest);

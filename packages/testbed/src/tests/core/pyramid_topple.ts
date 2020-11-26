@@ -96,4 +96,4 @@ class PyramidTopple extends Test {
     }
 }
 
-registerTest("Core", "Pyramid Topple", PyramidTopple);
+registerTest("Stacking", "Pyramid Topple", PyramidTopple);

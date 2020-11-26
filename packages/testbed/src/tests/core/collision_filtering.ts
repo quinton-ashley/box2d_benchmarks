@@ -192,4 +192,4 @@ class CollisionFiltering extends Test {
     }
 }
 
-registerTest("Core", "Collision Filtering", CollisionFiltering);
+registerTest("Examples", "Collision Filtering", CollisionFiltering);

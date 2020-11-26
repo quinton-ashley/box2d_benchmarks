@@ -20,7 +20,7 @@ import { b2EdgeShape, b2Vec2, b2PolygonShape, b2FixtureDef, b2BodyType, XY } fro
 
 import { registerTest, Test } from "../../test";
 
-class VaryingFriction extends Test {
+class Friction extends Test {
     constructor() {
         super();
 
@@ -114,4 +114,4 @@ class VaryingFriction extends Test {
     }
 }
 
-registerTest("Core", "Varying Friction", VaryingFriction);
+registerTest("Forces", "Friction", Friction);

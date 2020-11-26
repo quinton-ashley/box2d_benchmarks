@@ -83,4 +83,4 @@ class DistanceJoint extends Test {
     }
 }
 
-registerTest("Core", "Distance Joint", DistanceJoint);
+registerTest("Joints", "Distance Joint", DistanceJoint);

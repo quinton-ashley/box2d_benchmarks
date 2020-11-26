@@ -74,4 +74,4 @@ class Pyramid extends Test {
     }
 }
 
-registerTest("Core", "Pyramid", Pyramid);
+registerTest("Stacking", "Pyramid", Pyramid);

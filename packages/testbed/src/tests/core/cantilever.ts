@@ -198,4 +198,4 @@ class Cantilever extends Test {
     }
 }
 
-registerTest("Core", "Cantilever", Cantilever);
+registerTest("Joints", "Cantilever", Cantilever);

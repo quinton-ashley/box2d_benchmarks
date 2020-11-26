@@ -169,4 +169,4 @@ class Breakable extends Test {
     }
 }
 
-registerTest("Core", "Breakable", Breakable);
+registerTest("Examples", "Breakable", Breakable);

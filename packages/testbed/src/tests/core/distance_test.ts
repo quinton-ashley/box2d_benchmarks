@@ -131,4 +131,4 @@ class DistanceTest extends Test {
     }
 }
 
-registerTest("Core", "Distance Test", DistanceTest);
+registerTest("Examples", "Distance Test", DistanceTest);

@@ -20,7 +20,7 @@ import { b2Body, b2EdgeShape, b2Vec2, b2CircleShape, b2BodyType } from "@box2d/c
 
 import { registerTest, Test } from "../../test";
 
-class SphereStack extends Test {
+class CircleStack extends Test {
     public static readonly e_count = 10;
 
     public m_bodies: b2Body[] = [];
@@ -40,7 +40,7 @@ class SphereStack extends Test {
             const shape = new b2CircleShape();
             shape.m_radius = 1.0;
 
-            for (let i = 0; i < SphereStack.e_count; ++i) {
+            for (let i = 0; i < CircleStack.e_count; ++i) {
                 this.m_bodies[i] = this.m_world.CreateBody({
                     type: b2BodyType.b2_dynamicBody,
                     position: { x: 0.0, y: 4.0 + 3.0 * i },
@@ -54,4 +54,4 @@ class SphereStack extends Test {
     }
 }
 
-registerTest("Core", "Sphere Stack", SphereStack);
+registerTest("Stacking", "Circle Stack", CircleStack);

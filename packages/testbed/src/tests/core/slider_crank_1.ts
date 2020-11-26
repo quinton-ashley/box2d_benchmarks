@@ -20,7 +20,7 @@ import { b2PolygonShape, b2BodyType, b2RevoluteJointDef, b2Vec2, b2PrismaticJoin
 
 import { registerTest, Test } from "../../test";
 
-class BasicSliderCrank extends Test {
+class SliderCrank1 extends Test {
     constructor() {
         super();
 
@@ -122,4 +122,4 @@ class BasicSliderCrank extends Test {
     }
 }
 
-registerTest("Core", "Basic Slider Crank", BasicSliderCrank);
+registerTest("Examples", "Slider Crank 1", SliderCrank1);

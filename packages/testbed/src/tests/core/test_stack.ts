@@ -104,4 +104,4 @@ class TestStack extends Test {
     }
 }
 
-registerTest("Core", "Stacked Boxes", TestStack);
+registerTest("Stacking", "Stacked Boxes", TestStack);

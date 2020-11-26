@@ -32,7 +32,7 @@ import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
 import { HotKey, hotKeyPress } from "../../utils/hotkeys";
 
-class Revolute extends Test {
+class RevoluteJoint extends Test {
     public m_ball: b2Body;
 
     public m_joint: b2RevoluteJoint;
@@ -170,4 +170,4 @@ class Revolute extends Test {
     }
 }
 
-registerTest("Core", "Revolute", Revolute);
+registerTest("Joints", "Revolute", RevoluteJoint);

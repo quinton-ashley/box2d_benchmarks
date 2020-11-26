@@ -77,4 +77,4 @@ class HeavyOnLightTwo extends Test {
     }
 }
 
-registerTest("Core", "Heavy on Light Two", HeavyOnLightTwo);
+registerTest("Solver", "Heavy 2", HeavyOnLightTwo);

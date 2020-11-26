@@ -85,4 +85,4 @@ class ShapeEditing extends Test {
     }
 }
 
-registerTest("Core", "Shape Editing", ShapeEditing);
+registerTest("Examples", "Shape Editing", ShapeEditing);

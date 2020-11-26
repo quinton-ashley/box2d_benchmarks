@@ -144,4 +144,4 @@ class VerticalStack extends Test {
     }
 }
 
-registerTest("Core", "Vertical Stack", VerticalStack);
+registerTest("Stacking", "Vertical Stack", VerticalStack);

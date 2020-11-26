@@ -59,4 +59,4 @@ class VaryingRestitution extends Test {
     }
 }
 
-registerTest("Core", "Varying Restitution", VaryingRestitution);
+registerTest("Forces", "Restitution", VaryingRestitution);

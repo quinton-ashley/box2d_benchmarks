@@ -79,4 +79,4 @@ class Chain extends Test {
     }
 }
 
-registerTest("Core", "Chain", Chain);
+registerTest("Joints", "Chain", Chain);

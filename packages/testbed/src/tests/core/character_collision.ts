@@ -248,4 +248,4 @@ class CharacterCollision extends Test {
     }
 }
 
-registerTest("Core", "Character Collision", CharacterCollision);
+registerTest("Examples", "Character Collision", CharacterCollision);

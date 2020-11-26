@@ -88,4 +88,4 @@ class ConveyorBelt extends Test {
     }
 }
 
-registerTest("Core", "Conveyor Belt", ConveyorBelt);
+registerTest("Examples", "Conveyor Belt", ConveyorBelt);

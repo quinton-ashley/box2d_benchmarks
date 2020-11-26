@@ -32,7 +32,7 @@ import {
 
 import { registerTest, Test } from "../../test";
 
-class Gears extends Test {
+class GearJoint extends Test {
     public m_joint1: b2RevoluteJoint;
 
     public m_joint2: b2RevoluteJoint;
@@ -175,4 +175,4 @@ class Gears extends Test {
     }
 }
 
-registerTest("Core", "Gears", Gears);
+registerTest("Joints", "Gear", GearJoint);

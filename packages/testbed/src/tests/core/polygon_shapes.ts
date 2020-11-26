@@ -211,4 +211,4 @@ class PolyShapes extends Test {
     }
 }
 
-registerTest("Core", "Polygon Shapes", PolyShapes);
+registerTest("Geometry", "Polygon Shapes", PolyShapes);

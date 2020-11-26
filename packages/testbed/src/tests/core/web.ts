@@ -217,4 +217,4 @@ class Web extends Test {
     }
 }
 
-registerTest("Core", "Web", Web);
+registerTest("Examples", "Web", Web);

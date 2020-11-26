@@ -216,4 +216,4 @@ class ApplyForce extends Test {
     }
 }
 
-registerTest("Core", "Apply Force", ApplyForce);
+registerTest("Forces", "Apply Force", ApplyForce);

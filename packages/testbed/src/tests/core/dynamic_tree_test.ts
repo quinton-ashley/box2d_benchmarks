@@ -344,4 +344,4 @@ class DynamicTreeTest_Actor {
     public proxyId: b2TreeNode<DynamicTreeTest_Actor> | null = null;
 }
 
-registerTest("Core", "Dynamic Tree", DynamicTreeTest);
+registerTest("Collision", "Dynamic Tree", DynamicTreeTest);

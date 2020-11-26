@@ -645,4 +645,4 @@ class Rope extends Test {
 //   }
 // }
 
-registerTest("Core", "Rope", Rope);
+registerTest("Rope", "Bending", Rope);

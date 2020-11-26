@@ -31,7 +31,7 @@ import {
 
 import { registerTest, Test } from "../../test";
 
-class TestRagdoll extends Test {
+class Ragdolls extends Test {
     constructor() {
         super();
 
@@ -270,4 +270,4 @@ class TestRagdoll extends Test {
     }
 }
 
-registerTest("Core", "Ragdolls", TestRagdoll);
+registerTest("Examples", "Ragdolls", Ragdolls);

@@ -93,4 +93,4 @@ class Mobile extends Test {
     }
 }
 
-registerTest("Core", "Mobile", Mobile);
+registerTest("Solver", "Mobile Unbalanced", Mobile);

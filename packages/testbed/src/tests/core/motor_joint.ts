@@ -102,4 +102,4 @@ class MotorJoint extends Test {
     }
 }
 
-registerTest("Core", "Motor Joint", MotorJoint);
+registerTest("Joints", "Motor Joint", MotorJoint);

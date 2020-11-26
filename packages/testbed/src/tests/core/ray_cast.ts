@@ -377,4 +377,4 @@ class RayCast extends Test {
     }
 }
 
-registerTest("Core", "Ray-Cast", RayCast);
+registerTest("Collision", "Ray Cast", RayCast);

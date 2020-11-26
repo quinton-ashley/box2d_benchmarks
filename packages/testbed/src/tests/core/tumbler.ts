@@ -90,4 +90,4 @@ class Tumbler extends Test {
     }
 }
 
-registerTest("Core", "Tumbler", Tumbler);
+registerTest("Benchmark", "Tumbler", Tumbler);

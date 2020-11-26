@@ -59,7 +59,17 @@ export interface TestEntry {
 
 const testGroups = {
     Controllers: [] as TestEntry[],
-    Core: [] as TestEntry[],
+    Examples: [] as TestEntry[],
+    Joints: [] as TestEntry[],
+    Collision: [] as TestEntry[],
+    Benchmark: [] as TestEntry[],
+    Rope: [] as TestEntry[],
+    Forces: [] as TestEntry[],
+    Stacking: [] as TestEntry[],
+    Geometry: [] as TestEntry[],
+    Solver: [] as TestEntry[],
+    Bugs: [] as TestEntry[],
+    Continuous: [] as TestEntry[],
     Lights: [] as TestEntry[],
     Particles: [] as TestEntry[],
 };

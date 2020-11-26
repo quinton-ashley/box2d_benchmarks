@@ -31,7 +31,7 @@ import {
 import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
 
-class SensorTest extends Test {
+class Sensors extends Test {
     public static readonly e_count = 7;
 
     public m_sensor: b2Fixture;
@@ -43,9 +43,9 @@ class SensorTest extends Test {
     constructor() {
         super();
 
-        this.m_bodies = new Array<b2Body>(SensorTest.e_count);
-        this.m_touching = new Array<boolean[]>(SensorTest.e_count);
-        for (let i = 0; i < SensorTest.e_count; ++i) {
+        this.m_bodies = new Array<b2Body>(Sensors.e_count);
+        this.m_touching = new Array<boolean[]>(Sensors.e_count);
+        for (let i = 0; i < Sensors.e_count; ++i) {
             this.m_touching[i] = new Array<boolean>(1);
         }
 
@@ -80,7 +80,7 @@ class SensorTest extends Test {
             const shape = new b2CircleShape();
             shape.m_radius = 1.0;
 
-            for (let i = 0; i < SensorTest.e_count; ++i) {
+            for (let i = 0; i < Sensors.e_count; ++i) {
                 this.m_touching[i][0] = false;
                 this.m_bodies[i] = this.m_world.CreateBody({
                     type: b2BodyType.b2_dynamicBody,
@@ -147,7 +147,7 @@ class SensorTest extends Test {
 
         // Traverse the contact results. Apply a force on shapes
         // that overlap the sensor.
-        for (let i = 0; i < SensorTest.e_count; ++i) {
+        for (let i = 0; i < Sensors.e_count; ++i) {
             if (!this.m_touching[i][0]) {
                 continue;
             }
@@ -172,4 +172,4 @@ class SensorTest extends Test {
     }
 }
 
-registerTest("Core", "Sensor Test", SensorTest);
+registerTest("Collision", "Sensor Test", Sensors);

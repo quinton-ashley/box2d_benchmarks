@@ -148,4 +148,4 @@ class CompoundShapes extends Test {
     }
 }
 
-registerTest("Core", "Compound Shapes", CompoundShapes);
+registerTest("Examples", "Compound Shapes", CompoundShapes);

@@ -76,4 +76,4 @@ class AddPair extends Test {
     }
 }
 
-registerTest("Core", "Add Pair Stress Test", AddPair);
+registerTest("Benchmark", "Add Pair Stress Test", AddPair);

@@ -286,4 +286,4 @@ class DumpShell extends Test {
     }
 }
 
-registerTest("Core", "Dump Shell", DumpShell);
+registerTest("Examples", "Dump Shell", DumpShell);

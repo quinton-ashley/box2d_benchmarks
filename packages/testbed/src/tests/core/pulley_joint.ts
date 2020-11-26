@@ -21,7 +21,7 @@ import { b2PulleyJoint, b2CircleShape, b2PolygonShape, b2BodyType, b2PulleyJoint
 import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
 
-class Pulleys extends Test {
+class PulleyJoint extends Test {
     public m_joint1: b2PulleyJoint;
 
     constructor() {
@@ -92,4 +92,4 @@ class Pulleys extends Test {
     }
 }
 
-registerTest("Core", "Pulleys", Pulleys);
+registerTest("Joints", "Pulley", PulleyJoint);

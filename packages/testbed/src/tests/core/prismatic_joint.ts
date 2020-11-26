@@ -22,7 +22,7 @@ import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
 import { HotKey, hotKeyPress } from "../../utils/hotkeys";
 
-class Prismatic extends Test {
+class PrismaticJoint extends Test {
     public m_joint: b2PrismaticJoint;
 
     constructor() {
@@ -86,4 +86,4 @@ class Prismatic extends Test {
     }
 }
 
-registerTest("Core", "Prismatic", Prismatic);
+registerTest("Joints", "Prismatic", PrismaticJoint);

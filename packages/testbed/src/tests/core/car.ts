@@ -281,4 +281,4 @@ class Car extends Test {
     }
 }
 
-registerTest("Core", "Car", Car);
+registerTest("Examples", "Car", Car);

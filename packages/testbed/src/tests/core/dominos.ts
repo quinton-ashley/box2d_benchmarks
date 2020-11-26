@@ -229,4 +229,4 @@ class Dominos extends Test {
     }
 }
 
-registerTest("Core", "Dominos", Dominos);
+registerTest("Examples", "Dominos", Dominos);

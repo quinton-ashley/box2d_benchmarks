@@ -147,4 +147,4 @@ class Confined extends Test {
     }
 }
 
-registerTest("Core", "Confined", Confined);
+registerTest("Solver", "Confined", Confined);

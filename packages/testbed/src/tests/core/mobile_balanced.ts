@@ -99,4 +99,4 @@ class MobileBalanced extends Test {
     }
 }
 
-registerTest("Core", "MobileBalanced", MobileBalanced);
+registerTest("Solver", "Mobile Balanced", MobileBalanced);

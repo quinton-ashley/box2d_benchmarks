@@ -207,4 +207,4 @@ class EdgeShapes extends Test {
     }
 }
 
-registerTest("Core", "Edge Shapes", EdgeShapes);
+registerTest("Geometry", "Edge Shapes", EdgeShapes);

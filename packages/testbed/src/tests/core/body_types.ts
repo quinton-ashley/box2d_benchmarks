@@ -152,4 +152,4 @@ class BodyTypes extends Test {
     }
 }
 
-registerTest("Core", "Body Types", BodyTypes);
+registerTest("Examples", "Body Types", BodyTypes);

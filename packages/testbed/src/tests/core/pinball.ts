@@ -179,4 +179,4 @@ class Pinball extends Test {
     }
 }
 
-registerTest("Core", "Pinball", Pinball);
+registerTest("Examples", "Pinball", Pinball);
