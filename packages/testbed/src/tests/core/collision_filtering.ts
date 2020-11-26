@@ -29,6 +29,12 @@ import {
 
 import { registerTest, Test } from "../../test";
 
+// This is a test of collision filtering.
+// There is a triangle, a box, and a circle.
+// There are 6 shapes. 3 large and 3 small.
+// The 3 small ones always collide.
+// The 3 large ones never collide.
+// The boxes don't collide with triangles (except if both are small).
 class CollisionFiltering extends Test {
     public static readonly k_smallGroup = 1;
 
