@@ -18,12 +18,12 @@
 
 import { b2MotorJoint, b2EdgeShape, b2Vec2, b2BodyType, b2PolygonShape, b2MotorJointDef, b2Color } from "@box2d/core";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
 import { g_debugDraw } from "../../utils/draw";
 import { HotKey, hotKeyPress } from "../../utils/hotkeys";
 
-export class MotorJoint extends Test {
+class MotorJoint extends Test {
     public m_joint: b2MotorJoint;
 
     public m_time = 0;
@@ -101,3 +101,5 @@ export class MotorJoint extends Test {
         super.Step(settings, timeStep);
     }
 }
+
+registerTest("Core", "Motor Joint", MotorJoint);

@@ -27,9 +27,9 @@ import {
     b2Filter,
 } from "@box2d/core";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 
-export class CollisionFiltering extends Test {
+class CollisionFiltering extends Test {
     public static readonly k_smallGroup = 1;
 
     public static readonly k_largeGroup = -1;
@@ -191,3 +191,5 @@ export class CollisionFiltering extends Test {
         body6.CreateFixture(circleShapeDef);
     }
 }
+
+registerTest("Core", "Collision Filtering", CollisionFiltering);

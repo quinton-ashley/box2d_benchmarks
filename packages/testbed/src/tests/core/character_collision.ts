@@ -18,10 +18,10 @@
 
 import { b2Body, b2EdgeShape, b2Vec2, b2ChainShape, b2PolygonShape, b2BodyType, b2CircleShape, XY } from "@box2d/core";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
 
-export class CharacterCollision extends Test {
+class CharacterCollision extends Test {
     public m_character: b2Body;
 
     constructor() {
@@ -247,3 +247,5 @@ export class CharacterCollision extends Test {
         this.addText("Feature: edge chains have smooth collision inside and out.");
     }
 }
+
+registerTest("Core", "Character Collision", CharacterCollision);

@@ -18,11 +18,11 @@
 
 import { b2EdgeShape, b2Vec2, b2CircleShape, b2FixtureDef, b2BodyType, b2Random, XY } from "@box2d/core";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
 import { hotKeyPress, HotKey } from "../../utils/hotkeys";
 
-export class Confined extends Test {
+class Confined extends Test {
     public static readonly e_columnCount = 0;
 
     public static readonly e_rowCount = 0;
@@ -146,3 +146,5 @@ export class Confined extends Test {
         }
     }
 }
+
+registerTest("Core", "Confined", Confined);

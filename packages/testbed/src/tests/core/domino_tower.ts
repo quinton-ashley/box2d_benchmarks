@@ -1,8 +1,8 @@
 import { b2PolygonShape, b2FixtureDef, b2BodyType, b2Vec2 } from "@box2d/core";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 
-export class DominoTower extends Test {
+class DominoTower extends Test {
     constructor() {
         super();
 
@@ -114,3 +114,5 @@ export class DominoTower extends Test {
         }
     }
 }
+
+registerTest("Core", "Domino Tower", DominoTower);

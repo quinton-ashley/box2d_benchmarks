@@ -26,11 +26,11 @@ import {
     b2PrismaticJointDef,
 } from "@box2d/core";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
 import { hotKeyPress, HotKey } from "../../utils/hotkeys";
 
-export class BodyTypes extends Test {
+class BodyTypes extends Test {
     public m_attachment: b2Body;
 
     public m_platform: b2Body;
@@ -151,3 +151,5 @@ export class BodyTypes extends Test {
         super.Step(settings, timeStep);
     }
 }
+
+registerTest("Core", "Body Types", BodyTypes);

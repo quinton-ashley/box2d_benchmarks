@@ -29,11 +29,11 @@ import {
     XY,
 } from "@box2d/core";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
 import { g_debugDraw } from "../../utils/draw";
 
-export class TimeOfImpact extends Test {
+class TimeOfImpact extends Test {
     public m_shapeA = new b2PolygonShape();
 
     public m_shapeB = new b2PolygonShape();
@@ -138,3 +138,5 @@ export class TimeOfImpact extends Test {
         };
     }
 }
+
+registerTest("Core", "Time of Impact", TimeOfImpact);

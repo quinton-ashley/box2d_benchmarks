@@ -19,12 +19,12 @@
 import { b2ContactFilter, b2Vec2, b2ChainShape, b2PolygonShape, XY } from "@box2d/core";
 import { b2ParticleGroupDef, b2ParticleFlag, b2ParticleGroup } from "@box2d/particles";
 
-import { Test, RandomFloat } from "../../test";
+import { Test, RandomFloat, registerTest } from "../../test";
 import { Settings } from "../../settings";
 import { hotKeyPress, HotKey } from "../../utils/hotkeys";
 
 // Optionally disables particle / fixture and particle / particle contacts.
-export class ParticleContactDisabler extends b2ContactFilter {
+class ParticleContactDisabler extends b2ContactFilter {
     public m_enableFixtureParticleCollisions = true;
 
     public m_enableParticleParticleCollisions = true;
@@ -40,7 +40,7 @@ export class ParticleContactDisabler extends b2ContactFilter {
     }
 }
 
-export class ParticleCollisionFilter extends Test {
+class ParticleCollisionFilter extends Test {
     constructor() {
         super(b2Vec2.ZERO);
 
@@ -187,3 +187,5 @@ export class ParticleCollisionFilter extends Test {
 
     public static readonly kSpeedup = 8.0;
 }
+
+registerTest("Particles", "Particle Collisions", ParticleCollisionFilter);

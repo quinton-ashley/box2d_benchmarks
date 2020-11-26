@@ -18,11 +18,11 @@
 
 import { b2EdgeShape, b2Vec2, b2PolygonShape, b2FixtureDef, b2RevoluteJointDef, b2BodyType } from "@box2d/core";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 
 const TEST_BAD_BODY = false;
 
-export class Chain extends Test {
+class Chain extends Test {
     public static readonly e_count = 30;
 
     constructor() {
@@ -78,3 +78,5 @@ export class Chain extends Test {
         }
     }
 }
+
+registerTest("Core", "Chain", Chain);

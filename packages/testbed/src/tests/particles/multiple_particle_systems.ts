@@ -19,11 +19,11 @@
 import { b2Vec2, b2Color, b2PolygonShape, b2BodyType, b2MassData, XY } from "@box2d/core";
 import { b2ParticleSystem, b2ParticleSystemDef } from "@box2d/particles";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
 import { RadialEmitter } from "../../utils/particles/particle_emitter";
 
-export class MultipleParticleSystems extends Test {
+class MultipleParticleSystems extends Test {
     public m_particleSystem2: b2ParticleSystem;
 
     public m_emitters: RadialEmitter[];
@@ -175,3 +175,5 @@ export class MultipleParticleSystems extends Test {
         };
     }
 }
+
+registerTest("Particles", "Multiple Systems", MultipleParticleSystems);

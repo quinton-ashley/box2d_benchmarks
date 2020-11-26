@@ -19,7 +19,7 @@
 import { b2Body, b2PolygonShape, b2Vec2, b2BodyType, b2CircleShape, b2EdgeShape, b2MassData, XY } from "@box2d/core";
 import { b2ParticleFlag, b2ParticleGroupDef } from "@box2d/particles";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 
 export class Soup extends Test {
     public m_ground: b2Body;
@@ -157,3 +157,5 @@ export class Soup extends Test {
         };
     }
 }
+
+registerTest("Particles", "Soup", Soup);

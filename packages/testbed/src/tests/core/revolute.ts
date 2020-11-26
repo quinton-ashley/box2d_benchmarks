@@ -28,11 +28,11 @@ import {
     XY,
 } from "@box2d/core";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
 import { HotKey, hotKeyPress } from "../../utils/hotkeys";
 
-export class Revolute extends Test {
+class Revolute extends Test {
     public m_ball: b2Body;
 
     public m_joint: b2RevoluteJoint;
@@ -169,3 +169,5 @@ export class Revolute extends Test {
         // this.addDebug("Motor Force", `${force3.toFixed(0)}`);
     }
 }
+
+registerTest("Core", "Revolute", Revolute);

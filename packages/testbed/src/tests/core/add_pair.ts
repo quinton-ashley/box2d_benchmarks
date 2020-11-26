@@ -18,9 +18,9 @@
 
 import { b2Vec2, b2CircleShape, b2BodyType, b2RandomRange, b2PolygonShape, XY } from "@box2d/core";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 
-export class AddPair extends Test {
+class AddPair extends Test {
     constructor() {
         super(b2Vec2.ZERO);
 
@@ -75,3 +75,5 @@ export class AddPair extends Test {
         };
     }
 }
+
+registerTest("Core", "Add Pair Stress Test", AddPair);

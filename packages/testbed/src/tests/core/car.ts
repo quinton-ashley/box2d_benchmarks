@@ -30,13 +30,13 @@ import {
     b2WheelJointDef,
 } from "@box2d/core";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
 import { g_camera } from "../../utils/camera";
 import { HotKey, hotKey } from "../../utils/hotkeys";
 
 // This is a fun demo that shows off the wheel joint
-export class Car extends Test {
+class Car extends Test {
     public m_car: b2Body;
 
     public m_wheel1: b2Body;
@@ -280,3 +280,5 @@ export class Car extends Test {
         super.Step(settings, timeStep);
     }
 }
+
+registerTest("Core", "Car", Car);

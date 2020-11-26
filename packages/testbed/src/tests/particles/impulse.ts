@@ -20,9 +20,9 @@ import { b2Vec2, b2ChainShape, b2PolygonShape, XY, b2Assert } from "@box2d/core"
 import { b2ParticleGroupDef, b2ParticleFlag } from "@box2d/particles";
 
 import { HotKey, hotKeyPress } from "../../utils/hotkeys";
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 
-export class Impulse extends Test {
+class Impulse extends Test {
     public static readonly kBoxLeft = -2;
 
     public static readonly kBoxRight = 2;
@@ -127,3 +127,5 @@ export class Impulse extends Test {
         };
     }
 }
+
+registerTest("Particles", "Impulse", Impulse);

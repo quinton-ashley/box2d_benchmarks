@@ -18,7 +18,7 @@
 
 import { b2Timer, b2Vec2, b2PolygonShape, b2BodyType } from "@box2d/core";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
 
 /**
@@ -27,7 +27,7 @@ import { Settings } from "../../settings";
  * not knowing about adjacency.
  */
 
-export class Tiles extends Test {
+class Tiles extends Test {
     public static readonly e_count = 20;
 
     public m_fixtureCount = 0;
@@ -156,3 +156,5 @@ export class Tiles extends Test {
         // }
     }
 }
+
+registerTest("Core", "Tiles", Tiles);

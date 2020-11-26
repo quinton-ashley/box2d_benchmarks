@@ -19,9 +19,9 @@
 import { b2Body, b2EdgeShape, b2Vec2, b2BodyType, b2FixtureDef, b2PolygonShape, b2CircleShape, XY } from "@box2d/core";
 import { b2BuoyancyController } from "@box2d/controllers";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 
-export class BuoyancyTest extends Test {
+class BuoyancyTest extends Test {
     public m_bodies: b2Body[];
 
     public m_controller: b2BuoyancyController;
@@ -220,3 +220,5 @@ export class BuoyancyTest extends Test {
         };
     }
 }
+
+registerTest("Controllers", "Boyancy Test", BuoyancyTest);

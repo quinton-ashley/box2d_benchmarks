@@ -18,11 +18,11 @@
 
 import { b2Body, b2EdgeShape, b2Vec2, b2BodyType, b2CircleShape, b2MotorJointDef, b2MotorJoint } from "@box2d/core";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 
 // Adapted from MotorJoint.h
 
-export class MotorJoint2 extends Test {
+class MotorJoint2 extends Test {
     constructor() {
         super();
 
@@ -84,3 +84,5 @@ export class MotorJoint2 extends Test {
     // b2MotorJoint* m_joint;
     public m_joint: b2MotorJoint;
 }
+
+registerTest("Core", "Motor Joint (Bug #487)", MotorJoint2);

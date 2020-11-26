@@ -18,10 +18,10 @@
 
 import { b2Body, b2EdgeShape, b2Vec2, b2PolygonShape, b2BodyType, b2RandomRange, b2Gjk, b2Toi } from "@box2d/core";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
 
-export class ContinuousTest extends Test {
+class ContinuousTest extends Test {
     public m_body: b2Body;
 
     public m_angularVelocity = 0.0;
@@ -147,3 +147,5 @@ export class ContinuousTest extends Test {
         return 50;
     }
 }
+
+registerTest("Core", "Continuous Test", ContinuousTest);

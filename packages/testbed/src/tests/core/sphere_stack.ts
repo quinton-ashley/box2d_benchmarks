@@ -18,9 +18,9 @@
 
 import { b2Body, b2EdgeShape, b2Vec2, b2CircleShape, b2BodyType } from "@box2d/core";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 
-export class SphereStack extends Test {
+class SphereStack extends Test {
     public static readonly e_count = 10;
 
     public m_bodies: b2Body[] = [];
@@ -53,3 +53,5 @@ export class SphereStack extends Test {
         }
     }
 }
+
+registerTest("Core", "Sphere Stack", SphereStack);

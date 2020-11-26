@@ -18,9 +18,9 @@
 
 import { b2EdgeShape, b2Vec2, b2BodyType, b2CircleShape } from "@box2d/core";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 
-export class HeavyOnLight extends Test {
+class HeavyOnLight extends Test {
     constructor() {
         super();
 
@@ -53,3 +53,5 @@ export class HeavyOnLight extends Test {
         body.CreateFixture({ shape, density: 10.0 });
     }
 }
+
+registerTest("Core", "Heavy on Light", HeavyOnLight);

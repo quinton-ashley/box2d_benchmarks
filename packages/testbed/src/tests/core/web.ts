@@ -27,11 +27,11 @@ import {
     b2LinearStiffness,
 } from "@box2d/core";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
 import { HotKey, hotKeyPress } from "../../utils/hotkeys";
 
-export class Web extends Test {
+class Web extends Test {
     public m_bodies: Array<b2Body | null>;
 
     public m_joints: Array<b2Joint | null>;
@@ -216,3 +216,5 @@ export class Web extends Test {
         this.addText("This demonstrates a soft distance joint.");
     }
 }
+
+registerTest("Core", "Web", Web);

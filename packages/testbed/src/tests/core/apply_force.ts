@@ -29,10 +29,10 @@ import {
     XY,
 } from "@box2d/core";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 import { hotKeyPress, HotKey } from "../../utils/hotkeys";
 
-export class ApplyForce extends Test {
+class ApplyForce extends Test {
     public m_body: b2Body;
 
     constructor() {
@@ -215,3 +215,5 @@ export class ApplyForce extends Test {
         };
     }
 }
+
+registerTest("Core", "Apply Force", ApplyForce);

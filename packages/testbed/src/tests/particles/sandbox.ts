@@ -37,7 +37,7 @@ import {
 } from "@box2d/core";
 import { b2ParticleHandle, b2ParticleSystem, b2ParticleFlag, b2ParticleGroup } from "@box2d/particles";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
 import {
     ParticleParameterValue,
@@ -54,7 +54,7 @@ import { HotKey, hotKeyPress } from "../../utils/hotkeys";
 //  * link errors when using gcc.
 //  */
 // SandboxParams = {};
-export class SandboxParams {
+class SandboxParams {
     /**
      * Total possible pump squares
      */
@@ -129,7 +129,7 @@ export class SandboxParams {
  * Class which tracks a set of particles and applies a special
  * effect to them.
  */
-export class SpecialParticleTracker extends b2DestructionListener {
+class SpecialParticleTracker extends b2DestructionListener {
     /**
      * Set of particle handles used to track special particles.
      */
@@ -248,7 +248,7 @@ export class SpecialParticleTracker extends b2DestructionListener {
  * add new maze elements!
  */
 
-export class Sandbox extends Test {
+class Sandbox extends Test {
     /**
      * Count of faucets in the world
      */
@@ -681,3 +681,5 @@ export class Sandbox extends Test {
         }
     }
 }
+
+registerTest("Particles", "Sandbox", Sandbox);

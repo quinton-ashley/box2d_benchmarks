@@ -29,15 +29,15 @@ import {
     XY,
 } from "@box2d/core";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 
-export enum OneSidedPlatform_State {
+enum OneSidedPlatform_State {
     e_unknown = 0,
     e_above = 1,
     e_below = 2,
 }
 
-export class OneSidedPlatform extends Test {
+class OneSidedPlatform extends Test {
     public m_radius = 0.0;
 
     public m_top = 0.0;
@@ -126,3 +126,5 @@ export class OneSidedPlatform extends Test {
         }
     }
 }
+
+registerTest("Core", "One-Sided Platform", OneSidedPlatform);

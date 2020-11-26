@@ -29,7 +29,7 @@ import {
     XY,
 } from "@box2d/core";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
 import { HotKey, hotKey } from "../../utils/hotkeys";
 
@@ -38,7 +38,7 @@ import { HotKey, hotKey } from "../../utils/hotkeys";
  * gameplay scenario. This also uses a loop shape.
  */
 
-export class Pinball extends Test {
+class Pinball extends Test {
     public m_leftJoint: b2RevoluteJoint;
 
     public m_rightJoint: b2RevoluteJoint;
@@ -178,3 +178,5 @@ export class Pinball extends Test {
         super.Step(settings, timeStep);
     }
 }
+
+registerTest("Core", "Pinball", Pinball);

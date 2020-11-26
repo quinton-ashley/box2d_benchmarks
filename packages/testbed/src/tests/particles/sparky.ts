@@ -29,7 +29,7 @@ import {
 } from "@box2d/core";
 import { b2ParticleGroup, b2ParticleSystem, b2ParticleFlag, b2ParticleGroupDef } from "@box2d/particles";
 
-import { Test, RandomFloat } from "../../test";
+import { Test, RandomFloat, registerTest } from "../../test";
 import { Settings } from "../../settings";
 
 interface SparkUserData {
@@ -163,7 +163,7 @@ class ParticleVFX {
     }
 }
 
-export class Sparky extends Test {
+class Sparky extends Test {
     private static c_maxCircles = 3; /// 6;
 
     private static c_maxVFX = 20; /// 50;
@@ -321,3 +321,5 @@ export class Sparky extends Test {
         }
     }
 }
+
+registerTest("Particles", "Sparky", Sparky);

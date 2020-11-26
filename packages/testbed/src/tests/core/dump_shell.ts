@@ -27,9 +27,9 @@ import {
     b2Body,
 } from "@box2d/core";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 
-export class DumpShell extends Test {
+class DumpShell extends Test {
     constructor() {
         super(b2Vec2.ZERO);
 
@@ -285,3 +285,5 @@ export class DumpShell extends Test {
         };
     }
 }
+
+registerTest("Core", "Dump Shell", DumpShell);

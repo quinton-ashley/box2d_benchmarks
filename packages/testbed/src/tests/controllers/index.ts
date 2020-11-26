@@ -16,11 +16,5 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import { TestEntry } from "../../test";
-import { BuoyancyTest } from "./buoyancy_test";
-import { Segway } from "./segway";
-
-export const controllerTests: TestEntry[] = [
-    ["Buoyancy Test", BuoyancyTest],
-    ["Segway", Segway],
-];
+import "./buoyancy_test";
+import "./segway";

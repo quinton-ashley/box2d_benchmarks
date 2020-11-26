@@ -16,133 +16,66 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import { TestEntry } from "../../test";
-import { AddPair } from "./add_pair";
-import { ApplyForce } from "./apply_force";
-import { BasicSliderCrank } from "./basic_slider_crank";
-import { BodyTypes } from "./body_types";
-import { Breakable } from "./breakable";
-import { Bridge } from "./bridge";
-import { BulletTest } from "./bullet_test";
-import { Cantilever } from "./cantilever";
-import { Car } from "./car";
-import { ContinuousTest } from "./continuous_test";
-import { Chain } from "./chain";
-import { CharacterCollision } from "./character_collision";
-import { CollisionFiltering } from "./collision_filtering";
-import { CollisionProcessing } from "./collision_processing";
-import { CompoundShapes } from "./compound_shapes";
-import { Confined } from "./confined";
-import { ConvexHull } from "./convex_hull";
-import { ConveyorBelt } from "./conveyor_belt";
-import { DistanceTest } from "./distance_test";
-import { Dominos } from "./dominos";
-import { DumpShell } from "./dump_shell";
-import { DynamicTreeTest } from "./dynamic_tree_test";
-import { EdgeShapes } from "./edge_shapes";
-import { EdgeTest } from "./edge_test";
-import { Gears } from "./gears";
-import { HeavyOnLight } from "./heavy1";
-import { HeavyOnLightTwo } from "./heavy2";
-import { Mobile } from "./mobile_unbalanced";
-import { MobileBalanced } from "./mobile_balanced";
-import { MotorJoint } from "./motor_joint";
-import { OneSidedPlatform } from "./one_sided_platform";
-import { Pinball } from "./pinball";
-import { PolyCollision } from "./poly_collision";
-import { PolyShapes } from "./poly_shapes";
-import { Prismatic } from "./prismatic";
-import { Pulleys } from "./pulleys";
-import { Pyramid } from "./pyramid";
-import { RayCast } from "./ray_cast";
-import { Revolute } from "./revolute";
-import { SensorTest } from "./sensor_test";
-import { ShapeCast } from "./shape_cast";
-import { ShapeEditing } from "./shape_editing";
-import { Skier } from "./skier";
-import { SliderCrank } from "./slider_crank";
-import { SphereStack } from "./sphere_stack";
-import { TheoJansen } from "./theo_jansen";
-import { Tiles } from "./tiles";
-import { TimeOfImpact } from "./time_of_impact";
-import { Tumbler } from "./tumbler";
-import { VaryingFriction } from "./varying_friction";
-import { VaryingRestitution } from "./varying_restitution";
-import { VerticalStack } from "./vertical_stack";
-import { Web } from "./web";
-import { Rope } from "./rope";
-import { MotorJoint2 } from "./motor_joint2";
-import { BlobTest } from "./blob_test";
-import { TestCCD } from "./test_ccd";
-import { TestRagdoll } from "./test_ragdoll";
-import { TestStack } from "./test_stack";
-import { PyramidTopple } from "./pyramid_topple";
-import { DominoTower } from "./domino_tower";
-import { TopdownCar } from "./top_down_car";
-import { DistanceJoint } from "./distance_joint";
-
-export const coreTests: TestEntry[] = [
-    ["Add Pair Stress Test", AddPair],
-    ["Apply Force", ApplyForce],
-    ["Basic Slider Crank", BasicSliderCrank],
-    ["Blob Test", BlobTest],
-    ["Body Types", BodyTypes],
-    ["Breakable", Breakable],
-    ["Bridge", Bridge],
-    ["Bullet Test", BulletTest],
-    ["Cantilever", Cantilever],
-    ["Car", Car],
-    ["Chain", Chain],
-    ["Character Collision", CharacterCollision],
-    ["Collision Filtering", CollisionFiltering],
-    ["Collision Processing", CollisionProcessing],
-    ["Compound Shapes", CompoundShapes],
-    ["Confined", Confined],
-    ["Continuous Collision", TestCCD],
-    ["Continuous Test", ContinuousTest],
-    ["Convex Hull", ConvexHull],
-    ["Conveyor Belt", ConveyorBelt],
-    ["Distance Test", DistanceTest],
-    ["Distance Joint", DistanceJoint],
-    ["Domino Tower", DominoTower],
-    ["Dominos", Dominos],
-    ["Dump Shell", DumpShell],
-    ["Dynamic Tree", DynamicTreeTest],
-    ["Edge Shapes", EdgeShapes],
-    ["Edge Test", EdgeTest],
-    ["Gears", Gears],
-    ["Heavy on Light Two", HeavyOnLightTwo],
-    ["Heavy on Light", HeavyOnLight],
-    ["Mobile", Mobile],
-    ["MobileBalanced", MobileBalanced],
-    ["Motor Joint (Bug #487)", MotorJoint2],
-    ["Motor Joint", MotorJoint],
-    ["One-Sided Platform", OneSidedPlatform],
-    ["Pinball", Pinball],
-    ["PolyCollision", PolyCollision],
-    ["Polygon Shapes", PolyShapes],
-    ["Prismatic", Prismatic],
-    ["Pulleys", Pulleys],
-    ["Pyramid Topple", PyramidTopple],
-    ["Pyramid", Pyramid],
-    ["Ragdolls", TestRagdoll],
-    ["Ray-Cast", RayCast],
-    ["Revolute", Revolute],
-    ["Rope", Rope],
-    ["Sensor Test", SensorTest],
-    ["Shape Cast", ShapeCast],
-    ["Shape Editing", ShapeEditing],
-    ["Skier", Skier],
-    ["Slider Crank", SliderCrank],
-    ["Sphere Stack", SphereStack],
-    ["Stacked Boxes", TestStack],
-    ["Theo Jansen's Walker", TheoJansen],
-    ["Tiles", Tiles],
-    ["Time of Impact", TimeOfImpact],
-    ["TopDown Car", TopdownCar],
-    ["Tumbler", Tumbler],
-    ["Varying Friction", VaryingFriction],
-    ["Varying Restitution", VaryingRestitution],
-    ["Vertical Stack", VerticalStack],
-    ["Web", Web],
-];
+import "./add_pair";
+import "./apply_force";
+import "./basic_slider_crank";
+import "./body_types";
+import "./breakable";
+import "./bridge";
+import "./bullet_test";
+import "./cantilever";
+import "./car";
+import "./continuous_test";
+import "./chain";
+import "./character_collision";
+import "./collision_filtering";
+import "./collision_processing";
+import "./compound_shapes";
+import "./confined";
+import "./convex_hull";
+import "./conveyor_belt";
+import "./distance_test";
+import "./dominos";
+import "./dump_shell";
+import "./dynamic_tree_test";
+import "./edge_shapes";
+import "./edge_test";
+import "./gears";
+import "./heavy1";
+import "./heavy2";
+import "./mobile_unbalanced";
+import "./mobile_balanced";
+import "./motor_joint";
+import "./one_sided_platform";
+import "./pinball";
+import "./poly_collision";
+import "./poly_shapes";
+import "./prismatic";
+import "./pulleys";
+import "./pyramid";
+import "./ray_cast";
+import "./revolute";
+import "./sensor_test";
+import "./shape_cast";
+import "./shape_editing";
+import "./skier";
+import "./slider_crank";
+import "./sphere_stack";
+import "./theo_jansen";
+import "./tiles";
+import "./time_of_impact";
+import "./tumbler";
+import "./varying_friction";
+import "./varying_restitution";
+import "./vertical_stack";
+import "./web";
+import "./rope";
+import "./motor_joint2";
+import "./blob_test";
+import "./test_ccd";
+import "./test_ragdoll";
+import "./test_stack";
+import "./pyramid_topple";
+import "./domino_tower";
+import "./top_down_car";
+import "./distance_joint";

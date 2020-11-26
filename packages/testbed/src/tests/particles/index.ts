@@ -16,53 +16,26 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import { TestEntry } from "../../test";
-import { Sandbox } from "./sandbox";
-import { Sparky } from "./sparky";
-import { DamBreak } from "./dam_break";
-import { LiquidTimer } from "./liquid_timer";
-import { WaveMachine } from "./wave_machine";
-import { Particles } from "./particles";
-import { Faucet } from "./faucet";
-import { DrawingParticles } from "./drawing_particles";
-import { Soup } from "./soup";
-import { ParticlesSurfaceTension } from "./particles_surface_tension";
-import { ElasticParticles } from "./elastic_particles";
-import { RigidParticles } from "./rigid_particles";
-import { MultipleParticleSystems } from "./multiple_particle_systems";
-import { Impulse } from "./impulse";
-import { SoupStirrer } from "./soup_stirrer";
-import { Fracker } from "./fracker";
-import { Maxwell } from "./maxwell";
-import { Ramp } from "./ramp";
-import { Pointy } from "./pointy";
-import { AntiPointy } from "./anti_pointy";
-import { CornerCase } from "./corner_case";
-import { ParticleCollisionFilter } from "./particle_collision_filter";
-import { EyeCandy } from "./eye_candy";
-
-export const particleTests: TestEntry[] = [
-    ["AntiPointy", AntiPointy],
-    ["Corner Case", CornerCase],
-    ["DamBreak", DamBreak],
-    ["Elastic Particles", ElasticParticles],
-    ["Eye Candy", EyeCandy],
-    ["Faucet", Faucet],
-    ["Fracker", Fracker],
-    ["Impulse", Impulse],
-    ["Liquid Timer", LiquidTimer],
-    ["Maxwell", Maxwell],
-    ["Multiple Systems", MultipleParticleSystems],
-    ["Particle Collisions", ParticleCollisionFilter],
-    ["Particle Drawing", DrawingParticles],
-    ["Particles", Particles],
-    ["Pointy", Pointy],
-    ["Ramp", Ramp],
-    ["Rigid Particles", RigidParticles],
-    ["Sandbox", Sandbox],
-    ["Soup Stirrer", SoupStirrer],
-    ["Soup", Soup],
-    ["Sparky", Sparky],
-    ["Surface Tension", ParticlesSurfaceTension],
-    ["Wave Machine", WaveMachine],
-];
+import "./sandbox";
+import "./sparky";
+import "./dam_break";
+import "./liquid_timer";
+import "./wave_machine";
+import "./particles";
+import "./faucet";
+import "./drawing_particles";
+import "./soup";
+import "./particles_surface_tension";
+import "./elastic_particles";
+import "./rigid_particles";
+import "./multiple_particle_systems";
+import "./impulse";
+import "./soup_stirrer";
+import "./fracker";
+import "./maxwell";
+import "./ramp";
+import "./pointy";
+import "./anti_pointy";
+import "./corner_case";
+import "./particle_collision_filter";
+import "./eye_candy";

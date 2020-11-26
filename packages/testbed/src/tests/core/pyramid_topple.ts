@@ -1,8 +1,8 @@
 import { b2World, b2Vec2, b2BodyType, b2PolygonShape, b2EdgeShape, XY } from "@box2d/core";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 
-export class PyramidTopple extends Test {
+class PyramidTopple extends Test {
     constructor() {
         super();
 
@@ -95,3 +95,5 @@ export class PyramidTopple extends Test {
         };
     }
 }
+
+registerTest("Core", "Pyramid Topple", PyramidTopple);

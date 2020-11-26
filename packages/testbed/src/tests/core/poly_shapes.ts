@@ -30,7 +30,7 @@ import {
     b2AABB,
 } from "@box2d/core";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
 import { g_debugDraw } from "../../utils/draw";
 import { HotKey, hotKeyPress } from "../../utils/hotkeys";
@@ -44,7 +44,7 @@ const temp = {
     },
 };
 
-export class PolyShapes extends Test {
+class PolyShapes extends Test {
     public static readonly e_maxBodies = 256;
 
     public m_bodyIndex = 0;
@@ -210,3 +210,5 @@ export class PolyShapes extends Test {
         g_debugDraw.DrawCircle(circle.m_p, circle.m_radius, color);
     }
 }
+
+registerTest("Core", "Polygon Shapes", PolyShapes);

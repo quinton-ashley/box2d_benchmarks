@@ -27,11 +27,11 @@ import {
     b2PrismaticJointDef,
 } from "@box2d/core";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
 import { HotKey, hotKeyPress } from "../../utils/hotkeys";
 
-export class SliderCrank extends Test {
+class SliderCrank extends Test {
     public static readonly e_count = 30;
 
     public m_joint1: b2RevoluteJoint;
@@ -151,3 +151,5 @@ export class SliderCrank extends Test {
         this.addDebug("Motor Torque", torque.toFixed(0));
     }
 }
+
+registerTest("Core", "Slider Crank", SliderCrank);

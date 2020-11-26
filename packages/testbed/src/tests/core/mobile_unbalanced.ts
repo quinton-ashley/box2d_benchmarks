@@ -18,9 +18,9 @@
 
 import { b2Vec2, b2RevoluteJointDef, b2Body, b2BodyType, b2PolygonShape, XY } from "@box2d/core";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 
-export class Mobile extends Test {
+class Mobile extends Test {
     public static readonly e_depth = 4;
 
     constructor() {
@@ -92,3 +92,5 @@ export class Mobile extends Test {
         return body;
     }
 }
+
+registerTest("Core", "Mobile", Mobile);

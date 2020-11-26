@@ -18,10 +18,10 @@
 
 import { b2RevoluteJoint, b2BodyType, b2PolygonShape, b2Vec2, b2RevoluteJointDef, XY } from "@box2d/core";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
 
-export class Tumbler extends Test {
+class Tumbler extends Test {
     public static readonly e_count = 800;
 
     public m_joint: b2RevoluteJoint;
@@ -89,3 +89,5 @@ export class Tumbler extends Test {
         }
     }
 }
+
+registerTest("Core", "Tumbler", Tumbler);

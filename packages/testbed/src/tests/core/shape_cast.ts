@@ -30,11 +30,11 @@ import {
     b2Color,
 } from "@box2d/core";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
 import { g_debugDraw } from "../../utils/draw";
 
-export class ShapeCast extends Test {
+class ShapeCast extends Test {
     public static e_vertexCount = 8;
 
     public m_vAs: b2Vec2[] = [];
@@ -142,3 +142,5 @@ export class ShapeCast extends Test {
         }
     }
 }
+
+registerTest("Core", "Shape Cast", ShapeCast);

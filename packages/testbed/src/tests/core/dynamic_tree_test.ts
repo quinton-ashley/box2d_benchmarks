@@ -29,7 +29,7 @@ import {
     b2Verify,
 } from "@box2d/core";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
 import { g_debugDraw } from "../../utils/draw";
 import { hotKeyPress, HotKey } from "../../utils/hotkeys";
@@ -40,7 +40,7 @@ const temp = {
     c1: new b2Vec2(),
 };
 
-export class DynamicTreeTest extends Test {
+class DynamicTreeTest extends Test {
     public static readonly e_actorCount = 128;
 
     public m_worldExtent = 0.0;
@@ -334,7 +334,7 @@ export class DynamicTreeTest extends Test {
     }
 }
 
-export class DynamicTreeTest_Actor {
+class DynamicTreeTest_Actor {
     public aabb = new b2AABB();
 
     public fraction = 0.0;
@@ -343,3 +343,5 @@ export class DynamicTreeTest_Actor {
 
     public proxyId: b2TreeNode<DynamicTreeTest_Actor> | null = null;
 }
+
+registerTest("Core", "Dynamic Tree", DynamicTreeTest);

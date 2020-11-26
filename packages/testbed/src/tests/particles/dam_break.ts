@@ -19,9 +19,9 @@
 import { b2ChainShape, b2Vec2, b2PolygonShape, XY } from "@box2d/core";
 import { b2ParticleGroupDef, b2ParticleFlag } from "@box2d/particles";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 
-export class DamBreak extends Test {
+class DamBreak extends Test {
     constructor() {
         super();
 
@@ -61,3 +61,5 @@ export class DamBreak extends Test {
         };
     }
 }
+
+registerTest("Particles", "DamBreak", DamBreak);

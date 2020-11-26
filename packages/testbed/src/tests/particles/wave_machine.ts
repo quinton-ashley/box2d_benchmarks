@@ -19,10 +19,10 @@
 import { b2RevoluteJoint, b2BodyType, b2PolygonShape, b2Vec2, b2RevoluteJointDef, XY } from "@box2d/core";
 import { b2ParticleGroupDef, b2ParticleFlag } from "@box2d/particles";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
 
-export class WaveMachine extends Test {
+class WaveMachine extends Test {
     public m_joint: b2RevoluteJoint;
 
     public m_time = 0;
@@ -101,3 +101,5 @@ export class WaveMachine extends Test {
         };
     }
 }
+
+registerTest("Particles", "Wave Machine", WaveMachine);

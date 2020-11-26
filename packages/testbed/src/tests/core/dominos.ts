@@ -29,9 +29,9 @@ import {
     b2LinearStiffness,
 } from "@box2d/core";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 
-export class Dominos extends Test {
+class Dominos extends Test {
     constructor() {
         super();
 
@@ -228,3 +228,5 @@ export class Dominos extends Test {
         };
     }
 }
+
+registerTest("Core", "Dominos", Dominos);

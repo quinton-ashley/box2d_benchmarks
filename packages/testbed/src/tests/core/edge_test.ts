@@ -18,11 +18,11 @@
 
 import { b2Vec2, b2Body, b2EdgeShape, b2BodyType, b2PolygonShape } from "@box2d/core";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
 import { hotKeyPress, HotKey } from "../../utils/hotkeys";
 
-export class EdgeTest extends Test {
+class EdgeTest extends Test {
     public readonly m_offset1 = new b2Vec2();
 
     public readonly m_offset2 = new b2Vec2();
@@ -277,3 +277,5 @@ export class EdgeTest extends Test {
         ];
     }
 }
+
+registerTest("Core", "Edge Test", EdgeTest);

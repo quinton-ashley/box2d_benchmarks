@@ -28,12 +28,12 @@ import {
     XY,
 } from "@box2d/core";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
 import { g_debugDraw } from "../../utils/draw";
 import { hotKeyPress, HotKey } from "../../utils/hotkeys";
 
-export class DistanceTest extends Test {
+class DistanceTest extends Test {
     public m_positionB = new b2Vec2();
 
     public m_angleB = 0;
@@ -130,3 +130,5 @@ export class DistanceTest extends Test {
         g_debugDraw.DrawPoint(x2, 4.0, c2);
     }
 }
+
+registerTest("Core", "Distance Test", DistanceTest);

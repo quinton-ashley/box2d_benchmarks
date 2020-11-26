@@ -18,11 +18,11 @@
 
 import { b2Body, b2Fixture, b2EdgeShape, b2Vec2, b2BodyType, b2PolygonShape, b2CircleShape } from "@box2d/core";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
 import { HotKey, hotKeyPress } from "../../utils/hotkeys";
 
-export class ShapeEditing extends Test {
+class ShapeEditing extends Test {
     public m_body: b2Body;
 
     public m_fixture1: b2Fixture;
@@ -84,3 +84,5 @@ export class ShapeEditing extends Test {
         this.addDebug("Sensor", this.m_sensor);
     }
 }
+
+registerTest("Core", "Shape Editing", ShapeEditing);

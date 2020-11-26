@@ -19,7 +19,7 @@
 import { b2PolygonShape, b2Transform, b2Vec2, XY } from "@box2d/core";
 import { b2ParticleFlag, b2ParticleDef } from "@box2d/particles";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
 
 /**
@@ -27,7 +27,7 @@ import { Settings } from "../../settings";
  * contact fixture junction.
  */
 
-export class Pointy extends Test {
+class Pointy extends Test {
     public m_killfieldShape = new b2PolygonShape();
 
     public m_killfieldTransform = new b2Transform();
@@ -95,3 +95,5 @@ export class Pointy extends Test {
         };
     }
 }
+
+registerTest("Particles", "Pointy", Pointy);

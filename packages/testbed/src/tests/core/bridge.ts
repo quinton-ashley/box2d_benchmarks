@@ -27,9 +27,9 @@ import {
     b2CircleShape,
 } from "@box2d/core";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 
-export class Bridge extends Test {
+class Bridge extends Test {
     public static readonly e_count = 30;
 
     public m_middle!: b2Body;
@@ -116,3 +116,5 @@ export class Bridge extends Test {
         }
     }
 }
+
+registerTest("Core", "Bridge", Bridge);

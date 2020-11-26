@@ -18,9 +18,9 @@
 
 import { b2Fixture, b2EdgeShape, b2Vec2, b2PolygonShape, b2BodyType, b2Contact, b2Manifold } from "@box2d/core";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 
-export class ConveyorBelt extends Test {
+class ConveyorBelt extends Test {
     public m_platform: b2Fixture;
 
     constructor() {
@@ -87,3 +87,5 @@ export class ConveyorBelt extends Test {
         }
     }
 }
+
+registerTest("Core", "Conveyor Belt", ConveyorBelt);

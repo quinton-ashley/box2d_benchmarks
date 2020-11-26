@@ -4,12 +4,12 @@ Test case for collision/jerking issue.
 
 import { b2Body, b2Vec2, b2ChainShape, b2BodyType, b2PolygonShape } from "@box2d/core";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
 import { g_camera } from "../../utils/camera";
 import { HotKey, hotKeyPress } from "../../utils/hotkeys";
 
-export class Skier extends Test {
+class Skier extends Test {
     public m_platform_width: number;
 
     public m_skier: b2Body;
@@ -133,3 +133,5 @@ export class Skier extends Test {
         super.Step(settings, timeStep);
     }
 }
+
+registerTest("Core", "Skier", Skier);

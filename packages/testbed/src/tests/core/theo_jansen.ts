@@ -29,13 +29,13 @@ import {
     b2CircleShape,
 } from "@box2d/core";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 import { HotKey, hotKeyPress } from "../../utils/hotkeys";
 
 // Inspired by a contribution by roman_m
 // Dimensions scooped from APE (http://www.cove.org/ape/index.htm)
 
-export class TheoJansen extends Test {
+class TheoJansen extends Test {
     public m_offset = new b2Vec2();
 
     public m_chassis!: b2Body;
@@ -271,3 +271,5 @@ export class TheoJansen extends Test {
         ];
     }
 }
+
+registerTest("Core", "Theo Jansen's Walker", TheoJansen);

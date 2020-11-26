@@ -18,9 +18,9 @@
 
 import { b2Vec2, b2ChainShape, b2FixtureDef, b2BodyType, b2PolygonShape, b2CircleShape, XY } from "@box2d/core";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 
-export class TestCCD extends Test {
+class TestCCD extends Test {
     constructor() {
         super();
 
@@ -101,3 +101,5 @@ export class TestCCD extends Test {
         };
     }
 }
+
+registerTest("Core", "Continuous Collision", TestCCD);

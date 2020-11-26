@@ -19,9 +19,9 @@
 import { b2PolygonShape, b2Vec2, b2CircleShape, XY } from "@box2d/core";
 import { b2ParticleGroupDef, b2ParticleFlag } from "@box2d/particles";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 
-export class CornerCase extends Test {
+class CornerCase extends Test {
     constructor() {
         super();
 
@@ -96,3 +96,5 @@ export class CornerCase extends Test {
         };
     }
 }
+
+registerTest("Particles", "Corner Case", CornerCase);

@@ -2,13 +2,11 @@ import React, { useEffect, useReducer, useRef } from "react";
 import { useRouter } from "react-router-ts";
 
 import { useManager } from "../../manager";
-import { TestConstructor } from "../../test";
-import { g_testEntries } from "../../tests";
+import { TestEntry } from "../../test";
 import { testLabelToLink } from "../../utils/reactUtils";
 
 interface TestComponentProps {
-    title: string;
-    constructor: TestConstructor;
+    entry: TestEntry;
 }
 
 export type TextTable = Array<[string, string]>;
@@ -45,7 +43,7 @@ const TextTable = ({ id, table }: TextTableProps) => (
     </div>
 );
 
-const TestMain = ({ title, constructor }: TestComponentProps) => {
+const TestMain = ({ entry: { name, TestClass } }: TestComponentProps) => {
     const [leftTable, setLeftTable] = useReducer(tableReducer, []);
     const [rightTable, setRightTable] = useReducer(tableReducer, []);
     const glCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -75,15 +73,15 @@ const TestMain = ({ title, constructor }: TestComponentProps) => {
     }, [debugCanvasRef.current, glCanvasRef.current, wrapperRef.current, manager]);
 
     useEffect(() => {
-        manager.setTest(title, constructor);
-    }, [manager, constructor]);
+        manager.setTest(name, TestClass);
+    }, [manager, TestClass]);
 
     return (
         <main ref={wrapperRef}>
             <canvas ref={glCanvasRef} />
             <canvas ref={debugCanvasRef} />
             <TextTable id="left_overlay" table={leftTable} />
-            <div id="title_overlay">{test?.[0] ?? ""}</div>
+            <div id="title_overlay">{test?.name ?? ""}</div>
             <TextTable id="right_overlay" table={rightTable} />
         </main>
     );
@@ -92,9 +90,11 @@ const TestMain = ({ title, constructor }: TestComponentProps) => {
 export function useActiveTestEntry() {
     const router = useRouter();
     const link = decodeURIComponent(router.path);
-    for (const [, entries] of g_testEntries) {
-        for (const entry of entries) {
-            if (testLabelToLink(entry[0]) === link) return entry;
+    const manager = useManager();
+
+    for (const { tests } of manager.groupedTests) {
+        for (const entry of tests) {
+            if (testLabelToLink(entry.name) === link) return entry;
         }
     }
     return null;
@@ -102,9 +102,5 @@ export function useActiveTestEntry() {
 
 export const Main = () => {
     const entry = useActiveTestEntry();
-    return entry ? (
-        <TestMain title={entry[0]} constructor={entry[1]} />
-    ) : (
-        <main>Select a test from the menu in the top left corner</main>
-    );
+    return entry ? <TestMain entry={entry} /> : <main>Select a test from the menu in the top left corner</main>;
 };

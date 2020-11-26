@@ -19,9 +19,9 @@
 import { b2PolygonShape, b2Vec2, b2CircleShape, b2BodyType, XY } from "@box2d/core";
 import { b2ParticleGroupDef, b2ParticleFlag, b2ParticleGroupFlag } from "@box2d/particles";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 
-export class ElasticParticles extends Test {
+class ElasticParticles extends Test {
     constructor() {
         super();
         {
@@ -115,3 +115,5 @@ export class ElasticParticles extends Test {
         return 0.4;
     }
 }
+
+registerTest("Particles", "Elastic Particles", ElasticParticles);

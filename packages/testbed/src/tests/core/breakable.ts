@@ -27,10 +27,10 @@ import {
     b2ContactImpulse,
 } from "@box2d/core";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
 
-export class Breakable extends Test {
+class Breakable extends Test {
     public static readonly e_count = 7;
 
     public readonly m_body1: b2Body;
@@ -168,3 +168,5 @@ export class Breakable extends Test {
         super.Step(settings, timeStep);
     }
 }
+
+registerTest("Core", "Breakable", Breakable);

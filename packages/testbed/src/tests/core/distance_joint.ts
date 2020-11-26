@@ -30,10 +30,10 @@ import {
     b2Vec2,
 } from "@box2d/core";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 
 // This tests distance joints, body destruction, and joint destruction.
-export class DistanceJoint extends Test {
+class DistanceJoint extends Test {
     public m_joint: b2DistanceJoint;
 
     // fixme: UI to set these
@@ -82,3 +82,5 @@ export class DistanceJoint extends Test {
         this.m_joint = this.m_world.CreateJoint(jd);
     }
 }
+
+registerTest("Core", "Distance Joint", DistanceJoint);

@@ -19,14 +19,14 @@
 import { b2ChainShape, b2Vec2, b2PolygonShape, b2EdgeShape, XY } from "@box2d/core";
 import { b2ParticleGroupDef, b2ParticleFlag } from "@box2d/particles";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 import {
     ParticleParameterValue,
     ParticleParameter,
     ParticleParameterDefinition,
 } from "../../utils/particles/particle_parameter";
 
-export class LiquidTimer extends Test {
+class LiquidTimer extends Test {
     public static readonly k_paramValues = [
         new ParticleParameterValue(
             b2ParticleFlag.b2_tensileParticle | b2ParticleFlag.b2_viscousParticle,
@@ -152,3 +152,5 @@ export class LiquidTimer extends Test {
         };
     }
 }
+
+registerTest("Particles", "Liquid Timer", LiquidTimer);

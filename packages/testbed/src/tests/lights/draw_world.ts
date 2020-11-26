@@ -27,14 +27,14 @@ import { PreloadedTextures } from "../../utils/gl/preload";
 import { DefaultShader } from "../../utils/gl/defaultShader";
 import { clearGlCanvas } from "../../utils/gl/glUtils";
 import { Settings } from "../../settings";
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 import { setRandomLightColor } from "../../utils/lights/lightUtils";
 import heart from "./heart.json";
 
 const NUM_RAYS = 512; // fixme: make a configurable setting?
 const LIGHT_DISTANCE = 32;
 
-export class DrawWorld extends Test {
+class DrawWorld extends Test {
     private readonly rayHandler: RayHandler;
 
     private mouseLight: PointLight;
@@ -204,3 +204,5 @@ export class DrawWorld extends Test {
         return timeStep;
     }
 }
+
+registerTest("Lights", "Draw World", DrawWorld);

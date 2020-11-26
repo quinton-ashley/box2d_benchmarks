@@ -18,9 +18,9 @@
 
 import { b2PolygonShape, b2BodyType, b2RevoluteJointDef, b2Vec2, b2PrismaticJointDef, XY } from "@box2d/core";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 
-export class BasicSliderCrank extends Test {
+class BasicSliderCrank extends Test {
     constructor() {
         super();
 
@@ -121,3 +121,5 @@ export class BasicSliderCrank extends Test {
         };
     }
 }
+
+registerTest("Core", "Basic Slider Crank", BasicSliderCrank);

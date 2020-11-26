@@ -18,9 +18,9 @@
 
 import { b2EdgeShape, b2Vec2, b2AreaJointDef, b2BodyType, b2CircleShape, b2LinearStiffness, XY } from "@box2d/core";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 
-export class BlobTest extends Test {
+class BlobTest extends Test {
     constructor() {
         super();
 
@@ -81,3 +81,5 @@ export class BlobTest extends Test {
         };
     }
 }
+
+registerTest("Core", "Blob Test", BlobTest);

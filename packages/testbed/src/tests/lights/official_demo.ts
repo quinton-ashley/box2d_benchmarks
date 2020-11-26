@@ -38,7 +38,7 @@ import { DefaultShader } from "../../utils/gl/defaultShader";
 import { Sprite } from "../../utils/gl/Sprite";
 import { clearGlCanvas } from "../../utils/gl/glUtils";
 import { Settings } from "../../settings";
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 import { setRandomLightColor } from "../../utils/lights/lightUtils";
 
 const bit = (index: number) => 1 << index;
@@ -61,7 +61,7 @@ const LIGHT_DISTANCE = 16;
 const viewportWidth = 48;
 const viewportHeight = 33;
 
-export class Marble {
+class Marble {
     public light!: Light;
 
     public constructor(public readonly sprite: Sprite, public readonly body: b2Body) {}
@@ -93,7 +93,7 @@ function random(from: number, to: number) {
     return from + Math.random() * (to - from);
 }
 
-export class OfficialDemo extends Test {
+class OfficialDemo extends Test {
     private readonly bg: Sprite;
 
     private readonly marbles: Marble[];
@@ -387,3 +387,5 @@ export class OfficialDemo extends Test {
         this.directionalLight.setSoft(this.soft);
     }
 }
+
+registerTest("Lights", "Official Demo", OfficialDemo);

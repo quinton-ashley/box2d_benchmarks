@@ -18,12 +18,12 @@
 
 import { b2EdgeShape, b2Vec2, b2CircleShape, b2FixtureDef, b2BodyType } from "@box2d/core";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 
 // Note: even with a restitution of 1.0, there is some energy change
 // due to position correction.
 
-export class VaryingRestitution extends Test {
+class VaryingRestitution extends Test {
     constructor() {
         super();
 
@@ -58,3 +58,5 @@ export class VaryingRestitution extends Test {
         }
     }
 }
+
+registerTest("Core", "Varying Restitution", VaryingRestitution);

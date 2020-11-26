@@ -35,7 +35,7 @@ import {
 } from "@box2d/core";
 import { b2ParticleGroup, b2ParticleGroupDef, b2ParticleFlag, b2ParticleSystem } from "@box2d/particles";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
 import { g_debugDraw } from "../../utils/draw";
 import { RadialEmitter } from "../../utils/particles/particle_emitter";
@@ -44,7 +44,7 @@ import { HotKey, hotKeyPress } from "../../utils/hotkeys";
 /**
  * Type of material in a tile.
  */
-export enum Fracker_Material {
+enum Fracker_Material {
     EMPTY = 0,
     DIRT = 1,
     ROCK = 2,
@@ -58,7 +58,7 @@ export enum Fracker_Material {
  * Tracks instances of RadialEmitter and destroys them after a
  * specified period of time.
  */
-export class EmitterTracker {
+class EmitterTracker {
     public m_emitterLifetime: Array<{ emitter: RadialEmitter; lifetime: number }> = [];
 
     /**
@@ -116,7 +116,7 @@ export class EmitterTracker {
  * Keep track of particle groups in a set, removing them when
  * they're destroyed.
  */
-export class ParticleGroupTracker extends b2DestructionListener {
+class ParticleGroupTracker extends b2DestructionListener {
     public m_particleGroups: b2ParticleGroup[] = [];
 
     /**
@@ -145,7 +145,7 @@ export class ParticleGroupTracker extends b2DestructionListener {
     }
 }
 
-export class FrackerSettings {
+class FrackerSettings {
     /**
      * Width and height of the world in tiles.
      */
@@ -260,7 +260,7 @@ export class FrackerSettings {
  * Keep track of particle groups which are drawn up the well and
  * tracks the score of the game.
  */
-export class Fracker_DestructionListener extends ParticleGroupTracker {
+class Fracker_DestructionListener extends ParticleGroupTracker {
     public m_score = 0;
 
     public m_oil = 0;
@@ -348,7 +348,7 @@ export class Fracker_DestructionListener extends ParticleGroupTracker {
  * press 'space'.  Fracking fluid can be used to push other
  * fluids to the well head and ultimately score points.
  */
-export class Fracker extends Test {
+class Fracker extends Test {
     public m_player!: b2Body;
 
     public m_wellX = FrackerSettings.k_worldWidthTiles - FrackerSettings.k_worldWidthTiles / 4;
@@ -983,3 +983,5 @@ export class Fracker extends Test {
         return a * (1.0 - t) + b * t;
     }
 }
+
+registerTest("Particles", "Fracker", Fracker);

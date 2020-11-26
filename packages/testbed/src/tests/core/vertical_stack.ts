@@ -18,11 +18,11 @@
 
 import { b2Body, b2EdgeShape, b2Vec2, b2PolygonShape, b2FixtureDef, b2BodyType, b2CircleShape } from "@box2d/core";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
 import { hotKeyPress, HotKey } from "../../utils/hotkeys";
 
-export class VerticalStack extends Test {
+class VerticalStack extends Test {
     public static readonly e_columnCount = 1;
 
     public static readonly e_rowCount = 15;
@@ -143,3 +143,5 @@ export class VerticalStack extends Test {
         // }
     }
 }
+
+registerTest("Core", "Vertical Stack", VerticalStack);

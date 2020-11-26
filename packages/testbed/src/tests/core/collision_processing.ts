@@ -27,10 +27,10 @@ import {
     b2Body,
 } from "@box2d/core";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
 
-export class CollisionProcessing extends Test {
+class CollisionProcessing extends Test {
     constructor() {
         super();
 
@@ -167,3 +167,5 @@ export class CollisionProcessing extends Test {
         }
     }
 }
+
+registerTest("Core", "Collision Processing", CollisionProcessing);

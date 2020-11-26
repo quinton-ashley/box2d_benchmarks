@@ -18,12 +18,12 @@
 
 import { b2Vec2, b2RandomRange, b2Clamp, b2PolygonShape, b2Color } from "@box2d/core";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
 import { g_debugDraw } from "../../utils/draw";
 import { hotKeyPress, HotKey } from "../../utils/hotkeys";
 
-export class ConvexHull extends Test {
+class ConvexHull extends Test {
     public static readonly e_count = 10;
 
     public m_test_points: b2Vec2[] = [];
@@ -86,3 +86,5 @@ export class ConvexHull extends Test {
         }
     }
 }
+
+registerTest("Core", "Convex Hull", ConvexHull);

@@ -18,7 +18,7 @@
 
 import { b2Vec2, b2Body, b2PolygonShape, b2CircleShape, b2EdgeShape, b2RandomRange, b2Color } from "@box2d/core";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
 import { g_debugDraw } from "../../utils/draw";
 import { HotKey, hotKeyPress } from "../../utils/hotkeys";
@@ -29,7 +29,7 @@ enum RayCastMode {
     e_multiple,
 }
 
-export class RayCast extends Test {
+class RayCast extends Test {
     private static e_maxBodies = 256;
 
     private m_bodyIndex = 0;
@@ -376,3 +376,5 @@ export class RayCast extends Test {
         }
     }
 }
+
+registerTest("Core", "Ray-Cast", RayCast);

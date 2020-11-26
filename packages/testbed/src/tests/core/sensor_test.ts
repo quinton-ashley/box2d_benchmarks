@@ -28,10 +28,10 @@ import {
     XY,
 } from "@box2d/core";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
 
-export class SensorTest extends Test {
+class SensorTest extends Test {
     public static readonly e_count = 7;
 
     public m_sensor: b2Fixture;
@@ -171,3 +171,5 @@ export class SensorTest extends Test {
         }
     }
 }
+
+registerTest("Core", "Sensor Test", SensorTest);

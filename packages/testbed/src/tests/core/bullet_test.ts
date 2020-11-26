@@ -18,13 +18,13 @@
 
 import { b2Body, b2EdgeShape, b2Vec2, b2PolygonShape, b2BodyType, b2RandomRange, b2Gjk, b2Toi } from "@box2d/core";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
 
 const formatValueAveMax = (step: number, ave: number, max: number) =>
     `${step.toFixed(0)} [${ave.toFixed(1)}] (${max.toFixed(0)})`;
 
-export class BulletTest extends Test {
+class BulletTest extends Test {
     public m_body: b2Body;
 
     public m_bullet: b2Body;
@@ -141,3 +141,5 @@ export class BulletTest extends Test {
         }
     }
 }
+
+registerTest("Core", "Bullet Test", BulletTest);

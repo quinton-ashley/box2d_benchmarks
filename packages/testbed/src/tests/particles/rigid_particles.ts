@@ -19,9 +19,9 @@
 import { b2PolygonShape, b2Vec2, b2CircleShape, b2BodyType, XY } from "@box2d/core";
 import { b2ParticleGroupDef, b2ParticleGroupFlag } from "@box2d/particles";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 
-export class RigidParticles extends Test {
+class RigidParticles extends Test {
     constructor() {
         super();
 
@@ -120,3 +120,5 @@ export class RigidParticles extends Test {
         return 0.4;
     }
 }
+
+registerTest("Particles", "Rigid Particles", RigidParticles);

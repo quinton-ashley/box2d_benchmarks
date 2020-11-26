@@ -9,10 +9,11 @@ import { PreloadedTextures, preloadTextures } from "./utils/gl/preload";
 import { createDefaultShader } from "./utils/gl/defaultShader";
 import { clearGlCanvas, initGlCanvas, resizeGlCanvas } from "./utils/gl/glUtils";
 import { Settings } from "./settings";
-import { Test, TestConstructor } from "./test";
+import { getTestsGrouped, Test, TestConstructor, TestEntry } from "./test";
 import { FpsCalculator } from "./utils/FpsCalculator";
-import { g_testEntriesFlat } from "./tests";
 import type { TextTable, TextTableSetter } from "./ui/Main";
+
+import "./tests";
 
 function hotKeyToText(hotKey: HotKey) {
     return hotKey.key === " " ? "Space" : hotKey.key;
@@ -43,6 +44,10 @@ export class TestManager {
 
     private allHotKeys: HotKey[] = [];
 
+    public readonly groupedTests = getTestsGrouped();
+
+    public readonly flatTests: TestEntry[] = [];
+
     private testConstructor: TestConstructor | null = null;
 
     private testTitle = "Unset";
@@ -66,6 +71,10 @@ export class TestManager {
     private setRightTable: TextTableSetter = () => {};
 
     public constructor() {
+        for (const { tests } of this.groupedTests) {
+            this.flatTests.push(...tests);
+        }
+
         this.ownHotKeys = [
             hotKeyPress("0", "Reset Camera", () => this.HomeCamera()),
             hotKeyPress("+", "Zoom In", () => this.ZoomCamera(1.1)),
@@ -241,20 +250,20 @@ export class TestManager {
     }
 
     public DecrementTest(): void {
-        const index = g_testEntriesFlat.findIndex((e) => e[0] === this.testTitle) - 1;
+        const index = this.flatTests.findIndex((e) => e.name === this.testTitle) - 1;
         if (index < 0) {
-            this.activateTest(g_testEntriesFlat[g_testEntriesFlat.length - 1][0]);
+            this.activateTest(this.flatTests[this.flatTests.length - 1].name);
         } else if (index >= 0) {
-            this.activateTest(g_testEntriesFlat[index][0]);
+            this.activateTest(this.flatTests[index].name);
         }
     }
 
     public IncrementTest(): void {
-        const index = g_testEntriesFlat.findIndex((e) => e[0] === this.testTitle) + 1;
-        if (index >= g_testEntriesFlat.length) {
-            this.activateTest(g_testEntriesFlat[0][0]);
+        const index = this.flatTests.findIndex((e) => e.name === this.testTitle) + 1;
+        if (index >= this.flatTests.length) {
+            this.activateTest(this.flatTests[0].name);
         } else if (index > 0) {
-            this.activateTest(g_testEntriesFlat[index][0]);
+            this.activateTest(this.flatTests[index].name);
         }
     }
 

@@ -18,9 +18,9 @@
 
 import { b2EdgeShape, b2Vec2, b2PolygonShape, b2FixtureDef, b2BodyType, XY } from "@box2d/core";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 
-export class VaryingFriction extends Test {
+class VaryingFriction extends Test {
     constructor() {
         super();
 
@@ -113,3 +113,5 @@ export class VaryingFriction extends Test {
         };
     }
 }
+
+registerTest("Core", "Varying Friction", VaryingFriction);

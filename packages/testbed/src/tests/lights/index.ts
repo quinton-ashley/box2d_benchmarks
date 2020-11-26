@@ -16,11 +16,5 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import { TestEntry } from "../../test";
-import { DrawWorld } from "./draw_world";
-import { OfficialDemo } from "./official_demo";
-
-export const lightTests: TestEntry[] = [
-    ["Draw World", DrawWorld],
-    ["Official Demo", OfficialDemo],
-];
+import "./draw_world";
+import "./official_demo";

@@ -2,25 +2,27 @@ import React from "react";
 import { Link, useRouter } from "react-router-ts";
 
 import { Menu } from "../MenuBar/Menu";
-import { g_testEntries } from "../../tests";
 import "./TestsMenu.scss";
 import { testLabelToLink } from "../../utils/reactUtils";
+import { useManager } from "../../manager";
 
 export const TestsMenu = () => {
     const router = useRouter();
     const link = decodeURIComponent(router.path);
+    const manager = useManager();
+
     return (
         <Menu label="Tests" prefix="tests">
-            {g_testEntries.map(([groupLabel, entries]) => (
-                <fieldset key={groupLabel}>
-                    <legend>{groupLabel}</legend>
-                    {entries.map(([label]) => (
+            {manager.groupedTests.map(({ name: groupName, tests }) => (
+                <fieldset key={groupName}>
+                    <legend>{groupName}</legend>
+                    {tests.map(({ name }) => (
                         <Link
-                            href={testLabelToLink(label)}
-                            key={label}
-                            className={link === testLabelToLink(label) ? "active-link" : ""}
+                            href={testLabelToLink(name)}
+                            key={name}
+                            className={link === testLabelToLink(name) ? "active-link" : ""}
                         >
-                            {label}
+                            {name}
                         </Link>
                     ))}
                 </fieldset>

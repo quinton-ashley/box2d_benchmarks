@@ -52,7 +52,37 @@ export interface TestConstructor {
     new (gl: WebGLRenderingContext, shader: DefaultShader, textures: PreloadedTextures): Test;
 }
 
-export type TestEntry = [string, TestConstructor];
+export interface TestEntry {
+    name: string;
+    TestClass: TestConstructor;
+}
+
+const testGroups = {
+    Controllers: [] as TestEntry[],
+    Core: [] as TestEntry[],
+    Lights: [] as TestEntry[],
+    Particles: [] as TestEntry[],
+};
+export type TestGroup = keyof typeof testGroups;
+
+export function registerTest(group: TestGroup, name: string, constructor: TestConstructor) {
+    testGroups[group].push({
+        name,
+        TestClass: constructor,
+    });
+}
+
+export function getTestsGrouped() {
+    return Object.keys(testGroups)
+        .sort()
+        .map((name) => {
+            const tests = testGroups[name as TestGroup].sort((a, b) => (a.name < b.name ? -1 : 1));
+            return {
+                name,
+                tests,
+            };
+        });
+}
 
 export class DestructionListener extends b2DestructionListener {
     public test: Test;

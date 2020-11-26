@@ -27,9 +27,9 @@ import {
     XY,
 } from "@box2d/core";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 
-export class TestStack extends Test {
+class TestStack extends Test {
     constructor() {
         super();
 
@@ -103,3 +103,5 @@ export class TestStack extends Test {
         };
     }
 }
+
+registerTest("Core", "Stacked Boxes", TestStack);

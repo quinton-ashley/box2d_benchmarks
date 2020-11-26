@@ -28,12 +28,12 @@ import {
     b2Color,
 } from "@box2d/core";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
 import { g_debugDraw } from "../../utils/draw";
 import { hotKeyPress, HotKey } from "../../utils/hotkeys";
 
-export class EdgeShapes extends Test {
+class EdgeShapes extends Test {
     public static readonly e_maxBodies = 256;
 
     public m_bodyIndex = 0;
@@ -206,3 +206,5 @@ export class EdgeShapes extends Test {
         }
     }
 }
+
+registerTest("Core", "Edge Shapes", EdgeShapes);

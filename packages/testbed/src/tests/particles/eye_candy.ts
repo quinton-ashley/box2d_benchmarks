@@ -1,10 +1,10 @@
 import { b2Body, b2RevoluteJoint, b2BodyType, b2PolygonShape, b2Vec2, b2RevoluteJointDef } from "@box2d/core";
 import { b2ParticleGroupDef, b2ParticleFlag } from "@box2d/particles";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
 
-export class EyeCandy extends Test {
+class EyeCandy extends Test {
     public m_mover: b2Body;
 
     public m_joint: b2RevoluteJoint;
@@ -68,3 +68,5 @@ export class EyeCandy extends Test {
         super.Step(settings, timeStep);
     }
 }
+
+registerTest("Particles", "Eye Candy", EyeCandy);

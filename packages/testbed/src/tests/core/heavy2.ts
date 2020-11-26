@@ -19,9 +19,9 @@
 import { b2Body, b2EdgeShape, b2Vec2, b2BodyType, b2CircleShape } from "@box2d/core";
 
 import { HotKey, hotKeyPress } from "../../utils/hotkeys";
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 
-export class HeavyOnLightTwo extends Test {
+class HeavyOnLightTwo extends Test {
     public m_heavy: b2Body | null = null;
 
     constructor() {
@@ -76,3 +76,5 @@ export class HeavyOnLightTwo extends Test {
         return [hotKeyPress("h", "Toggle Heavy", () => this.ToggleHeavy())];
     }
 }
+
+registerTest("Core", "Heavy on Light Two", HeavyOnLightTwo);

@@ -21,8 +21,9 @@ import { b2Body, b2Joint, b2CircleShape, b2BodyType, b2Transform, b2PrismaticJoi
 import { Soup } from "./soup";
 import { Settings } from "../../settings";
 import { HotKey, hotKeyPress } from "../../utils/hotkeys";
+import { registerTest } from "../../test";
 
-export class SoupStirrer extends Soup {
+class SoupStirrer extends Soup {
     public m_stirrer: b2Body;
 
     public m_joint: b2Joint | null = null;
@@ -133,3 +134,5 @@ export class SoupStirrer extends Soup {
         super.Step(settings, timeStep);
     }
 }
+
+registerTest("Particles", "Soup Stirrer", SoupStirrer);

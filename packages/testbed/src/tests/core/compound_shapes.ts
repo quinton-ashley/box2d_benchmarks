@@ -28,9 +28,9 @@ import {
     XY,
 } from "@box2d/core";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 
-export class CompoundShapes extends Test {
+class CompoundShapes extends Test {
     constructor() {
         super();
 
@@ -147,3 +147,5 @@ export class CompoundShapes extends Test {
         };
     }
 }
+
+registerTest("Core", "Compound Shapes", CompoundShapes);

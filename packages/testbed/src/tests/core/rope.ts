@@ -31,13 +31,13 @@ import {
     XY,
 } from "@box2d/core";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
 import { g_debugDraw } from "../../utils/draw";
 import { hotKey, HotKey } from "../../utils/hotkeys";
 
 ///
-export class Rope extends Test {
+class Rope extends Test {
     public readonly m_rope1: b2Rope;
 
     public readonly m_rope2: b2Rope;
@@ -578,7 +578,7 @@ export class Rope extends Test {
 
 // static int testIndex = RegisterTest("Rope", "Bending", Rope::Create);
 
-// export class OldRope extends Test {
+// class OldRope extends Test {
 //   // public this.m_rope = new b2Rope();
 //   public m_angle = 0.0;
 
@@ -644,3 +644,5 @@ export class Rope extends Test {
 //     this.addDebug("Target Angle", `${(this.m_angle * 180.0 / Math.PI).toFixed(2)} degrees`);
 //   }
 // }
+
+registerTest("Core", "Rope", Rope);

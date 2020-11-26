@@ -19,9 +19,9 @@
 import { b2PolygonShape, b2Vec2, b2CircleShape, XY } from "@box2d/core";
 import { b2ParticleFlag, b2ParticleGroupDef } from "@box2d/particles";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 
-export class Ramp extends Test {
+class Ramp extends Test {
     constructor() {
         super();
 
@@ -76,3 +76,5 @@ export class Ramp extends Test {
         };
     }
 }
+
+registerTest("Particles", "Ramp", Ramp);

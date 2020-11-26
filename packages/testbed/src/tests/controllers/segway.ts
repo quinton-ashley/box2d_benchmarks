@@ -31,7 +31,7 @@ import {
     b2Vec2,
 } from "@box2d/core";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
 
 /*
@@ -61,7 +61,7 @@ class PIDController {
     }
 }
 
-export class Segway extends Test {
+class Segway extends Test {
     public static PENDULUM_LENGTH = 10;
 
     public targetPosition = 10;
@@ -339,3 +339,5 @@ function normalizeAngle(angle: number): number {
     }
     return angle;
 }
+
+registerTest("Controllers", "Segway", Segway);

@@ -19,7 +19,7 @@
 import { b2PolygonShape, b2Vec2, XY } from "@box2d/core";
 import { b2ParticleFlag, b2ParticleDef } from "@box2d/particles";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
 
 /**
@@ -27,7 +27,7 @@ import { Settings } from "../../settings";
  * ambiguous Body contact fixture junction.
  */
 
-export class AntiPointy extends Test {
+class AntiPointy extends Test {
     public m_particlesToCreate = 300;
 
     constructor() {
@@ -102,3 +102,5 @@ export class AntiPointy extends Test {
         };
     }
 }
+
+registerTest("Particles", "AntiPointy", AntiPointy);

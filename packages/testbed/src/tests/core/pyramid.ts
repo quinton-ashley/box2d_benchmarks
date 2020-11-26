@@ -18,10 +18,10 @@
 
 import { b2EdgeShape, b2Vec2, b2PolygonShape, b2BodyType } from "@box2d/core";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
 
-export class Pyramid extends Test {
+class Pyramid extends Test {
     public static readonly e_count = 20;
 
     constructor() {
@@ -73,3 +73,5 @@ export class Pyramid extends Test {
         // }
     }
 }
+
+registerTest("Core", "Pyramid", Pyramid);

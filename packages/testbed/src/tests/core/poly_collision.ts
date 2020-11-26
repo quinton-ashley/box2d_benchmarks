@@ -26,12 +26,12 @@ import {
     b2Color,
 } from "@box2d/core";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
 import { g_debugDraw } from "../../utils/draw";
 import { HotKey, hotKey } from "../../utils/hotkeys";
 
-export class PolyCollision extends Test {
+class PolyCollision extends Test {
     public m_polygonA = new b2PolygonShape();
 
     public m_polygonB = new b2PolygonShape();
@@ -131,3 +131,5 @@ export class PolyCollision extends Test {
         }
     }
 }
+
+registerTest("Core", "PolyCollision", PolyCollision);

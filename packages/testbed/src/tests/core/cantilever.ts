@@ -27,9 +27,9 @@ import {
     b2CircleShape,
 } from "@box2d/core";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 
-export class Cantilever extends Test {
+class Cantilever extends Test {
     public static readonly e_count = 8;
 
     constructor() {
@@ -197,3 +197,5 @@ export class Cantilever extends Test {
         }
     }
 }
+
+registerTest("Core", "Cantilever", Cantilever);

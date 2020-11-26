@@ -30,9 +30,9 @@ import {
     b2PrismaticJointDef,
 } from "@box2d/core";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 
-export class Gears extends Test {
+class Gears extends Test {
     public m_joint1: b2RevoluteJoint;
 
     public m_joint2: b2RevoluteJoint;
@@ -174,3 +174,5 @@ export class Gears extends Test {
         }
     }
 }
+
+registerTest("Core", "Gears", Gears);

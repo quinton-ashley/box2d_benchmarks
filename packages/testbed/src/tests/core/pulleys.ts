@@ -18,10 +18,10 @@
 
 import { b2PulleyJoint, b2CircleShape, b2PolygonShape, b2BodyType, b2PulleyJointDef, b2Vec2, XY } from "@box2d/core";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
 
-export class Pulleys extends Test {
+class Pulleys extends Test {
     public m_joint1: b2PulleyJoint;
 
     constructor() {
@@ -91,3 +91,5 @@ export class Pulleys extends Test {
         this.addDebug("L2", L.toFixed(2));
     }
 }
+
+registerTest("Core", "Pulleys", Pulleys);

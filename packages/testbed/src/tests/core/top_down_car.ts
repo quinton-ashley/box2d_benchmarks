@@ -28,12 +28,11 @@ import {
     b2RevoluteJointDef,
     b2Clamp,
     b2Fixture,
-    b2Joint,
     b2FixtureDef,
     b2Contact,
 } from "@box2d/core";
 
-import { Test, DestructionListener } from "../../test";
+import { Test, registerTest } from "../../test";
 import { Settings } from "../../settings";
 import { hotKey, HotKey } from "../../utils/hotkeys";
 
@@ -54,7 +53,7 @@ const FUD_GROUND_AREA = 1;
 /**
  * a class to allow subclassing of different fixture user data
  */
-export class FixtureUserData {
+class FixtureUserData {
     public m_type: number;
 
     constructor(type: number) {
@@ -69,7 +68,7 @@ export class FixtureUserData {
 /**
  * class to allow marking a fixture as a car tire
  */
-export class CarTireFUD extends FixtureUserData {
+class CarTireFUD extends FixtureUserData {
     constructor() {
         super(FUD_CAR_TIRE);
     }
@@ -78,7 +77,7 @@ export class CarTireFUD extends FixtureUserData {
 // /**
 //  * class to allow marking a fixture as a ground area
 //  */
-export class GroundAreaFUD extends FixtureUserData {
+class GroundAreaFUD extends FixtureUserData {
     public frictionModifier: number;
 
     public outOfCourse: boolean;
@@ -90,7 +89,7 @@ export class GroundAreaFUD extends FixtureUserData {
     }
 }
 
-export class TDTire {
+class TDTire {
     public m_groundAreas: GroundAreaFUD[] = [];
 
     public m_body: b2Body;
@@ -236,7 +235,7 @@ export class TDTire {
     }
 }
 
-export class TDCar {
+class TDCar {
     public m_tires: TDTire[];
 
     public m_body: b2Body;
@@ -347,31 +346,13 @@ export class TDCar {
     }
 }
 
-export class MyDestructionListener extends DestructionListener {
-    public SayGoodbyeFixture(fixture: b2Fixture): void {
-        ///  if ( FixtureUserData* fud = (FixtureUserData*)fixture.GetUserData() )
-        ///    delete fud;
-        super.SayGoodbyeFixture(fixture);
-    }
-
-    /**
-     * (unused but must implement all pure virtual functions)
-     */
-    public SayGoodbyeJoint(joint: b2Joint): void {
-        super.SayGoodbyeJoint(joint);
-    }
-}
-
-export class TopdownCar extends Test {
+class TopdownCar extends Test {
     public m_car: TDCar;
 
     public m_controlState: number;
 
     constructor() {
         super(b2Vec2.ZERO);
-
-        // this.m_destructionListener = new MyDestructionListener(this);
-        this.m_world.SetDestructionListener(this.m_destructionListener);
 
         // set up ground areas
         {
@@ -459,3 +440,5 @@ export class TopdownCar extends Test {
         super.Step(settings, timeStep);
     }
 }
+
+registerTest("Core", "TopDown Car", TopdownCar);

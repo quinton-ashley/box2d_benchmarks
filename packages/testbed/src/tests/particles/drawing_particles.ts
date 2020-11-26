@@ -19,7 +19,7 @@
 import { b2PolygonShape, b2Vec2, b2CircleShape, b2Transform, XY } from "@box2d/core";
 import { b2ParticleGroup, b2ParticleFlag, b2ParticleGroupFlag, b2ParticleGroupDef } from "@box2d/particles";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
 import {
     ParticleParameterValue,
@@ -28,7 +28,7 @@ import {
 } from "../../utils/particles/particle_parameter";
 import { HotKey, hotKeyPress } from "../../utils/hotkeys";
 
-export class DrawingParticles extends Test {
+class DrawingParticles extends Test {
     /**
      * Set bit 31 to distiguish these values from particle flags.
      */
@@ -340,3 +340,5 @@ export class DrawingParticles extends Test {
         };
     }
 }
+
+registerTest("Particles", "Particle Drawing", DrawingParticles);

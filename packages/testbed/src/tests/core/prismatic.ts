@@ -18,11 +18,11 @@
 
 import { b2PrismaticJoint, b2EdgeShape, b2Vec2, b2PolygonShape, b2BodyType, b2PrismaticJointDef } from "@box2d/core";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
 import { HotKey, hotKeyPress } from "../../utils/hotkeys";
 
-export class Prismatic extends Test {
+class Prismatic extends Test {
     public m_joint: b2PrismaticJoint;
 
     constructor() {
@@ -85,3 +85,5 @@ export class Prismatic extends Test {
         this.addDebug("Motor Force", force.toFixed(4));
     }
 }
+
+registerTest("Core", "Prismatic", Prismatic);

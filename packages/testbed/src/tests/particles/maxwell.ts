@@ -19,7 +19,7 @@
 import { b2Body, b2Vec2, b2ChainShape, b2PolygonShape, b2Clamp, XY } from "@box2d/core";
 import { b2ParticleGroup, b2ParticleGroupDef, b2ParticleFlag } from "@box2d/particles";
 
-import { Test, RandomFloat } from "../../test";
+import { Test, RandomFloat, registerTest } from "../../test";
 import { Settings } from "../../settings";
 import { HotKey, hotKeyPress } from "../../utils/hotkeys";
 
@@ -35,7 +35,7 @@ import { HotKey, hotKeyPress } from "../../utils/hotkeys";
  * See Maxwell::getHotKeys() for other controls.
  */
 
-export class Maxwell extends Test {
+class Maxwell extends Test {
     public m_density = Maxwell.k_densityDefault;
 
     public m_position = Maxwell.k_containerHalfHeight;
@@ -314,3 +314,5 @@ export class Maxwell extends Test {
         };
     }
 }
+
+registerTest("Particles", "Maxwell", Maxwell);

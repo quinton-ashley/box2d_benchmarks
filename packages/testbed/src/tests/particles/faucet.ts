@@ -19,7 +19,7 @@
 import { b2PolygonShape, b2Vec2, b2Color, XY } from "@box2d/core";
 import { b2ParticleSystem, b2ParticleFlag } from "@box2d/particles";
 
-import { Test } from "../../test";
+import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
 import { EmittedParticleCallback, RadialEmitter } from "../../utils/particles/particle_emitter";
 import {
@@ -30,7 +30,7 @@ import {
 } from "../../utils/particles/particle_parameter";
 import { HotKey, hotKeyPress } from "../../utils/hotkeys";
 
-export class ParticleLifetimeRandomizer extends EmittedParticleCallback {
+class ParticleLifetimeRandomizer extends EmittedParticleCallback {
     public m_minLifetime = 0.0;
 
     public m_maxLifetime = 0.0;
@@ -57,7 +57,7 @@ export class ParticleLifetimeRandomizer extends EmittedParticleCallback {
  * spawning particles with finite lifetimes that pour into the
  * box.
  */
-export class Faucet extends Test {
+class Faucet extends Test {
     /**
      * Used to cycle through particle colors.
      */
@@ -352,3 +352,5 @@ export class Faucet extends Test {
         };
     }
 }
+
+registerTest("Particles", "Faucet", Faucet);
