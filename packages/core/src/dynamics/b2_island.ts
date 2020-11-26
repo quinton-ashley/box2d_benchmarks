@@ -156,7 +156,7 @@ However, we can compute sin+cos of the same angle fast.
 
 /// This is an internal class.
 export class b2Island {
-    public readonly m_listener: b2ContactListener;
+    public m_listener: b2ContactListener;
 
     public readonly m_bodies: b2Body[];
 
@@ -536,10 +536,6 @@ export class b2Island {
     private static s_impulse = new b2ContactImpulse();
 
     public Report(constraints: b2ContactVelocityConstraint[]): void {
-        if (this.m_listener === null) {
-            return;
-        }
-
         for (let i = 0; i < this.m_contactCount; ++i) {
             const c = this.m_contacts[i];
             const vc = constraints[i];

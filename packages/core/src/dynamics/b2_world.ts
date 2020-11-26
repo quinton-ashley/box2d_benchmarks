@@ -126,6 +126,7 @@ export class b2World {
     /// remain in scope.
     public SetContactListener(listener: b2ContactListener): void {
         this.m_contactManager.m_contactListener = listener;
+        this.m_island.m_listener = listener;
     }
 
     /// Create a rigid body given a definition. No reference to the definition
