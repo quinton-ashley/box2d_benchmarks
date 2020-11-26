@@ -73,7 +73,7 @@ function parseFunction(
     params: string,
     modifier: string,
 ) {
-    const func = createFunction(classEntry, name);
+    const func = createFunction(classEntry, name, true);
     if (comment) func.comment = comment;
     if (params) func.params = cleanParams(params);
     if (modifier) func.modifier = modifier;
@@ -128,7 +128,7 @@ function parseClass(line: string, lines: string[], module: ModuleType, comment: 
             comments.length = 0;
         } else if (functionDefRegex.test(classLineTrimmed)) {
             const [, funcName, funcParams] = functionDefRegex.exec(classLineTrimmed)!;
-            const func = createFunction(classEntry, funcName);
+            const func = createFunction(classEntry, funcName, true);
             if (funcParams) func.params = cleanParams(funcParams);
             func.modifier = modifier;
             if (comments.length) func.comment = `${func.comment}\n${comments.join("\n")}`.trim();

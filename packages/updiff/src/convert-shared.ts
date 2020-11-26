@@ -63,11 +63,11 @@ export function createClass(module: ModuleType, name: string) {
     }
     return classEntry;
 }
-export function createFunction(classEntry: ClassType, name: string): MethodType {
-    if (name === classEntry.name || name === "constructor") name = "Constructor";
+export function createFunction(classEntry: ClassType, name: string, cppMode: boolean): MethodType {
+    if (cppMode ? name === classEntry.name : name === "constructor") name = "Constructor";
     let func = classEntry.methods[name];
     if (func?.code) {
-        const overload = createFunction(classEntry, `${name}_`);
+        const overload = createFunction(classEntry, `${name}_`, cppMode);
         overload.params = func.params;
         overload.comment = func.comment;
         overload.modifier = func.modifier;

@@ -101,7 +101,7 @@ function parseFunction(
     params: string,
     modifier: string,
 ) {
-    const func = createFunction(classEntry, name);
+    const func = createFunction(classEntry, name, false);
     if (comment) func.comment = comment;
     if (params) func.params = cleanParams(params);
     if (modifier) func.modifier = modifier;
