@@ -23,8 +23,6 @@ import { registerTest, Test } from "../../test";
 const TEST_BAD_BODY = false;
 
 class Chain extends Test {
-    public static readonly e_count = 30;
-
     constructor() {
         super();
 
@@ -53,7 +51,7 @@ class Chain extends Test {
 
             const y = 25;
             let prevBody = ground;
-            for (let i = 0; i < Chain.e_count; ++i) {
+            for (let i = 0; i < 30; ++i) {
                 const body = this.m_world.CreateBody({
                     type: b2BodyType.b2_dynamicBody,
                     position: { x: 0.5 + i, y },
@@ -61,6 +59,7 @@ class Chain extends Test {
 
                 if (TEST_BAD_BODY) {
                     if (i === 10) {
+                        // Test zero density dynamic body
                         fd.density = 0;
                     } else {
                         fd.density = 20;
