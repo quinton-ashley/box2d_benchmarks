@@ -25,16 +25,14 @@ class AddPair extends Test {
         super(b2Vec2.ZERO);
 
         {
-            // const a = 0.1;
-
             const shape = new b2CircleShape();
             shape.m_p.SetZero();
             shape.m_radius = 0.1;
 
-            const minX = -6.0;
-            const maxX = 0.0;
-            const minY = 4.0;
-            const maxY = 6.0;
+            const minX = -6;
+            const maxX = 0;
+            const minY = 4;
+            const maxY = 6;
 
             for (let i = 0; i < 400; ++i) {
                 const body = this.m_world.CreateBody({
@@ -54,13 +52,13 @@ class AddPair extends Test {
             const body = this.m_world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
                 position: {
-                    x: -40.0,
-                    y: 5.0,
+                    x: -40,
+                    y: 5,
                 },
                 bullet: true,
             });
-            body.CreateFixture({ shape, density: 1.0 });
-            body.SetLinearVelocity(new b2Vec2(10.0, 0.0));
+            body.CreateFixture({ shape, density: 1 });
+            body.SetLinearVelocity(new b2Vec2(10, 0));
         }
     }
 
