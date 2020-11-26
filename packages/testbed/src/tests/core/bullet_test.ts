@@ -21,8 +21,9 @@ import { b2Body, b2EdgeShape, b2Vec2, b2PolygonShape, b2BodyType, b2RandomRange,
 import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
 
-const formatValueAveMax = (step: number, ave: number, max: number) =>
-    `${step.toFixed(0)} [${ave.toFixed(1)}] (${max.toFixed(0)})`;
+function formatValueAveMax(step: number, ave: number, max: number) {
+    return `${step.toFixed(0)} [${ave.toFixed(1)}] (${max.toFixed(0)})`;
+}
 
 class BulletTest extends Test {
     public m_body: b2Body;
@@ -35,38 +36,34 @@ class BulletTest extends Test {
         super();
 
         {
-            /* b2Body */
             const body = this.m_world.CreateBody();
 
-            /* b2EdgeShape */
             const edge = new b2EdgeShape();
 
-            edge.SetTwoSided(new b2Vec2(-10.0, 0.0), new b2Vec2(10.0, 0.0));
+            edge.SetTwoSided(new b2Vec2(-10, 0), new b2Vec2(10, 0));
             body.CreateFixture({ shape: edge });
 
-            /* b2PolygonShape */
             const shape = new b2PolygonShape();
-            shape.SetAsBox(0.2, 1.0, new b2Vec2(0.5, 1.0), 0.0);
+            shape.SetAsBox(0.2, 1, new b2Vec2(0.5, 1), 0);
             body.CreateFixture({ shape });
         }
 
         {
-            /* b2PolygonShape */
             const box = new b2PolygonShape();
-            box.SetAsBox(2.0, 0.1);
+            box.SetAsBox(2, 0.1);
 
             this.m_body = this.m_world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
                 position: {
-                    x: 0.0,
-                    y: 4.0,
+                    x: 0,
+                    y: 4,
                 },
             });
-            this.m_body.CreateFixture({ shape: box, density: 1.0 });
+            this.m_body.CreateFixture({ shape: box, density: 1 });
 
             box.SetAsBox(0.25, 0.25);
 
-            // this.m_x = b2RandomRange(-1.0, 1.0);
+            // this.m_x = b2RandomRange(-1, 1);
             this.m_x = 0.20352793;
 
             this.m_bullet = this.m_world.CreateBody({
@@ -74,39 +71,26 @@ class BulletTest extends Test {
                 bullet: true,
                 position: {
                     x: this.m_x,
-                    y: 10.0,
+                    y: 10,
                 },
             });
-            this.m_bullet.CreateFixture({ shape: box, density: 100.0 });
+            this.m_bullet.CreateFixture({ shape: box, density: 100 });
 
-            this.m_bullet.SetLinearVelocity(new b2Vec2(0.0, -50.0));
+            this.m_bullet.SetLinearVelocity(new b2Vec2(0, -50));
         }
     }
 
     public Launch() {
-        this.m_body.SetTransformVec(new b2Vec2(0.0, 4.0), 0.0);
+        this.m_body.SetTransformVec(new b2Vec2(0, 4), 0);
         this.m_body.SetLinearVelocity(b2Vec2.ZERO);
-        this.m_body.SetAngularVelocity(0.0);
+        this.m_body.SetAngularVelocity(0);
 
-        this.m_x = b2RandomRange(-1.0, 1.0);
-        this.m_bullet.SetTransformVec(new b2Vec2(this.m_x, 10.0), 0.0);
-        this.m_bullet.SetLinearVelocity(new b2Vec2(0.0, -50.0));
-        this.m_bullet.SetAngularVelocity(0.0);
+        this.m_x = b2RandomRange(-1, 1);
+        this.m_bullet.SetTransformVec(new b2Vec2(this.m_x, 10), 0);
+        this.m_bullet.SetLinearVelocity(new b2Vec2(0, -50));
+        this.m_bullet.SetAngularVelocity(0);
 
-        //  extern int32 b2Gjk.calls, b2Gjk.iters, b2Gjk.maxIters;
-        //  extern int32 b2Toi.calls, b2Toi.iters, b2Toi.maxIters;
-        //  extern int32 b2Toi.rootIters, b2Toi.maxRootIters;
-
-        // b2Gjk.calls = 0;
-        // b2Gjk.iters = 0;
-        // b2Gjk.maxIters = 0;
         b2Gjk.reset();
-
-        // b2Toi.calls = 0;
-        // b2Toi.iters = 0;
-        // b2Toi.maxIters = 0;
-        // b2Toi.rootIters = 0;
-        // b2Toi.maxRootIters = 0;
         b2Toi.reset();
     }
 
