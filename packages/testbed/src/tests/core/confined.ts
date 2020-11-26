@@ -113,24 +113,24 @@ class Confined extends Test {
     }
 
     public Step(settings: Settings, timeStep: number): void {
-        let sleeping = true;
+        // let sleeping = true;
         for (let b = this.m_world.GetBodyList(); b; b = b.m_next) {
             if (b.GetType() !== b2BodyType.b2_dynamicBody) {
                 continue;
             }
 
-            if (b.IsAwake()) {
-                sleeping = false;
-            }
+            // if (b.IsAwake()) {
+            //     sleeping = false;
+            // }
         }
 
         if (this.m_stepCount === 180) {
             this.m_stepCount += 0;
         }
 
-        if (sleeping) {
-            // this.CreateCircle();
-        }
+        // if (sleeping) {
+        //     this.CreateCircle();
+        // }
 
         super.Step(settings, timeStep);
 
