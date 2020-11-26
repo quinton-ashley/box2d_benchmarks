@@ -79,30 +79,12 @@ class ContinuousTest extends Test {
     }
     */
 
-        // b2Gjk.calls = 0;
-        // b2Gjk.iters = 0;
-        // b2Gjk.maxIters = 0;
         b2Gjk.reset();
-        // b2Toi.calls = 0;
-        // b2Toi.iters = 0;
-        // b2Toi.rootIters = 0;
-        // b2Toi.maxRootIters = 0;
-        // b2Toi.time = 0;
-        // b2Toi.maxTime = 0;
         b2Toi.reset();
     }
 
     public Launch() {
-        // b2Gjk.calls = 0;
-        // b2Gjk.iters = 0;
-        // b2Gjk.maxIters = 0;
         b2Gjk.reset();
-        // b2Toi.calls = 0;
-        // b2Toi.iters = 0;
-        // b2Toi.rootIters = 0;
-        // b2Toi.maxRootIters = 0;
-        // b2Toi.time = 0;
-        // b2Toi.maxTime = 0;
         b2Toi.reset();
 
         this.m_body.SetTransformVec(new b2Vec2(0, 20), 0);
