@@ -29,6 +29,10 @@ import {
 
 import { registerTest, Test } from "../../test";
 
+// It is difficult to make a cantilever made of links completely rigid with weld joints.
+// You will have to use a high number of iterations to make them stiff.
+// So why not go ahead and use soft weld joints? They behave like a revolute
+// joint with a rotational spring.
 class Cantilever extends Test {
     public static readonly e_count = 8;
 
@@ -41,7 +45,7 @@ class Cantilever extends Test {
             ground = this.m_world.CreateBody();
 
             const shape = new b2EdgeShape();
-            shape.SetTwoSided(new b2Vec2(-40.0, 0.0), new b2Vec2(40.0, 0.0));
+            shape.SetTwoSided(new b2Vec2(-40, 0), new b2Vec2(40, 0));
             ground.CreateFixture({ shape });
         }
 
@@ -51,7 +55,7 @@ class Cantilever extends Test {
 
             const fd: b2FixtureDef = {
                 shape,
-                density: 20.0,
+                density: 20,
             };
 
             const jd = new b2WeldJointDef();
@@ -60,11 +64,11 @@ class Cantilever extends Test {
             for (let i = 0; i < Cantilever.e_count; ++i) {
                 const body = this.m_world.CreateBody({
                     type: b2BodyType.b2_dynamicBody,
-                    position: { x: -14.5 + 1.0 * i, y: 5.0 },
+                    position: { x: -14.5 + 1 * i, y: 5 },
                 });
                 body.CreateFixture(fd);
 
-                const anchor = new b2Vec2(-15.0 + 1.0 * i, 5.0);
+                const anchor = new b2Vec2(-15 + 1 * i, 5);
                 jd.Initialize(prevBody, body, anchor);
                 this.m_world.CreateJoint(jd);
 
@@ -74,26 +78,26 @@ class Cantilever extends Test {
 
         {
             const shape = new b2PolygonShape();
-            shape.SetAsBox(1.0, 0.125);
+            shape.SetAsBox(1, 0.125);
 
             const fd: b2FixtureDef = {
                 shape,
-                density: 20.0,
+                density: 20,
             };
 
             const jd = new b2WeldJointDef();
-            const frequencyHz = 5.0;
+            const frequencyHz = 5;
             const dampingRatio = 0.7;
 
             let prevBody = ground;
             for (let i = 0; i < 3; ++i) {
                 const body = this.m_world.CreateBody({
                     type: b2BodyType.b2_dynamicBody,
-                    position: { x: -14.0 + 2.0 * i, y: 15.0 },
+                    position: { x: -14 + 2 * i, y: 15 },
                 });
                 body.CreateFixture(fd);
 
-                const anchor = new b2Vec2(-15.0 + 2.0 * i, 15.0);
+                const anchor = new b2Vec2(-15 + 2 * i, 15);
                 jd.Initialize(prevBody, body, anchor);
                 b2AngularStiffness(jd, frequencyHz, dampingRatio, jd.bodyA, jd.bodyB);
                 this.m_world.CreateJoint(jd);
@@ -108,7 +112,7 @@ class Cantilever extends Test {
 
             const fd: b2FixtureDef = {
                 shape,
-                density: 20.0,
+                density: 20,
             };
 
             const jd = new b2WeldJointDef();
@@ -117,12 +121,12 @@ class Cantilever extends Test {
             for (let i = 0; i < Cantilever.e_count; ++i) {
                 const body = this.m_world.CreateBody({
                     type: b2BodyType.b2_dynamicBody,
-                    position: { x: -4.5 + 1.0 * i, y: 15.0 },
+                    position: { x: -4.5 + 1 * i, y: 5 },
                 });
                 body.CreateFixture(fd);
 
                 if (i > 0) {
-                    const anchor = new b2Vec2(-5.0 + 1.0 * i, 15.0);
+                    const anchor = new b2Vec2(-5 + 1 * i, 5);
                     jd.Initialize(prevBody, body, anchor);
                     this.m_world.CreateJoint(jd);
                 }
@@ -137,23 +141,23 @@ class Cantilever extends Test {
 
             const fd: b2FixtureDef = {
                 shape,
-                density: 20.0,
+                density: 20,
             };
 
             const jd = new b2WeldJointDef();
-            const frequencyHz = 8.0;
+            const frequencyHz = 8;
             const dampingRatio = 0.7;
 
             let prevBody = ground;
             for (let i = 0; i < Cantilever.e_count; ++i) {
                 const body = this.m_world.CreateBody({
                     type: b2BodyType.b2_dynamicBody,
-                    position: { x: 5.5 + 1.0 * i, y: 10.0 },
+                    position: { x: 5.5 + 1 * i, y: 10 },
                 });
                 body.CreateFixture(fd);
 
                 if (i > 0) {
-                    const anchor = new b2Vec2(5.0 + 1.0 * i, 10.0);
+                    const anchor = new b2Vec2(5 + 1 * i, 10);
                     jd.Initialize(prevBody, body, anchor);
                     b2AngularStiffness(jd, frequencyHz, dampingRatio, jd.bodyA, jd.bodyB);
                     this.m_world.CreateJoint(jd);
@@ -165,20 +169,20 @@ class Cantilever extends Test {
 
         for (let i = 0; i < 2; ++i) {
             const vertices = [];
-            vertices[0] = new b2Vec2(-0.5, 0.0);
-            vertices[1] = new b2Vec2(0.5, 0.0);
-            vertices[2] = new b2Vec2(0.0, 1.5);
+            vertices[0] = new b2Vec2(-0.5, 0);
+            vertices[1] = new b2Vec2(0.5, 0);
+            vertices[2] = new b2Vec2(0, 1.5);
 
             const shape = new b2PolygonShape();
             shape.Set(vertices);
 
             const body = this.m_world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
-                position: { x: -8.0 + 8.0 * i, y: 12.0 },
+                position: { x: -8 + 8 * i, y: 12 },
             });
             body.CreateFixture({
                 shape,
-                density: 1.0,
+                density: 1,
             });
         }
 
@@ -188,11 +192,11 @@ class Cantilever extends Test {
 
             const body = this.m_world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
-                position: { x: -6.0 + 6.0 * i, y: 10.0 },
+                position: { x: -6 + 6 * i, y: 10 },
             });
             body.CreateFixture({
                 shape,
-                density: 1.0,
+                density: 1,
             });
         }
     }
