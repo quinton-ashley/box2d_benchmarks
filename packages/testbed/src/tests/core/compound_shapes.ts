@@ -20,17 +20,24 @@ import {
     b2EdgeShape,
     b2Vec2,
     b2CircleShape,
-    b2RandomRange,
     b2BodyType,
     b2PolygonShape,
-    b2Transform,
-    b2Rot,
     XY,
+    b2Body,
 } from "@box2d/core";
 
 import { registerTest, Test } from "../../test";
+import { HotKey, hotKeyPress } from "../../utils/hotkeys";
 
 class CompoundShapes extends Test {
+    m_table1: b2Body;
+
+    m_table2: b2Body;
+
+    m_ship1: b2Body;
+
+    m_ship2: b2Body;
+
     constructor() {
         super();
 
@@ -43,101 +50,165 @@ class CompoundShapes extends Test {
             body.CreateFixture({ shape });
         }
 
+        // Table 1
         {
-            const circle1 = new b2CircleShape();
-            circle1.m_radius = 0.5;
-            circle1.m_p.Set(-0.5, 0.5);
+            this.m_table1 = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+                position: new b2Vec2(-15, 1),
+            });
 
-            const circle2 = new b2CircleShape();
-            circle2.m_radius = 0.5;
-            circle2.m_p.Set(0.5, 0.5);
+            const top = new b2PolygonShape();
+            top.SetAsBox(3, 0.5, new b2Vec2(0, 3.5), 0);
 
-            for (let i = 0; i < 10; ++i) {
-                const x = b2RandomRange(-0.1, 0.1);
-                const body = this.m_world.CreateBody({
-                    type: b2BodyType.b2_dynamicBody,
-                    angle: b2RandomRange(-Math.PI, Math.PI),
-                    position: {
-                        x: x + 5,
-                        y: 1.05 + 2.5 * i,
-                    },
-                });
-                body.CreateFixture({ shape: circle1, density: 2 });
-                body.CreateFixture({ shape: circle2 });
-            }
+            const leftLeg = new b2PolygonShape();
+            leftLeg.SetAsBox(0.5, 1.5, new b2Vec2(-2.5, 1.5), 0);
+
+            const rightLeg = new b2PolygonShape();
+            rightLeg.SetAsBox(0.5, 1.5, new b2Vec2(2.5, 1.5), 0);
+
+            this.m_table1.CreateFixture({ shape: top, density: 2 });
+            this.m_table1.CreateFixture({ shape: leftLeg, density: 2 });
+            this.m_table1.CreateFixture({ shape: rightLeg, density: 2 });
         }
 
+        // Table 2
         {
-            const polygon1 = new b2PolygonShape();
-            polygon1.SetAsBox(0.25, 0.5);
+            this.m_table2 = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+                position: new b2Vec2(-5, 1),
+            });
 
-            const polygon2 = new b2PolygonShape();
-            polygon2.SetAsBox(0.25, 0.5, new b2Vec2(0, -0.5), 0.5 * Math.PI);
+            const top = new b2PolygonShape();
+            top.SetAsBox(3, 0.5, new b2Vec2(0, 3.5), 0);
 
-            for (let i = 0; i < 10; ++i) {
-                const x = b2RandomRange(-0.1, 0.1);
-                const body = this.m_world.CreateBody({
-                    type: b2BodyType.b2_dynamicBody,
-                    angle: b2RandomRange(-Math.PI, Math.PI),
-                    position: { x: x - 5, y: 1.05 + 2.5 * i },
-                });
-                body.CreateFixture({ shape: polygon1, density: 2 });
-                body.CreateFixture({ shape: polygon2, density: 2 });
-            }
+            const leftLeg = new b2PolygonShape();
+            leftLeg.SetAsBox(0.5, 2, new b2Vec2(-2.5, 2), 0);
+
+            const rightLeg = new b2PolygonShape();
+            rightLeg.SetAsBox(0.5, 2, new b2Vec2(2.5, 2), 0);
+
+            this.m_table2.CreateFixture({ shape: top, density: 2 });
+            this.m_table2.CreateFixture({ shape: leftLeg, density: 2 });
+            this.m_table2.CreateFixture({ shape: rightLeg, density: 2 });
         }
 
+        // Spaceship 1
         {
-            const xf1 = new b2Transform();
-            xf1.q.Set(0.3524 * Math.PI);
-            xf1.p.Copy(b2Rot.MultiplyVec2(xf1.q, new b2Vec2(1, 0), new b2Vec2()));
+            this.m_ship1 = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+                position: new b2Vec2(5, 1),
+            });
 
-            const vertices = [];
-
-            const triangle1 = new b2PolygonShape();
-            vertices[0] = b2Transform.MultiplyVec2(xf1, new b2Vec2(-1, 0), new b2Vec2());
-            vertices[1] = b2Transform.MultiplyVec2(xf1, new b2Vec2(1, 0), new b2Vec2());
-            vertices[2] = b2Transform.MultiplyVec2(xf1, new b2Vec2(0, 0.5), new b2Vec2());
-            triangle1.Set(vertices, 3);
-
-            const xf2 = new b2Transform();
-            xf2.q.Set(-0.3524 * Math.PI);
-            xf2.p.Copy(b2Rot.MultiplyVec2(xf2.q, new b2Vec2(-1, 0), new b2Vec2()));
-
-            const triangle2 = new b2PolygonShape();
-            vertices[0] = b2Transform.MultiplyVec2(xf2, new b2Vec2(-1, 0), new b2Vec2());
-            vertices[1] = b2Transform.MultiplyVec2(xf2, new b2Vec2(1, 0), new b2Vec2());
-            vertices[2] = b2Transform.MultiplyVec2(xf2, new b2Vec2(0, 0.5), new b2Vec2());
-            triangle2.Set(vertices, 3);
-
-            for (let i = 0; i < 10; ++i) {
-                const body = this.m_world.CreateBody({
-                    type: b2BodyType.b2_dynamicBody,
-                    position: { x: b2RandomRange(-0.1, 0.1), y: 2.05 + 2.5 * i },
-                    angle: 0,
-                });
-                body.CreateFixture({ shape: triangle1, density: 2 });
-                body.CreateFixture({ shape: triangle2, density: 2 });
-            }
-        }
-
-        {
-            const bottom = new b2PolygonShape();
-            bottom.SetAsBox(1.5, 0.15);
+            const vertices: b2Vec2[] = [];
 
             const left = new b2PolygonShape();
-            left.SetAsBox(0.15, 2.7, new b2Vec2(-1.45, 2.35), 0.2);
+            vertices[0] = new b2Vec2(-2, 0);
+            vertices[1] = new b2Vec2(0, 4 / 3);
+            vertices[2] = new b2Vec2(0, 4);
+            left.Set(vertices, 3);
 
             const right = new b2PolygonShape();
-            right.SetAsBox(0.15, 2.7, new b2Vec2(1.45, 2.35), -0.2);
+            vertices[0] = new b2Vec2(2, 0);
+            vertices[1] = new b2Vec2(0, 4 / 3);
+            vertices[2] = new b2Vec2(0, 4);
+            right.Set(vertices, 3);
 
+            this.m_ship1.CreateFixture({ shape: left, density: 2 });
+            this.m_ship1.CreateFixture({ shape: right, density: 2 });
+        }
+
+        // Spaceship 2
+        {
+            this.m_ship2 = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+                position: new b2Vec2(15, 1),
+            });
+
+            const vertices: b2Vec2[] = [];
+
+            const left = new b2PolygonShape();
+            vertices[0] = new b2Vec2(-2, 0);
+            vertices[1] = new b2Vec2(1, 2);
+            vertices[2] = new b2Vec2(0, 4);
+            left.Set(vertices, 3);
+
+            const right = new b2PolygonShape();
+            vertices[0] = new b2Vec2(2, 0);
+            vertices[1] = new b2Vec2(-1, 2);
+            vertices[2] = new b2Vec2(0, 4);
+            right.Set(vertices, 3);
+
+            this.m_ship2.CreateFixture({ shape: left, density: 2 });
+            this.m_ship2.CreateFixture({ shape: right, density: 2 });
+        }
+    }
+
+    private Spawn() {
+        // Table 1 obstruction
+        {
             const body = this.m_world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
-                position: { x: 0, y: 2 },
+                position: this.m_table1.GetPosition(),
+                angle: this.m_table1.GetAngle(),
             });
-            body.CreateFixture({ shape: bottom, density: 4 });
-            body.CreateFixture({ shape: left, density: 4 });
-            body.CreateFixture({ shape: right, density: 4 });
+
+            const box = new b2PolygonShape();
+            box.SetAsBox(4, 0.1, new b2Vec2(0, 3), 0);
+
+            body.CreateFixture({ shape: box, density: 2 });
         }
+
+        // Table 2 obstruction
+        {
+            const body = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+                position: this.m_table2.GetPosition(),
+                angle: this.m_table2.GetAngle(),
+            });
+
+            const box = new b2PolygonShape();
+            box.SetAsBox(4, 0.1, new b2Vec2(0, 3), 0);
+
+            body.CreateFixture({ shape: box, density: 2 });
+        }
+
+        // Ship 1 obstruction
+        {
+            const body = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+                position: this.m_ship1.GetPosition(),
+                angle: this.m_ship1.GetAngle(),
+                gravityScale: 0,
+            });
+
+            const circle = new b2CircleShape(0.5);
+            circle.m_p.Set(0, 2);
+
+            body.CreateFixture({ shape: circle, density: 2 });
+        }
+
+        // Ship 2 obstruction
+        {
+            const body = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+                position: this.m_ship2.GetPosition(),
+                angle: this.m_ship2.GetAngle(),
+                gravityScale: 0,
+            });
+
+            const circle = new b2CircleShape(0.5);
+            circle.m_p.Set(0, 2);
+
+            body.CreateFixture({ shape: circle, density: 2 });
+        }
+    }
+
+    getHotkeys(): HotKey[] {
+        return [
+            hotKeyPress("s", "Spawn Items", () => {
+                this.Spawn();
+            }),
+        ];
     }
 
     public getCenter(): XY {
