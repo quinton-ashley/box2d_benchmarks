@@ -16,9 +16,6 @@ import {
     cleanupDir,
 } from "./convert-shared";
 
-const files = fs.readdirSync("dist/cpp");
-cleanupDir("dist/cpp-mod");
-
 const modifierRegex = /^(public|private|protected):/;
 const classDefRegex = /^(class|struct)(?: B2_API)?\s+[a-z0-9_]+;/i;
 const classRegex = /^(class|struct)(?: B2_API)?\s+([a-z0-9_]+)/i;
@@ -33,14 +30,6 @@ const plainDefineRegex = /^#define\s+[a-z_0-9]+\s*$/i;
 const attributeRegex = /^([^,]+\s+)+((?:[a-z0-9_[\]]+, )*(?:[a-z0-9_[\]]+))/i;
 const methodRegex = /\s*([a-z0-9_]+)::([a-z0-9_]+)\(.*\).*$/i;
 const paramRegex = /.*\b([a-z0-9_]+)/i;
-
-const modules: { [s: string]: ModuleType } = {};
-for (const file of files) {
-    const base = file.replace(/\.(h|cpp)$/, "");
-    const existing = modules[base];
-    if (existing) existing.files.push(file);
-    else modules[base] = { files: [file], classes: {}, constants: [], enums: [], functions: {} };
-}
 
 function cleanParams(params: string) {
     if (!params) return params;
@@ -170,7 +159,7 @@ function parseClass(line: string, lines: string[], module: ModuleType, comment: 
 }
 
 function parseFile(file: string, module: ModuleType) {
-    const lines = fs.readFileSync(`dist/cpp/${file}`).toString().split(/\r?\n/);
+    const lines = fs.readFileSync(file).toString().split(/\r?\n/);
     const comments: string[] = [];
     while (lines.length) {
         const line = readLine(lines);
@@ -258,11 +247,27 @@ function parseFile(file: string, module: ModuleType) {
     }
 }
 
-for (const moduleName of Object.keys(modules)) {
-    // if (moduleName !== "b2_math") continue;
-    const module = modules[moduleName];
-    for (const file of module.files.sort().reverse()) {
-        parseFile(file, module);
+function convert(input: string, output: string) {
+    const files = fs.readdirSync(input);
+    cleanupDir(output);
+
+    const modules: { [s: string]: ModuleType } = {};
+    for (const file of files) {
+        const base = file.replace(/\.(h|cpp)$/, "");
+        const existing = modules[base];
+        if (existing) existing.files.push(file);
+        else modules[base] = { files: [file], classes: {}, constants: [], enums: [], functions: {} };
     }
-    writeModule("cpp", moduleName, module);
+
+    for (const moduleName of Object.keys(modules)) {
+        // if (moduleName !== "b2_math") continue;
+        const module = modules[moduleName];
+        for (const file of module.files.sort().reverse()) {
+            parseFile(`${input}/${file}`, module);
+        }
+        writeModule(output, moduleName, module);
+    }
 }
+
+convert("dist/cpp", "dist/cpp-mod");
+convert("dist/cpp-testbed", "dist/cpp-testbed-mod");

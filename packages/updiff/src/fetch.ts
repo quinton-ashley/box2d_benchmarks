@@ -3,7 +3,7 @@ import got from "got";
 import fs from "fs";
 import rimraf from "rimraf";
 
-async function fetch(user: string, repo: string, out: string, includeFiles: RegExp, excludeFiles: RegExp) {
+async function fetch(user: string, repo: string, out: string, includeFiles: RegExp, excludeFiles?: RegExp) {
     const repoPrefixRaw = `https://raw.githubusercontent.com/${user}/${repo}/master`;
     const repoPrefixApi = `https://api.github.com/repos/${user}/${repo}`;
 
@@ -11,11 +11,11 @@ async function fetch(user: string, repo: string, out: string, includeFiles: RegE
         (res) => res.body,
     );
 
-    const paths: string[] = jsonData.tree
+    let paths: string[] = jsonData.tree
         .filter((node: any) => node.type === "blob")
         .map((e: any) => e.path)
-        .filter((path: string) => includeFiles.test(path))
-        .filter((path: string) => !excludeFiles.test(path));
+        .filter((path: string) => includeFiles.test(path));
+    if (excludeFiles) paths = paths.filter((path: string) => !excludeFiles.test(path));
 
     const outPath = `dist/${out}`;
     if (fs.existsSync(outPath)) rimraf.sync(outPath);
@@ -44,6 +44,7 @@ async function fetchAll() {
         /^(include\/box2d\/|src\/).*\.(cpp|h)$/i,
         /(allocator|growable_stack|b2_api)/i,
     );
+    await fetch("erincatto", "box2d", "cpp-testbed", /^testbed\/tests\/.*\.cpp$/i);
 }
 
 fetchAll();

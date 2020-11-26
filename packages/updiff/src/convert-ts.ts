@@ -32,9 +32,6 @@ function getFiles(dir: string, result: string[]): string[] {
     return result;
 }
 
-const files = getFiles("../core/src", []);
-cleanupDir("dist/ts-mod");
-
 const constRegex = /^(?:export )?(const|let) /;
 const constSuffixRegex = /^(\s*as const)?;/;
 const attributeRegex = /^(public |private |protected |readonly |static )*\s*(.*)=\s*/i;
@@ -46,18 +43,10 @@ const functionRegex = /(?:export )?\s*([a-z0-9_]+)\s*\((.*)\)/i;
 const methodRegexDef = /^(public |private |protected )?(?:abstract )?\s*([a-z0-9_]+)\s*\((.*)\): .*;/i;
 const methodRegex = /^(public |private |protected |readonly |static |get |set )*\s*([a-z0-9_]+)\s*(?:=\s*)?\((.*)\)/i;
 const templateRegex = /<[^>]+>/g;
-const ignoreLinesRegex = /^(#ifndef|#ifdef|#else|#endif|#include|export type |type )\b/;
+const ignoreLinesRegex = /^(#ifndef|#ifdef|#else|#endif|#include|export type |type |registerTest|import "\.\/)\b/;
 const paramNameCharRegex = /[a-z0-9_.{}[\],\s]/i;
 const openBracketsRegex = /[<[{(]/;
 const closeBracketsRegex = /[\]})]/;
-
-const modules: { [s: string]: ModuleType } = {};
-for (const file of files) {
-    const base = path.basename(file, ".ts");
-    const existing = modules[base];
-    if (existing) existing.files.push(file);
-    else modules[base] = { files: [file], classes: {}, constants: [], enums: [], functions: {} };
-}
 
 function cleanParams(params: string) {
     if (!params) return params;
@@ -247,10 +236,26 @@ function parseFile(file: string, module: ModuleType) {
     }
 }
 
-for (const moduleName of Object.keys(modules)) {
-    const module = modules[moduleName];
-    for (const file of module.files) {
-        parseFile(file, module);
+function convert(input: string, output: string) {
+    const files = getFiles(input, []);
+    cleanupDir(output);
+
+    const modules: { [s: string]: ModuleType } = {};
+    for (const file of files) {
+        const base = path.basename(file, ".ts");
+        const existing = modules[base];
+        if (existing) existing.files.push(file);
+        else modules[base] = { files: [file], classes: {}, constants: [], enums: [], functions: {} };
     }
-    writeModule("ts", moduleName, module);
+
+    for (const moduleName of Object.keys(modules)) {
+        const module = modules[moduleName];
+        for (const file of module.files) {
+            parseFile(file, module);
+        }
+        writeModule(output, moduleName, module);
+    }
 }
+
+convert("../core/src", "dist/ts-mod");
+convert("../testbed/src/tests/core", "dist/ts-tesbed-mod");

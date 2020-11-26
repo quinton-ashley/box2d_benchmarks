@@ -185,9 +185,9 @@ const knownFilenames: { [s: string]: string } = {
     b2TOIOutput__State: "b2TOIOutputState",
 };
 
-export function writeModule(type: "cpp" | "ts", name: string, module: ModuleType) {
+export function writeModule(output: string, name: string, module: ModuleType) {
     const writeFile = (subType: string, subName: string, lines: string[]) => {
-        const folder = `dist/${type}-mod/${name}/${subType}/`;
+        const folder = `${output}/${name}/${subType}/`;
         if (!fs.existsSync(folder)) fs.mkdirSync(folder, { recursive: true });
         let subNameClean = subName.replace(invalidFileChars, "_");
         subNameClean = knownFilenames[subNameClean] ?? subNameClean;
