@@ -21,6 +21,9 @@ import { b2Body, b2EdgeShape, b2Vec2, b2ChainShape, b2PolygonShape, b2BodyType, 
 import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
 
+/// This is a test of typical character collision scenarios. This does not
+/// show how you should implement a character in your application.
+/// Instead this is used to test smooth collision on edge chains.
 class CharacterCollision extends Test {
     public m_character: b2Body;
 
@@ -124,10 +127,10 @@ class CharacterCollision extends Test {
         // Square character 1
         {
             const body = this.m_world.CreateBody({
+                position: { x: -3, y: 8 },
                 type: b2BodyType.b2_dynamicBody,
                 fixedRotation: true,
                 allowSleep: false,
-                position: { x: -3, y: 8 },
             });
 
             const shape = new b2PolygonShape();
@@ -142,10 +145,10 @@ class CharacterCollision extends Test {
         // Square character 2
         {
             const body = this.m_world.CreateBody({
+                position: { x: -5, y: 5 },
                 type: b2BodyType.b2_dynamicBody,
                 fixedRotation: true,
                 allowSleep: false,
-                position: { x: -5, y: 5 },
             });
 
             const shape = new b2PolygonShape();
@@ -160,10 +163,10 @@ class CharacterCollision extends Test {
         // Hexagon character
         {
             const body = this.m_world.CreateBody({
+                position: { x: -5, y: 8 },
                 type: b2BodyType.b2_dynamicBody,
                 fixedRotation: true,
                 allowSleep: false,
-                position: { x: -5, y: 8 },
             });
 
             let angle = 0;
@@ -186,10 +189,10 @@ class CharacterCollision extends Test {
         // Circle character
         {
             const body = this.m_world.CreateBody({
+                position: { x: 3, y: 5 },
                 type: b2BodyType.b2_dynamicBody,
                 fixedRotation: true,
                 allowSleep: false,
-                position: { x: 3, y: 5 },
             });
 
             const shape = new b2CircleShape();
@@ -204,9 +207,9 @@ class CharacterCollision extends Test {
         // Circle character
         {
             this.m_character = this.m_world.CreateBody({
+                position: { x: -7, y: 6 },
                 type: b2BodyType.b2_dynamicBody,
                 allowSleep: false,
-                position: { x: -7, y: 6 },
             });
 
             const shape = new b2CircleShape();
