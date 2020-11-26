@@ -32,105 +32,98 @@ import {
 import { registerTest, Test } from "../../test";
 import { hotKeyPress, HotKey } from "../../utils/hotkeys";
 
+// This test shows how to apply forces and torques to a body.
+// It also shows how to use the friction joint that can be useful
+// for overhead games.
 class ApplyForce extends Test {
     public m_body: b2Body;
 
     constructor() {
         super(b2Vec2.ZERO);
 
-        /* float32 */
         const k_restitution = 0.4;
 
-        /* b2Body */
-        let ground = null;
+        const ground = this.m_world.CreateBody({
+            position: {
+                x: 0,
+                y: 20,
+            },
+        });
         {
-            ground = this.m_world.CreateBody({
-                position: {
-                    x: 0,
-                    y: 20,
-                },
-            });
-
-            /* b2EdgeShape */
             const shape = new b2EdgeShape();
 
-            const fd: b2FixtureDef = {
+            const sd: b2FixtureDef = {
                 shape,
-                density: 0.0,
+                density: 0,
                 restitution: k_restitution,
             };
 
             // Left vertical
-            shape.SetTwoSided(new b2Vec2(-20.0, -20.0), new b2Vec2(-20.0, 20.0));
-            ground.CreateFixture(fd);
+            shape.SetTwoSided(new b2Vec2(-20, -20), new b2Vec2(-20, 20));
+            ground.CreateFixture(sd);
 
             // Right vertical
-            shape.SetTwoSided(new b2Vec2(20.0, -20.0), new b2Vec2(20.0, 20.0));
-            ground.CreateFixture(fd);
+            shape.SetTwoSided(new b2Vec2(20, -20), new b2Vec2(20, 20));
+            ground.CreateFixture(sd);
 
             // Top horizontal
-            shape.SetTwoSided(new b2Vec2(-20.0, 20.0), new b2Vec2(20.0, 20.0));
-            ground.CreateFixture(fd);
+            shape.SetTwoSided(new b2Vec2(-20, 20), new b2Vec2(20, 20));
+            ground.CreateFixture(sd);
 
             // Bottom horizontal
-            shape.SetTwoSided(new b2Vec2(-20.0, -20.0), new b2Vec2(20.0, -20.0));
-            ground.CreateFixture(fd);
+            shape.SetTwoSided(new b2Vec2(-20, -20), new b2Vec2(20, -20));
+            ground.CreateFixture(sd);
         }
 
         {
-            /* b2Transform */
             const xf1 = new b2Transform();
             xf1.q.Set(0.3524 * Math.PI);
-            xf1.p.Copy(b2Rot.MultiplyVec2(xf1.q, new b2Vec2(1.0, 0.0), new b2Vec2()));
+            xf1.q.GetXAxis(xf1.p);
 
-            /* b2Vec2[] */
             const vertices = [];
-            vertices[0] = b2Transform.MultiplyVec2(xf1, new b2Vec2(-1.0, 0.0), new b2Vec2());
-            vertices[1] = b2Transform.MultiplyVec2(xf1, new b2Vec2(1.0, 0.0), new b2Vec2());
-            vertices[2] = b2Transform.MultiplyVec2(xf1, new b2Vec2(0.0, 0.5), new b2Vec2());
+            vertices[0] = b2Transform.MultiplyVec2(xf1, new b2Vec2(-1, 0), new b2Vec2());
+            vertices[1] = b2Transform.MultiplyVec2(xf1, new b2Vec2(1, 0), new b2Vec2());
+            vertices[2] = b2Transform.MultiplyVec2(xf1, new b2Vec2(0, 0.5), new b2Vec2());
 
-            /* b2PolygonShape */
             const poly1 = new b2PolygonShape();
             poly1.Set(vertices, 3);
 
-            /* b2Transform */
             const xf2 = new b2Transform();
             xf2.q.Set(-0.3524 * Math.PI);
-            xf2.p.Copy(b2Rot.MultiplyVec2(xf2.q, new b2Vec2(-1.0, 0.0), new b2Vec2()));
+            xf2.q.GetXAxis(xf2.p).Negate();
+            xf2.p.Copy(b2Rot.MultiplyVec2(xf2.q, new b2Vec2(-1, 0), new b2Vec2()));
 
-            vertices[0] = b2Transform.MultiplyVec2(xf2, new b2Vec2(-1.0, 0.0), new b2Vec2());
-            vertices[1] = b2Transform.MultiplyVec2(xf2, new b2Vec2(1.0, 0.0), new b2Vec2());
-            vertices[2] = b2Transform.MultiplyVec2(xf2, new b2Vec2(0.0, 0.5), new b2Vec2());
+            vertices[0] = b2Transform.MultiplyVec2(xf2, new b2Vec2(-1, 0), new b2Vec2());
+            vertices[1] = b2Transform.MultiplyVec2(xf2, new b2Vec2(1, 0), new b2Vec2());
+            vertices[2] = b2Transform.MultiplyVec2(xf2, new b2Vec2(0, 0.5), new b2Vec2());
 
-            /* b2PolygonShape */
             const poly2 = new b2PolygonShape();
             poly2.Set(vertices, 3);
 
             this.m_body = this.m_world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
-                position: { x: 0.0, y: 3.0 },
+                position: { x: 0, y: 3.0 },
                 angle: Math.PI,
                 allowSleep: false,
             });
             this.m_body.CreateFixture({
                 shape: poly1,
-                density: 2.0,
+                density: 2,
             });
             this.m_body.CreateFixture({
                 shape: poly2,
-                density: 2.0,
+                density: 2,
             });
 
-            const gravity = 10.0;
+            const gravity = 10;
             const I = this.m_body.GetInertia();
             const mass = this.m_body.GetMass();
 
             // Compute an effective radius that can be used to
             // set the max torque for a friction joint
             // For a circle = 0.5 * m * r * r ==> r = sqrt(2 * I / m)
-            const radius = Math.sqrt((2.0 * I) / mass);
+            const radius = Math.sqrt((2 * I) / mass);
 
-            // b2FrictionJointDef jd;
             const jd = new b2FrictionJointDef();
             jd.bodyA = ground;
             jd.bodyB = this.m_body;
@@ -144,41 +137,34 @@ class ApplyForce extends Test {
         }
 
         {
-            /* b2PolygonShape */
             const shape = new b2PolygonShape();
             shape.SetAsBox(0.5, 0.5);
 
             const fd: b2FixtureDef = {
                 shape,
-                density: 1.0,
+                density: 1,
                 friction: 0.3,
             };
 
-            for (/* int */ let i = 0; i < 10; ++i) {
-                /* b2Body */
+            for (let i = 0; i < 10; ++i) {
                 const body = this.m_world.CreateBody({
                     type: b2BodyType.b2_dynamicBody,
 
                     position: {
-                        x: 0.0,
-                        y: 7.0 + 1.54 * i,
+                        x: 0,
+                        y: 7 + 1.54 * i,
                     },
                 });
 
                 body.CreateFixture(fd);
 
-                /* float32 */
-                const gravity = 10.0;
-                /* float32 */
+                const gravity = 10;
                 const I = body.GetInertia();
-                /* float32 */
                 const mass = body.GetMass();
 
                 // For a circle: I = 0.5 * m * r * r ==> r = sqrt(2 * I / m)
-                /* float32 */
-                const radius = Math.sqrt((2.0 * I) / mass);
+                const radius = Math.sqrt((2 * I) / mass);
 
-                /* b2FrictionJointDef */
                 const jd = new b2FrictionJointDef();
                 jd.localAnchorA.SetZero();
                 jd.localAnchorB.SetZero();
@@ -197,14 +183,14 @@ class ApplyForce extends Test {
         return [
             hotKeyPress("w", "Apply Force", () => this.ApplyForce(-250)),
             hotKeyPress("s", "Apply Backward Force", () => this.ApplyForce(250)),
-            hotKeyPress("a", "Apply Torque Counter-Clockwise", () => this.m_body.ApplyTorque(40.0)),
-            hotKeyPress("d", "Apply Torque Clockwise", () => this.m_body.ApplyTorque(-40.0)),
+            hotKeyPress("a", "Apply Torque Counter-Clockwise", () => this.m_body.ApplyTorque(40)),
+            hotKeyPress("d", "Apply Torque Clockwise", () => this.m_body.ApplyTorque(-40)),
         ];
     }
 
     private ApplyForce(value: number) {
-        const f = this.m_body.GetWorldVector(new b2Vec2(0.0, value), new b2Vec2());
-        const p = this.m_body.GetWorldPoint(new b2Vec2(0.0, 3.0), new b2Vec2());
+        const f = this.m_body.GetWorldVector(new b2Vec2(0, value), new b2Vec2());
+        const p = this.m_body.GetWorldPoint(new b2Vec2(0, 3), new b2Vec2());
         this.m_body.ApplyForce(f, p);
     }
 
