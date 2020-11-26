@@ -30,6 +30,8 @@ import {
 import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
 
+// This test shows collision processing and tests
+// deferred body destruction.
 class CollisionProcessing extends Test {
     constructor() {
         super();
@@ -37,7 +39,7 @@ class CollisionProcessing extends Test {
         // Ground body
         {
             const shape = new b2EdgeShape();
-            shape.SetTwoSided(new b2Vec2(-40, 0), new b2Vec2(40, 0));
+            shape.SetTwoSided(new b2Vec2(-50, 0), new b2Vec2(50, 0));
 
             const ground = this.m_world.CreateBody();
             ground.CreateFixture({ shape });
