@@ -43,7 +43,7 @@ class Bridge extends Test {
             ground = this.m_world.CreateBody();
 
             const shape = new b2EdgeShape();
-            shape.SetTwoSided(new b2Vec2(-40.0, 0.0), new b2Vec2(40.0, 0.0));
+            shape.SetTwoSided(new b2Vec2(-40, 0), new b2Vec2(40, 0));
             ground.CreateFixture({ shape });
         }
 
@@ -53,7 +53,7 @@ class Bridge extends Test {
 
             const fd: b2FixtureDef = {
                 shape,
-                density: 20.0,
+                density: 20,
                 friction: 0.2,
             };
 
@@ -63,11 +63,11 @@ class Bridge extends Test {
             for (let i = 0; i < Bridge.e_count; ++i) {
                 const body = this.m_world.CreateBody({
                     type: b2BodyType.b2_dynamicBody,
-                    position: { x: -14.5 + 1.0 * i, y: 5.0 },
+                    position: { x: -14.5 + 1 * i, y: 5 },
                 });
                 body.CreateFixture(fd);
 
-                const anchor = new b2Vec2(-15.0 + 1.0 * i, 5.0);
+                const anchor = new b2Vec2(-15 + 1 * i, 5);
                 jd.Initialize(prevBody, body, anchor);
                 this.m_world.CreateJoint(jd);
 
@@ -77,27 +77,27 @@ class Bridge extends Test {
                 prevBody = body;
             }
 
-            const anchor = new b2Vec2(-15.0 + 1.0 * Bridge.e_count, 5.0);
+            const anchor = new b2Vec2(-15 + 1 * Bridge.e_count, 5);
             jd.Initialize(prevBody, ground, anchor);
             this.m_world.CreateJoint(jd);
         }
 
         for (let i = 0; i < 2; ++i) {
             const vertices = [];
-            vertices[0] = new b2Vec2(-0.5, 0.0);
-            vertices[1] = new b2Vec2(0.5, 0.0);
-            vertices[2] = new b2Vec2(0.0, 1.5);
+            vertices[0] = new b2Vec2(-0.5, 0);
+            vertices[1] = new b2Vec2(0.5, 0);
+            vertices[2] = new b2Vec2(0, 1.5);
 
             const shape = new b2PolygonShape();
             shape.Set(vertices);
 
             const body = this.m_world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
-                position: { x: -8.0 + 8.0 * i, y: 12.0 },
+                position: { x: -8 + 8 * i, y: 12 },
             });
             body.CreateFixture({
                 shape,
-                density: 1.0,
+                density: 1,
             });
         }
 
@@ -107,11 +107,11 @@ class Bridge extends Test {
 
             const body = this.m_world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
-                position: { x: -6.0 + 6.0 * i, y: 10.0 },
+                position: { x: -6 + 6 * i, y: 10 },
             });
             body.CreateFixture({
                 shape,
-                density: 1.0,
+                density: 1,
             });
         }
     }
