@@ -16,11 +16,11 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import { b2Vec2, b2Body, b2EdgeShape, b2BodyType, b2PolygonShape } from "@box2d/core";
+import { b2Vec2, b2Body, b2EdgeShape, b2BodyType, b2PolygonShape, b2CircleShape } from "@box2d/core";
 
 import { registerTest, Test } from "../../test";
-import { Settings } from "../../settings";
 import { hotKeyPress, HotKey } from "../../utils/hotkeys";
+import { radioDef } from "../../ui/controls/Radio";
 
 class EdgeTest extends Test {
     public readonly m_offset1 = new b2Vec2();
@@ -30,8 +30,6 @@ class EdgeTest extends Test {
     public m_body1: b2Body | null = null;
 
     public m_body2: b2Body | null = null;
-
-    public m_boxes = false;
 
     constructor() {
         super();
@@ -149,7 +147,16 @@ class EdgeTest extends Test {
         this.m_body1 = null;
         this.m_body2 = null;
         this.CreateBoxes();
-        this.m_boxes = true;
+
+        this.m_testControls = {
+            title: "Joint Controls",
+            items: [
+                radioDef("Type", ["Boxes", "Circles"], "Boxes", (value: string) => {
+                    if (value === "Boxes") this.CreateBoxes();
+                    else this.CreateCircles();
+                }),
+            ],
+        };
     }
 
     public CreateBoxes(): void {
@@ -204,75 +211,40 @@ class EdgeTest extends Test {
             this.m_body2 = null;
         }
 
-        // {
-        //     this.m_body1 = this.m_world.CreateBody({
-        //         type: b2BodyType.b2_dynamicBody,
-        //         position: { x: this.m_offset1.x - 0.5, y: this.m_offset1.y + 0.6 },
-        //         allowSleep: false,
-        //     });
+        {
+            this.m_body1 = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+                position: { x: this.m_offset1.x - 0.5, y: this.m_offset1.y + 0.6 },
+                allowSleep: false,
+            });
 
-        //     b2CircleShape shape;
-        //     shape.this.m_radius = 0.5 ;
+            const shape = new b2CircleShape(0.5);
 
-        //     this.m_body1.CreateFixture({ shape, density: 1 });
-        // }
+            this.m_body1.CreateFixture({ shape, density: 1 });
+        }
 
-        // {
-        //     this.m_body2 = this.m_world.CreateBody({
-        //         type: b2BodyType.b2_dynamicBody,
-        //         position: { x: this.m_offset2.x - 0.5, y: this.m_offset2.y + 0.6 },
-        //         allowSleep: false,
-        //     });
+        {
+            this.m_body2 = this.m_world.CreateBody({
+                type: b2BodyType.b2_dynamicBody,
+                position: { x: this.m_offset2.x - 0.5, y: this.m_offset2.y + 0.6 },
+                allowSleep: false,
+            });
 
-        //     b2CircleShape shape;
-        //     shape.this.m_radius = 0.5 ;
+            const shape = new b2CircleShape(0.5);
 
-        //     this.m_body2.CreateFixture({ shape, density: 1 });
-        // }
-    }
-
-    public UpdateUI(): void {
-        // 	ImGui::SetNextWindowPos(ImVec2(10, 100));
-        // 	ImGui::SetNextWindowSize(ImVec2(200, 100));
-        // 	ImGui::Begin("Custom Controls", null, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
-        // 	if (ImGui::RadioButton("Boxes", m_boxes == true))
-        // 	{
-        // 		CreateBoxes();
-        // 		m_boxes = true;
-        // 	}
-        // 	if (ImGui::RadioButton("Circles", m_boxes == false))
-        // 	{
-        // 		CreateCircles();
-        // 		m_boxes = false;
-        // 	}
-        // 	ImGui::End();
-    }
-
-    public Step(settings: Settings, timeStep: number): void {
-        // if (glfwGetKey(g_mainWindow, GLFW_KEY_A) == GLFW_PRESS)
-        // {
-        // 	this.m_body1.ApplyForceToCenter(new b2Vec2(-10, 0), true);
-        // 	this.m_body2.ApplyForceToCenter(new b2Vec2(-10, 0), true);
-        // }
-
-        // if (glfwGetKey(g_mainWindow, GLFW_KEY_D) == GLFW_PRESS)
-        // {
-        // 	this.m_body1.ApplyForceToCenter(new b2Vec2(10, 0), true);
-        // 	this.m_body2.ApplyForceToCenter(new b2Vec2(10, 0), true);
-        // }
-
-        super.Step(settings, timeStep);
+            this.m_body2.CreateFixture({ shape, density: 1 });
+        }
     }
 
     getHotkeys(): HotKey[] {
         return [
             hotKeyPress("a", "Apply Force Left", () => {
-                this.m_body1?.ApplyForceToCenter(new b2Vec2(-200, 0), true);
-                this.m_body2?.ApplyForceToCenter(new b2Vec2(-200, 0), true);
+                this.m_body1?.ApplyForceToCenter(new b2Vec2(-10, 0), true);
+                this.m_body2?.ApplyForceToCenter(new b2Vec2(-10, 0), true);
             }),
             hotKeyPress("d", "Apply Force Right", () => {
-                this.m_body1?.ApplyForceToCenter(new b2Vec2(200, 0), true);
-                this.m_body2?.ApplyForceToCenter(new b2Vec2(200, 0), true);
+                this.m_body1?.ApplyForceToCenter(new b2Vec2(10, 0), true);
+                this.m_body2?.ApplyForceToCenter(new b2Vec2(10, 0), true);
             }),
         ];
     }

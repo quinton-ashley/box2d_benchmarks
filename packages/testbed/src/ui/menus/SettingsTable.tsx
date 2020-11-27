@@ -2,6 +2,7 @@ import React from "react";
 
 import { TestControl } from "../../testControls";
 import { Checkbox } from "../controls/Checkbox";
+import { Radio } from "../controls/Radio";
 import { Separator } from "../controls/Separator";
 import { Slider } from "../controls/Slider";
 
@@ -15,6 +16,8 @@ const SettingsTableRow = ({ control }: SettingsTableRowProps) => {
             return <Slider control={control} />;
         case "checkbox":
             return <Checkbox control={control} />;
+        case "radio":
+            return <Radio control={control} />;
         case "separator":
             return <Separator />;
     }

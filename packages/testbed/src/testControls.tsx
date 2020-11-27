@@ -3,8 +3,9 @@ import { Settings } from "./settings";
 import { checkboxDef, CheckboxDef } from "./ui/controls/Checkbox";
 import { sliderDef, SliderDef } from "./ui/controls/Slider";
 import { SeparatorDef } from "./ui/controls/Separator";
+import { RadioDef } from "./ui/controls/Radio";
 
-export type TestControl = SliderDef | CheckboxDef | SeparatorDef;
+export type TestControl = SliderDef | CheckboxDef | SeparatorDef | RadioDef;
 
 export interface TestControls {
     title: string;

@@ -42,22 +42,18 @@ class EdgeShapes extends Test {
 
     public m_polygons: b2PolygonShape[];
 
-    public m_circle: b2CircleShape;
+    public m_circle = new b2CircleShape();
 
     public m_angle = 0;
 
     constructor() {
         super();
 
-        this.m_bodyIndex = 0;
         this.m_bodies = new Array<b2Body>(EdgeShapes.e_maxBodies);
         this.m_polygons = new Array<b2PolygonShape>(4);
         for (let i = 0; i < 4; ++i) {
             this.m_polygons[i] = new b2PolygonShape();
         }
-        this.m_circle = new b2CircleShape();
-
-        this.m_angle = 0;
 
         // Ground body
         {
