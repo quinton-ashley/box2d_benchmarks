@@ -1,32 +1,22 @@
 import React from "react";
 
 import { Menu } from "../MenuBar/Menu";
-import { Input } from "../MenuBar/Input";
 import { useManager } from "../../manager";
-
-const options = [
-    ["Velocity", "m_velocityIterations"],
-    ["Position", "m_positionIterations"],
-    ["Particles", "m_particleIterations"],
-    ["Hertz", "m_hertz"],
-] as const;
+import { settingsSliderDef } from "../../testControls";
+import { SettingsTable } from "./SettingsTable";
 
 export const IterationsMenu = () => {
     const manager = useManager();
+
+    const controls = [
+        settingsSliderDef(manager, "m_velocityIterations", "Velocity Iters", 0, 50, 1),
+        settingsSliderDef(manager, "m_positionIterations", "Position Iters", 0, 50, 1),
+        settingsSliderDef(manager, "m_particleIterations", "Particle Iters", 0, 50, 1),
+        settingsSliderDef(manager, "m_hertz", "Hertz", 5, 120, 1),
+    ];
     return (
         <Menu label="Iterations">
-            {options.map(([label, option]) => (
-                <Input
-                    key={option}
-                    label={label}
-                    onChange={(value) => {
-                        manager.m_settings[option] = value;
-                        console.log(option, value);
-                    }}
-                    value={manager.m_settings[option]}
-                />
-            ))}
-            {/* fixme: allow insertion of more via portals */}
+            <SettingsTable controls={controls} />
         </Menu>
     );
 };

@@ -6,6 +6,7 @@ body,
     margin: 0;
     padding: 0;
     font-family: "Open Sans", Verdana, sans-serif;
+    color: $color-text;
 }
 
 .container {
@@ -24,7 +25,6 @@ main {
     flex-grow: 1;
     position: relative;
     overflow: hidden;
-    color: white;
     display: flex;
     justify-content: center;
     align-items: center;

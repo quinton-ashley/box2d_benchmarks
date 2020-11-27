@@ -3,10 +3,12 @@ import { useRouter } from "react-router-ts";
 
 import { useManager } from "../../manager";
 import { TestEntry } from "../../test";
+import { TestControls } from "../../testControls";
 import { testLabelToLink } from "../../utils/reactUtils";
 
 interface TestComponentProps {
     entry: TestEntry;
+    setTestControls: (controls: TestControls | null) => void;
 }
 
 export type TextTable = Array<[string, string]>;
@@ -43,7 +45,7 @@ const TextTable = ({ id, table }: TextTableProps) => (
     </div>
 );
 
-const TestMain = ({ entry: { name, TestClass } }: TestComponentProps) => {
+const TestMain = ({ entry: { name, TestClass }, setTestControls }: TestComponentProps) => {
     const [leftTable, setLeftTable] = useReducer(tableReducer, []);
     const [rightTable, setRightTable] = useReducer(tableReducer, []);
     const glCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -65,7 +67,7 @@ const TestMain = ({ entry: { name, TestClass } }: TestComponentProps) => {
                 manager.SimulationLoop();
             };
             const init = () => {
-                manager.init(glCanvas, debugCanvas, wrapper, setTest, setLeftTable, setRightTable);
+                manager.init(glCanvas, debugCanvas, wrapper, setTest, setLeftTable, setRightTable, setTestControls);
                 window.requestAnimationFrame(loop);
             };
             window.requestAnimationFrame(init);
@@ -100,7 +102,15 @@ export function useActiveTestEntry() {
     return null;
 }
 
-export const Main = () => {
+interface MainProps {
+    setTestControls: (controls: TestControls | null) => void;
+}
+
+export const Main = ({ setTestControls }: MainProps) => {
     const entry = useActiveTestEntry();
-    return entry ? <TestMain entry={entry} /> : <main>Select a test from the menu in the top left corner</main>;
+    return entry ? (
+        <TestMain entry={entry} setTestControls={setTestControls} />
+    ) : (
+        <main>Select a test from the menu in the top left corner</main>
+    );
 };

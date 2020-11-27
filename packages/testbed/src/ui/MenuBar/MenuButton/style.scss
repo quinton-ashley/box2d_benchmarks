@@ -1,11 +1,15 @@
 .menubutton {
     border: none;
-    background: white;
+    color: $color-text;
+    background: $color-button;
     padding: 5px 10px;
     border-left: 1px solid black;
 
     &:hover {
-        background: lightgray;
+        background: $color-button-hovered;
         cursor: pointer;
+    }
+    &:active {
+        background: $color-button-active;
     }
 }

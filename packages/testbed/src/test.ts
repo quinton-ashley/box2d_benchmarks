@@ -41,6 +41,7 @@ import {
 import { hotKeyPress, HotKey } from "./utils/hotkeys";
 import { DefaultShader } from "./utils/gl/defaultShader";
 import { PreloadedTextures } from "./utils/gl/preload";
+import { TestControls } from "./testControls";
 
 export function RandomFloat(lo = -1, hi = 1) {
     let r = Math.random();
@@ -189,6 +190,8 @@ export class Test extends b2ContactListener {
     public m_particleParameters: ParticleParameterValue[] | null = null;
 
     public m_particleParameterDef: ParticleParameterDefinition | null = null;
+
+    public m_testControls: TestControls | null = null;
 
     constructor(gravity: XY = { x: 0, y: -10 }) {
         super();

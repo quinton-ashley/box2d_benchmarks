@@ -11,14 +11,14 @@
         }
         > a {
             display: block;
-            color: black;
+            color: $color-text;
             text-decoration: none;
             padding: 5px 10px;
             &.active-link {
-                background: white;
+                border: 1px solid $color-button-active;
             }
             &:hover {
-                background: lightblue;
+                background: $color-button-hovered;
             }
         }
     }

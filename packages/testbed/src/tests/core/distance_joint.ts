@@ -31,12 +31,12 @@ import {
 } from "@box2d/core";
 
 import { registerTest, Test } from "../../test";
+import { sliderDef } from "../../ui/controls/Slider";
 
 // This tests distance joints, body destruction, and joint destruction.
 class DistanceJoint extends Test {
-    public m_joint: b2DistanceJoint;
+    private m_joint: b2DistanceJoint;
 
-    // fixme: UI to set these
     public m_length: number;
 
     public m_minLength: number;
@@ -76,10 +76,40 @@ class DistanceJoint extends Test {
         jd.Initialize(ground, body, new b2Vec2(0, 15), position);
         jd.collideConnected = true;
         this.m_length = jd.length;
-        this.m_minLength = jd.minLength = jd.length - 3;
-        this.m_maxLength = jd.maxLength = jd.length + 3;
+        this.m_minLength = this.m_length;
+        this.m_maxLength = this.m_length;
         b2LinearStiffness(jd, this.m_hertz, this.m_dampingRatio, jd.bodyA, jd.bodyB);
         this.m_joint = this.m_world.CreateJoint(jd);
+
+        this.m_testControls = {
+            title: "Joint Controls",
+            items: [
+                sliderDef("Length", 0, 20, 1, this.m_length, (value: number) => {
+                    this.m_length = this.m_joint.SetLength(value);
+                }),
+                sliderDef("Min Length", 0, 20, 1, this.m_minLength, (value: number) => {
+                    this.m_minLength = this.m_joint.SetMinLength(value);
+                }),
+                sliderDef("Max Length", 0, 20, 1, this.m_maxLength, (value: number) => {
+                    this.m_maxLength = this.m_joint.SetMaxLength(value);
+                }),
+                sliderDef("Hertz", 0, 10, 0.1, this.m_hertz, (value: number) => {
+                    this.m_hertz = value;
+                    this.UpdateStiffness();
+                }),
+                sliderDef("Damping Ratio", 0, 2, 0.1, this.m_dampingRatio, (value: number) => {
+                    this.m_dampingRatio = value;
+                    this.UpdateStiffness();
+                }),
+            ],
+        };
+    }
+
+    private UpdateStiffness() {
+        const def = { stiffness: 0, damping: 0 };
+        b2LinearStiffness(def, this.m_hertz, this.m_dampingRatio, this.m_joint.GetBodyA(), this.m_joint.GetBodyB());
+        this.m_joint.SetStiffness(def.stiffness);
+        this.m_joint.SetDamping(def.damping);
     }
 }
 

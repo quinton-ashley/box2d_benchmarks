@@ -44,7 +44,7 @@ export class Settings {
 
     public m_drawParticles = true;
 
-    public m_drawJoints = false;
+    public m_drawJoints = true;
 
     public m_drawAABBs = false;
 

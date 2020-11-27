@@ -1,40 +1,32 @@
 import React from "react";
 
 import { Menu } from "../MenuBar/Menu";
-import { Checkbox } from "../MenuBar/Checkbox";
 import { useManager } from "../../manager";
-
-const options = [
-    ["Shapes", "m_drawShapes"],
-    ["Particles", "m_drawParticles"],
-    ["Joints", "m_drawJoints"],
-    ["AABBs", "m_drawAABBs"],
-    ["Contact Points", "m_drawContactPoints"],
-    ["Contact Normals", "m_drawContactNormals"],
-    ["Contact Impulses", "m_drawContactImpulse"],
-    ["Friction Impulses", "m_drawFrictionImpulse"],
-    ["Center of Masses", "m_drawCOMs"],
-    ["Statistics", "m_drawStats"],
-    ["Input Help", "m_drawInputHelp"],
-    ["Profile", "m_drawProfile"],
-    ["FPS Meter", "m_drawFpsMeter"],
-] as const;
+import { settingsCheckboxDef } from "../../testControls";
+import { SettingsTable } from "./SettingsTable";
+import { separatorDef } from "../controls/Separator";
 
 export const DrawMenu = () => {
     const manager = useManager();
+    const controls = [
+        settingsCheckboxDef(manager, "m_drawShapes", "Shapes"),
+        settingsCheckboxDef(manager, "m_drawParticles", "Particles"),
+        settingsCheckboxDef(manager, "m_drawJoints", "Joints"),
+        settingsCheckboxDef(manager, "m_drawAABBs", "AABBs"),
+        settingsCheckboxDef(manager, "m_drawContactPoints", "Contact Points"),
+        settingsCheckboxDef(manager, "m_drawContactNormals", "Contact Normals"),
+        settingsCheckboxDef(manager, "m_drawContactImpulse", "Contact Impulses"),
+        settingsCheckboxDef(manager, "m_drawFrictionImpulse", "Friction Impulses"),
+        settingsCheckboxDef(manager, "m_drawCOMs", "Center of Masses"),
+        separatorDef("overlay"),
+        settingsCheckboxDef(manager, "m_drawStats", "Statistics"),
+        settingsCheckboxDef(manager, "m_drawInputHelp", "Input Help"),
+        settingsCheckboxDef(manager, "m_drawProfile", "Profile"),
+        settingsCheckboxDef(manager, "m_drawFpsMeter", "FPS Meter"),
+    ];
     return (
         <Menu label="Draw">
-            {options.map(([label, option]) => (
-                <Checkbox
-                    key={option}
-                    label={label}
-                    onClick={(e) => {
-                        manager.m_settings[option] = e.currentTarget.checked;
-                    }}
-                    checked={manager.m_settings[option]}
-                />
-            ))}
-            {/* fixme: allow insertion of more via portals */}
+            <SettingsTable controls={controls} />
         </Menu>
     );
 };

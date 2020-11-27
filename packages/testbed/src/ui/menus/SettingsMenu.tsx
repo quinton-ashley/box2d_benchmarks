@@ -1,32 +1,22 @@
 import React from "react";
 
 import { Menu } from "../MenuBar/Menu";
-import { Checkbox } from "../MenuBar/Checkbox";
 import { useManager } from "../../manager";
-
-const options = [
-    ["Sleep", "m_enableSleep"],
-    ["Warm Starting", "m_enableWarmStarting"],
-    ["Time of Impact", "m_enableContinuous"],
-    ["Sub-Stepping", "m_enableSubStepping"],
-    ["Strict Particle/Body Contacts", "m_strictContacts"],
-] as const;
+import { settingsCheckboxDef } from "../../testControls";
+import { SettingsTable } from "./SettingsTable";
 
 export const SettingsMenu = () => {
     const manager = useManager();
+    const controls = [
+        settingsCheckboxDef(manager, "m_enableSleep", "Sleep"),
+        settingsCheckboxDef(manager, "m_enableWarmStarting", "Warm Starting"),
+        settingsCheckboxDef(manager, "m_enableContinuous", "Time of Impact"),
+        settingsCheckboxDef(manager, "m_enableSubStepping", "Sub-Stepping"),
+        settingsCheckboxDef(manager, "m_strictContacts", "Strict Particle/Body Contacts"),
+    ];
     return (
         <Menu label="Settings">
-            {options.map(([label, option]) => (
-                <Checkbox
-                    key={option}
-                    label={label}
-                    onClick={(e) => {
-                        manager.m_settings[option] = e.currentTarget.checked;
-                    }}
-                    checked={manager.m_settings[option]}
-                />
-            ))}
-            {/* fixme: allow insertion of more via portals */}
+            <SettingsTable controls={controls} />
         </Menu>
     );
 };

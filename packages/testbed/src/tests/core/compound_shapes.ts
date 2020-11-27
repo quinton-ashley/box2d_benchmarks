@@ -16,15 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import {
-    b2EdgeShape,
-    b2Vec2,
-    b2CircleShape,
-    b2BodyType,
-    b2PolygonShape,
-    XY,
-    b2Body,
-} from "@box2d/core";
+import { b2EdgeShape, b2Vec2, b2CircleShape, b2BodyType, b2PolygonShape, XY, b2Body } from "@box2d/core";
 
 import { registerTest, Test } from "../../test";
 import { HotKey, hotKeyPress } from "../../utils/hotkeys";

@@ -12,6 +12,7 @@ import { Settings } from "./settings";
 import { getTestsGrouped, Test, TestConstructor, TestEntry } from "./test";
 import { FpsCalculator } from "./utils/FpsCalculator";
 import type { TextTable, TextTableSetter } from "./ui/Main";
+import { TestControls } from "./testControls";
 
 import "./tests";
 
@@ -70,6 +71,8 @@ export class TestManager {
 
     private setRightTable: TextTableSetter = () => {};
 
+    private setTestControls: (controls: TestControls | null) => void = () => {};
+
     public constructor() {
         for (const { tests } of this.groupedTests) {
             this.flatTests.push(...tests);
@@ -100,10 +103,12 @@ export class TestManager {
         activateTest: (label: string) => void,
         setLeftTables: TextTableSetter,
         setRightTables: TextTableSetter,
+        setTestControls: (controls: TestControls | null) => void,
     ) {
         this.setLeftTable = setLeftTables;
         this.setRightTable = setRightTables;
         this.activateTest = activateTest;
+        this.setTestControls = setTestControls;
         debugCanvas.addEventListener("mousedown", (e) => this.HandleMouseDown(e));
         debugCanvas.addEventListener("mouseup", (e) => this.HandleMouseUp(e));
         debugCanvas.addEventListener("mousemove", (e) => this.HandleMouseMove(e));
@@ -291,6 +296,7 @@ export class TestManager {
         if (!restartTest) {
             this.HomeCamera();
         }
+        this.setTestControls(this.m_test.m_testControls);
     }
 
     public SetPause(pause: boolean): void {

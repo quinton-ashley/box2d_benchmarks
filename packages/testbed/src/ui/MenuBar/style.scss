@@ -1,8 +1,8 @@
 .menubar {
     display: flex;
     flex-direction: row;
-    background: white;
-    border-bottom: 1px solid black;
+    background: $color-title-bg;
+    border-bottom: 1px solid $color-border;
 
     > .menu {
         flex-grow: 0;

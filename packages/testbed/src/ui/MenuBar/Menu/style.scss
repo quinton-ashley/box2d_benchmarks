@@ -1,6 +1,5 @@
 .menu--label {
     border-right: 1px solid black;
-    background: white;
     padding: 5px 10px;
     cursor: pointer;
 }
@@ -9,7 +8,7 @@
     z-index: 1000;
     position: absolute;
     border: 1px solid black;
-    background: rgba(255, 255, 255, 0.9);
+    background: $color-window-bg;
     padding: 5px 10px;
     margin-left: -1px;
 }

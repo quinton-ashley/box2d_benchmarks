@@ -8,8 +8,14 @@ import { MenuButton } from "./MenuButton";
 import packageData from "../../../package.json";
 import { TestsMenu } from "../menus/TestsMenu";
 import { useManager } from "../../manager";
+import { TestSettingsMenu } from "../menus/TestSettingsMenu";
+import { TestControls } from "../../testControls";
 
-export const MenuBar = () => {
+interface MenuBarProps {
+    testControls: TestControls | null;
+}
+
+export const MenuBar = ({ testControls }: MenuBarProps) => {
     const [paused, setPaused] = useState(false);
     const manager = useManager();
     useEffect(() => {
@@ -24,6 +30,7 @@ export const MenuBar = () => {
             <DrawMenu />
             <IterationsMenu />
             <SettingsMenu />
+            <TestSettingsMenu testControls={testControls} />
             <div className="menubar--spacer" />
             <div className="menubar--title">@Box2D Testbed version {packageData.version}</div>
             <div className="menubar--spacer" />
