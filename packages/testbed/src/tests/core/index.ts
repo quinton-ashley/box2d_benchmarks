@@ -37,7 +37,7 @@ import "./conveyor_belt";
 import "./distance_test";
 import "./dominos";
 import "./dump_shell";
-import "./dynamic_tree_test";
+import "./dynamic_tree";
 import "./edge_shapes";
 import "./edge_test";
 import "./gear_joint";

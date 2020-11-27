@@ -16,7 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import { b2Vec2, b2CircleShape, b2BodyType, b2RandomRange, b2PolygonShape, XY } from "@box2d/core";
+import { b2Vec2, b2CircleShape, b2BodyType, b2RandomFloat, b2PolygonShape, XY } from "@box2d/core";
 
 import { registerTest, Test } from "../../test";
 
@@ -38,8 +38,8 @@ class AddPair extends Test {
                 const body = this.m_world.CreateBody({
                     type: b2BodyType.b2_dynamicBody,
                     position: {
-                        x: b2RandomRange(minX, maxX),
-                        y: b2RandomRange(minY, maxY),
+                        x: b2RandomFloat(minX, maxX),
+                        y: b2RandomFloat(minY, maxY),
                     },
                 });
                 body.CreateFixture({ shape, density: 0.01 });

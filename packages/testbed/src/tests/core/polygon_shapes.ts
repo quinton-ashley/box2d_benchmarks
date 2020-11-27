@@ -26,7 +26,7 @@ import {
     b2EdgeShape,
     b2Vec2,
     b2BodyType,
-    b2RandomRange,
+    b2RandomFloat,
     b2AABB,
 } from "@box2d/core";
 
@@ -118,8 +118,8 @@ class PolyShapes extends Test {
 
         body = this.m_bodies[this.m_bodyIndex] = this.m_world.CreateBody({
             type: b2BodyType.b2_dynamicBody,
-            position: { x: b2RandomRange(-2, 2), y: 10 },
-            angle: b2RandomRange(-Math.PI, Math.PI),
+            position: { x: b2RandomFloat(-2, 2), y: 10 },
+            angle: b2RandomFloat(-Math.PI, Math.PI),
             angularDamping: index === 4 ? 0.02 : 0,
         });
 

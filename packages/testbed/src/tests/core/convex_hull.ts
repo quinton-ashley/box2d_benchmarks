@@ -16,7 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import { b2Vec2, b2RandomRange, b2Clamp, b2PolygonShape, b2Color } from "@box2d/core";
+import { b2Vec2, b2RandomFloat, b2Clamp, b2PolygonShape, b2Color } from "@box2d/core";
 
 import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
@@ -44,8 +44,8 @@ class ConvexHull extends Test {
 
     public Generate(): void {
         for (let i = 0; i < ConvexHull.e_count; ++i) {
-            let x = b2RandomRange(-10, 10);
-            let y = b2RandomRange(-10, 10);
+            let x = b2RandomFloat(-10, 10);
+            let y = b2RandomFloat(-10, 10);
 
             // Clamp onto a square to help create collinearities.
             // This will stress the convex hull algorithm.

@@ -58,8 +58,12 @@ export function b2Random(): number {
     return Math.random() * 2 - 1;
 }
 
-export function b2RandomRange(lo: number, hi: number) {
+export function b2RandomFloat(lo: number, hi: number) {
     return (hi - lo) * Math.random() + lo;
+}
+
+export function b2RandomInt(lo: number, hi: number) {
+    return Math.round((hi - lo) * Math.random() + lo);
 }
 
 export interface XY {

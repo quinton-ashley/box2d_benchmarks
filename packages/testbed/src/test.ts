@@ -17,7 +17,7 @@ import {
     b2ContactImpulse,
     b2BodyType,
     b2MouseJointDef,
-    b2RandomRange,
+    b2RandomFloat,
     b2CircleShape,
     b2AABB,
     b2Color,
@@ -368,7 +368,7 @@ export class Test extends b2ContactListener {
     }
 
     public LaunchBomb(): void {
-        const p = new b2Vec2(b2RandomRange(-15, 15), 30);
+        const p = new b2Vec2(b2RandomFloat(-15, 15), 30);
         const v = b2Vec2.Scale(-5, p, new b2Vec2());
         this.LaunchBombAt(p, v);
     }

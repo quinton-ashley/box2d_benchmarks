@@ -23,7 +23,7 @@ import {
     b2PolygonShape,
     b2CircleShape,
     b2EdgeShape,
-    b2RandomRange,
+    b2RandomFloat,
     b2BodyType,
     b2Color,
 } from "@box2d/core";
@@ -128,8 +128,8 @@ class EdgeShapes extends Test {
         }
 
         const new_body = (this.m_bodies[this.m_bodyIndex] = this.m_world.CreateBody({
-            position: { x: b2RandomRange(-10, 10), y: b2RandomRange(10, 20) },
-            angle: b2RandomRange(-Math.PI, Math.PI),
+            position: { x: b2RandomFloat(-10, 10), y: b2RandomFloat(10, 20) },
+            angle: b2RandomFloat(-Math.PI, Math.PI),
             type: b2BodyType.b2_dynamicBody,
             angularDamping: index === 4 ? 0.02 : 0,
         }));

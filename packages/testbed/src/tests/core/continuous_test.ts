@@ -16,7 +16,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import { b2Body, b2EdgeShape, b2Vec2, b2PolygonShape, b2BodyType, b2RandomRange, b2Gjk, b2Toi } from "@box2d/core";
+import { b2Body, b2EdgeShape, b2Vec2, b2PolygonShape, b2BodyType, b2RandomFloat, b2Gjk, b2Toi } from "@box2d/core";
 
 import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
@@ -53,7 +53,7 @@ class ContinuousTest extends Test {
             });
             this.m_body.CreateFixture({ shape, density: 1 });
 
-            this.m_angularVelocity = b2RandomRange(-50, 50);
+            this.m_angularVelocity = b2RandomFloat(-50, 50);
             // this.m_angularVelocity = 46.661274;
             this.m_body.SetLinearVelocity(new b2Vec2(0, -100));
             this.m_body.SetAngularVelocity(this.m_angularVelocity);
@@ -88,7 +88,7 @@ class ContinuousTest extends Test {
         b2Toi.reset();
 
         this.m_body.SetTransformVec(new b2Vec2(0, 20), 0);
-        this.m_angularVelocity = b2RandomRange(-50, 50);
+        this.m_angularVelocity = b2RandomFloat(-50, 50);
         this.m_body.SetLinearVelocity(new b2Vec2(0, -100));
         this.m_body.SetAngularVelocity(this.m_angularVelocity);
     }

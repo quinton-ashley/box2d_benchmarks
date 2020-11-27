@@ -22,7 +22,7 @@ import {
     b2FixtureDef,
     b2PolygonShape,
     b2BodyType,
-    b2RandomRange,
+    b2RandomFloat,
     b2CircleShape,
     b2Body,
 } from "@box2d/core";
@@ -63,7 +63,7 @@ class CollisionProcessing extends Test {
 
         const body1 = this.m_world.CreateBody({
             type: b2BodyType.b2_dynamicBody,
-            position: { x: b2RandomRange(xLo, xHi), y: b2RandomRange(yLo, yHi) },
+            position: { x: b2RandomFloat(xLo, xHi), y: b2RandomFloat(yLo, yHi) },
         });
         body1.CreateFixture(triangleShapeDef);
 
@@ -75,7 +75,7 @@ class CollisionProcessing extends Test {
 
         const body2 = this.m_world.CreateBody({
             type: b2BodyType.b2_dynamicBody,
-            position: { x: b2RandomRange(xLo, xHi), y: b2RandomRange(yLo, yHi) },
+            position: { x: b2RandomFloat(xLo, xHi), y: b2RandomFloat(yLo, yHi) },
         });
         body2.CreateFixture(triangleShapeDef);
 
@@ -89,7 +89,7 @@ class CollisionProcessing extends Test {
 
         const body3 = this.m_world.CreateBody({
             type: b2BodyType.b2_dynamicBody,
-            position: { x: b2RandomRange(xLo, xHi), y: b2RandomRange(yLo, yHi) },
+            position: { x: b2RandomFloat(xLo, xHi), y: b2RandomFloat(yLo, yHi) },
         });
         body3.CreateFixture(boxShapeDef);
 
@@ -98,7 +98,7 @@ class CollisionProcessing extends Test {
 
         const body4 = this.m_world.CreateBody({
             type: b2BodyType.b2_dynamicBody,
-            position: { x: b2RandomRange(xLo, xHi), y: b2RandomRange(yLo, yHi) },
+            position: { x: b2RandomFloat(xLo, xHi), y: b2RandomFloat(yLo, yHi) },
         });
         body4.CreateFixture(boxShapeDef);
 
@@ -113,7 +113,7 @@ class CollisionProcessing extends Test {
 
         const body5 = this.m_world.CreateBody({
             type: b2BodyType.b2_dynamicBody,
-            position: { x: b2RandomRange(xLo, xHi), y: b2RandomRange(yLo, yHi) },
+            position: { x: b2RandomFloat(xLo, xHi), y: b2RandomFloat(yLo, yHi) },
         });
         body5.CreateFixture(circleShapeDef);
 
@@ -122,7 +122,7 @@ class CollisionProcessing extends Test {
 
         const body6 = this.m_world.CreateBody({
             type: b2BodyType.b2_dynamicBody,
-            position: { x: b2RandomRange(xLo, xHi), y: b2RandomRange(yLo, yHi) },
+            position: { x: b2RandomFloat(xLo, xHi), y: b2RandomFloat(yLo, yHi) },
         });
         body6.CreateFixture(circleShapeDef);
     }

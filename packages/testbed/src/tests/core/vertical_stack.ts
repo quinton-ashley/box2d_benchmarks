@@ -68,7 +68,7 @@ class VerticalStack extends Test {
                 this.m_indices[n] = n;
 
                 const x = 0;
-                // const x = b2RandomRange(-0.02, 0.02);
+                // const x = b2RandomFloat(-0.02, 0.02);
                 // const x = i % 2 === 0 ? -0.01 : 0.01;
                 const body = this.m_world.CreateBody({
                     type: b2BodyType.b2_dynamicBody,
