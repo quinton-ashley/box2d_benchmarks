@@ -4,8 +4,10 @@ import { checkboxDef, CheckboxDef } from "./ui/controls/Checkbox";
 import { sliderDef, SliderDef } from "./ui/controls/Slider";
 import { SeparatorDef } from "./ui/controls/Separator";
 import { RadioDef } from "./ui/controls/Radio";
+import { SelectDef } from "./ui/controls/Select";
+import { LabelDef } from "./ui/controls/Label";
 
-export type TestControl = SliderDef | CheckboxDef | SeparatorDef | RadioDef;
+export type TestControl = SliderDef | CheckboxDef | SeparatorDef | RadioDef | SelectDef | LabelDef;
 
 export type KeysByType<T, T2> = { [P in keyof T]: T[P] extends T2 ? P : never }[keyof T];
 

@@ -3,16 +3,13 @@ $range-height: 1.5em;
 .slider {
     display: flex;
     flex-direction: row;
-
-    + .slider {
-        margin-top: 5px;
-    }
 }
 
 .slider--input {
     display: flex;
     position: relative;
     margin-right: 5px;
+    width: 10rem;
 
     input[type="range"] {
         -webkit-appearance: none;

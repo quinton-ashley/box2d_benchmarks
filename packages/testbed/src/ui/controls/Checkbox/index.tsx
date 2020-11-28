@@ -25,6 +25,6 @@ export const Checkbox = ({ control }: CheckboxProps) => (
             onClick={(e) => control.update(e.currentTarget.checked)}
             defaultChecked={control.initialValue}
         />
-        {control.name}
+        {control.name.split("#")[0]}
     </label>
 );

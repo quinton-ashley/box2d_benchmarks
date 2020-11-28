@@ -46,7 +46,7 @@ export function Slider({ control }: SliderProps) {
                 />
                 <span>{value}</span>
             </div>
-            {control.name}
+            {control.name.split("#")[0]}
         </label>
     );
 }
