@@ -3,12 +3,12 @@ import { useRouter } from "react-router-ts";
 
 import { useManager } from "../../manager";
 import { TestEntry } from "../../test";
-import { TestControls } from "../../testControls";
+import { TestControl } from "../../testControls";
 import { testLabelToLink } from "../../utils/reactUtils";
 
 interface TestComponentProps {
     entry: TestEntry;
-    setTestControls: (controls: TestControls | null) => void;
+    setTestControls: (controls: TestControl[]) => void;
 }
 
 export type TextTable = Array<[string, string]>;
@@ -103,7 +103,7 @@ export function useActiveTestEntry() {
 }
 
 interface MainProps {
-    setTestControls: (controls: TestControls | null) => void;
+    setTestControls: (controls: TestControl[]) => void;
 }
 
 export const Main = ({ setTestControls }: MainProps) => {

@@ -148,15 +148,12 @@ class EdgeTest extends Test {
         this.m_body2 = null;
         this.CreateBoxes();
 
-        this.m_testControls = {
-            title: "Joint Controls",
-            items: [
-                radioDef("Type", ["Boxes", "Circles"], "Boxes", (value: string) => {
-                    if (value === "Boxes") this.CreateBoxes();
-                    else this.CreateCircles();
-                }),
-            ],
-        };
+        this.m_testControls = [
+            radioDef("Type", ["Boxes", "Circles"], "Boxes", (value: string) => {
+                if (value === "Boxes") this.CreateBoxes();
+                else this.CreateCircles();
+            }),
+        ];
     }
 
     public CreateBoxes(): void {

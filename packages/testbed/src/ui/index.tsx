@@ -5,12 +5,12 @@ import { Router } from "react-router-ts";
 
 import { Main } from "./Main";
 import { MenuBar } from "./MenuBar";
-import { TestControls } from "../testControls";
+import { TestControl } from "../testControls";
 
 import "./style.scss";
 
 function App() {
-    const [testControls, setTestControls] = useState<TestControls | null>(null);
+    const [testControls, setTestControls] = useState<TestControl[]>([]);
     return (
         <div className="container">
             <MenuBar testControls={testControls} />

@@ -12,7 +12,7 @@ import { Settings } from "./settings";
 import { getTestsGrouped, Test, TestConstructor, TestEntry } from "./test";
 import { FpsCalculator } from "./utils/FpsCalculator";
 import type { TextTable, TextTableSetter } from "./ui/Main";
-import { TestControls } from "./testControls";
+import { TestControl } from "./testControls";
 
 import "./tests";
 
@@ -71,7 +71,7 @@ export class TestManager {
 
     private setRightTable: TextTableSetter = () => {};
 
-    private setTestControls: (controls: TestControls | null) => void = () => {};
+    private setTestControls: (controls: TestControl[]) => void = () => {};
 
     public constructor() {
         for (const { tests } of this.groupedTests) {
@@ -103,7 +103,7 @@ export class TestManager {
         activateTest: (label: string) => void,
         setLeftTables: TextTableSetter,
         setRightTables: TextTableSetter,
-        setTestControls: (controls: TestControls | null) => void,
+        setTestControls: (controls: TestControl[]) => void,
     ) {
         this.setLeftTable = setLeftTables;
         this.setRightTable = setRightTables;

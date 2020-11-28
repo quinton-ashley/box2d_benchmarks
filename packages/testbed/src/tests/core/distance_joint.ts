@@ -81,28 +81,25 @@ class DistanceJoint extends Test {
         b2LinearStiffness(jd, this.m_hertz, this.m_dampingRatio, jd.bodyA, jd.bodyB);
         this.m_joint = this.m_world.CreateJoint(jd);
 
-        this.m_testControls = {
-            title: "Joint Controls",
-            items: [
-                sliderDef("Length", 0, 20, 1, this.m_length, (value: number) => {
-                    this.m_length = this.m_joint.SetLength(value);
-                }),
-                sliderDef("Min Length", 0, 20, 1, this.m_minLength, (value: number) => {
-                    this.m_minLength = this.m_joint.SetMinLength(value);
-                }),
-                sliderDef("Max Length", 0, 20, 1, this.m_maxLength, (value: number) => {
-                    this.m_maxLength = this.m_joint.SetMaxLength(value);
-                }),
-                sliderDef("Hertz", 0, 10, 0.1, this.m_hertz, (value: number) => {
-                    this.m_hertz = value;
-                    this.UpdateStiffness();
-                }),
-                sliderDef("Damping Ratio", 0, 2, 0.1, this.m_dampingRatio, (value: number) => {
-                    this.m_dampingRatio = value;
-                    this.UpdateStiffness();
-                }),
-            ],
-        };
+        this.m_testControls = [
+            sliderDef("Length", 0, 20, 1, this.m_length, (value: number) => {
+                this.m_length = this.m_joint.SetLength(value);
+            }),
+            sliderDef("Min Length", 0, 20, 1, this.m_minLength, (value: number) => {
+                this.m_minLength = this.m_joint.SetMinLength(value);
+            }),
+            sliderDef("Max Length", 0, 20, 1, this.m_maxLength, (value: number) => {
+                this.m_maxLength = this.m_joint.SetMaxLength(value);
+            }),
+            sliderDef("Hertz", 0, 10, 0.1, this.m_hertz, (value: number) => {
+                this.m_hertz = value;
+                this.UpdateStiffness();
+            }),
+            sliderDef("Damping Ratio", 0, 2, 0.1, this.m_dampingRatio, (value: number) => {
+                this.m_dampingRatio = value;
+                this.UpdateStiffness();
+            }),
+        ];
     }
 
     private UpdateStiffness() {
