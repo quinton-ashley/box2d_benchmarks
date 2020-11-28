@@ -118,7 +118,6 @@ class Tiles extends Test {
     }
 
     public Step(settings: Settings, timeStep: number): void {
-        /* const b2ContactManager */
         const cm = this.m_world.GetContactManager();
         const height = cm.m_broadPhase.GetTreeHeight();
         const leafCount = cm.m_broadPhase.GetProxyCount();

@@ -44,7 +44,7 @@ class TheoJansen extends Test {
 
     public m_motorJoint!: b2RevoluteJoint;
 
-    public m_motorOn = false;
+    public m_motorOn = true;
 
     public m_motorSpeed = 2;
 
@@ -52,7 +52,6 @@ class TheoJansen extends Test {
         super();
 
         this.m_offset.Set(0, 8);
-        this.m_motorOn = true;
         const pivot = new b2Vec2(0, 0.8);
 
         // Ground
