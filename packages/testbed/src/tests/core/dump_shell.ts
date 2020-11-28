@@ -25,6 +25,7 @@ import {
     b2PrismaticJointDef,
     XY,
     b2Body,
+    b2MakeArray,
 } from "@box2d/core";
 
 import { registerTest, Test } from "../../test";
@@ -161,7 +162,7 @@ class DumpShell extends Test {
         {
             const shape = new b2PolygonShape();
 
-            const vs = b2Vec2.MakeArray(8);
+            const vs = b2MakeArray(8, b2Vec2);
             vs[0].Set(6.907599925994873, 0.327199995517731);
             vs[1].Set(-0.322800010442734, 0.282599985599518);
             vs[2].Set(-0.322800010442734, -0.295700013637543);
@@ -198,7 +199,7 @@ class DumpShell extends Test {
         {
             const shape = new b2PolygonShape();
 
-            const vs = b2Vec2.MakeArray(8);
+            const vs = b2MakeArray(8, b2Vec2);
             vs[0].Set(0.200000002980232, -0.300000011920929);
             vs[1].Set(0.200000002980232, 0.200000002980232);
             vs[2].Set(-6.900000095367432, 0.200000002980232);

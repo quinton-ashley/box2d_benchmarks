@@ -120,3 +120,13 @@ export function b2MakeNumberArray(length: number, init = 0): number[] {
     for (let i = 0; i < length; i++) result[i] = init;
     return result;
 }
+
+export interface NoArgsConstructor<T> {
+    new (): T;
+}
+
+export function b2MakeArray<T>(length: number, Class: NoArgsConstructor<T>): T[] {
+    const result = new Array<T>(length);
+    for (let i = 0; i < length; i++) result[i] = new Class();
+    return result;
+}

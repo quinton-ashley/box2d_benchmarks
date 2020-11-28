@@ -21,11 +21,12 @@ import { b2Draw, debugColors } from "./b2_draw";
 import { b2Body, b2BodyType } from "../dynamics/b2_body";
 import { b2Fixture } from "../dynamics/b2_fixture";
 import { b2World } from "../dynamics/b2_world";
+import { b2MakeArray } from "./b2_common";
 
 const temp = {
     cA: new b2Vec2(),
     cB: new b2Vec2(),
-    vs: b2Vec2.MakeArray(4),
+    vs: b2MakeArray(4, b2Vec2),
     xf: new b2Transform(),
 };
 

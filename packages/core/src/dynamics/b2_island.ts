@@ -26,6 +26,7 @@ import {
     b2_maxRotationSquared,
     b2_linearSleepTolerance,
     b2_angularSleepTolerance,
+    b2MakeArray,
 } from "../common/b2_common";
 import { b2Vec2 } from "../common/b2_math";
 import { b2Timer } from "../common/b2_timer";
@@ -190,8 +191,8 @@ export class b2Island {
         this.m_contacts = new Array(contactCapacity);
         this.m_joints = new Array(jointCapacity);
 
-        this.m_velocities = b2Velocity.MakeArray(bodyCapacity);
-        this.m_positions = b2Position.MakeArray(bodyCapacity);
+        this.m_velocities = b2MakeArray(bodyCapacity, b2Velocity);
+        this.m_positions = b2MakeArray(bodyCapacity, b2Position);
 
         this.Resize(bodyCapacity);
     }

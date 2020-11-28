@@ -17,7 +17,7 @@
  */
 
 // DEBUG: import { b2Assert, b2_epsilon_sq } from "../common/b2_common";
-import { b2Assert, b2_linearSlop, b2_polygonRadius } from "../common/b2_common";
+import { b2Assert, b2MakeArray, b2_linearSlop, b2_polygonRadius } from "../common/b2_common";
 import { b2Color, b2Draw } from "../common/b2_draw";
 import { b2Vec2, b2Rot, b2Transform, XY } from "../common/b2_math";
 import { b2_maxPolygonVertices } from "../common/b2_settings";
@@ -137,8 +137,8 @@ export class b2PolygonShape extends b2Shape {
 
         this.m_centroid.Copy(other.m_centroid);
         this.m_count = other.m_count;
-        this.m_vertices = b2Vec2.MakeArray(this.m_count);
-        this.m_normals = b2Vec2.MakeArray(this.m_count);
+        this.m_vertices = b2MakeArray(this.m_count, b2Vec2);
+        this.m_normals = b2MakeArray(this.m_count, b2Vec2);
         for (let i = 0; i < this.m_count; ++i) {
             this.m_vertices[i].Copy(other.m_vertices[i]);
             this.m_normals[i].Copy(other.m_normals[i]);
@@ -234,8 +234,8 @@ export class b2PolygonShape extends b2Shape {
         b2Assert(m >= 3, "Polygon is degenerate");
 
         this.m_count = m;
-        this.m_vertices = b2Vec2.MakeArray(this.m_count);
-        this.m_normals = b2Vec2.MakeArray(this.m_count);
+        this.m_vertices = b2MakeArray(this.m_count, b2Vec2);
+        this.m_normals = b2MakeArray(this.m_count, b2Vec2);
 
         // Copy vertices.
         for (let i = 0; i < m; ++i) {
@@ -264,8 +264,8 @@ export class b2PolygonShape extends b2Shape {
     /// @param angle the rotation of the box in local coordinates.
     public SetAsBox(hx: number, hy: number, center?: XY, angle = 0): b2PolygonShape {
         this.m_count = 4;
-        this.m_vertices = b2Vec2.MakeArray(this.m_count);
-        this.m_normals = b2Vec2.MakeArray(this.m_count);
+        this.m_vertices = b2MakeArray(this.m_count, b2Vec2);
+        this.m_normals = b2MakeArray(this.m_count, b2Vec2);
         this.m_vertices[0].Set(-hx, -hy);
         this.m_vertices[1].Set(hx, -hy);
         this.m_vertices[2].Set(hx, hy);

@@ -27,6 +27,7 @@ import {
     b2RevoluteJointDef,
     b2CircleShape,
     XY,
+    b2MakeArray,
 } from "@box2d/core";
 
 import { registerTest, Test } from "../../test";
@@ -56,7 +57,7 @@ class Pinball extends Test {
         {
             ground = this.m_world.CreateBody();
 
-            const vs = b2Vec2.MakeArray(5);
+            const vs = b2MakeArray(5, b2Vec2);
             vs[0].Set(-8, 6);
             vs[1].Set(-8, 20);
             vs[2].Set(8, 20);

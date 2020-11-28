@@ -26,6 +26,7 @@ import {
     b2RevoluteJointDef,
     b2PolygonShape,
     XY,
+    b2MakeArray,
 } from "@box2d/core";
 
 import { registerTest, Test } from "../../test";
@@ -125,7 +126,7 @@ class RevoluteJoint extends Test {
 
             const polyShape = new b2PolygonShape();
 
-            const verts = b2Vec2.MakeArray(3);
+            const verts = b2MakeArray(3, b2Vec2);
             verts[0].Set(17.63, 36.31);
             verts[1].Set(17.52, 36.69);
             verts[2].Set(17.19, 36.36);

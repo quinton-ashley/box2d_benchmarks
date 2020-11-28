@@ -1,5 +1,5 @@
 // DEBUG: import { b2Assert } from "../common/b2_common";
-import { b2_epsilon, b2_linearSlop, b2_maxLinearCorrection, b2MakeNumberArray } from "../common/b2_common";
+import { b2_epsilon, b2_linearSlop, b2_maxLinearCorrection, b2MakeNumberArray, b2MakeArray } from "../common/b2_common";
 import { b2Vec2, XY } from "../common/b2_math";
 import { b2Joint, b2JointDef, b2JointType, b2IJointDef } from "./b2_joint";
 import { b2DistanceJoint, b2DistanceJointDef } from "./b2_distance_joint";
@@ -71,8 +71,8 @@ export class b2AreaJoint extends b2Joint {
         this.m_damping = def.damping ?? 0;
 
         this.m_targetLengths = b2MakeNumberArray(def.bodies.length);
-        this.m_normals = b2Vec2.MakeArray(def.bodies.length);
-        this.m_deltas = b2Vec2.MakeArray(def.bodies.length);
+        this.m_normals = b2MakeArray(def.bodies.length, b2Vec2);
+        this.m_deltas = b2MakeArray(def.bodies.length, b2Vec2);
 
         const djd = new b2DistanceJointDef();
         djd.stiffness = this.m_stiffness;

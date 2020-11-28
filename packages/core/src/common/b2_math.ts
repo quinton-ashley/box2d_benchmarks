@@ -250,12 +250,6 @@ export class b2Vec2 implements XY {
         return this;
     }
 
-    public static MakeArray(length: number) {
-        const result = new Array<b2Vec2>(length);
-        for (let i = 0; i < length; i++) result[i] = new b2Vec2();
-        return result;
-    }
-
     public static Min<T extends XY>(a: XY, b: XY, out: T) {
         out.x = Math.min(a.x, b.x);
         out.y = Math.min(a.y, b.y);

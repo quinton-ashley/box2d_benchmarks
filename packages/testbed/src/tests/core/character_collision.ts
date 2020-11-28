@@ -16,7 +16,17 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import { b2Body, b2EdgeShape, b2Vec2, b2ChainShape, b2PolygonShape, b2BodyType, b2CircleShape, XY } from "@box2d/core";
+import {
+    b2Body,
+    b2EdgeShape,
+    b2Vec2,
+    b2ChainShape,
+    b2PolygonShape,
+    b2BodyType,
+    b2CircleShape,
+    XY,
+    b2MakeArray,
+} from "@box2d/core";
 
 import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
@@ -60,7 +70,7 @@ class CharacterCollision extends Test {
                 angle: 0.25 * Math.PI,
             });
 
-            const vs = b2Vec2.MakeArray(4);
+            const vs = b2MakeArray(4, b2Vec2);
             vs[0].Set(5, 7);
             vs[1].Set(8, 7);
             vs[2].Set(7, 8);
@@ -90,7 +100,7 @@ class CharacterCollision extends Test {
         {
             const ground = this.m_world.CreateBody();
 
-            const vs = b2Vec2.MakeArray(4);
+            const vs = b2MakeArray(4, b2Vec2);
             vs[0].Set(-1, 3);
             vs[1].Set(1, 3);
             vs[2].Set(1, 5);
@@ -107,7 +117,7 @@ class CharacterCollision extends Test {
                 position: { x: -10, y: 4 },
             });
 
-            const vs = b2Vec2.MakeArray(10);
+            const vs = b2MakeArray(10, b2Vec2);
             vs[0].Set(0, 0);
             vs[1].Set(6, 0);
             vs[2].Set(6, 2);
@@ -171,7 +181,7 @@ class CharacterCollision extends Test {
 
             let angle = 0;
             const delta = Math.PI / 3;
-            const vertices = b2Vec2.MakeArray(6);
+            const vertices = b2MakeArray(6, b2Vec2);
             for (let i = 0; i < 6; ++i) {
                 vertices[i].Set(0.5 * Math.cos(angle), 0.5 * Math.sin(angle));
                 angle += delta;

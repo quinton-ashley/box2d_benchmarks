@@ -23,6 +23,7 @@ import {
     b2_maxLinearCorrection,
     b2_baumgarte,
     b2_toiBaumgarte,
+    b2MakeArray,
 } from "../common/b2_common";
 import { b2Clamp, b2Vec2, b2Mat22, b2Rot, b2Transform } from "../common/b2_math";
 import { b2WorldManifold, b2ManifoldType } from "../collision/b2_collision";
@@ -52,16 +53,10 @@ export class b2VelocityConstraintPoint {
     public tangentMass = 0;
 
     public velocityBias = 0;
-
-    public static MakeArray(length: number): b2VelocityConstraintPoint[] {
-        const result = new Array<b2VelocityConstraintPoint>(length);
-        for (let i = 0; i < length; i++) result[i] = new b2VelocityConstraintPoint();
-        return result;
-    }
 }
 
 export class b2ContactVelocityConstraint {
-    public readonly points = b2VelocityConstraintPoint.MakeArray(b2_maxManifoldPoints);
+    public readonly points = b2MakeArray(b2_maxManifoldPoints, b2VelocityConstraintPoint);
 
     public readonly normal = new b2Vec2();
 
@@ -94,16 +89,10 @@ export class b2ContactVelocityConstraint {
     public pointCount = 0;
 
     public contactIndex = 0;
-
-    public static MakeArray(length: number): b2ContactVelocityConstraint[] {
-        const result = new Array<b2ContactVelocityConstraint>(length);
-        for (let i = 0; i < length; i++) result[i] = new b2ContactVelocityConstraint();
-        return result;
-    }
 }
 
 class b2ContactPositionConstraint {
-    public readonly localPoints = b2Vec2.MakeArray(b2_maxManifoldPoints);
+    public readonly localPoints = b2MakeArray(b2_maxManifoldPoints, b2Vec2);
 
     public readonly localNormal = new b2Vec2();
 
@@ -132,12 +121,6 @@ class b2ContactPositionConstraint {
     public radiusB = 0;
 
     public pointCount = 0;
-
-    public static MakeArray(length: number): b2ContactPositionConstraint[] {
-        const result = new Array<b2ContactPositionConstraint>(length);
-        for (let i = 0; i < length; i++) result[i] = new b2ContactPositionConstraint();
-        return result;
-    }
 }
 
 export class b2ContactSolverDef {
@@ -222,9 +205,9 @@ export class b2ContactSolver {
 
     public m_velocities!: b2Velocity[];
 
-    public readonly m_positionConstraints = b2ContactPositionConstraint.MakeArray(1024); // TODO: b2Settings
+    public readonly m_positionConstraints = b2MakeArray(1024, b2ContactPositionConstraint); // TODO: b2Settings
 
-    public readonly m_velocityConstraints = b2ContactVelocityConstraint.MakeArray(1024); // TODO: b2Settings
+    public readonly m_velocityConstraints = b2MakeArray(1024, b2ContactVelocityConstraint); // TODO: b2Settings
 
     public m_contacts!: b2Contact[];
 

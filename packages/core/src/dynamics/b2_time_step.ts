@@ -92,12 +92,6 @@ export class b2Position {
     public readonly c = new b2Vec2();
 
     public a = 0;
-
-    public static MakeArray(length: number): b2Position[] {
-        const result = new Array<b2Position>(length);
-        for (let i = 0; i < length; i++) result[i] = new b2Position();
-        return result;
-    }
 }
 
 /// This is an internal structure.
@@ -105,12 +99,6 @@ export class b2Velocity {
     public readonly v = new b2Vec2();
 
     public w = 0;
-
-    public static MakeArray(length: number): b2Velocity[] {
-        const result = new Array<b2Velocity>(length);
-        for (let i = 0; i < length; i++) result[i] = new b2Velocity();
-        return result;
-    }
 }
 
 /// Solver Data

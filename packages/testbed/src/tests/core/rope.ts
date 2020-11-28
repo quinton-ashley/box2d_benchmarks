@@ -29,6 +29,7 @@ import {
     b2StretchingModel,
     b2RopeDef,
     XY,
+    b2MakeArray,
 } from "@box2d/core";
 
 import { registerTest, Test } from "../../test";
@@ -61,7 +62,7 @@ class Rope extends Test {
         const N = 20;
         const L = 0.5;
         // b2Vec2 vertices[N];
-        const vertices = b2Vec2.MakeArray(N);
+        const vertices = b2MakeArray(N, b2Vec2);
         // float masses[N];
         const masses = b2MakeNumberArray(N);
 
@@ -588,7 +589,7 @@ class Rope extends Test {
 //     /*const int32*/
 //     const N = 40;
 //     /*b2Vec2[]*/
-//     const vertices = b2Vec2.MakeArray(N);
+//     const vertices = b2MakeArray(N, b2Vec2);
 //     /*float32[]*/
 //     const masses = b2MakeNumberArray(N);
 

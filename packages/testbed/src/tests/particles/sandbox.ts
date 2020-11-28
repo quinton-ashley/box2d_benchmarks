@@ -34,6 +34,7 @@ import {
     b2Manifold,
     b2ContactImpulse,
     XY,
+    b2MakeArray,
 } from "@box2d/core";
 import { b2ParticleHandle, b2ParticleSystem, b2ParticleFlag, b2ParticleGroup } from "@box2d/particles";
 
@@ -447,7 +448,7 @@ class Sandbox extends Test {
         boxShape.SetAsBox(SandboxParams.k_tileRadius, SandboxParams.k_tileRadius);
 
         ///  b2Vec2 triangle[3];
-        const triangle = b2Vec2.MakeArray(3);
+        const triangle = b2MakeArray(3, b2Vec2);
         triangle[0].Set(-SandboxParams.k_tileRadius, -SandboxParams.k_tileRadius);
         triangle[1].Set(SandboxParams.k_tileRadius, SandboxParams.k_tileRadius);
         triangle[2].Set(SandboxParams.k_tileRadius, -SandboxParams.k_tileRadius);

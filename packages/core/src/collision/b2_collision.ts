@@ -17,7 +17,14 @@
  */
 
 // DEBUG: import { b2Assert } from "../common/b2_common";
-import { b2_maxFloat, b2_epsilon, b2_epsilon_sq, b2_maxManifoldPoints, b2MakeNumberArray } from "../common/b2_common";
+import {
+    b2_maxFloat,
+    b2_epsilon,
+    b2_epsilon_sq,
+    b2_maxManifoldPoints,
+    b2MakeNumberArray,
+    b2MakeArray,
+} from "../common/b2_common";
 import { b2Vec2, b2Rot, b2Transform, XY } from "../common/b2_math";
 import type { b2Shape } from "./b2_shape";
 import { b2Distance, b2DistanceInput, b2DistanceOutput, b2SimplexCache } from "./b2_distance";
@@ -145,12 +152,6 @@ export class b2ManifoldPoint {
 
     public readonly id = new b2ContactID(); /// < uniquely identifies a contact point between two shapes
 
-    public static MakeArray(length: number): b2ManifoldPoint[] {
-        const result = new Array<b2ManifoldPoint>(length);
-        for (let i = 0; i < length; i++) result[i] = new b2ManifoldPoint();
-        return result;
-    }
-
     public Reset(): void {
         this.localPoint.SetZero();
         this.normalImpulse = 0;
@@ -191,7 +192,7 @@ export enum b2ManifoldType {
 /// This structure is stored across time steps, so we keep it small.
 export class b2Manifold {
     /// < the points of contact
-    public readonly points = b2ManifoldPoint.MakeArray(b2_maxManifoldPoints);
+    public readonly points = b2MakeArray(b2_maxManifoldPoints, b2ManifoldPoint);
 
     /// < not use for Type::e_points
     public readonly localNormal = new b2Vec2();
@@ -238,7 +239,7 @@ export class b2WorldManifold {
     public readonly normal = new b2Vec2();
 
     /// < world contact point (point of intersection)
-    public readonly points = b2Vec2.MakeArray(b2_maxManifoldPoints);
+    public readonly points = b2MakeArray(b2_maxManifoldPoints, b2Vec2);
 
     /// < a negative value indicates overlap, in meters
     public readonly separations = b2MakeNumberArray(b2_maxManifoldPoints);
@@ -395,12 +396,6 @@ export class b2ClipVertex {
     public readonly v = new b2Vec2();
 
     public readonly id = new b2ContactID();
-
-    public static MakeArray(length: number): b2ClipVertex[] {
-        const result = new Array<b2ClipVertex>(length);
-        for (let i = 0; i < length; i++) result[i] = new b2ClipVertex();
-        return result;
-    }
 
     public Copy(other: b2ClipVertex): b2ClipVertex {
         this.v.Copy(other.v);

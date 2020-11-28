@@ -17,14 +17,14 @@
  */
 
 // DEBUG: import { b2Assert } from "../common/b2_common";
-import { b2_epsilon, b2_epsilon_sq, b2_polygonRadius, b2_linearSlop } from "../common/b2_common";
+import { b2_epsilon, b2_epsilon_sq, b2_polygonRadius, b2_linearSlop, b2MakeArray } from "../common/b2_common";
 import { b2Vec2, b2Rot, b2Transform } from "../common/b2_math";
 import type { b2Shape } from "./b2_shape";
 
 /// A distance proxy is used by the GJK algorithm.
 /// It encapsulates any shape.
 export class b2DistanceProxy {
-    public readonly m_buffer = b2Vec2.MakeArray(2);
+    public readonly m_buffer = b2MakeArray(2, b2Vec2);
 
     public m_vertices = this.m_buffer;
 

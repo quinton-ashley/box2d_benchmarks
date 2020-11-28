@@ -1,5 +1,5 @@
 // DEBUG: import { b2Assert } from "../common/b2_common";
-import { b2_maxFloat, b2_maxManifoldPoints } from "../common/b2_common";
+import { b2MakeArray, b2_maxFloat, b2_maxManifoldPoints } from "../common/b2_common";
 import { b2Vec2, b2Rot, b2Transform } from "../common/b2_math";
 import {
     b2ContactFeatureType,
@@ -173,9 +173,9 @@ class b2EPAxis {
 
 // This holds polygon B expressed in frame A.
 class b2TempPolygon {
-    public vertices: b2Vec2[] = b2Vec2.MakeArray(b2_maxPolygonVertices);
+    public vertices: b2Vec2[] = b2MakeArray(b2_maxPolygonVertices, b2Vec2);
 
-    public normals: b2Vec2[] = b2Vec2.MakeArray(b2_maxPolygonVertices);
+    public normals: b2Vec2[] = b2MakeArray(b2_maxPolygonVertices, b2Vec2);
 
     public count = 0;
 }

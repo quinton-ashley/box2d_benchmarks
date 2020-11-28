@@ -25,6 +25,7 @@ import {
     b2RandomFloat,
     b2Color,
     b2DegToRad,
+    b2MakeArray,
 } from "@box2d/core";
 
 import { registerTest, Test } from "../../test";
@@ -46,7 +47,7 @@ class RayCast extends Test {
 
     private m_bodies: Array<b2Body | null> = [];
 
-    private m_polygons: b2PolygonShape[] = [];
+    private m_polygons: b2PolygonShape[] = b2MakeArray(4, b2PolygonShape);
 
     private m_circle = new b2CircleShape();
 
@@ -59,10 +60,6 @@ class RayCast extends Test {
     constructor() {
         super();
 
-        for (let i = 0; i < 4; ++i) {
-            this.m_polygons[i] = new b2PolygonShape();
-        }
-
         // Ground body
         {
             const ground = this.m_world.CreateBody();
@@ -73,7 +70,7 @@ class RayCast extends Test {
         }
 
         {
-            const vertices: b2Vec2[] = b2Vec2.MakeArray(3);
+            const vertices: b2Vec2[] = b2MakeArray(3, b2Vec2);
             vertices[0].Set(-0.5, 0);
             vertices[1].Set(0.5, 0);
             vertices[2].Set(0, 1.5);
@@ -81,7 +78,7 @@ class RayCast extends Test {
         }
 
         {
-            const vertices: b2Vec2[] = b2Vec2.MakeArray(3);
+            const vertices: b2Vec2[] = b2MakeArray(3, b2Vec2);
             vertices[0].Set(-0.1, 0);
             vertices[1].Set(0.1, 0);
             vertices[2].Set(0, 1.5);
@@ -93,7 +90,7 @@ class RayCast extends Test {
             const b = w / (2 + Math.sqrt(2));
             const s = Math.sqrt(2) * b;
 
-            const vertices: b2Vec2[] = b2Vec2.MakeArray(8);
+            const vertices: b2Vec2[] = b2MakeArray(8, b2Vec2);
             vertices[0].Set(0.5 * s, 0);
             vertices[1].Set(0.5 * w, b);
             vertices[2].Set(0.5 * w, b + s);
@@ -325,8 +322,8 @@ class RayCast extends Test {
     // the closest fixture.
     private rayCastMultiple(point1: b2Vec2, point2: b2Vec2) {
         const e_maxCount = 3;
-        const resultPoints = b2Vec2.MakeArray(e_maxCount);
-        const resultNormals = b2Vec2.MakeArray(e_maxCount);
+        const resultPoints = b2MakeArray(e_maxCount, b2Vec2);
+        const resultNormals = b2MakeArray(e_maxCount, b2Vec2);
 
         let count = 0;
         this.m_world.RayCast(point1, point2, (fixture, point, normal) => {

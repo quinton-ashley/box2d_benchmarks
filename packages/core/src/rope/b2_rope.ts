@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import { b2Assert, b2MakeNumberArray } from "../common/b2_common";
+import { b2Assert, b2MakeArray, b2MakeNumberArray } from "../common/b2_common";
 import { b2Color, b2Draw, debugColors } from "../common/b2_draw";
 import { b2Vec2, XY } from "../common/b2_math";
 
@@ -193,10 +193,10 @@ export class b2Rope {
         b2Assert(def.vertices.length >= 3);
         this.m_position.Copy(def.position);
         this.m_count = def.vertices.length;
-        this.m_bindPositions = b2Vec2.MakeArray(this.m_count);
-        this.m_ps = b2Vec2.MakeArray(this.m_count);
-        this.m_p0s = b2Vec2.MakeArray(this.m_count);
-        this.m_vs = b2Vec2.MakeArray(this.m_count);
+        this.m_bindPositions = b2MakeArray(this.m_count, b2Vec2);
+        this.m_ps = b2MakeArray(this.m_count, b2Vec2);
+        this.m_p0s = b2MakeArray(this.m_count, b2Vec2);
+        this.m_vs = b2MakeArray(this.m_count, b2Vec2);
         this.m_invMasses = b2MakeNumberArray(this.m_count);
 
         for (let i = 0; i < this.m_count; ++i) {

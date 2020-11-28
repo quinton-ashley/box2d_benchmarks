@@ -28,6 +28,7 @@ import {
     b2RevoluteJointDef,
     b2CircleShape,
     b2WheelJointDef,
+    b2MakeArray,
 } from "@box2d/core";
 
 import { registerTest, Test } from "../../test";
@@ -201,7 +202,7 @@ class Car extends Test {
         // Car
         {
             const chassis = new b2PolygonShape();
-            const vertices = b2Vec2.MakeArray(8);
+            const vertices = b2MakeArray(8, b2Vec2);
             vertices[0].Set(-1.5, -0.5);
             vertices[1].Set(1.5, -0.5);
             vertices[2].Set(1.5, 0);

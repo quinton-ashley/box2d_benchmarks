@@ -32,6 +32,7 @@ import {
     b2ContactImpulse,
     b2World,
     XY,
+    b2MakeArray,
 } from "@box2d/core";
 import { b2ParticleGroup, b2ParticleGroupDef, b2ParticleFlag, b2ParticleSystem } from "@box2d/particles";
 
@@ -868,7 +869,7 @@ class Fracker extends Test {
      */
     public DrawQuad(position: b2Vec2, color: b2Color, fill = false): void {
         ///  b2Vec2 verts[4];
-        const verts = b2Vec2.MakeArray(4);
+        const verts = b2MakeArray(4, b2Vec2);
         const maxX = position.x + FrackerSettings.k_tileWidth;
         const maxY = position.y + FrackerSettings.k_tileHeight;
         verts[0].Set(position.x, maxY);
