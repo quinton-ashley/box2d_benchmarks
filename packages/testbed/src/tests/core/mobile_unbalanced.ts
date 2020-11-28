@@ -20,7 +20,7 @@ import { b2Vec2, b2RevoluteJointDef, b2Body, b2BodyType, b2PolygonShape, XY } fr
 
 import { registerTest, Test } from "../../test";
 
-class Mobile extends Test {
+class MobileUnbalanced extends Test {
     public static readonly e_depth = 4;
 
     constructor() {
@@ -68,7 +68,7 @@ class Mobile extends Test {
         shape.SetAsBox(0.25 * a, a);
         body.CreateFixture({ shape, density });
 
-        if (depth === Mobile.e_depth) {
+        if (depth === MobileUnbalanced.e_depth) {
             return body;
         }
 
@@ -93,4 +93,4 @@ class Mobile extends Test {
     }
 }
 
-registerTest("Solver", "Mobile Unbalanced", Mobile);
+registerTest("Solver", "Mobile Unbalanced", MobileUnbalanced);

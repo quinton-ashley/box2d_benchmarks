@@ -21,7 +21,7 @@ import { b2Body, b2EdgeShape, b2Vec2, b2BodyType, b2CircleShape } from "@box2d/c
 import { HotKey, hotKeyPress } from "../../utils/hotkeys";
 import { registerTest, Test } from "../../test";
 
-class HeavyOnLightTwo extends Test {
+class Heavy2 extends Test {
     public m_heavy: b2Body | null = null;
 
     constructor() {
@@ -72,4 +72,4 @@ class HeavyOnLightTwo extends Test {
     }
 }
 
-registerTest("Solver", "Heavy 2", HeavyOnLightTwo);
+registerTest("Solver", "Heavy 2", Heavy2);
