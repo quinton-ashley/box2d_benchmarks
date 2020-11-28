@@ -19,6 +19,34 @@ function tableReducer(state: TextTable, action: TextTable) {
     return state;
 }
 
+interface TextTableRowProps {
+    label: string;
+    value: string;
+}
+
+const TextTableRow = ({ label, value }: TextTableRowProps) => {
+    if (value === "!") {
+        return (
+            <tr>
+                <th colSpan={2}>{label}</th>
+            </tr>
+        );
+    }
+    if (value === "-") {
+        return (
+            <tr>
+                <td colSpan={2}>{label}</td>
+            </tr>
+        );
+    }
+    return (
+        <tr>
+            <td>{label}</td>
+            <td>{value}</td>
+        </tr>
+    );
+};
+
 interface TextTableProps {
     id: string;
     table: TextTable;
@@ -28,18 +56,9 @@ const TextTable = ({ id, table }: TextTableProps) => (
     <div id={id}>
         <table>
             <tbody>
-                {table.map(([label, value], index) =>
-                    value === "-" ? (
-                        <tr key={index}>
-                            <th colSpan={2}>{label}</th>
-                        </tr>
-                    ) : (
-                        <tr key={index}>
-                            <td>{label}</td>
-                            <td>{value}</td>
-                        </tr>
-                    ),
-                )}
+                {table.map(([label, value], index) => (
+                    <TextTableRow key={index} label={label} value={value} />
+                ))}
             </tbody>
         </table>
     </div>

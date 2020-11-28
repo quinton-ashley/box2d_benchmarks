@@ -373,7 +373,7 @@ export class TestManager {
         const leftTable: TextTable = [];
         const fps = this.m_fpsCalculator.getFps();
         const rightTable: TextTable = [
-            ["Performance:", "-"],
+            ["Performance:", "!"],
             ["Avg. FPS", fps.avgFps.toFixed(1)],
             ["Max. Time in ms", fps.maxTime.toFixed(1)],
             ["Min. Time in ms", fps.minTime.toFixed(1)],
@@ -385,30 +385,30 @@ export class TestManager {
 
             if (this.m_test.m_textLines.length) {
                 leftTable.push(
-                    ["Description:", "-"],
-                    ...this.m_test.m_textLines.map((t) => [t, ""] as [string, string]),
+                    ["Description:", "!"],
+                    ...this.m_test.m_textLines.map((t) => [t, "-"] as [string, string]),
                     ["", ""],
                 );
             }
             if (this.m_settings.m_drawInputHelp) {
                 leftTable.push(
-                    ["Mouse:", "-"],
+                    ["Mouse:", "!"],
                     ["Right Drag", "Move Camera"],
                     ["Left Drag", "Grab Objects"],
                     ["Wheel", "Zoom"],
                     ["", ""],
                 );
                 leftTable.push(
-                    ["Keyboard:", "-"],
+                    ["Keyboard:", "!"],
                     ...this.allHotKeys.map((hk) => [hotKeyToText(hk), hk.description] as [string, string]),
                     ["", ""],
                 );
             }
             if (this.m_test.m_debugLines.length) {
-                rightTable.push(["Debug Info:", "-"], ...this.m_test.m_debugLines, ["", ""]);
+                rightTable.push(["Debug Info:", "!"], ...this.m_test.m_debugLines, ["", ""]);
             }
             if (this.m_test.m_statisticLines.length) {
-                rightTable.push(["Statistics:", "-"], ...this.m_test.m_statisticLines, ["", ""]);
+                rightTable.push(["Statistics:", "!"], ...this.m_test.m_statisticLines, ["", ""]);
             }
         }
         this.setLeftTable(leftTable);
