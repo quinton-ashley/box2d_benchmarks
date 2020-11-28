@@ -22,17 +22,17 @@ import { registerTest, Test } from "../../test";
 
 // Note: even with a restitution of 1, there is some energy change
 // due to position correction.
-
-class VaryingRestitution extends Test {
+class Restitution extends Test {
     constructor() {
         super();
 
+        const restitutionThreshold = 10;
         {
             const ground = this.m_world.CreateBody();
 
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(-40, 0), new b2Vec2(40, 0));
-            ground.CreateFixture({ shape });
+            ground.CreateFixture({ shape, restitutionThreshold });
         }
 
         {
@@ -42,6 +42,7 @@ class VaryingRestitution extends Test {
             const fd: b2FixtureDef = {
                 shape,
                 density: 1,
+                restitutionThreshold,
             };
 
             const restitution = [0, 0.1, 0.3, 0.5, 0.75, 0.9, 1];
@@ -59,4 +60,4 @@ class VaryingRestitution extends Test {
     }
 }
 
-registerTest("Forces", "Restitution", VaryingRestitution);
+registerTest("Forces", "Restitution", Restitution);
