@@ -44,12 +44,14 @@ const temp = {
     },
 };
 
-class PolyShapes extends Test {
+/// This tests stacking. It also shows how to use b2World::Query
+/// and b2TestOverlap.
+class PolygonShapes extends Test {
     public static readonly e_maxBodies = 256;
 
     public m_bodyIndex = 0;
 
-    public m_bodies: Array<b2Body | null> = Array.from({ length: PolyShapes.e_maxBodies }, () => null);
+    public m_bodies: Array<b2Body | null> = Array.from({ length: PolygonShapes.e_maxBodies }, () => null);
 
     public m_polygons = Array.from({ length: 4 }, () => new b2PolygonShape());
 
@@ -104,7 +106,7 @@ class PolyShapes extends Test {
         this.m_polygons[3].SetAsBox(0.5, 0.5);
         this.m_circle.m_radius = 0.5;
 
-        for (let i = 0; i < PolyShapes.e_maxBodies; ++i) {
+        for (let i = 0; i < PolygonShapes.e_maxBodies; ++i) {
             this.m_bodies[i] = null;
         }
     }
@@ -137,11 +139,11 @@ class PolyShapes extends Test {
             });
         }
 
-        this.m_bodyIndex = (this.m_bodyIndex + 1) % PolyShapes.e_maxBodies;
+        this.m_bodyIndex = (this.m_bodyIndex + 1) % PolygonShapes.e_maxBodies;
     }
 
     public DestroyBody() {
-        for (let i = 0; i < PolyShapes.e_maxBodies; ++i) {
+        for (let i = 0; i < PolygonShapes.e_maxBodies; ++i) {
             const body = this.m_bodies[i];
             if (body) {
                 this.m_world.DestroyBody(body);
@@ -159,7 +161,7 @@ class PolyShapes extends Test {
             hotKeyPress("4", "Create Box", () => this.CreateBody(3)),
             hotKeyPress("5", "Create Circle", () => this.CreateBody(4)),
             hotKeyPress("a", "Toggle Enabled of Even Bodies", () => {
-                for (let i = 0; i < PolyShapes.e_maxBodies; i += 2) {
+                for (let i = 0; i < PolygonShapes.e_maxBodies; i += 2) {
                     const body = this.m_bodies[i];
                     if (body) {
                         body.SetEnabled(!body.IsEnabled());
@@ -211,4 +213,4 @@ class PolyShapes extends Test {
     }
 }
 
-registerTest("Geometry", "Polygon Shapes", PolyShapes);
+registerTest("Geometry", "Polygon Shapes", PolygonShapes);

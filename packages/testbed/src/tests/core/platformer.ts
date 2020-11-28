@@ -58,7 +58,7 @@ class Platformer extends Test {
             const ground = this.m_world.CreateBody();
 
             const shape = new b2EdgeShape();
-            shape.SetTwoSided(new b2Vec2(-40, 0), new b2Vec2(40, 0));
+            shape.SetTwoSided(new b2Vec2(-20, 0), new b2Vec2(20, 0));
             ground.CreateFixture({ shape });
         }
 

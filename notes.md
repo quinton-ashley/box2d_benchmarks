@@ -16,3 +16,4 @@ Style notes:
 Other notes:
 - temporary variables should not be used from outside of their files.
 - encapsulate temp vars either per file, per class or even per method to avoid conflicted use
+- create generic b2MakeArray, which takes no-args constructor
