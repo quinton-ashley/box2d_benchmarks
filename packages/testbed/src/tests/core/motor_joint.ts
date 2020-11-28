@@ -23,6 +23,9 @@ import { Settings } from "../../settings";
 import { g_debugDraw } from "../../utils/draw";
 import { HotKey, hotKeyPress } from "../../utils/hotkeys";
 
+/// This test shows how to use a motor joint. A motor joint
+/// can be used to animate a dynamic body. With finite motor forces
+/// the body can be blocked by collision with other bodies.
 class MotorJoint extends Test {
     public m_joint: b2MotorJoint;
 
