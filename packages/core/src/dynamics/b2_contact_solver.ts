@@ -39,6 +39,10 @@ export function b2SetBlockSolve(value: boolean) {
     g_blockSolve = value;
 }
 
+export function b2GetBlockSolve() {
+    return g_blockSolve;
+}
+
 export class b2VelocityConstraintPoint {
     public readonly rA = new b2Vec2();
 

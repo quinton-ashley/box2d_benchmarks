@@ -67,7 +67,7 @@ import "./time_of_impact";
 import "./tumbler";
 import "./friction";
 import "./restitution";
-import "./vertical_stack";
+import "./box_stack";
 import "./web";
 import "./rope";
 import "./motor_joint2";

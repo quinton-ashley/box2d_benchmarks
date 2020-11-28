@@ -16,28 +16,36 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import { b2Body, b2EdgeShape, b2Vec2, b2PolygonShape, b2FixtureDef, b2BodyType, b2CircleShape } from "@box2d/core";
+import {
+    b2Body,
+    b2EdgeShape,
+    b2Vec2,
+    b2PolygonShape,
+    b2FixtureDef,
+    b2BodyType,
+    b2CircleShape,
+    b2MakeNumberArray,
+    b2SetBlockSolve,
+    b2GetBlockSolve,
+} from "@box2d/core";
 
 import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
 import { hotKeyPress, HotKey } from "../../utils/hotkeys";
 
-class VerticalStack extends Test {
+class BoxStack extends Test {
     public static readonly e_columnCount = 1;
 
     public static readonly e_rowCount = 15;
 
     public m_bullet: b2Body | null = null;
 
-    public m_bodies: b2Body[];
+    public m_bodies = new Array<b2Body>(BoxStack.e_rowCount * BoxStack.e_columnCount);
 
-    public m_indices: number[];
+    public m_indices = b2MakeNumberArray(BoxStack.e_rowCount * BoxStack.e_columnCount);
 
     constructor() {
         super();
-
-        this.m_bodies = new Array<b2Body>(VerticalStack.e_rowCount * VerticalStack.e_columnCount);
-        this.m_indices = new Array<number>(VerticalStack.e_rowCount * VerticalStack.e_columnCount);
 
         {
             const ground = this.m_world.CreateBody();
@@ -52,7 +60,7 @@ class VerticalStack extends Test {
 
         const xs = [0, -10, -5, 5, 10];
 
-        for (let j = 0; j < VerticalStack.e_columnCount; ++j) {
+        for (let j = 0; j < BoxStack.e_columnCount; ++j) {
             const shape = new b2PolygonShape();
             shape.SetAsBox(0.5, 0.5);
 
@@ -62,8 +70,8 @@ class VerticalStack extends Test {
                 friction: 0.3,
             };
 
-            for (let i = 0; i < VerticalStack.e_rowCount; ++i) {
-                const n = j * VerticalStack.e_rowCount + i;
+            for (let i = 0; i < BoxStack.e_rowCount; ++i) {
+                const n = j * BoxStack.e_rowCount + i;
                 // DEBUG: b2Assert(n < VerticalStack.e_rowCount * VerticalStack.e_columnCount);
                 this.m_indices[n] = n;
 
@@ -84,7 +92,11 @@ class VerticalStack extends Test {
     }
 
     getHotkeys(): HotKey[] {
-        return [hotKeyPress("Enter", "Launch a bullet", () => this.LaunchBullet())];
+        return [
+            hotKeyPress("Enter", "Launch a bullet", () => this.LaunchBullet()),
+            // fixme: Setting this here might cause differences in other tests too?
+            hotKeyPress("b", "Toggle Block solving", () => b2SetBlockSolve(!b2GetBlockSolve())),
+        ];
     }
 
     private LaunchBullet() {
@@ -116,7 +128,7 @@ class VerticalStack extends Test {
 
     public Step(settings: Settings, timeStep: number): void {
         super.Step(settings, timeStep);
-        // this.addDebug("Blocksolve", g_blockSolve);
+        this.addDebug("Blocksolve", b2GetBlockSolve());
         // if (this.m_stepCount === 300) {
         //     if (this.m_bullet !== null) {
         //         this.m_world.DestroyBody(this.m_bullet);
@@ -144,4 +156,4 @@ class VerticalStack extends Test {
     }
 }
 
-registerTest("Stacking", "Vertical Stack", VerticalStack);
+registerTest("Stacking", "Box Stack", BoxStack);
