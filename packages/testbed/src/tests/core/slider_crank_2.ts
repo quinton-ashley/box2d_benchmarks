@@ -31,9 +31,8 @@ import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
 import { HotKey, hotKeyPress } from "../../utils/hotkeys";
 
+// A motor driven slider crank with joint friction.
 class SliderCrank2 extends Test {
-    public static readonly e_count = 30;
-
     public m_joint1: b2RevoluteJoint;
 
     public m_joint2: b2PrismaticJoint;

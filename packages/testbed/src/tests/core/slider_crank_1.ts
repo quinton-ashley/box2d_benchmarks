@@ -20,6 +20,7 @@ import { b2PolygonShape, b2BodyType, b2RevoluteJointDef, b2Vec2, b2PrismaticJoin
 
 import { registerTest, Test } from "../../test";
 
+// A basic slider crank created for GDC tutorial: Understanding Constraints
 class SliderCrank1 extends Test {
     constructor() {
         super();
