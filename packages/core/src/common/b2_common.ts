@@ -121,6 +121,12 @@ export function b2MakeNumberArray(length: number, init = 0): number[] {
     return result;
 }
 
+export function b2MakeBooleanArray(length: number, init = false): boolean[] {
+    const result = new Array<boolean>(length);
+    for (let i = 0; i < length; i++) result[i] = init;
+    return result;
+}
+
 export interface NoArgsConstructor<T> {
     new (): T;
 }

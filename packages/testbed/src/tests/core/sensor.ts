@@ -26,28 +26,27 @@ import {
     b2Contact,
     b2_epsilon_sq,
     XY,
+    b2MakeBooleanArray,
 } from "@box2d/core";
 
 import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
+import { sliderDef } from "../../ui/controls/Slider";
 
+// This shows how to use sensor shapes. Sensors don't have collision, but report overlap events.
 class Sensors extends Test {
     public static readonly e_count = 7;
 
     public m_sensor: b2Fixture;
 
-    public m_bodies: b2Body[];
+    public m_bodies = new Array<b2Body>(Sensors.e_count);
 
-    public m_touching: boolean[][];
+    public m_force = 100;
+
+    public m_touching = b2MakeBooleanArray(Sensors.e_count);
 
     constructor() {
         super();
-
-        this.m_bodies = new Array<b2Body>(Sensors.e_count);
-        this.m_touching = new Array<boolean[]>(Sensors.e_count);
-        for (let i = 0; i < Sensors.e_count; ++i) {
-            this.m_touching[i] = new Array<boolean>(1);
-        }
 
         const ground = this.m_world.CreateBody();
 
@@ -81,16 +80,22 @@ class Sensors extends Test {
             shape.m_radius = 1;
 
             for (let i = 0; i < Sensors.e_count; ++i) {
-                this.m_touching[i][0] = false;
+                this.m_touching[i] = false;
                 this.m_bodies[i] = this.m_world.CreateBody({
                     type: b2BodyType.b2_dynamicBody,
                     position: { x: -10 + 3 * i, y: 20 },
-                    userData: this.m_touching[i],
+                    userData: { index: i },
                 });
 
                 this.m_bodies[i].CreateFixture({ shape, density: 1 });
             }
         }
+
+        this.m_testControls = [
+            sliderDef("Force", 0, 2000, 1, this.m_force, (value: number) => {
+                this.m_force = value;
+            }),
+        ];
     }
 
     public getCenter(): XY {
@@ -105,18 +110,16 @@ class Sensors extends Test {
         const fixtureB = contact.GetFixtureB();
 
         if (fixtureA === this.m_sensor) {
-            const userData: boolean[] = fixtureB.GetBody().GetUserData();
+            const userData = fixtureB.GetBody().GetUserData();
             if (userData) {
-                const touching = userData;
-                touching[0] = true;
+                this.m_touching[userData.index] = true;
             }
         }
 
         if (fixtureB === this.m_sensor) {
-            const userData: boolean[] = fixtureA.GetBody().GetUserData();
+            const userData = fixtureA.GetBody().GetUserData();
             if (userData) {
-                const touching = userData;
-                touching[0] = true;
+                this.m_touching[userData.index] = true;
             }
         }
     }
@@ -126,18 +129,16 @@ class Sensors extends Test {
         const fixtureB = contact.GetFixtureB();
 
         if (fixtureA === this.m_sensor) {
-            const userData: boolean[] = fixtureB.GetBody().GetUserData();
+            const userData = fixtureB.GetBody().GetUserData();
             if (userData) {
-                const touching = userData;
-                touching[0] = false;
+                this.m_touching[userData.index] = false;
             }
         }
 
         if (fixtureB === this.m_sensor) {
-            const userData: boolean[] = fixtureA.GetBody().GetUserData();
+            const userData = fixtureA.GetBody().GetUserData();
             if (userData) {
-                const touching = userData;
-                touching[0] = false;
+                this.m_touching[userData.index] = false;
             }
         }
     }
@@ -148,7 +149,7 @@ class Sensors extends Test {
         // Traverse the contact results. Apply a force on shapes
         // that overlap the sensor.
         for (let i = 0; i < Sensors.e_count; ++i) {
-            if (!this.m_touching[i][0]) {
+            if (!this.m_touching[i]) {
                 continue;
             }
 
@@ -166,7 +167,7 @@ class Sensors extends Test {
             }
 
             d.Normalize();
-            const F = b2Vec2.Scale(100, d, new b2Vec2());
+            const F = b2Vec2.Scale(this.m_force, d, new b2Vec2());
             body.ApplyForce(F, position);
         }
     }
