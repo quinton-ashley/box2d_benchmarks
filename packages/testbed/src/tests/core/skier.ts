@@ -2,7 +2,7 @@
 Test case for collision/jerking issue.
 */
 
-import { b2Body, b2Vec2, b2ChainShape, b2BodyType, b2PolygonShape } from "@box2d/core";
+import { b2Body, b2Vec2, b2ChainShape, b2BodyType, b2PolygonShape, b2MakeArray } from "@box2d/core";
 
 import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
@@ -73,8 +73,8 @@ class Skier extends Test {
             const SkiLength = 3;
 
             /*
-      Larger values for this seem to alleviate the issue to some extent.
-      */
+            Larger values for this seem to alleviate the issue to some extent.
+            */
             const SkiThickness = 0.3;
 
             const SkiFriction = 0;
@@ -87,11 +87,11 @@ class Skier extends Test {
             });
 
             const ski = new b2PolygonShape();
-            const verts: b2Vec2[] = [];
-            verts.push(new b2Vec2(-SkiLength / 2 - SkiThickness, -BodyHeight / 2));
-            verts.push(new b2Vec2(-SkiLength / 2, -BodyHeight / 2 - SkiThickness));
-            verts.push(new b2Vec2(SkiLength / 2, -BodyHeight / 2 - SkiThickness));
-            verts.push(new b2Vec2(SkiLength / 2 + SkiThickness, -BodyHeight / 2));
+            const verts = b2MakeArray(4, b2Vec2);
+            verts[0].Set(-SkiLength / 2 - SkiThickness, -BodyHeight / 2);
+            verts[1].Set(-SkiLength / 2, -BodyHeight / 2 - SkiThickness);
+            verts[2].Set(SkiLength / 2, -BodyHeight / 2 - SkiThickness);
+            verts[3].Set(SkiLength / 2 + SkiThickness, -BodyHeight / 2);
             ski.Set(verts);
 
             skier.CreateFixture({
