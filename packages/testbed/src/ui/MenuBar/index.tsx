@@ -9,10 +9,10 @@ import packageData from "../../../package.json";
 import { TestsMenu } from "../menus/TestsMenu";
 import { useManager } from "../../manager";
 import { TestSettingsMenu } from "../menus/TestSettingsMenu";
-import { TestControl } from "../../testControls";
+import type { TestControlsState } from "..";
 
 interface MenuBarProps {
-    testControls: TestControl[];
+    testControls: TestControlsState;
 }
 
 export const MenuBar = ({ testControls }: MenuBarProps) => {

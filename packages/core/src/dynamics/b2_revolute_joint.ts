@@ -481,12 +481,13 @@ export class b2RevoluteJoint extends b2Joint {
         return this.m_enableMotor;
     }
 
-    public EnableMotor(flag: boolean): void {
+    public EnableMotor(flag: boolean): boolean {
         if (flag !== this.m_enableMotor) {
             this.m_bodyA.SetAwake(true);
             this.m_bodyB.SetAwake(true);
             this.m_enableMotor = flag;
         }
+        return flag;
     }
 
     public GetMotorTorque(inv_dt: number): number {
@@ -513,7 +514,7 @@ export class b2RevoluteJoint extends b2Joint {
         return this.m_enableLimit;
     }
 
-    public EnableLimit(flag: boolean): void {
+    public EnableLimit(flag: boolean): boolean {
         if (flag !== this.m_enableLimit) {
             this.m_bodyA.SetAwake(true);
             this.m_bodyB.SetAwake(true);
@@ -521,6 +522,7 @@ export class b2RevoluteJoint extends b2Joint {
             this.m_lowerImpulse = 0;
             this.m_upperImpulse = 0;
         }
+        return flag;
     }
 
     public GetLowerLimit(): number {
@@ -542,12 +544,13 @@ export class b2RevoluteJoint extends b2Joint {
         }
     }
 
-    public SetMotorSpeed(speed: number): void {
+    public SetMotorSpeed(speed: number): number {
         if (speed !== this.m_motorSpeed) {
             this.m_bodyA.SetAwake(true);
             this.m_bodyB.SetAwake(true);
             this.m_motorSpeed = speed;
         }
+        return speed;
     }
 
     public Draw(draw: b2Draw): void {

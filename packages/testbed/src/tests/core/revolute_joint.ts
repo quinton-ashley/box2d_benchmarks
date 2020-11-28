@@ -26,17 +26,25 @@ import {
     b2RevoluteJointDef,
     b2PolygonShape,
     XY,
-    b2MakeArray,
 } from "@box2d/core";
 
 import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
-import { HotKey, hotKeyPress } from "../../utils/hotkeys";
+import { checkboxDef } from "../../ui/controls/Checkbox";
+import { sliderDef } from "../../ui/controls/Slider";
 
 class RevoluteJoint extends Test {
     public m_ball: b2Body;
 
-    public m_joint: b2RevoluteJoint;
+    public m_joint1: b2RevoluteJoint;
+
+    public m_joint2: b2RevoluteJoint;
+
+    public m_motorSpeed = 1;
+
+    public m_enableMotor = false;
+
+    public m_enableLimit = true;
 
     constructor() {
         super();
@@ -56,87 +64,75 @@ class RevoluteJoint extends Test {
         }
 
         {
-            const shape = new b2CircleShape();
-            shape.m_radius = 0.5;
-
-            const rjd = new b2RevoluteJointDef();
+            const shape = new b2PolygonShape();
+            shape.SetAsBox(0.25, 3, new b2Vec2(0, 3), 0);
 
             const body = this.m_world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
-
-                position: { x: -10, y: 20 },
+                position: new b2Vec2(-10, 20),
             });
             body.CreateFixture({ shape, density: 5 });
 
-            const w = 100;
-            body.SetAngularVelocity(w);
-            body.SetLinearVelocity(new b2Vec2(-8 * w, 0));
+            const jd = new b2RevoluteJointDef();
+            jd.Initialize(ground, body, new b2Vec2(-10, 20.5));
+            jd.motorSpeed = this.m_motorSpeed;
+            jd.maxMotorTorque = 10000;
+            jd.enableMotor = this.m_enableMotor;
+            jd.lowerAngle = -0.25 * Math.PI;
+            jd.upperAngle = 0.5 * Math.PI;
+            jd.enableLimit = this.m_enableLimit;
 
-            rjd.Initialize(ground, body, new b2Vec2(-10, 12));
-            rjd.motorSpeed = 1 * Math.PI;
-            rjd.maxMotorTorque = 10000;
-            rjd.enableMotor = false;
-            rjd.lowerAngle = -0.25 * Math.PI;
-            rjd.upperAngle = 0.5 * Math.PI;
-            rjd.enableLimit = true;
-            rjd.collideConnected = true;
-
-            this.m_joint = this.m_world.CreateJoint(rjd);
+            this.m_joint1 = this.m_world.CreateJoint(jd);
         }
 
         {
-            const circle_shape = new b2CircleShape();
-            circle_shape.m_radius = 3;
-
+            const circle_shape = new b2CircleShape(2);
             this.m_ball = this.m_world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
-                position: { x: 5, y: 30 },
+                position: new b2Vec2(5, 30),
             });
             this.m_ball.CreateFixture({
                 density: 5,
-                filter: {
-                    maskBits: 1,
-                },
+                filter: { maskBits: 1 },
                 shape: circle_shape,
             });
 
             const polygon_shape = new b2PolygonShape();
-            polygon_shape.SetAsBox(10, 0.2, new b2Vec2(-10, 0), 0);
+            polygon_shape.SetAsBox(10, 0.5, new b2Vec2(-10, 0), 0);
 
             const polygon_body = this.m_world.CreateBody({
+                position: new b2Vec2(20, 10),
                 type: b2BodyType.b2_dynamicBody,
-                position: { x: 20, y: 10 },
                 bullet: true,
             });
-            polygon_body.CreateFixture({ shape: polygon_shape, density: 2 });
-
-            const rjd = new b2RevoluteJointDef();
-            rjd.Initialize(ground, polygon_body, new b2Vec2(20, 10));
-            rjd.lowerAngle = -0.25 * Math.PI;
-            rjd.upperAngle = 0 * Math.PI;
-            rjd.enableLimit = true;
-            this.m_world.CreateJoint(rjd);
-        }
-
-        // Tests mass computation of a small object far from the origin
-        {
-            const body = this.m_world.CreateBody({
-                type: b2BodyType.b2_dynamicBody,
+            polygon_body.CreateFixture({
+                shape: polygon_shape,
+                density: 2,
             });
 
-            const polyShape = new b2PolygonShape();
+            const jd = new b2RevoluteJointDef();
+            jd.Initialize(ground, polygon_body, new b2Vec2(19, 10));
+            jd.lowerAngle = -0.25 * Math.PI;
+            jd.upperAngle = 0 * Math.PI;
+            jd.enableLimit = true;
+            jd.enableMotor = true;
+            jd.motorSpeed = 0;
+            jd.maxMotorTorque = 10000;
 
-            const verts = b2MakeArray(3, b2Vec2);
-            verts[0].Set(17.63, 36.31);
-            verts[1].Set(17.52, 36.69);
-            verts[2].Set(17.19, 36.36);
-            polyShape.Set(verts, 3);
-
-            body.CreateFixture({
-                shape: polyShape,
-                density: 1,
-            }); // assertion hits inside here
+            this.m_joint2 = this.m_world.CreateJoint(jd);
         }
+
+        this.m_testControls = [
+            checkboxDef("Limit", this.m_enableLimit, (value: boolean) => {
+                this.m_enableLimit = this.m_joint1.EnableLimit(value);
+            }),
+            checkboxDef("Motor", this.m_enableMotor, (value: boolean) => {
+                this.m_enableMotor = this.m_joint1.EnableMotor(value);
+            }),
+            sliderDef("Speed", -20, 20, 1, this.m_motorSpeed, (value: number) => {
+                this.m_motorSpeed = this.m_joint1.SetMotorSpeed(value);
+            }),
+        ];
     }
 
     public getCenter(): XY {
@@ -146,23 +142,14 @@ class RevoluteJoint extends Test {
         };
     }
 
-    getHotkeys(): HotKey[] {
-        return [
-            hotKeyPress("l", "Toggle Limit", () => this.m_joint.EnableLimit(!this.m_joint.IsLimitEnabled())),
-            hotKeyPress("m", "Start/Stop", () => this.m_joint.EnableMotor(!this.m_joint.IsMotorEnabled())),
-        ];
-    }
-
     public Step(settings: Settings, timeStep: number): void {
         super.Step(settings, timeStep);
 
-        // if (this.m_stepCount === 360) {
-        //   this.m_ball.SetTransformVec(new b2Vec2(0, 0.5), 0);
-        // }
+        const torque1 = this.m_joint1.GetMotorTorque(settings.m_hertz);
+        this.addDebug("Motor Torque 1", torque1.toFixed(0));
 
-        // const torque1 = this.m_joint.GetMotorTorque(settings.hz);
-        // this.addDebug("Motor Torque", `${torque1.toFixed(0)}, ${torque2.toFixed(0)}`);
-        // this.addDebug("Motor Force", `${force3.toFixed(0)}`);
+        const torque2 = this.m_joint2.GetMotorTorque(settings.m_hertz);
+        this.addDebug("Motor Torque 2", torque2.toFixed(0));
     }
 }
 

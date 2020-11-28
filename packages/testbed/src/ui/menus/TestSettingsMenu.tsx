@@ -1,15 +1,15 @@
 import React from "react";
 
 import { Menu } from "../MenuBar/Menu";
-import { TestControl } from "../../testControls";
 import { SettingsTable } from "./SettingsTable";
+import type { TestControlsState } from "..";
 
 interface TestSettingsMenuProps {
-    testControls: TestControl[];
+    testControls: TestControlsState;
 }
 
-export const TestSettingsMenu = ({ testControls }: TestSettingsMenuProps) => (
+export const TestSettingsMenu = ({ testControls: { key, controls } }: TestSettingsMenuProps) => (
     <Menu label="Test Settings">
-        {testControls.length ? <SettingsTable controls={testControls} /> : "None for this test"}
+        {controls.length ? <SettingsTable key={key} controls={controls} /> : "None for this test"}
     </Menu>
 );

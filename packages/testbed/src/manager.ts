@@ -296,7 +296,9 @@ export class TestManager {
         if (!restartTest) {
             this.HomeCamera();
         }
-        this.setTestControls(this.m_test.m_testControls);
+
+        // Slice to force an update (and thus a reset) of the UI
+        this.setTestControls(this.m_test.m_testControls.slice());
     }
 
     public SetPause(pause: boolean): void {
