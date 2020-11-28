@@ -16,19 +16,29 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import { b2Vec2, b2Body, b2PolygonShape, b2CircleShape, b2EdgeShape, b2RandomFloat, b2Color } from "@box2d/core";
+import {
+    b2Vec2,
+    b2Body,
+    b2PolygonShape,
+    b2CircleShape,
+    b2EdgeShape,
+    b2RandomFloat,
+    b2Color,
+    b2DegToRad,
+} from "@box2d/core";
 
 import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
 import { g_debugDraw } from "../../utils/draw";
 import { HotKey, hotKeyPress } from "../../utils/hotkeys";
+import { radioDef } from "../../ui/controls/Radio";
+import { sliderDef } from "../../ui/controls/Slider";
 
-enum RayCastMode {
-    e_closest,
-    e_any,
-    e_multiple,
-}
+type RayCastMode = "Any" | "Closest" | "Multiple";
 
+// This test demonstrates how to use the world ray-cast feature.
+// NOTE: we are intentionally filtering one of the polygons, therefore
+// the ray will always miss one type of polygon.
 class RayCast extends Test {
     private static e_maxBodies = 256;
 
@@ -42,9 +52,9 @@ class RayCast extends Test {
 
     private m_edge = new b2EdgeShape();
 
-    private m_angle = 0;
+    private m_degrees = 0;
 
-    private m_mode = RayCastMode.e_closest;
+    private m_mode: RayCastMode = "Closest";
 
     constructor() {
         super();
@@ -63,22 +73,18 @@ class RayCast extends Test {
         }
 
         {
-            const vertices: b2Vec2[] = [
-                /* 3 */
-            ];
-            vertices[0] = new b2Vec2(-0.5, 0);
-            vertices[1] = new b2Vec2(0.5, 0);
-            vertices[2] = new b2Vec2(0, 1.5);
+            const vertices: b2Vec2[] = b2Vec2.MakeArray(3);
+            vertices[0].Set(-0.5, 0);
+            vertices[1].Set(0.5, 0);
+            vertices[2].Set(0, 1.5);
             this.m_polygons[0].Set(vertices, 3);
         }
 
         {
-            const vertices: b2Vec2[] = [
-                /* 3 */
-            ];
-            vertices[0] = new b2Vec2(-0.1, 0);
-            vertices[1] = new b2Vec2(0.1, 0);
-            vertices[2] = new b2Vec2(0, 1.5);
+            const vertices: b2Vec2[] = b2Vec2.MakeArray(3);
+            vertices[0].Set(-0.1, 0);
+            vertices[1].Set(0.1, 0);
+            vertices[2].Set(0, 1.5);
             this.m_polygons[1].Set(vertices, 3);
         }
 
@@ -87,17 +93,15 @@ class RayCast extends Test {
             const b = w / (2 + Math.sqrt(2));
             const s = Math.sqrt(2) * b;
 
-            const vertices: b2Vec2[] = [
-                /* 8 */
-            ];
-            vertices[0] = new b2Vec2(0.5 * s, 0);
-            vertices[1] = new b2Vec2(0.5 * w, b);
-            vertices[2] = new b2Vec2(0.5 * w, b + s);
-            vertices[3] = new b2Vec2(0.5 * s, w);
-            vertices[4] = new b2Vec2(-0.5 * s, w);
-            vertices[5] = new b2Vec2(-0.5 * w, b + s);
-            vertices[6] = new b2Vec2(-0.5 * w, b);
-            vertices[7] = new b2Vec2(-0.5 * s, 0);
+            const vertices: b2Vec2[] = b2Vec2.MakeArray(8);
+            vertices[0].Set(0.5 * s, 0);
+            vertices[1].Set(0.5 * w, b);
+            vertices[2].Set(0.5 * w, b + s);
+            vertices[3].Set(0.5 * s, w);
+            vertices[4].Set(-0.5 * s, w);
+            vertices[5].Set(-0.5 * w, b + s);
+            vertices[6].Set(-0.5 * w, b);
+            vertices[7].Set(-0.5 * s, 0);
 
             this.m_polygons[2].Set(vertices, 8);
         }
@@ -111,9 +115,14 @@ class RayCast extends Test {
             this.m_bodies[i] = null;
         }
 
-        this.m_angle = 0;
-
-        this.m_mode = RayCastMode.e_closest;
+        this.m_testControls = [
+            radioDef("Mode", ["Any", "Closest", "Multiple"], this.m_mode, (value: string) => {
+                this.m_mode = value as RayCastMode;
+            }),
+            sliderDef("Angle", 0, 360, 1, this.m_degrees, (value: number) => {
+                this.m_degrees = value;
+            }),
+        ];
     }
 
     public CreateBody(index: number): void {
@@ -126,7 +135,6 @@ class RayCast extends Test {
         const new_body = (this.m_bodies[this.m_bodyIndex] = this.m_world.CreateBody({
             position: { x: b2RandomFloat(-10, 10), y: b2RandomFloat(0, 20) },
             angle: b2RandomFloat(-Math.PI, Math.PI),
-            userData: { index },
             angularDamping: index === 4 ? 0.02 : 0,
         }));
 
@@ -134,16 +142,19 @@ class RayCast extends Test {
             new_body.CreateFixture({
                 shape: this.m_polygons[index],
                 friction: 0.3,
+                userData: { index },
             });
         } else if (index < 5) {
             new_body.CreateFixture({
                 shape: this.m_circle,
                 friction: 0.3,
+                userData: { index },
             });
         } else {
             new_body.CreateFixture({
                 shape: this.m_edge,
                 friction: 0.3,
+                userData: { index },
             });
         }
 
@@ -170,47 +181,34 @@ class RayCast extends Test {
             hotKeyPress("5", "Create Circle", () => this.CreateBody(4)),
             hotKeyPress("6", "Create Edge", () => this.CreateBody(5)),
             hotKeyPress("d", "Destroy Body", () => this.DestroyBody()),
-            hotKeyPress("m", "Change Raycast Mode", () => {
-                if (this.m_mode === RayCastMode.e_closest) {
-                    this.m_mode = RayCastMode.e_any;
-                } else if (this.m_mode === RayCastMode.e_any) {
-                    this.m_mode = RayCastMode.e_multiple;
-                } else if (this.m_mode === RayCastMode.e_multiple) {
-                    this.m_mode = RayCastMode.e_closest;
-                }
-            }),
         ];
     }
 
     public Step(settings: Settings, timeStep: number): void {
-        const advanceRay = !settings.m_pause || settings.m_singleStep;
-
         super.Step(settings, timeStep);
 
+        const angle = b2DegToRad(this.m_degrees);
         const L = 11;
         const point1 = new b2Vec2(0, 10);
-        const d = new b2Vec2(L * Math.cos(this.m_angle), L * Math.sin(this.m_angle));
+        const d = new b2Vec2(L * Math.cos(angle), L * Math.sin(angle));
         const point2 = b2Vec2.Add(point1, d, new b2Vec2());
 
+        this.addText("Shape 1 is intentionally ignored by the ray");
         switch (this.m_mode) {
-            case RayCastMode.e_closest:
+            case "Closest":
                 this.addDebug("Ray-Cast Mode", "Find closest fixture along the ray");
                 this.rayCastClosest(point1, point2);
                 break;
 
-            case RayCastMode.e_any:
+            case "Any":
                 this.addDebug("Ray-Cast Mode", "Check for obstruction");
                 this.rayCastAny(point1, point2);
                 break;
 
-            case RayCastMode.e_multiple:
+            case "Multiple":
                 this.addDebug("Ray-Cast Mode", "Gather multiple fixtures");
                 this.rayCastMultiple(point1, point2);
                 break;
-        }
-
-        if (advanceRay) {
-            this.m_angle += (0.25 * Math.PI) / 180;
         }
 
         /*
@@ -256,20 +254,17 @@ class RayCast extends Test {
     */
     }
 
+    // This callback finds the closest hit. Polygon 0 is filtered.
     private rayCastClosest(point1: b2Vec2, point2: b2Vec2) {
         let hit = false;
         const resultPoint = new b2Vec2();
         const resultNormal = new b2Vec2();
         this.m_world.RayCast(point1, point2, (fixture, point, normal, fraction) => {
-            const body = fixture.GetBody();
-            const userData = body.GetUserData();
-            if (userData) {
-                const { index } = userData;
-                if (index === 0) {
-                    // By returning -1, we instruct the calling code to ignore this fixture
-                    // and continue the ray-cast to the next fixture.
-                    return -1;
-                }
+            const userData = fixture.GetUserData();
+            if (userData?.index === 0) {
+                // By returning -1, we instruct the calling code to ignore this fixture
+                // and continue the ray-cast to the next fixture.
+                return -1;
             }
 
             hit = true;
@@ -299,15 +294,11 @@ class RayCast extends Test {
         const resultPoint = new b2Vec2();
         const resultNormal = new b2Vec2();
         this.m_world.RayCast(point1, point2, (fixture, point, normal, _fraction) => {
-            const body = fixture.GetBody();
-            const userData = body.GetUserData();
-            if (userData) {
-                const { index } = userData;
-                if (index === 0) {
-                    // By returning -1, we instruct the calling code to ignore this fixture
-                    // and continue the ray-cast to the next fixture.
-                    return -1;
-                }
+            const userData = fixture.GetUserData();
+            if (userData?.index === 0) {
+                // By returning -1, we instruct the calling code to ignore this fixture
+                // and continue the ray-cast to the next fixture.
+                return -1;
             }
 
             hit = true;
@@ -339,15 +330,11 @@ class RayCast extends Test {
 
         let count = 0;
         this.m_world.RayCast(point1, point2, (fixture, point, normal) => {
-            const body = fixture.GetBody();
-            const userData = body.GetUserData();
-            if (userData) {
-                const { index } = userData;
-                if (index === 0) {
-                    // By returning -1, we instruct the calling code to ignore this fixture
-                    // and continue the ray-cast to the next fixture.
-                    return -1;
-                }
+            const userData = fixture.GetUserData();
+            if (userData?.index === 0) {
+                // By returning -1, we instruct the calling code to ignore this fixture
+                // and continue the ray-cast to the next fixture.
+                return -1;
             }
 
             // DEBUG: b2Assert(this.m_count < RayCastMultipleCallback.e_maxCount);
