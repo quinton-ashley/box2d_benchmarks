@@ -19,7 +19,6 @@
 import { b2EdgeShape, b2Vec2, b2PolygonShape, b2BodyType } from "@box2d/core";
 
 import { registerTest, Test } from "../../test";
-import { Settings } from "../../settings";
 
 class Pyramid extends Test {
     public static readonly e_count = 20;
@@ -61,16 +60,6 @@ class Pyramid extends Test {
                 x.Add(deltaX);
             }
         }
-    }
-
-    public Step(settings: Settings, timeStep: number): void {
-        super.Step(settings, timeStep);
-
-        // b2DynamicTree* tree = &m_world.m_contactManager.m_broadPhase.m_tree;
-
-        // if (m_stepCount === 400) {
-        //   tree.RebuildBottomUp();
-        // }
     }
 }
 
