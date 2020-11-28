@@ -21,9 +21,18 @@ import { b2PrismaticJoint, b2EdgeShape, b2Vec2, b2PolygonShape, b2BodyType, b2Pr
 import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
 import { HotKey, hotKeyPress } from "../../utils/hotkeys";
+import { checkboxDef } from "../../ui/controls/Checkbox";
+import { sliderDef } from "../../ui/controls/Slider";
 
+// Test the prismatic joint with limits and motor options.
 class PrismaticJoint extends Test {
     public m_joint: b2PrismaticJoint;
+
+    public m_motorSpeed = 10;
+
+    public m_enableMotor = false;
+
+    public m_enableLimit = true;
 
     constructor() {
         super();
@@ -40,11 +49,12 @@ class PrismaticJoint extends Test {
 
         {
             const shape = new b2PolygonShape();
-            shape.SetAsBox(2, 0.5);
+            shape.SetAsBox(1, 1);
 
+            const position = { x: 0, y: 10 };
             const body = this.m_world.CreateBody({
                 type: b2BodyType.b2_dynamicBody,
-                position: { x: -10, y: 10 },
+                position,
                 angle: 0.5 * Math.PI,
                 allowSleep: false,
             });
@@ -52,23 +62,30 @@ class PrismaticJoint extends Test {
 
             const pjd = new b2PrismaticJointDef();
 
-            // Bouncy limit
-            const axis = new b2Vec2(2, 1);
-            axis.Normalize();
-            pjd.Initialize(ground, body, new b2Vec2(), axis);
+            // Horizontal
+            pjd.Initialize(ground, body, position, new b2Vec2(1, 0));
 
-            // Non-bouncy limit
-            // pjd.Initialize(ground, body, new b2Vec2(-10, 10), new b2Vec2(1, 0));
-
-            pjd.motorSpeed = 10;
+            pjd.motorSpeed = this.m_motorSpeed;
             pjd.maxMotorForce = 10000;
-            pjd.enableMotor = true;
-            pjd.lowerTranslation = 0;
-            pjd.upperTranslation = 20;
-            pjd.enableLimit = true;
+            pjd.enableMotor = this.m_enableMotor;
+            pjd.lowerTranslation = -10;
+            pjd.upperTranslation = 10;
+            pjd.enableLimit = this.m_enableLimit;
 
             this.m_joint = this.m_world.CreateJoint(pjd);
         }
+
+        this.m_testControls = [
+            checkboxDef("Limit", this.m_enableLimit, (value: boolean) => {
+                this.m_enableLimit = this.m_joint.EnableLimit(value);
+            }),
+            checkboxDef("Motor", this.m_enableMotor, (value: boolean) => {
+                this.m_enableMotor = this.m_joint.EnableMotor(value);
+            }),
+            sliderDef("Speed", -100, 100, 1, this.m_motorSpeed, (value: number) => {
+                this.m_motorSpeed = this.m_joint.SetMotorSpeed(value);
+            }),
+        ];
     }
 
     getHotkeys(): HotKey[] {
@@ -82,7 +99,7 @@ class PrismaticJoint extends Test {
     public Step(settings: Settings, timeStep: number): void {
         super.Step(settings, timeStep);
         const force = this.m_joint.GetMotorForce(settings.m_hertz);
-        this.addDebug("Motor Force", force.toFixed(4));
+        this.addDebug("Motor Force", force.toFixed());
     }
 }
 
