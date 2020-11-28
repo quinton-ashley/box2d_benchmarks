@@ -80,3 +80,4 @@ import "./domino_tower";
 import "./top_down_car";
 import "./distance_joint";
 import "./wheel_joint";
+import "./wrecking_ball";
