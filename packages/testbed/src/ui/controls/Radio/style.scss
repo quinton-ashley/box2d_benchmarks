@@ -1,10 +1,11 @@
 .radio {
     display: block;
-    margin: 5px 0;
+    margin: $spacing-md 0;
+    cursor: pointer;
 }
 
 .radio--input {
-    margin-right: 5px;
+    margin-right: $spacing-md;
     display: none;
     width: 0;
     height: 0;
@@ -16,9 +17,9 @@
         position: relative;
 
         &::before {
-            width: 1.2rem;
-            height: 1.2rem;
-            margin-right: 0.5rem;
+            width: $size-control;
+            height: $size-control;
+            margin-right: $spacing-md;
             content: "";
             background: $color-frame-bg;
             border-radius: 50%;
@@ -30,10 +31,10 @@
         position: absolute;
         background: $color-check-mark;
         color: $color-check-mark;
-        left: 0.25rem;
-        width: 0.7rem;
-        height: 0.7rem;
-        margin-right: 0.5rem;
+        left: #{$size-control * 0.2};
+        width: #{$size-control * 0.6};
+        height: #{$size-control * 0.6};
+        margin-right: $spacing-md;
         border-radius: 50%;
     }
 }

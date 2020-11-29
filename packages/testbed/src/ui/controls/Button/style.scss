@@ -1,12 +1,12 @@
 .button {
     display: block;
     width: 100%;
-    font-size: 0.7rem;
+    font-size: $font-size-sm;
     border: none;
     color: $color-text;
     background: $color-button;
-    padding: 5px 10px;
-    margin-bottom: 0.5rem;
+    padding: $spacing-sm $spacing-md;
+    margin-bottom: $spacing-md;
 
     &:hover {
         background: $color-button-hovered;

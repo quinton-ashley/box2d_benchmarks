@@ -202,7 +202,7 @@ export class DebugDraw implements b2Draw {
 
             ctx.save();
             ctx.setTransform(1, 0, 0, 1, 0, 0);
-            ctx.font = "15px DroidSans";
+            ctx.font = "15px Open Sans";
             ctx.fillStyle = DebugDraw.MakeStyleString(COLOR_STRING_WORLD);
             ctx.fillText(message, p.x, p.y);
             ctx.restore();

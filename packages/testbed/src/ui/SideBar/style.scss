@@ -1,12 +1,12 @@
 .sidebar {
-    font-size: 0.7rem;
+    font-size: $font-size-sm;
     position: absolute;
     display: flex;
     flex-direction: column;
-    top: 0.5rem;
-    max-height: calc(100% - 1rem);
-    right: 0.5rem;
-    width: 14rem;
+    top: $spacing-md;
+    max-height: calc(100% - #{$spacing-lg});
+    right: $spacing-md;
+    width: $size-sidebar;
 }
 
 .sidebar--tabs {
@@ -14,10 +14,10 @@
     display: flex;
     justify-content: right;
     flex-direction: row;
-    font-size: 1.3em;
+    font-size: $font-size-md;
 
     > div {
-        padding: 0.25rem 0.5rem;
+        padding: $spacing-sm $spacing-md;
         background: $color-border;
         border: 1px solid transparent;
         border-bottom: none;
@@ -38,7 +38,7 @@
 .tab-content {
     background: $color-window-bg;
     border: 1px solid $color-border;
-    padding: 0.5rem;
+    padding: $spacing-md;
     overflow: auto;
 
     &.tab-content-hidden {

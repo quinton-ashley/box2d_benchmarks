@@ -1,10 +1,11 @@
 .checkbox {
     display: block;
-    margin: 5px 0;
+    margin: $spacing-md 0;
+    cursor: pointer;
 }
 
 .checkbox--input {
-    margin-right: 5px;
+    margin-right: $spacing-md;
     display: none;
     width: 0;
     height: 0;
@@ -15,11 +16,11 @@
         align-items: center;
 
         &::before {
-            font-size: 1.5em;
+            font-size: $size-control;
             color: $color-check-mark;
-            width: 1.2rem;
-            height: 1.2rem;
-            margin-right: 0.5rem;
+            width: $size-control;
+            height: $size-control;
+            margin-right: $spacing-md;
             content: "";
             background: $color-frame-bg;
             display: flex;

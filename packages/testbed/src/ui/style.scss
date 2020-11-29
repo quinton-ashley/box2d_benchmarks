@@ -40,7 +40,7 @@ main {
         pointer-events: none;
         bottom: 0;
         right: 0;
-        padding: 5px;
+        padding: $spacing-md;
     }
 }
 
@@ -51,7 +51,7 @@ main {
 }
 #title_overlay {
     text-align: center;
-    margin-right: 16rem;
+    margin-right: #{$size-sidebar + $spacing-lg};
 }
 
 #right_overlay,
@@ -60,7 +60,7 @@ main {
         text-align: left;
     }
     td {
-        padding: 0 0 0 15px;
+        padding: 0 0 0 $spacing-lg;
     }
     td:empty::after {
         content: "\00a0";
@@ -69,7 +69,7 @@ main {
 
 #right_overlay > table {
     float: right;
-    margin-right: 16rem;
+    margin-right: #{$size-sidebar + $spacing-lg};
 }
 
 #right_overlay > table {
