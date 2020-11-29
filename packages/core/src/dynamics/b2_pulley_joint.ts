@@ -410,11 +410,11 @@ export class b2PulleyJoint extends b2Joint {
         this.m_groundAnchorB.Subtract(newOrigin);
     }
 
-    public DrawJoint(draw: b2Draw): void {
+    public Draw(draw: b2Draw): void {
         const p1 = this.GetAnchorA(temp.pA);
         const p2 = this.GetAnchorB(temp.pB);
-        const s1 = (this as b2PulleyJoint).GetGroundAnchorA();
-        const s2 = (this as b2PulleyJoint).GetGroundAnchorB();
+        const s1 = this.GetGroundAnchorA();
+        const s2 = this.GetGroundAnchorB();
         draw.DrawSegment(s1, p1, debugColors.joint6);
         draw.DrawSegment(s2, p2, debugColors.joint6);
         draw.DrawSegment(s1, s2, debugColors.joint6);
