@@ -7,10 +7,9 @@
 .menu--content {
     z-index: 1000;
     position: absolute;
-    border: 1px solid black;
     background: $color-window-bg;
     padding: 5px 10px;
-    margin-left: -1px;
+    margin: 0;
 }
 
 .menu:not(:hover) > .menu--content {
