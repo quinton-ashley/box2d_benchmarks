@@ -122,7 +122,7 @@ class RevoluteJoint extends Test {
             this.m_joint2 = this.m_world.CreateJoint(jd);
         }
 
-        this.m_testControls = [
+        this.addTestControlGroup("Joint Controls", [
             checkboxDef("Limit", this.m_enableLimit, (value: boolean) => {
                 this.m_enableLimit = this.m_joint1.EnableLimit(value);
             }),
@@ -132,7 +132,7 @@ class RevoluteJoint extends Test {
             sliderDef("Speed", -20, 20, 1, this.m_motorSpeed, (value: number) => {
                 this.m_motorSpeed = this.m_joint1.SetMotorSpeed(value);
             }),
-        ];
+        ]);
     }
 
     public getCenter(): XY {

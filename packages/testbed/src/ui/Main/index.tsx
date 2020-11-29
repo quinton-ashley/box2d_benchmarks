@@ -3,12 +3,12 @@ import { useRouter } from "react-router-ts";
 
 import { useManager } from "../../manager";
 import { TestEntry } from "../../test";
-import { TestControl } from "../../testControls";
 import { getTestLink } from "../../utils/reactUtils";
+import type { TestControlGroup } from "..";
 
 interface TestComponentProps {
     entry: TestEntry;
-    setTestControls: (controls: TestControl[]) => void;
+    setTestControlGroups: (groups: TestControlGroup[]) => void;
 }
 
 export type TextTable = Array<[string, string]>;
@@ -64,7 +64,7 @@ const TextTable = ({ id, table }: TextTableProps) => (
     </div>
 );
 
-const TestMain = ({ entry: { name, TestClass }, setTestControls }: TestComponentProps) => {
+const TestMain = ({ entry: { name, TestClass }, setTestControlGroups }: TestComponentProps) => {
     const [leftTable, setLeftTable] = useReducer(tableReducer, []);
     const [rightTable, setRightTable] = useReducer(tableReducer, []);
     const glCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -84,7 +84,15 @@ const TestMain = ({ entry: { name, TestClass }, setTestControls }: TestComponent
             };
             const init = () => {
                 const setTest = (test: TestEntry) => router.history.push(getTestLink(test));
-                manager.init(glCanvas, debugCanvas, wrapper, setTest, setLeftTable, setRightTable, setTestControls);
+                manager.init(
+                    glCanvas,
+                    debugCanvas,
+                    wrapper,
+                    setTest,
+                    setLeftTable,
+                    setRightTable,
+                    setTestControlGroups,
+                );
                 window.requestAnimationFrame(loop);
             };
             window.requestAnimationFrame(init);
@@ -115,13 +123,13 @@ export function useActiveTestEntry() {
 }
 
 interface MainProps {
-    setTestControls: (controls: TestControl[]) => void;
+    setTestControlGroups: (groups: TestControlGroup[]) => void;
 }
 
-export const Main = ({ setTestControls }: MainProps) => {
+export const Main = ({ setTestControlGroups }: MainProps) => {
     const entry = useActiveTestEntry();
     return entry ? (
-        <TestMain entry={entry} setTestControls={setTestControls} />
+        <TestMain entry={entry} setTestControlGroups={setTestControlGroups} />
     ) : (
         <main>Select a test from the menu in the top left corner</main>
     );

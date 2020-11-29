@@ -81,7 +81,7 @@ class DistanceJoint extends Test {
         b2LinearStiffness(jd, this.m_hertz, this.m_dampingRatio, jd.bodyA, jd.bodyB);
         this.m_joint = this.m_world.CreateJoint(jd);
 
-        this.m_testControls = [
+        this.addTestControlGroup("Joint Controls", [
             sliderDef("Length", 0, 20, 1, this.m_length, (value: number) => {
                 this.m_length = this.m_joint.SetLength(value);
             }),
@@ -99,7 +99,7 @@ class DistanceJoint extends Test {
                 this.m_dampingRatio = value;
                 this.UpdateStiffness();
             }),
-        ];
+        ]);
     }
 
     private UpdateStiffness() {

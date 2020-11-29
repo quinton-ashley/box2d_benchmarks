@@ -11,28 +11,33 @@ import packageData from "../../package.json";
 
 import "./style.scss";
 
-const defaultTestControlsState = {
+export interface TestControlGroup {
+    legend: string;
+    controls: TestControl[];
+}
+
+const defaultTestControlGroupsState = {
     key: 0,
-    controls: [] as TestControl[],
+    groups: [] as TestControlGroup[],
 };
 
-export type TestControlsState = typeof defaultTestControlsState;
+export type TestControlGroupsState = typeof defaultTestControlGroupsState;
 
-function reduceTestControls(state: TestControlsState, controls: TestControl[]) {
+function reduceTestControlGroups(state: TestControlGroupsState, groups: TestControlGroup[]) {
     return {
         key: state.key + 1,
-        controls,
+        groups,
     };
 }
 
 function App() {
-    const [testControls, setTestControls] = useReducer(reduceTestControls, defaultTestControlsState);
+    const [testControlGroups, setTestControls] = useReducer(reduceTestControlGroups, defaultTestControlGroupsState);
 
     return (
         <div className="container">
             <MenuBar />
-            <Main setTestControls={setTestControls} />
-            <SideBar testControls={testControls} />
+            <Main setTestControlGroups={setTestControls} />
+            <SideBar testControlGroups={testControlGroups} />
         </div>
     );
 }

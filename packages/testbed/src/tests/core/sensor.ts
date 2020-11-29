@@ -91,11 +91,11 @@ class Sensors extends Test {
             }
         }
 
-        this.m_testControls = [
+        this.addTestControlGroup("Sensor Controls", [
             sliderDef("Force", 0, 2000, 1, this.m_force, (value: number) => {
                 this.m_force = value;
             }),
-        ];
+        ]);
     }
 
     public getCenter(): XY {

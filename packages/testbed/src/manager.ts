@@ -12,7 +12,7 @@ import { Settings } from "./settings";
 import { getTestsGrouped, Test, TestConstructor, TestEntry } from "./test";
 import { FpsCalculator } from "./utils/FpsCalculator";
 import type { TextTable, TextTableSetter } from "./ui/Main";
-import { TestControl } from "./testControls";
+import type { TestControlGroup } from "./ui";
 
 import "./tests";
 
@@ -71,7 +71,7 @@ export class TestManager {
 
     private setRightTable: TextTableSetter = () => {};
 
-    private setTestControls: (controls: TestControl[]) => void = () => {};
+    private setTestControlGroups: (groups: TestControlGroup[]) => void = () => {};
 
     public constructor() {
         for (const { tests } of this.groupedTests) {
@@ -103,12 +103,12 @@ export class TestManager {
         activateTest: (entry: TestEntry) => void,
         setLeftTables: TextTableSetter,
         setRightTables: TextTableSetter,
-        setTestControls: (controls: TestControl[]) => void,
+        setTestControlGroups: (groups: TestControlGroup[]) => void,
     ) {
         this.setLeftTable = setLeftTables;
         this.setRightTable = setRightTables;
         this.activateTest = activateTest;
-        this.setTestControls = setTestControls;
+        this.setTestControlGroups = setTestControlGroups;
         debugCanvas.addEventListener("mousedown", (e) => this.HandleMouseDown(e));
         debugCanvas.addEventListener("mouseup", (e) => this.HandleMouseUp(e));
         debugCanvas.addEventListener("mousemove", (e) => this.HandleMouseMove(e));
@@ -298,7 +298,7 @@ export class TestManager {
         }
 
         // Slice to force an update (and thus a reset) of the UI
-        this.setTestControls(this.m_test.m_testControls.slice());
+        this.setTestControlGroups(this.m_test.m_testControlGroups.slice());
     }
 
     public SetPause(pause: boolean): void {

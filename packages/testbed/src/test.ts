@@ -41,6 +41,7 @@ import {
 import { hotKeyPress, HotKey } from "./utils/hotkeys";
 import { DefaultShader } from "./utils/gl/defaultShader";
 import { PreloadedTextures } from "./utils/gl/preload";
+import type { TestControlGroup } from "./ui";
 import { TestControl } from "./testControls";
 
 export function RandomFloat(lo = -1, hi = 1) {
@@ -193,7 +194,7 @@ export class Test extends b2ContactListener {
 
     public m_particleParameterDef: ParticleParameterDefinition | null = null;
 
-    public m_testControls: TestControl[] = [];
+    public m_testControlGroups: TestControlGroup[] = [];
 
     constructor(gravity: XY = { x: 0, y: -10 }) {
         super();
@@ -212,6 +213,13 @@ export class Test extends b2ContactListener {
         this.m_particleSystem.SetDensity(1.2);
 
         this.m_groundBody = this.m_world.CreateBody();
+    }
+
+    protected addTestControlGroup(legend: string, controls: TestControl[]) {
+        this.m_testControlGroups.push({
+            legend,
+            controls,
+        });
     }
 
     getBaseHotkeys(): HotKey[] {

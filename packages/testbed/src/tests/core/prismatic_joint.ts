@@ -75,7 +75,7 @@ class PrismaticJoint extends Test {
             this.m_joint = this.m_world.CreateJoint(pjd);
         }
 
-        this.m_testControls = [
+        this.addTestControlGroup("Joint Controls", [
             checkboxDef("Limit", this.m_enableLimit, (value: boolean) => {
                 this.m_enableLimit = this.m_joint.EnableLimit(value);
             }),
@@ -85,7 +85,7 @@ class PrismaticJoint extends Test {
             sliderDef("Speed", -100, 100, 1, this.m_motorSpeed, (value: number) => {
                 this.m_motorSpeed = this.m_joint.SetMotorSpeed(value);
             }),
-        ];
+        ]);
     }
 
     getHotkeys(): HotKey[] {

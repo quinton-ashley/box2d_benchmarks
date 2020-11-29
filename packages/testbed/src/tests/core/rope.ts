@@ -38,10 +38,8 @@ import { g_debugDraw } from "../../utils/draw";
 import { hotKey, HotKey, hotKeyPress } from "../../utils/hotkeys";
 import { TestControl } from "../../testControls";
 import { sliderDef } from "../../ui/controls/Slider";
-import { separatorDef } from "../../ui/controls/Separator";
 import { checkboxDef } from "../../ui/controls/Checkbox";
 import { selectDef } from "../../ui/controls/Select";
-import { labelDef } from "../../ui/controls/Label";
 
 const bendingModels = ["Spring", "PBD Ang", "XPBD Ang", "PBD Dist", "PBD Height", "PBD Triangle"];
 const stretchingModels = ["PBD", "XPBD"];
@@ -124,54 +122,51 @@ class Rope extends Test {
         def.tuning = this.m_tuning2;
         this.m_rope2 = new b2Rope(def);
 
-        this.m_testControls = [
-            ...this.ropeControls(0, this.m_tuning1),
-            separatorDef("Rope2"),
-            ...this.ropeControls(1, this.m_tuning2),
-            separatorDef("Movement"),
-            sliderDef("Speed", 10, 100, 1, this.m_speed, (value: number) => {
+        this.addTestControlGroup("Rope 1", this.ropeControls(0, this.m_tuning1));
+        this.addTestControlGroup("Rope 2", this.ropeControls(1, this.m_tuning2));
+        this.addTestControlGroup("Speed", [
+            sliderDef("", 10, 100, 1, this.m_speed, (value: number) => {
                 this.m_speed = value;
             }),
-        ];
+        ]);
     }
 
     private ropeControls(i: number, tuning: b2RopeTuning): TestControl[] {
         return [
-            labelDef(`Rope ${i + 1}`),
-            selectDef(`Bend Model#${i}`, bendingModels, bendingModels[tuning.bendingModel], (value) => {
+            selectDef("Bend Model#", bendingModels, bendingModels[tuning.bendingModel], (value) => {
                 tuning.bendingModel = bendingModels.indexOf(value);
             }),
-            sliderDef(`Damping#b${i}`, 0, 4, 0.1, tuning.bendDamping, (value: number) => {
+            sliderDef("Damping#b", 0, 4, 0.1, tuning.bendDamping, (value: number) => {
                 tuning.bendDamping = value;
             }),
-            sliderDef(`Hertz#b${i}`, 0, 60, 1, tuning.bendHertz, (value: number) => {
+            sliderDef("Hertz#b", 0, 60, 1, tuning.bendHertz, (value: number) => {
                 tuning.bendHertz = value;
             }),
-            sliderDef(`Stiffness#b${i}`, 0, 1, 0.1, tuning.bendStiffness, (value: number) => {
+            sliderDef("Stiffness#b", 0, 1, 0.1, tuning.bendStiffness, (value: number) => {
                 tuning.bendStiffness = value;
             }),
-            checkboxDef(`Isometric#${i}`, tuning.isometric, (value: boolean) => {
+            checkboxDef("Isometric", tuning.isometric, (value: boolean) => {
                 tuning.isometric = value;
             }),
-            checkboxDef(`Fixed Mass#${i}`, tuning.fixedEffectiveMass, (value: boolean) => {
+            checkboxDef("Fixed Mass", tuning.fixedEffectiveMass, (value: boolean) => {
                 tuning.fixedEffectiveMass = value;
             }),
-            checkboxDef(`Warm Start#${i}`, tuning.warmStart, (value: boolean) => {
+            checkboxDef("Warm Start", tuning.warmStart, (value: boolean) => {
                 tuning.warmStart = value;
             }),
-            selectDef(`Stretch Model#${i}`, stretchingModels, stretchingModels[tuning.stretchingModel], (value) => {
+            selectDef("Stretch Model", stretchingModels, stretchingModels[tuning.stretchingModel], (value) => {
                 tuning.stretchingModel = stretchingModels.indexOf(value);
             }),
-            sliderDef(`Damping#s${i}`, 0, 4, 0.1, tuning.stretchDamping, (value: number) => {
+            sliderDef("Damping#s", 0, 4, 0.1, tuning.stretchDamping, (value: number) => {
                 tuning.stretchDamping = value;
             }),
-            sliderDef(`Hertz#s${i}`, 0, 60, 1, tuning.stretchHertz, (value: number) => {
+            sliderDef("Hertz#s", 0, 60, 1, tuning.stretchHertz, (value: number) => {
                 tuning.stretchHertz = value;
             }),
-            sliderDef(`Stiffness#s${i}`, 0, 1, 0.1, tuning.stretchStiffness, (value: number) => {
+            sliderDef("Stiffness#s", 0, 1, 0.1, tuning.stretchStiffness, (value: number) => {
                 tuning.stretchStiffness = value;
             }),
-            sliderDef(`Iterations#${i}`, 0, 100, 1, this.m_iterations[i], (value: number) => {
+            sliderDef("Iterations", 0, 100, 1, this.m_iterations[i], (value: number) => {
                 this.m_iterations[i] = value;
             }),
         ];

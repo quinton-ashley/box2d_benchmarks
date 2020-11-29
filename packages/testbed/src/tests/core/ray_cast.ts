@@ -112,14 +112,14 @@ class RayCast extends Test {
             this.m_bodies[i] = null;
         }
 
-        this.m_testControls = [
+        this.addTestControlGroup("Ray-cast Controls", [
             radioDef("Mode", ["Any", "Closest", "Multiple"], this.m_mode, (value: string) => {
                 this.m_mode = value as RayCastMode;
             }),
             sliderDef("Angle", 0, 360, 1, this.m_degrees, (value: number) => {
                 this.m_degrees = value;
             }),
-        ];
+        ]);
     }
 
     public CreateBody(index: number): void {

@@ -6,13 +6,13 @@ import { SettingsTable } from "../menus/SettingsTable";
 import { Section } from "../Section";
 import { settingsCheckboxDef, settingsSliderDef } from "../../testControls";
 import { MenuButton } from "../MenuBar/MenuButton";
-import type { TestControlsState } from "..";
+import type { TestControlGroupsState } from "..";
 
 interface SideBarProps {
-    testControls: TestControlsState;
+    testControlGroups: TestControlGroupsState;
 }
 
-export const SideBar = ({ testControls }: SideBarProps) => {
+export const SideBar = ({ testControlGroups: testControls }: SideBarProps) => {
     const [paused, setPaused] = useState(false);
     const manager = useManager();
     useEffect(() => {
@@ -65,13 +65,11 @@ export const SideBar = ({ testControls }: SideBarProps) => {
             <Section legend="Overlay" defaultOpen>
                 <SettingsTable controls={overlayControls} />
             </Section>
-            <Section legend="Test Settings" defaultOpen>
-                {testControls.controls.length ? (
-                    <SettingsTable key={testControls.key} controls={testControls.controls} />
-                ) : (
-                    "None for this test"
-                )}
-            </Section>
+            {testControls.groups.map((group, i) => (
+                <Section legend={`[Test] ${group.legend}`} defaultOpen key={`${testControls.key}-${i}`}>
+                    <SettingsTable key={testControls.key} controls={group.controls} />
+                </Section>
+            ))}
             <MenuButton label={paused ? "Continue (P)" : "Pause (P)"} onClick={() => manager.SetPause(!paused)} />
             <MenuButton label="Single Step (O)" onClick={() => manager.SingleStep()} />
             <MenuButton label="Restart (R)" onClick={() => manager.LoadTest()} />

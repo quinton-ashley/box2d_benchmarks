@@ -129,7 +129,7 @@ class WreckingBall extends Test {
         this.m_distanceJoint = this.m_world.CreateJoint(this.m_distanceJointDef);
         this.m_stabilize = true;
 
-        this.m_testControls = [
+        this.addTestControlGroup("Wrecking Ball Controls", [
             checkboxDef("Stabilize", this.m_stabilize, (value: boolean) => {
                 this.m_stabilize = value;
                 if (value && this.m_distanceJoint === null)
@@ -139,7 +139,7 @@ class WreckingBall extends Test {
                     this.m_distanceJoint = null;
                 }
             }),
-        ];
+        ]);
     }
 
     public Step(settings: Settings, timeStep: number): void {
