@@ -30,7 +30,7 @@ export const Radio = ({ control }: RadioProps) => (
                     onClick={() => control.update(o)}
                     defaultChecked={control.initialValue === o}
                 />
-                {o}
+                <span>{o}</span>
             </label>
         ))}{" "}
     </>

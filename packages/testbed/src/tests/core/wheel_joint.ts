@@ -85,7 +85,7 @@ class WheelJoint extends Test {
             this.m_joint = this.m_world.CreateJoint(jd);
         }
 
-        this.addTestControlGroup("Joint Controls", [
+        this.addTestControlGroup("Joint", [
             checkboxDef("Limit", this.m_enableLimit, (value: boolean) => {
                 this.m_enableLimit = this.m_joint.EnableLimit(value);
             }),

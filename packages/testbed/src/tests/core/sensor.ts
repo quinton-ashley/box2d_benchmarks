@@ -91,7 +91,7 @@ class Sensors extends Test {
             }
         }
 
-        this.addTestControlGroup("Sensor Controls", [
+        this.addTestControlGroup("Sensor", [
             sliderDef("Force", 0, 2000, 1, this.m_force, (value: number) => {
                 this.m_force = value;
             }),

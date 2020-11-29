@@ -112,7 +112,7 @@ class RayCast extends Test {
             this.m_bodies[i] = null;
         }
 
-        this.addTestControlGroup("Ray-cast Controls", [
+        this.addTestControlGroup("Ray-cast", [
             radioDef("Mode", ["Any", "Closest", "Multiple"], this.m_mode, (value: string) => {
                 this.m_mode = value as RayCastMode;
             }),

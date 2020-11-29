@@ -4,7 +4,6 @@ import "typeface-open-sans";
 import { Router } from "react-router-ts";
 
 import { Main } from "./Main";
-import { MenuBar } from "./MenuBar";
 import { TestControl } from "../testControls";
 import { SideBar } from "./SideBar";
 import packageData from "../../package.json";
