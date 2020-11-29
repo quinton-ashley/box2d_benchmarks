@@ -29,14 +29,23 @@ import {
     XY,
 } from "@box2d/core";
 
+import { Settings } from "../../settings";
 import { registerTest, Test } from "../../test";
-import { hotKeyPress, HotKey } from "../../utils/hotkeys";
+import { HotKey, hotKey } from "../../utils/hotkeys";
 
 // This test shows how to apply forces and torques to a body.
 // It also shows how to use the friction joint that can be useful
 // for overhead games.
 class ApplyForce extends Test {
     public m_body: b2Body;
+
+    public positiveForce = false;
+
+    public negativeForce = false;
+
+    public cwTorque = false;
+
+    public ccwTorque = false;
 
     constructor() {
         super(b2Vec2.ZERO);
@@ -181,10 +190,18 @@ class ApplyForce extends Test {
 
     getHotkeys(): HotKey[] {
         return [
-            hotKeyPress("w", "Apply Force", () => this.ApplyForce(-250)),
-            hotKeyPress("s", "Apply Backward Force", () => this.ApplyForce(250)),
-            hotKeyPress("a", "Apply Torque Counter-Clockwise", () => this.m_body.ApplyTorque(40)),
-            hotKeyPress("d", "Apply Torque Clockwise", () => this.m_body.ApplyTorque(-40)),
+            hotKey("w", "Apply Force", (down) => {
+                this.positiveForce = down;
+            }),
+            hotKey("s", "Apply Backward Force", (down) => {
+                this.negativeForce = down;
+            }),
+            hotKey("a", "Apply Torque Counter-Clockwise", (down) => {
+                this.ccwTorque = down;
+            }),
+            hotKey("d", "Apply Torque Clockwise", (down) => {
+                this.cwTorque = down;
+            }),
         ];
     }
 
@@ -199,6 +216,14 @@ class ApplyForce extends Test {
             x: 0,
             y: 15,
         };
+    }
+
+    public Step(settings: Settings, timeStep: number) {
+        super.Step(settings, timeStep);
+        if (this.positiveForce) this.ApplyForce(-50);
+        if (this.negativeForce) this.ApplyForce(50);
+        if (this.ccwTorque) this.m_body.ApplyTorque(10);
+        if (this.cwTorque) this.m_body.ApplyTorque(-10);
     }
 }
 
