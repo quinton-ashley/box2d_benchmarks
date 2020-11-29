@@ -5,13 +5,13 @@ import { getTestLink } from "../../utils/reactUtils";
 import { TestEntry } from "../../test";
 import { Section } from "../Section";
 
-export interface TestsMenuGroupProps {
+export interface TestsFolderProps {
     name: string;
     link: string;
     tests: TestEntry[];
 }
 
-export const TestsMenuGroup = ({ name, link, tests }: TestsMenuGroupProps) => {
+export const TestsFolder = ({ name, link, tests }: TestsFolderProps) => {
     const active = tests.some((test) => link === getTestLink(test));
     return (
         <Section legend={name} legendClassName={active ? "active-legend" : ""}>

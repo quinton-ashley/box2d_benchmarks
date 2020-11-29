@@ -3,12 +3,11 @@ import { useRouter } from "react-router-ts";
 
 import "./style.scss";
 import { useManager } from "../../manager";
-import { SettingsTable } from "../menus/SettingsTable";
-import { Section } from "../Section";
+import { SettingsSection } from "../SettingsSection";
 import { settingsCheckboxDef, settingsSliderDef } from "../../testControls";
-import { MenuButton } from "../MenuBar/MenuButton";
+import { Button } from "../controls/Button";
 import type { TestControlGroupsState } from "..";
-import { TestsMenuGroup } from "../menus/TestsMenu";
+import { TestsFolder } from "../TestsFolder";
 
 interface SideBarProps {
     testControlGroups: TestControlGroupsState;
@@ -69,33 +68,28 @@ export const SideBar = ({ testControlGroups: testControls }: SideBarProps) => {
                 </div>
             </div>
             <div className={tab === "controls" ? "tab-content" : "tab-content tab-content-hidden"}>
-                <Section legend="Iterations" defaultOpen>
-                    <SettingsTable controls={iterationControls} />
-                </Section>
-                <Section legend="General" defaultOpen>
-                    <SettingsTable controls={settingsControls} />
-                </Section>
-                <Section legend="Draw" defaultOpen>
-                    <SettingsTable controls={drawControls} />
-                </Section>
-                <Section legend="Overlay" defaultOpen>
-                    <SettingsTable controls={overlayControls} />
-                </Section>
+                <SettingsSection legend="Iterations" controls={iterationControls} />
+                <SettingsSection legend="General" controls={settingsControls} />
+                <SettingsSection legend="Draw" controls={drawControls} />
+                <SettingsSection legend="Overlay" controls={overlayControls} />
+                <SettingsSection legend="Iterations" controls={iterationControls} />
                 {testControls.groups.map((group, i) => (
-                    <Section legend={`[Test] ${group.legend}`} defaultOpen key={`${testControls.key}-${i}`}>
-                        <SettingsTable key={testControls.key} controls={group.controls} />
-                    </Section>
+                    <SettingsSection
+                        legend={`[Test] ${group.legend}`}
+                        key={`${testControls.key}-${i}`}
+                        controls={group.controls}
+                    />
                 ))}
             </div>
             <div className={tab === "tests" ? "tab-content" : "tab-content tab-content-hidden"}>
                 {manager.groupedTests.map(({ name, tests }) => (
-                    <TestsMenuGroup key={name} name={name} tests={tests} link={link} />
+                    <TestsFolder key={name} name={name} tests={tests} link={link} />
                 ))}
             </div>
             <div className="sidebar--buttons">
-                <MenuButton label={paused ? "Continue (P)" : "Pause (P)"} onClick={() => manager.SetPause(!paused)} />
-                <MenuButton label="Single Step (O)" onClick={() => manager.SingleStep()} />
-                <MenuButton label="Restart (R)" onClick={() => manager.LoadTest()} />
+                <Button label={paused ? "Continue (P)" : "Pause (P)"} onClick={() => manager.SetPause(!paused)} />
+                <Button label="Single Step (O)" onClick={() => manager.SingleStep()} />
+                <Button label="Restart (R)" onClick={() => manager.LoadTest()} />
             </div>
         </div>
     );

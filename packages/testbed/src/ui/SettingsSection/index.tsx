@@ -2,19 +2,19 @@ import React from "react";
 
 import { TestControl } from "../../testControls";
 import { Checkbox } from "../controls/Checkbox";
-import { Label } from "../controls/Label";
 import { Radio } from "../controls/Radio";
 import { Select } from "../controls/Select";
 import { Separator } from "../controls/Separator";
 import { Slider } from "../controls/Slider";
+import { Section } from "../Section";
 
-import "./SettingsTable.scss";
+import "./style.scss";
 
-interface SettingsTableRowProps {
+interface SettingsSectionRowProps {
     control: TestControl;
 }
 
-const SettingsTableRow = ({ control }: SettingsTableRowProps) => {
+const SettingsSectionRow = ({ control }: SettingsSectionRowProps) => {
     switch (control.type) {
         case "slider":
             return <Slider control={control} />;
@@ -24,21 +24,20 @@ const SettingsTableRow = ({ control }: SettingsTableRowProps) => {
             return <Radio control={control} />;
         case "select":
             return <Select control={control} />;
-        case "label":
-            return <Label control={control} />;
         case "separator":
             return <Separator />;
     }
     return null;
 };
 
-interface SettingsTableProps {
+interface SettingsSectionProps {
+    legend: string;
     controls: TestControl[];
 }
-export const SettingsTable = ({ controls }: SettingsTableProps) => (
-    <div className="settings-table">
+export const SettingsSection = ({ legend, controls }: SettingsSectionProps) => (
+    <Section legend={legend} defaultOpen className="settings-section">
         {controls.map((control) => (
-            <SettingsTableRow key={control.name} control={control} />
+            <SettingsSectionRow key={control.name} control={control} />
         ))}
-    </div>
+    </Section>
 );
