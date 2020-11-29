@@ -5,4 +5,39 @@
 
 .checkbox--input {
     margin-right: 5px;
+    display: none;
+    width: 0;
+    height: 0;
+
+    + span {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+
+        &::before {
+            font-size: 1.5em;
+            color: $color-check-mark;
+            width: 1.2rem;
+            height: 1.2rem;
+            margin-right: 0.5rem;
+            content: "";
+            display: block;
+            background: $color-frame-bg;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    }
+
+    &:checked + span::before {
+        content: "✓";
+    }
+}
+
+.checkbox:hover span::before {
+    background: $color-frame-bg-hovered;
+}
+
+.checkbox--input:active span::before {
+    background: $color-frame-bg-active;
 }

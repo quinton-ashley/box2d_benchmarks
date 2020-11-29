@@ -6,6 +6,8 @@ import { Router } from "react-router-ts";
 import { Main } from "./Main";
 import { MenuBar } from "./MenuBar";
 import { TestControl } from "../testControls";
+import { SideBar } from "./SideBar";
+import packageData from "../../package.json";
 
 import "./style.scss";
 
@@ -28,11 +30,14 @@ function App() {
 
     return (
         <div className="container">
-            <MenuBar testControls={testControls} />
+            <MenuBar />
             <Main setTestControls={setTestControls} />
+            <SideBar testControls={testControls} />
         </div>
     );
 }
+
+document.title = `@Box2D Testbed v${packageData.version}`;
 
 ReactDOM.render(
     <Router mode="hash">

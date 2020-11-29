@@ -1,8 +1,10 @@
 .menubutton {
+    font-size: 0.7rem;
     border: none;
     color: $color-text;
     background: $color-button;
     padding: 5px 10px;
+    margin-bottom: 0.5rem;
     border-left: 1px solid black;
 
     &:hover {

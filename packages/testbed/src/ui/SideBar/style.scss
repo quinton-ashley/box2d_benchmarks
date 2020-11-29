@@ -1,0 +1,14 @@
+.sidebar {
+    font-size: 0.7rem;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    background: $color-window-bg;
+    border: 1px solid $color-border;
+    top: 0.5rem;
+    right: 0.5rem;
+    bottom: 0.5rem;
+    width: 14rem;
+    padding: 0.5rem;
+    overflow: auto;
+}
