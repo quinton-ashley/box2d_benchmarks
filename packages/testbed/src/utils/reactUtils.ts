@@ -1,3 +1,7 @@
+import { TestEntry } from "../test";
+
 export const classPrefix = (main: string, prefix?: string) => (prefix ? `${main} ${prefix}-${main}` : main);
 
-export const testLabelToLink = (label: string) => `/${label.replace(/[^a-z0-9-]+/gi, "_")}`;
+const invalidUriChars = /[^a-z0-9-]+/gi;
+export const getTestLink = ({ group, name }: TestEntry) =>
+    `/${group.replace(invalidUriChars, "_")}#${name.replace(invalidUriChars, "_")}`;

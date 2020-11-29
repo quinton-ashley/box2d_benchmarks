@@ -4,7 +4,7 @@ import { useRouter } from "react-router-ts";
 import { useManager } from "../../manager";
 import { TestEntry } from "../../test";
 import { TestControl } from "../../testControls";
-import { testLabelToLink } from "../../utils/reactUtils";
+import { getTestLink } from "../../utils/reactUtils";
 
 interface TestComponentProps {
     entry: TestEntry;
@@ -72,20 +72,18 @@ const TestMain = ({ entry: { name, TestClass }, setTestControls }: TestComponent
     const wrapperRef = useRef<HTMLDivElement>(null);
     const manager = useManager();
     const router = useRouter();
-    const test = useActiveTestEntry();
+    const activeTest = useActiveTestEntry();
     useEffect(() => {
         const glCanvas = glCanvasRef.current;
         const debugCanvas = debugCanvasRef.current;
         const wrapper = wrapperRef.current;
         if (glCanvas && debugCanvas && wrapper) {
-            const setTest = (label: string) => {
-                router.history.push(testLabelToLink(label));
-            };
             const loop = () => {
                 window.requestAnimationFrame(loop);
                 manager.SimulationLoop();
             };
             const init = () => {
+                const setTest = (test: TestEntry) => router.history.push(getTestLink(test));
                 manager.init(glCanvas, debugCanvas, wrapper, setTest, setLeftTable, setRightTable, setTestControls);
                 window.requestAnimationFrame(loop);
             };
@@ -102,7 +100,7 @@ const TestMain = ({ entry: { name, TestClass }, setTestControls }: TestComponent
             <canvas ref={glCanvasRef} />
             <canvas ref={debugCanvasRef} />
             <TextTable id="left_overlay" table={leftTable} />
-            <div id="title_overlay">{test?.name ?? ""}</div>
+            <div id="title_overlay">{activeTest?.name ?? ""}</div>
             <TextTable id="right_overlay" table={rightTable} />
         </main>
     );
@@ -113,12 +111,7 @@ export function useActiveTestEntry() {
     const link = decodeURIComponent(router.path);
     const manager = useManager();
 
-    for (const { tests } of manager.groupedTests) {
-        for (const entry of tests) {
-            if (testLabelToLink(entry.name) === link) return entry;
-        }
-    }
-    return null;
+    return manager.flatTests.find((test) => getTestLink(test) === link);
 }
 
 interface MainProps {

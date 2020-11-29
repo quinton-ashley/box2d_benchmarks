@@ -54,6 +54,7 @@ export interface TestConstructor {
 }
 
 export interface TestEntry {
+    group: string;
     name: string;
     TestClass: TestConstructor;
 }
@@ -78,6 +79,7 @@ export type TestGroup = keyof typeof testGroups;
 
 export function registerTest(group: TestGroup, name: string, constructor: TestConstructor) {
     testGroups[group].push({
+        group,
         name,
         TestClass: constructor,
     });

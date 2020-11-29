@@ -65,7 +65,7 @@ export class TestManager {
 
     private defaultShader: ReturnType<typeof createDefaultShader> | null = null;
 
-    private activateTest: (label: string) => void = () => {};
+    private activateTest: (entry: TestEntry) => void = () => {};
 
     private setLeftTable: TextTableSetter = () => {};
 
@@ -100,7 +100,7 @@ export class TestManager {
         glCanvas: HTMLCanvasElement,
         debugCanvas: HTMLCanvasElement,
         wrapper: HTMLDivElement,
-        activateTest: (label: string) => void,
+        activateTest: (entry: TestEntry) => void,
         setLeftTables: TextTableSetter,
         setRightTables: TextTableSetter,
         setTestControls: (controls: TestControl[]) => void,
@@ -257,18 +257,18 @@ export class TestManager {
     public DecrementTest(): void {
         const index = this.flatTests.findIndex((e) => e.name === this.testTitle) - 1;
         if (index < 0) {
-            this.activateTest(this.flatTests[this.flatTests.length - 1].name);
+            this.activateTest(this.flatTests[this.flatTests.length - 1]);
         } else if (index >= 0) {
-            this.activateTest(this.flatTests[index].name);
+            this.activateTest(this.flatTests[index]);
         }
     }
 
     public IncrementTest(): void {
         const index = this.flatTests.findIndex((e) => e.name === this.testTitle) + 1;
         if (index >= this.flatTests.length) {
-            this.activateTest(this.flatTests[0].name);
+            this.activateTest(this.flatTests[0]);
         } else if (index > 0) {
-            this.activateTest(this.flatTests[index].name);
+            this.activateTest(this.flatTests[index]);
         }
     }
 

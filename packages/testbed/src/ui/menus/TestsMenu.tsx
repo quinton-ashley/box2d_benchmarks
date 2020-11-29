@@ -3,7 +3,7 @@ import { Link, useRouter } from "react-router-ts";
 
 import { Menu } from "../MenuBar/Menu";
 import "./TestsMenu.scss";
-import { testLabelToLink } from "../../utils/reactUtils";
+import { getTestLink } from "../../utils/reactUtils";
 import { useManager } from "../../manager";
 import { TestEntry } from "../../test";
 
@@ -16,7 +16,7 @@ interface TestsMenuGroupProps {
 const TestsMenuGroup = ({ name, link, tests }: TestsMenuGroupProps) => {
     const [open, setOpen] = useState(false);
     const legendClasses: string[] = [];
-    const active = tests.some(({ name: testName }) => link === testLabelToLink(testName));
+    const active = tests.some((test) => link === getTestLink(test));
     if (active) legendClasses.push("active-legend");
     if (open) legendClasses.push("open-legend");
     return (
@@ -26,13 +26,13 @@ const TestsMenuGroup = ({ name, link, tests }: TestsMenuGroupProps) => {
             </legend>
             {open && (
                 <div>
-                    {tests.map(({ name: testName }) => (
+                    {tests.map((test) => (
                         <Link
-                            href={testLabelToLink(testName)}
-                            key={testName}
-                            className={link === testLabelToLink(testName) ? "active-link" : ""}
+                            href={getTestLink(test)}
+                            key={test.name}
+                            className={link === getTestLink(test) ? "active-link" : ""}
                         >
-                            {testName}
+                            {test.name}
                         </Link>
                     ))}
                 </div>
