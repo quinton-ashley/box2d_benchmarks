@@ -35,7 +35,6 @@ function App() {
 
     return (
         <div className="container">
-            <MenuBar />
             <Main setTestControlGroups={setTestControls} />
             <SideBar testControlGroups={testControlGroups} />
         </div>

@@ -32,9 +32,33 @@
         &:not(.open-legend)::after {
             transform: rotate(-90deg);
         }
+        &.active-legend {
+            background: $color-frame-bg;
+        }
     }
 
     > div {
         padding: 0.5rem 0 0 0;
+
+        &.section-content-hidden {
+            display: none;
+        }
+
+        > a {
+            font-size: 1.3em;
+            display: block;
+            color: $color-text;
+            text-decoration: none;
+            padding: 0 10px;
+            &.active-link {
+                background: $color-frame-bg;
+            }
+            &:hover {
+                background: $color-frame-bg-hovered;
+            }
+            &:active {
+                background: $color-frame-bg-active;
+            }
+        }
     }
 }

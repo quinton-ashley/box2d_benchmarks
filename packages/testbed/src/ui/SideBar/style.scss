@@ -3,12 +3,46 @@
     position: absolute;
     display: flex;
     flex-direction: column;
-    background: $color-window-bg;
-    border: 1px solid $color-border;
     top: 0.5rem;
     right: 0.5rem;
     bottom: 0.5rem;
     width: 14rem;
+}
+
+.sidebar--tabs {
+    flex-shrink: 0;
+    display: flex;
+    justify-content: right;
+    flex-direction: row;
+    font-size: 1.3em;
+
+    > div {
+        padding: 0.25rem 0.5rem;
+        background: $color-border;
+        border: 1px solid transparent;
+        border-bottom: none;
+        margin-bottom: -1px;
+        z-index: 10;
+        cursor: pointer;
+
+        &.active-tab {
+            border-color: $color-border;
+            background: $color-window-bg;
+        }
+        &:hover {
+            background: $color-frame-bg-hovered;
+        }
+    }
+}
+
+.tab-content {
+    background: $color-window-bg;
+    border: 1px solid $color-border;
+    flex-grow: 1;
     padding: 0.5rem;
     overflow: auto;
+
+    &.tab-content-hidden {
+        display: none;
+    }
 }

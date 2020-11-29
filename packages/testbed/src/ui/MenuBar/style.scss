@@ -1,12 +1,13 @@
 .menubar {
     display: flex;
     flex-direction: row;
-    background: $color-title-bg;
-    border-bottom: 1px solid $color-border;
+    background: #333333;
 
     > .menu {
         flex-grow: 0;
         flex-shrink: 0;
+        background: $color-title-bg;
+        border-bottom: 1px solid $color-border;
     }
     .menubar--spacer {
         flex-grow: 1;
