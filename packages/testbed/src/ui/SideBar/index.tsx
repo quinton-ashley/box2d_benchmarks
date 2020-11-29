@@ -86,14 +86,16 @@ export const SideBar = ({ testControlGroups: testControls }: SideBarProps) => {
                         <SettingsTable key={testControls.key} controls={group.controls} />
                     </Section>
                 ))}
-                <MenuButton label={paused ? "Continue (P)" : "Pause (P)"} onClick={() => manager.SetPause(!paused)} />
-                <MenuButton label="Single Step (O)" onClick={() => manager.SingleStep()} />
-                <MenuButton label="Restart (R)" onClick={() => manager.LoadTest()} />
             </div>
             <div className={tab === "tests" ? "tab-content" : "tab-content tab-content-hidden"}>
                 {manager.groupedTests.map(({ name, tests }) => (
                     <TestsMenuGroup key={name} name={name} tests={tests} link={link} />
                 ))}
+            </div>
+            <div className="sidebar--buttons">
+                <MenuButton label={paused ? "Continue (P)" : "Pause (P)"} onClick={() => manager.SetPause(!paused)} />
+                <MenuButton label="Single Step (O)" onClick={() => manager.SingleStep()} />
+                <MenuButton label="Restart (R)" onClick={() => manager.LoadTest()} />
             </div>
         </div>
     );
