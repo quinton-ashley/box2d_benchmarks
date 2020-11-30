@@ -31,8 +31,7 @@ import {
 } from "@box2d/core";
 
 import { registerTest, Test } from "../../test";
-import { Settings } from "../../settings";
-import { HotKey, hotKey } from "../../utils/hotkeys";
+import { hotKey, HotKey } from "../../utils/hotkeys";
 
 /**
  * This tests bullet collision and provides an example of a
@@ -45,8 +44,6 @@ class Pinball extends Test {
     public m_rightJoint: b2RevoluteJoint;
 
     public m_ball: b2Body;
-
-    public m_button = false;
 
     constructor() {
         super();
@@ -104,14 +101,14 @@ class Pinball extends Test {
             jd.maxMotorTorque = 1000;
             jd.enableLimit = true;
 
-            jd.motorSpeed = 0;
+            jd.motorSpeed = -10;
             jd.localAnchorA.Copy(p1);
             jd.bodyB = leftFlipper;
             jd.lowerAngle = (-30 * Math.PI) / 180;
             jd.upperAngle = (5 * Math.PI) / 180;
             this.m_leftJoint = this.m_world.CreateJoint(jd);
 
-            jd.motorSpeed = 0;
+            jd.motorSpeed = 10;
             jd.localAnchorA.Copy(p2);
             jd.bodyB = rightFlipper;
             jd.lowerAngle = (-5 * Math.PI) / 180;
@@ -136,8 +133,6 @@ class Pinball extends Test {
             };
             this.m_ball.CreateFixture(fd);
         }
-
-        this.m_button = false;
     }
 
     public GetDefaultViewZoom() {
@@ -154,21 +149,15 @@ class Pinball extends Test {
     getHotkeys(): HotKey[] {
         return [
             hotKey("a", "Hold Flipper", (down) => {
-                this.m_button = down;
+                if (down) {
+                    this.m_leftJoint.SetMotorSpeed(20);
+                    this.m_rightJoint.SetMotorSpeed(-20);
+                } else {
+                    this.m_leftJoint.SetMotorSpeed(-10);
+                    this.m_rightJoint.SetMotorSpeed(10);
+                }
             }),
         ];
-    }
-
-    public Step(settings: Settings, timeStep: number): void {
-        if (this.m_button) {
-            this.m_leftJoint.SetMotorSpeed(20);
-            this.m_rightJoint.SetMotorSpeed(-20);
-        } else {
-            this.m_leftJoint.SetMotorSpeed(-10);
-            this.m_rightJoint.SetMotorSpeed(10);
-        }
-
-        super.Step(settings, timeStep);
     }
 }
 

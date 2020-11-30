@@ -19,7 +19,7 @@
 import { b2Vec2, b2Body, b2EdgeShape, b2BodyType, b2PolygonShape, b2CircleShape } from "@box2d/core";
 
 import { registerTest, Test } from "../../test";
-import { hotKeyPress, HotKey } from "../../utils/hotkeys";
+import { HotKey, hotKeyStep } from "../../utils/hotkeys";
 import { radioDef } from "../../ui/controls/Radio";
 
 class EdgeTest extends Test {
@@ -235,11 +235,11 @@ class EdgeTest extends Test {
 
     getHotkeys(): HotKey[] {
         return [
-            hotKeyPress("a", "Apply Force Left", () => {
+            hotKeyStep("a", "Apply Force Left", () => {
                 this.m_body1?.ApplyForceToCenter(new b2Vec2(-10, 0), true);
                 this.m_body2?.ApplyForceToCenter(new b2Vec2(-10, 0), true);
             }),
-            hotKeyPress("d", "Apply Force Right", () => {
+            hotKeyStep("d", "Apply Force Right", () => {
                 this.m_body1?.ApplyForceToCenter(new b2Vec2(10, 0), true);
                 this.m_body2?.ApplyForceToCenter(new b2Vec2(10, 0), true);
             }),

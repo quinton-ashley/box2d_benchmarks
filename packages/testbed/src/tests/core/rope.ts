@@ -35,7 +35,7 @@ import {
 import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
 import { g_debugDraw } from "../../utils/draw";
-import { hotKey, HotKey, hotKeyPress } from "../../utils/hotkeys";
+import { HotKey, hotKeyPress, hotKeyState } from "../../utils/hotkeys";
 import { TestControl } from "../../testControls";
 import { sliderDef } from "../../ui/controls/Slider";
 import { checkboxDef } from "../../ui/controls/Checkbox";
@@ -185,12 +185,8 @@ class Rope extends Test {
 
     getHotkeys(): HotKey[] {
         return [
-            hotKey("a", "Move Left", (down) => {
-                this.m_moveLeft = down;
-            }),
-            hotKey("d", "Move Right", (down) => {
-                this.m_moveRight = down;
-            }),
+            hotKeyState("a", "Move Left", this, "m_moveLeft"),
+            hotKeyState("d", "Move Right", this, "m_moveRight"),
             hotKeyPress("s", "Reset Ropes", () => {
                 this.m_position1.Set(-5, 15);
                 this.m_position2.Set(5, 15);

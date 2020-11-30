@@ -29,7 +29,7 @@ import {
 import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
 import { g_debugDraw } from "../../utils/draw";
-import { HotKey, hotKey } from "../../utils/hotkeys";
+import { HotKey, hotKeyPress } from "../../utils/hotkeys";
 
 class PolygonCollision extends Test {
     public m_polygonA = new b2PolygonShape();
@@ -44,19 +44,13 @@ class PolygonCollision extends Test {
 
     public m_angleB = 0;
 
-    private move = {
-        x: 0,
-        y: 0,
-        angle: 0,
-    };
-
     constructor() {
         super();
 
         this.m_polygonA.SetAsBox(0.2, 0.4);
         this.m_transformA.SetPositionAngle(new b2Vec2(), 0);
         this.m_polygonB.SetAsBox(0.5, 0.5);
-        this.m_positionB.Set(4, 1);
+        this.m_positionB.Set(1, 1);
         this.m_angleB = 1.9160721;
         this.m_transformB.SetPositionAngle(this.m_positionB, this.m_angleB);
     }
@@ -67,24 +61,12 @@ class PolygonCollision extends Test {
 
     getHotkeys(): HotKey[] {
         return [
-            hotKey("a", "Move Left", (down) => {
-                this.move.x = down ? -0.1 : 0;
-            }),
-            hotKey("d", "Move Right", (down) => {
-                this.move.x = down ? 0.1 : 0;
-            }),
-            hotKey("s", "Move Down", (down) => {
-                this.move.y = down ? -0.1 : 0;
-            }),
-            hotKey("w", "Move Up", (down) => {
-                this.move.y = down ? 0.1 : 0;
-            }),
-            hotKey("q", "Turn Left", (down) => {
-                this.move.angle = down ? 0.02 * Math.PI : 0;
-            }),
-            hotKey("e", "Turn Right", (down) => {
-                this.move.angle = down ? -0.02 * Math.PI : 0;
-            }),
+            hotKeyPress("a", "Move Left", () => this.Adjust(-0.1, 0, 0)),
+            hotKeyPress("d", "Move Right", () => this.Adjust(0.1, 0, 0)),
+            hotKeyPress("s", "Move Down", () => this.Adjust(0, -0.1, 0)),
+            hotKeyPress("w", "Move Up", () => this.Adjust(0, 0.1, 0)),
+            hotKeyPress("q", "Turn Left", () => this.Adjust(0, 0, 0.1 * Math.PI)),
+            hotKeyPress("e", "Turn Right", () => this.Adjust(0, 0, -0.1 * Math.PI)),
         ];
     }
 
@@ -96,7 +78,6 @@ class PolygonCollision extends Test {
     }
 
     public Step(settings: Settings, timeStep: number): void {
-        this.Adjust(this.move.x, this.move.y, this.move.angle);
         super.Step(settings, timeStep);
         const manifold = new b2Manifold();
         b2CollidePolygons(manifold, this.m_polygonA, this.m_transformA, this.m_polygonB, this.m_transformB);

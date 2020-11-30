@@ -45,6 +45,8 @@ export class TestManager {
 
     private allHotKeys: HotKey[] = [];
 
+    private stepHotKeys: HotKey[] = [];
+
     public readonly groupedTests = getTestsGrouped();
 
     public readonly flatTests: TestEntry[] = [];
@@ -240,13 +242,12 @@ export class TestManager {
 
     private HandleKey(e: KeyboardEvent, down: boolean): void {
         if (this.m_hoveringCanvas || !down) {
-            // fixme: remember state and only call if changed
             const { key } = e;
             const hotKey = this.allHotKeys.find((hk) => hk.key === key);
             if (hotKey) {
                 const wasDown = !!this.m_keyMap[key];
                 if (wasDown !== down) {
-                    hotKey.callback(down);
+                    if (!hotKey.step) hotKey.callback(down);
                     this.m_keyMap[key] = down;
                 }
                 if (this.m_hoveringCanvas) e.preventDefault();
@@ -287,6 +288,7 @@ export class TestManager {
         this.testBaseHotKeys = this.m_test.getBaseHotkeys();
         this.testHotKeys = this.m_test.getHotkeys();
         this.allHotKeys = [...this.ownHotKeys, ...this.testBaseHotKeys, ...this.testHotKeys];
+        this.stepHotKeys = this.allHotKeys.filter((hk) => hk.step);
         for (const hk of this.allHotKeys) {
             const firstHk = this.allHotKeys.find((hk2) => hk.key === hk2.key);
             if (firstHk && hk !== firstHk) {
@@ -341,6 +343,11 @@ export class TestManager {
         ctx.translate(-center.x, -center.y);
 
         this.m_test?.RunStep(this.m_settings);
+        if (this.m_hoveringCanvas) {
+            for (const hk of this.stepHotKeys) {
+                if (this.m_keyMap[hk.key]) hk.callback(true);
+            }
+        }
 
         // Update the state of the particle parameter.
         Test.particleParameter.Changed(restartTest);

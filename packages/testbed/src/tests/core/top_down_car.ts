@@ -34,15 +34,12 @@ import {
 
 import { Test, registerTest } from "../../test";
 import { Settings } from "../../settings";
-import { hotKey, HotKey } from "../../utils/hotkeys";
+import { HotKey, hotKeyState } from "../../utils/hotkeys";
 
 const DEGTORAD = 0.0174532925199432957;
 // const RADTODEG = 57.295779513082320876;
 
-const TDC_LEFT = 0x1;
-const TDC_RIGHT = 0x2;
-const TDC_UP = 0x4;
-const TDC_DOWN = 0x8;
+type ControlState = TopdownCar["m_controlState"];
 
 /**
  * types of fixture user data
@@ -186,19 +183,13 @@ class TDTire {
         );
     }
 
-    public updateDrive(controlState: number): void {
+    public updateDrive(controlState: ControlState): void {
+        if (controlState.up === controlState.down) return; // do nothing
+
         // find desired speed
         let desiredSpeed = 0;
-        switch (controlState & (TDC_UP | TDC_DOWN)) {
-            case TDC_UP:
-                desiredSpeed = this.m_maxForwardSpeed;
-                break;
-            case TDC_DOWN:
-                desiredSpeed = this.m_maxBackwardSpeed;
-                break;
-            default:
-                return; // do nothing
-        }
+        if (controlState.up) desiredSpeed = this.m_maxForwardSpeed;
+        else if (controlState.down) desiredSpeed = this.m_maxBackwardSpeed;
 
         // find current speed in forward direction
         const currentForwardNormal = this.m_body.GetWorldVector(new b2Vec2(0, 1), new b2Vec2());
@@ -219,18 +210,10 @@ class TDTire {
         );
     }
 
-    public updateTurn(controlState: number): void {
+    public updateTurn(controlState: ControlState): void {
         let desiredTorque = 0;
-        switch (controlState & (TDC_LEFT | TDC_RIGHT)) {
-            case TDC_LEFT:
-                desiredTorque = 15;
-                break;
-            case TDC_RIGHT:
-                desiredTorque = -15;
-                break;
-            default:
-            // nothing
-        }
+        if (controlState.left) desiredTorque += 15;
+        if (controlState.right) desiredTorque -= 15;
         this.m_body.ApplyTorque(desiredTorque);
     }
 }
@@ -314,7 +297,7 @@ class TDCar {
         this.m_tires.push(tire);
     }
 
-    public update(controlState: number) {
+    public update(controlState: ControlState) {
         this.m_tires.forEach((tire) => {
             tire.updateFriction();
         });
@@ -327,16 +310,8 @@ class TDCar {
         const turnSpeedPerSec = 160 * DEGTORAD; // from lock to lock in 0.5 sec
         const turnPerTimeStep = turnSpeedPerSec / 60;
         let desiredAngle = 0;
-        switch (controlState & (TDC_LEFT | TDC_RIGHT)) {
-            case TDC_LEFT:
-                desiredAngle = lockAngle;
-                break;
-            case TDC_RIGHT:
-                desiredAngle = -lockAngle;
-                break;
-            default:
-            // nothing
-        }
+        if (controlState.left) desiredAngle += lockAngle;
+        if (controlState.right) desiredAngle -= lockAngle;
         const angleNow = this.flJoint.GetJointAngle();
         let angleToTurn = desiredAngle - angleNow;
         angleToTurn = b2Clamp(angleToTurn, -turnPerTimeStep, turnPerTimeStep);
@@ -349,7 +324,12 @@ class TDCar {
 class TopdownCar extends Test {
     public m_car: TDCar;
 
-    public m_controlState: number;
+    public m_controlState = {
+        left: false,
+        right: false,
+        up: false,
+        down: false,
+    };
 
     constructor() {
         super(b2Vec2.ZERO);
@@ -377,22 +357,15 @@ class TopdownCar extends Test {
         // this.m_tire.setCharacteristics(100, -20, 150);
 
         this.m_car = new TDCar(this.m_world);
-
-        this.m_controlState = 0;
     }
 
     getHotkeys(): HotKey[] {
         return [
-            hotKey("a", "Turn Left", (down) => this.SetControlState(TDC_LEFT, down)),
-            hotKey("d", "Turn Right", (down) => this.SetControlState(TDC_RIGHT, down)),
-            hotKey("w", "Move Forward", (down) => this.SetControlState(TDC_UP, down)),
-            hotKey("s", "Move Backward", (down) => this.SetControlState(TDC_DOWN, down)),
+            hotKeyState("a", "Turn Left", this.m_controlState, "left"),
+            hotKeyState("d", "Turn Right", this.m_controlState, "right"),
+            hotKeyState("w", "Move Forward", this.m_controlState, "up"),
+            hotKeyState("s", "Move Backward", this.m_controlState, "down"),
         ];
-    }
-
-    private SetControlState(bit: number, down: boolean) {
-        if (down) this.m_controlState |= bit;
-        else this.m_controlState &= ~bit;
     }
 
     public static handleContact(contact: b2Contact, began: boolean): void {

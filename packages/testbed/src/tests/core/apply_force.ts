@@ -29,9 +29,8 @@ import {
     XY,
 } from "@box2d/core";
 
-import { Settings } from "../../settings";
 import { registerTest, Test } from "../../test";
-import { HotKey, hotKey } from "../../utils/hotkeys";
+import { HotKey, hotKeyStep } from "../../utils/hotkeys";
 
 // This test shows how to apply forces and torques to a body.
 // It also shows how to use the friction joint that can be useful
@@ -190,18 +189,10 @@ class ApplyForce extends Test {
 
     getHotkeys(): HotKey[] {
         return [
-            hotKey("w", "Apply Force", (down) => {
-                this.positiveForce = down;
-            }),
-            hotKey("s", "Apply Backward Force", (down) => {
-                this.negativeForce = down;
-            }),
-            hotKey("a", "Apply Torque Counter-Clockwise", (down) => {
-                this.ccwTorque = down;
-            }),
-            hotKey("d", "Apply Torque Clockwise", (down) => {
-                this.cwTorque = down;
-            }),
+            hotKeyStep("w", "Apply Force", () => this.ApplyForce(-50)),
+            hotKeyStep("s", "Apply Backward Force", () => this.ApplyForce(50)),
+            hotKeyStep("a", "Apply Torque Counter-Clockwise", () => this.m_body.ApplyTorque(10)),
+            hotKeyStep("d", "Apply Torque Clockwise", () => this.m_body.ApplyTorque(-10)),
         ];
     }
 
@@ -216,14 +207,6 @@ class ApplyForce extends Test {
             x: 0,
             y: 15,
         };
-    }
-
-    public Step(settings: Settings, timeStep: number) {
-        super.Step(settings, timeStep);
-        if (this.positiveForce) this.ApplyForce(-50);
-        if (this.negativeForce) this.ApplyForce(50);
-        if (this.ccwTorque) this.m_body.ApplyTorque(10);
-        if (this.cwTorque) this.m_body.ApplyTorque(-10);
     }
 }
 

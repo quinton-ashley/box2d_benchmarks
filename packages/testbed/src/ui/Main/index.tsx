@@ -131,6 +131,6 @@ export const Main = ({ setTestControlGroups }: MainProps) => {
     return entry ? (
         <TestMain entry={entry} setTestControlGroups={setTestControlGroups} />
     ) : (
-        <main>Select a test from the menu in the top left corner</main>
+        <main>Select a test from the right sidebar</main>
     );
 };
