@@ -17,29 +17,18 @@
  */
 
 import { b2Vec2, b2ChainShape, b2FixtureDef, b2BodyType, b2CircleShape, b2Body, b2RadToDeg, XY } from "@box2d/core";
-import {
-    BlendFunc,
-    ChainLight,
-    ConeLight,
-    DirectionalLight,
-    Light,
-    lightSettings,
-    PointLight,
-    RayHandler,
-    RECOMMENDED_GAMMA_CORRECTION,
-} from "@box2d/lights";
+import { ChainLight, ConeLight, DirectionalLight, Light, PointLight } from "@box2d/lights";
 
-import { g_camera } from "../../utils/camera";
-import { g_debugDraw } from "../../utils/draw";
 import { HotKey, hotKeyPress } from "../../utils/hotkeys";
-import { RayHandlerImpl } from "../../utils/lights/RayHandlerImpl";
 import { PreloadedTextures } from "../../utils/gl/preload";
 import { DefaultShader } from "../../utils/gl/defaultShader";
 import { Sprite } from "../../utils/gl/Sprite";
-import { clearGlCanvas } from "../../utils/gl/glUtils";
 import { Settings } from "../../settings";
-import { registerTest, Test } from "../../test";
+import { registerTest } from "../../test";
 import { setRandomLightColor } from "../../utils/lights/lightUtils";
+import { AbstractLightTest } from "./abstract_light_test";
+import { selectDef } from "../../ui/controls/Select";
+import { TestControl } from "../../testControls";
 
 const bit = (index: number) => 1 << index;
 
@@ -81,48 +70,31 @@ class Marble {
     }
 }
 
-enum LightsType {
-    NONE,
-    POINT,
-    CONE,
-    CHAIN,
-    DIRECTIONAL,
-}
+type LightsType = "Point" | "Cone" | "Chain" | "Directional";
 
 function random(from: number, to: number) {
     return from + Math.random() * (to - from);
 }
 
-class OfficialDemo extends Test {
+class OfficialDemo extends AbstractLightTest {
     private readonly bg: Sprite;
 
     private readonly marbles: Marble[];
 
     private groundBody!: b2Body;
 
-    private readonly rayHandler: RayHandler;
-
     private sunDirection = -90;
 
-    private lightsType!: LightsType;
+    private lightsType: LightsType = "Point";
 
     directionalLight: DirectionalLight | null = null;
-
-    blendFunc: BlendFunc;
-
-    drawDebugLight = false;
-
-    soft = true;
-
-    mode: "default" | "overburn" | "other" = "default";
 
     public constructor(
         public readonly gl: WebGLRenderingContext,
         public readonly shader: DefaultShader,
         public readonly textures: PreloadedTextures,
     ) {
-        super({ x: 0, y: 0 });
-        this.blendFunc = new BlendFunc(gl, gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+        super(gl);
         this.bg = new Sprite(gl, this.shader, textures.bg.texture);
 
         this.createBoundary();
@@ -157,21 +129,31 @@ class OfficialDemo extends Test {
         this.bg.setRect(0, 0, viewportWidth, viewportHeight);
 
         Light.setGlobalContactFilterBits(Category.LIGHT, 0, Mask.LIGHT);
-        lightSettings.gammaCorrection = RECOMMENDED_GAMMA_CORRECTION;
-        lightSettings.isDiffuse = true;
 
-        this.rayHandler = new RayHandlerImpl(
-            this.m_world,
-            gl,
-            g_camera.getWidth() / 4,
-            g_camera.getHeight() / 4,
-            viewportWidth,
-            viewportHeight,
-        );
-        this.rayHandler.setAmbientLight(0, 0, 0, 0.5);
-        this.rayHandler.setBlurNum(3);
+        this.setLightsType(this.lightsType);
+    }
 
-        this.setLightsType(LightsType.POINT);
+    public getLightControls(): TestControl[] {
+        return [
+            selectDef("Lights Type", ["Point", "Cone", "Chain", "Directional"], this.lightsType, (value) => {
+                this.setLightsType(value as LightsType);
+            }),
+            ...super.getLightControls(),
+        ];
+    }
+
+    public getViewportSize(): XY {
+        return {
+            x: viewportWidth,
+            y: viewportHeight,
+        };
+    }
+
+    public setSoft(soft: boolean): void {
+        this.directionalLight?.setSoft(soft);
+        for (const marble of this.marbles) {
+            marble.light?.setSoft(soft);
+        }
     }
 
     public GetDefaultViewZoom() {
@@ -182,51 +164,35 @@ class OfficialDemo extends Test {
         return { x: viewportWidth / 2, y: viewportHeight / 2 };
     }
 
-    public Resize(width: number, height: number) {
-        this.rayHandler.resizeFBO(width / 4, height / 4);
-    }
-
     public Destroy() {
-        super.Destroy();
-
         this.bg.destroy();
         for (const marble of this.marbles) {
             marble.light.dispose();
             marble.sprite.destroy();
         }
-        this.rayHandler.dispose();
-        Light.setGlobalContactFilter(null);
+        super.Destroy();
     }
 
     private setLightsType(lightsType: LightsType) {
-        if (this.lightsType !== lightsType) {
-            switch (lightsType) {
-                case LightsType.POINT:
-                    this.initPointLights();
-                    break;
-                case LightsType.CONE:
-                    this.initConeLights();
-                    break;
-                case LightsType.CHAIN:
-                    this.initChainLights();
-                    break;
-                case LightsType.DIRECTIONAL:
-                    this.initDirectionalLight();
-                    break;
-            }
-            this.lightsType = lightsType;
+        switch (lightsType) {
+            case "Point":
+                this.initPointLights();
+                break;
+            case "Cone":
+                this.initConeLights();
+                break;
+            case "Chain":
+                this.initChainLights();
+                break;
+            case "Directional":
+                this.initDirectionalLight();
+                break;
         }
+        this.lightsType = lightsType;
     }
 
     getHotkeys(): HotKey[] {
         return [
-            hotKeyPress("1", "Point Light", () => this.setLightsType(LightsType.POINT)),
-            hotKeyPress("2", "Cone Light", () => this.setLightsType(LightsType.CONE)),
-            hotKeyPress("3", "Chain Light", () => this.setLightsType(LightsType.CHAIN)),
-            hotKeyPress("4", "Directional Light", () => this.setLightsType(LightsType.DIRECTIONAL)),
-            hotKeyPress("7", "Default Blending (1.3)", () => this.setBlending("default")),
-            hotKeyPress("8", "Over-Burn Blending (default in 1.2)", () => this.setBlending("overburn")),
-            hotKeyPress("9", "Some other Blending", () => this.setBlending("other")),
             hotKeyPress("c", "Random Light Colors", () => {
                 for (const marble of this.marbles) {
                     setRandomLightColor(marble.light);
@@ -237,34 +203,12 @@ class OfficialDemo extends Test {
                     marble.light.setDistance(random(LIGHT_DISTANCE * 0.5, LIGHT_DISTANCE * 2));
                 }
             }),
-            hotKeyPress("l", "Toggle Light Debug Drawing", () => {
-                this.drawDebugLight = !this.drawDebugLight;
-            }),
-            hotKeyPress("s", "Toggle Soft Shadows", () => {
-                this.soft = !this.soft;
-                this.directionalLight?.setSoft(this.soft);
-                for (const marble of this.marbles) {
-                    marble.light?.setSoft(this.soft);
-                }
-            }),
         ];
-    }
-
-    public setBlending(mode: "default" | "overburn" | "other") {
-        this.mode = mode;
-        if (mode === "overburn") this.rayHandler.diffuseBlendFunc.set(this.gl.DST_COLOR, this.gl.SRC_COLOR);
-        else if (mode === "other") this.rayHandler.diffuseBlendFunc.set(this.gl.SRC_COLOR, this.gl.DST_COLOR);
-        else this.rayHandler.diffuseBlendFunc.reset();
     }
 
     public Step(settings: Settings, timeStep: number): number {
         super.Step(settings, timeStep);
 
-        this.addDebug("Blend Mode", this.mode);
-        this.addDebug("Soft Shadows", this.soft);
-
-        clearGlCanvas(this.gl, 0, 0, 0, 1);
-        this.blendFunc.apply();
         this.bg.render();
         for (const marble of this.marbles) {
             marble.render();
@@ -276,21 +220,7 @@ class OfficialDemo extends Test {
             this.directionalLight.setDirection(this.sunDirection);
         }
 
-        this.rayHandler.setCombinedMatrix(
-            g_camera.combined,
-            viewportWidth / 2,
-            viewportHeight / 2,
-            viewportWidth,
-            viewportHeight,
-        );
-
-        if (timeStep > 0) this.rayHandler.update();
-        this.rayHandler.render();
-
-        if (this.drawDebugLight) {
-            const drawPolygon = g_debugDraw.DrawPolygon.bind(g_debugDraw);
-            for (const light of this.rayHandler.lightList) light.debugRender(drawPolygon);
-        }
+        this.renderLights(timeStep);
 
         return timeStep;
     }

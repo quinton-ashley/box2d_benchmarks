@@ -16,34 +16,27 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import { BlendFunc, Light, lightSettings, PointLight, RayHandler, RECOMMENDED_GAMMA_CORRECTION } from "@box2d/lights";
-import { b2Vec2, b2EdgeShape, b2Body, b2Fixture } from "@box2d/core";
+import { Light, PointLight } from "@box2d/lights";
+import { b2Vec2, b2EdgeShape, b2Body, b2Fixture, XY } from "@box2d/core";
 
 import { g_camera } from "../../utils/camera";
-import { g_debugDraw } from "../../utils/draw";
 import { HotKey, hotKeyPress } from "../../utils/hotkeys";
-import { RayHandlerImpl } from "../../utils/lights/RayHandlerImpl";
 import { PreloadedTextures } from "../../utils/gl/preload";
 import { DefaultShader } from "../../utils/gl/defaultShader";
-import { clearGlCanvas } from "../../utils/gl/glUtils";
 import { Settings } from "../../settings";
-import { registerTest, Test } from "../../test";
+import { registerTest } from "../../test";
 import { setRandomLightColor } from "../../utils/lights/lightUtils";
 import heart from "./heart.json";
+import { AbstractLightTest } from "./abstract_light_test";
+import { clearGlCanvas } from "../../utils/gl/glUtils";
 
 const NUM_RAYS = 512; // fixme: make a configurable setting?
 const LIGHT_DISTANCE = 32;
 
-class DrawWorld extends Test {
-    private readonly rayHandler: RayHandler;
-
+class DrawWorld extends AbstractLightTest {
     private mouseLight: PointLight;
 
     private lights: PointLight[] = [];
-
-    blendFunc: BlendFunc;
-
-    drawDebugLight = false;
 
     currentEdgeFixture: b2Fixture | null = null;
 
@@ -51,35 +44,14 @@ class DrawWorld extends Test {
 
     dragStart = new b2Vec2();
 
-    soft = true;
-
-    mode: "default" | "overburn" = "default";
-
     public constructor(
         public readonly gl: WebGLRenderingContext,
         public readonly shader: DefaultShader,
         public readonly textures: PreloadedTextures,
     ) {
-        super({ x: 0, y: 0 });
-        this.blendFunc = new BlendFunc(gl, gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-
-        lightSettings.gammaCorrection = RECOMMENDED_GAMMA_CORRECTION;
-        lightSettings.isDiffuse = true;
-
-        this.rayHandler = new RayHandlerImpl(
-            this.m_world,
-            gl,
-            g_camera.getWidth() / 4,
-            g_camera.getHeight() / 4,
-            g_camera.getWidth(),
-            g_camera.getHeight(),
-        );
-        this.rayHandler.setAmbientLight(0, 0, 0, 0.5);
-        this.rayHandler.setBlurNum(3);
-
+        super(gl);
         this.mouseLight = this.createLight();
         this.mouseLight.setColor(1, 0, 0, 1);
-        this.setBlending("overburn");
 
         const heartBody = this.m_world.CreateBody();
         for (const line of heart) {
@@ -90,6 +62,20 @@ class DrawWorld extends Test {
                 density: 0,
                 restitution: 0,
             });
+        }
+    }
+
+    public getViewportSize(): XY {
+        return {
+            x: g_camera.getWidth(),
+            y: g_camera.getHeight(),
+        };
+    }
+
+    public setSoft(soft: boolean): void {
+        this.mouseLight.setSoft(soft);
+        for (const light of this.lights) {
+            light.setSoft(soft);
         }
     }
 
@@ -105,41 +91,13 @@ class DrawWorld extends Test {
         return 30;
     }
 
-    public Resize(width: number, height: number) {
-        this.rayHandler.resizeFBO(width / 4, height / 4);
-    }
-
-    public Destroy() {
-        super.Destroy();
-
-        this.rayHandler.dispose();
-    }
-
     getHotkeys(): HotKey[] {
         return [
-            hotKeyPress("7", "Default Blending (1.3)", () => this.setBlending("default")),
-            hotKeyPress("8", "Over-Burn Blending (default in 1.2)", () => this.setBlending("overburn")),
             hotKeyPress("a", "Place current light", () => {
                 this.lights.push(this.mouseLight);
                 this.mouseLight = this.createLight();
             }),
-            hotKeyPress("l", "Toggle Light Debug Drawing", () => {
-                this.drawDebugLight = !this.drawDebugLight;
-            }),
-            hotKeyPress("s", "Toggle Soft Shadows", () => {
-                this.soft = !this.soft;
-                this.mouseLight.setSoft(this.soft);
-                for (const light of this.lights) {
-                    light.setSoft(this.soft);
-                }
-            }),
         ];
-    }
-
-    public setBlending(mode: "default" | "overburn") {
-        this.mode = mode;
-        if (mode === "overburn") this.rayHandler.diffuseBlendFunc.set(this.gl.DST_COLOR, this.gl.SRC_COLOR);
-        else this.rayHandler.diffuseBlendFunc.reset();
     }
 
     public MouseDown(p: b2Vec2) {
@@ -177,11 +135,6 @@ class DrawWorld extends Test {
         super.Step(settings, timeStep);
 
         this.addText("Left drag to draw lines");
-        this.addDebug("Blend Mode", this.mode);
-        this.addDebug("Soft Shadows", this.soft);
-
-        clearGlCanvas(this.gl, 1, 1, 1, 1);
-        this.blendFunc.apply();
 
         this.mouseLight.setPositionV(this.m_mouseWorld);
         const center = g_camera.getCenter();
@@ -193,15 +146,13 @@ class DrawWorld extends Test {
             g_camera.getHeight(),
         );
 
-        if (timeStep > 0) this.rayHandler.update();
-        this.rayHandler.render();
-
-        if (this.drawDebugLight) {
-            const drawPolygon = g_debugDraw.DrawPolygon.bind(g_debugDraw);
-            for (const light of this.rayHandler.lightList) light.debugRender(drawPolygon);
-        }
+        this.renderLights(timeStep);
 
         return timeStep;
+    }
+
+    public clearGlCanvas() {
+        clearGlCanvas(this.gl, 1, 1, 1, 1);
     }
 }
 
