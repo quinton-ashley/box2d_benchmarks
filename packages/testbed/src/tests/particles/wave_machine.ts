@@ -19,10 +19,11 @@
 import { b2RevoluteJoint, b2BodyType, b2PolygonShape, b2Vec2, b2RevoluteJointDef, XY } from "@box2d/core";
 import { b2ParticleGroupDef, b2ParticleFlag } from "@box2d/particles";
 
-import { registerTest, Test } from "../../test";
+import { registerTest } from "../../test";
 import { Settings } from "../../settings";
+import { AbstractParticleTest } from "./abstract_particle_test";
 
-class WaveMachine extends Test {
+class WaveMachine extends AbstractParticleTest {
     public m_joint: b2RevoluteJoint;
 
     public m_time = 0;
@@ -62,7 +63,7 @@ class WaveMachine extends Test {
         }
 
         this.m_particleSystem.SetRadius(0.025 * 2); // HACK: increase particle radius
-        const particleType = Test.GetParticleParameterValue();
+        const particleType = AbstractParticleTest.GetParticleParameterValue();
         this.m_particleSystem.SetDamping(0.2);
 
         {

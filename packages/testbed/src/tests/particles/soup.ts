@@ -19,9 +19,10 @@
 import { b2Body, b2PolygonShape, b2Vec2, b2BodyType, b2CircleShape, b2EdgeShape, b2MassData, XY } from "@box2d/core";
 import { b2ParticleFlag, b2ParticleGroupDef } from "@box2d/particles";
 
-import { registerTest, Test } from "../../test";
+import { registerTest } from "../../test";
+import { AbstractParticleTest } from "./abstract_particle_test";
 
-export class Soup extends Test {
+export class Soup extends AbstractParticleTest {
     public m_ground: b2Body;
 
     constructor() {
@@ -59,7 +60,7 @@ export class Soup extends Test {
             shape.SetAsBox(2, 1, new b2Vec2(0, 1), 0);
             const pd = new b2ParticleGroupDef();
             pd.shape = shape;
-            pd.flags = Test.GetParticleParameterValue();
+            pd.flags = AbstractParticleTest.GetParticleParameterValue();
             const group = this.m_particleSystem.CreateParticleGroup(pd);
             if (pd.flags & b2ParticleFlag.b2_colorMixingParticle) {
                 this.ColorParticleGroup(group, 0);

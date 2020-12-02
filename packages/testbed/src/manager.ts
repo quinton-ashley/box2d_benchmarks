@@ -13,6 +13,7 @@ import { getTestsGrouped, Test, TestConstructor, TestEntry } from "./test";
 import { FpsCalculator } from "./utils/FpsCalculator";
 import type { TextTable, TextTableSetter } from "./ui/Main";
 import type { TestControlGroup } from "./ui";
+import { AbstractParticleTest } from "./tests/particles/abstract_particle_test";
 
 import "./tests";
 
@@ -89,12 +90,6 @@ export class TestManager {
             hotKeyPress("p", "Pause/Continue", () => this.SetPause(!this.m_settings.m_pause)),
             hotKeyPress("PageUp", "Previous Test", () => this.DecrementTest()),
             hotKeyPress("PageDown", "Next Test", () => this.IncrementTest()),
-            hotKeyPress(",", "Previous Particle Parameter", () => {
-                Test.particleParameter.Decrement();
-            }),
-            hotKeyPress(".", "Next Particle Parameter", () => {
-                Test.particleParameter.Increment();
-            }),
         ];
     }
 
@@ -274,12 +269,12 @@ export class TestManager {
     }
 
     public LoadTest(restartTest = false): void {
-        Test.particleParameterSelectionEnabled = false;
+        AbstractParticleTest.particleParameterSelectionEnabled = false;
         const TestClass = this.testConstructor;
         if (!TestClass || !this.m_ctx || !this.gl || !this.defaultShader || !this.textures) return;
 
         if (!restartTest) {
-            Test.particleParameter.Reset();
+            AbstractParticleTest.particleParameter.Reset();
         }
 
         this.m_test?.Destroy();
@@ -350,7 +345,7 @@ export class TestManager {
         }
 
         // Update the state of the particle parameter.
-        Test.particleParameter.Changed(restartTest);
+        AbstractParticleTest.particleParameter.Changed(restartTest);
 
         ctx.restore();
 
@@ -387,8 +382,8 @@ export class TestManager {
             ["", ""],
         ];
         if (this.m_test) {
-            if (Test.particleParameterSelectionEnabled)
-                this.m_test.addDebug("Particle Type", Test.particleParameter.GetName());
+            if (AbstractParticleTest.particleParameterSelectionEnabled)
+                this.m_test.addDebug("Particle Type", AbstractParticleTest.particleParameter.GetName());
 
             if (this.m_test.m_textLines.length) {
                 leftTable.push(

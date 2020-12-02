@@ -38,7 +38,7 @@ import {
 } from "@box2d/core";
 import { b2ParticleHandle, b2ParticleSystem, b2ParticleFlag, b2ParticleGroup } from "@box2d/particles";
 
-import { registerTest, Test } from "../../test";
+import { registerTest } from "../../test";
 import { Settings } from "../../settings";
 import {
     ParticleParameterValue,
@@ -48,6 +48,7 @@ import {
 } from "../../utils/particles/particle_parameter";
 import { RadialEmitter } from "../../utils/particles/particle_emitter";
 import { HotKey, hotKeyPress } from "../../utils/hotkeys";
+import { AbstractParticleTest } from "./abstract_particle_test";
 
 // /**
 //  * The following parameters are not static const members of the
@@ -249,7 +250,7 @@ class SpecialParticleTracker extends b2DestructionListener {
  * add new maze elements!
  */
 
-class Sandbox extends Test {
+class Sandbox extends AbstractParticleTest {
     /**
      * Count of faucets in the world
      */
@@ -398,9 +399,9 @@ class Sandbox extends Test {
         this.m_killFieldTransform.SetPositionAngle(loc, 0);
 
         // Setup particle parameters.
-        Test.SetParticleParameters(Sandbox.k_paramDef, Sandbox.k_paramDefCount);
-        this.m_particleFlags = Test.GetParticleParameterValue();
-        Test.SetRestartOnParticleParameterChange(false);
+        AbstractParticleTest.SetParticleParameters(Sandbox.k_paramDef, Sandbox.k_paramDefCount);
+        this.m_particleFlags = AbstractParticleTest.GetParticleParameterValue();
+        AbstractParticleTest.SetRestartOnParticleParameterChange(false);
     }
 
     public Destroy() {
@@ -621,7 +622,7 @@ class Sandbox extends Test {
 
     private ResetFlags() {
         this.m_particleFlags = 0;
-        Test.SetParticleParameterValue(0);
+        AbstractParticleTest.SetParticleParameterValue(0);
     }
 
     private ToggleFlag(flag: b2ParticleFlag) {
@@ -630,7 +631,7 @@ class Sandbox extends Test {
         } else {
             this.m_particleFlags |= flag;
         }
-        Test.SetParticleParameterValue(this.m_particleFlags);
+        AbstractParticleTest.SetParticleParameterValue(this.m_particleFlags);
     }
 
     /**
@@ -643,7 +644,7 @@ class Sandbox extends Test {
         }
         super.Step(settings, timeStep);
 
-        this.m_particleFlags = Test.GetParticleParameterValue();
+        this.m_particleFlags = AbstractParticleTest.GetParticleParameterValue();
 
         // Step all the emitters
         for (let i = 0; i < this.m_faucetEmitterIndex; i++) {

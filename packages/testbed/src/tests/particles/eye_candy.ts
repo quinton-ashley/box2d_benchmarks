@@ -1,10 +1,11 @@
 import { b2Body, b2RevoluteJoint, b2BodyType, b2PolygonShape, b2Vec2, b2RevoluteJointDef } from "@box2d/core";
 import { b2ParticleGroupDef, b2ParticleFlag } from "@box2d/particles";
 
-import { registerTest, Test } from "../../test";
+import { registerTest } from "../../test";
 import { Settings } from "../../settings";
+import { AbstractParticleTest } from "./abstract_particle_test";
 
-class EyeCandy extends Test {
+class EyeCandy extends AbstractParticleTest {
     public m_mover: b2Body;
 
     public m_joint: b2RevoluteJoint;

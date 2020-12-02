@@ -36,11 +36,12 @@ import {
 } from "@box2d/core";
 import { b2ParticleGroup, b2ParticleGroupDef, b2ParticleFlag, b2ParticleSystem } from "@box2d/particles";
 
-import { registerTest, Test } from "../../test";
+import { registerTest } from "../../test";
 import { Settings } from "../../settings";
 import { g_debugDraw } from "../../utils/draw";
 import { RadialEmitter } from "../../utils/particles/particle_emitter";
 import { HotKey, hotKeyPress } from "../../utils/hotkeys";
+import { AbstractParticleTest } from "./abstract_particle_test";
 
 /**
  * Type of material in a tile.
@@ -349,7 +350,7 @@ class Fracker_DestructionListener extends ParticleGroupTracker {
  * press 'space'.  Fracking fluid can be used to push other
  * fluids to the well head and ultimately score points.
  */
-class Fracker extends Test {
+class Fracker extends AbstractParticleTest {
     public m_player!: b2Body;
 
     public m_wellX = FrackerSettings.k_worldWidthTiles - FrackerSettings.k_worldWidthTiles / 4;

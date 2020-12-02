@@ -16,12 +16,13 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import { b2Body, b2Vec2, b2ChainShape, b2PolygonShape, b2Clamp, XY } from "@box2d/core";
+import { b2Body, b2Vec2, b2ChainShape, b2PolygonShape, b2Clamp, XY, b2RandomFloat } from "@box2d/core";
 import { b2ParticleGroup, b2ParticleGroupDef, b2ParticleFlag } from "@box2d/particles";
 
-import { Test, RandomFloat, registerTest } from "../../test";
+import { registerTest } from "../../test";
 import { Settings } from "../../settings";
 import { HotKey, hotKeyPress } from "../../utils/hotkeys";
+import { AbstractParticleTest } from "./abstract_particle_test";
 
 /**
  * Game which adds some fun to Maxwell's demon.
@@ -35,7 +36,7 @@ import { HotKey, hotKeyPress } from "../../utils/hotkeys";
  * See Maxwell::getHotKeys() for other controls.
  */
 
-class Maxwell extends Test {
+class Maxwell extends AbstractParticleTest {
     public m_density = Maxwell.k_densityDefault;
 
     public m_position = Maxwell.k_containerHalfHeight;
@@ -174,7 +175,7 @@ class Maxwell extends Test {
             for (let i = 0; i < this.m_particleGroup.GetParticleCount(); ++i) {
                 ///  b2Vec2& v = *(velocities + i);
                 const v = velocities[index + i];
-                v.Set(RandomFloat() + 1, RandomFloat() + 1);
+                v.Set(b2RandomFloat(-1, 1) + 1, b2RandomFloat(-1, 1) + 1);
                 v.Normalize();
                 ///  v *= this.m_temperature;
                 v.Scale(this.m_temperature);

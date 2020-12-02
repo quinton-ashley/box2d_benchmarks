@@ -4,7 +4,6 @@ import {
     b2Fixture,
     b2Vec2,
     b2PointState,
-    b2Transform,
     b2ContactListener,
     b2World,
     b2Body,
@@ -19,7 +18,6 @@ import {
     b2MouseJointDef,
     b2RandomFloat,
     b2CircleShape,
-    b2AABB,
     b2Color,
     DrawShapes,
     DrawJoints,
@@ -28,27 +26,16 @@ import {
     XY,
     b2LinearStiffness,
 } from "@box2d/core";
-import { b2ParticleGroup, b2ParticleSystem, b2ParticleSystemDef, DrawParticleSystems } from "@box2d/particles";
+import { b2ParticleGroup, DrawParticleSystems } from "@box2d/particles";
 import { DrawControllers } from "@box2d/controllers";
 
 import { Settings } from "./settings";
 import { g_debugDraw } from "./utils/draw";
-import {
-    ParticleParameter,
-    ParticleParameterValue,
-    ParticleParameterDefinition,
-} from "./utils/particles/particle_parameter";
 import { hotKeyPress, HotKey } from "./utils/hotkeys";
 import { DefaultShader } from "./utils/gl/defaultShader";
 import { PreloadedTextures } from "./utils/gl/preload";
 import type { TestControlGroup } from "./ui";
 import { TestControl } from "./testControls";
-
-export function RandomFloat(lo = -1, hi = 1) {
-    let r = Math.random();
-    r = (hi - lo) * r + lo;
-    return r;
-}
 
 export interface TestConstructor {
     new (gl: WebGLRenderingContext, shader: DefaultShader, textures: PreloadedTextures): Test;
@@ -144,15 +131,9 @@ const formatValueAveMax = (step: number, ave: number, max: number) =>
     `${step.toFixed(2)} [${ave.toFixed(2)}] (${max.toFixed(2)})`;
 
 export class Test extends b2ContactListener {
-    public static particleParameterSelectionEnabled: boolean;
-
-    public static readonly particleParameter = new ParticleParameter();
-
     public static readonly k_maxContactPoints = 2048;
 
     public m_world: b2World;
-
-    public m_particleSystem: b2ParticleSystem;
 
     public m_bomb: b2Body | null = null;
 
@@ -190,27 +171,16 @@ export class Test extends b2ContactListener {
 
     public m_groundBody: b2Body;
 
-    public m_particleParameters: ParticleParameterValue[] | null = null;
-
-    public m_particleParameterDef: ParticleParameterDefinition | null = null;
-
     public m_testControlGroups: TestControlGroup[] = [];
 
     constructor(gravity: XY = { x: 0, y: -10 }) {
         super();
 
-        const particleSystemDef = new b2ParticleSystemDef();
-
         this.m_world = b2World.Create(gravity);
-
-        this.m_particleSystem = this.m_world.CreateParticleSystem(particleSystemDef);
 
         this.m_destructionListener = new DestructionListener(this);
         this.m_world.SetDestructionListener(this.m_destructionListener);
         this.m_world.SetContactListener(this);
-
-        this.m_particleSystem.SetGravityScale(0.4);
-        this.m_particleSystem.SetDensity(1.2);
 
         this.m_groundBody = this.m_world.CreateBody();
     }
@@ -444,17 +414,11 @@ export class Test extends b2ContactListener {
         this.m_statisticLines.push([label, `${value}`]);
     }
 
-    public getParticleSelectionRadius() {
-        return 40 / this.GetDefaultViewZoom();
-    }
-
     public Step(settings: Settings, timeStep: number): void {
         this.m_world.SetAllowSleeping(settings.m_enableSleep);
         this.m_world.SetWarmStarting(settings.m_enableWarmStarting);
         this.m_world.SetContinuousPhysics(settings.m_enableContinuous);
         this.m_world.SetSubStepping(settings.m_enableSubStepping);
-
-        this.m_particleSystem.SetStrictContactCheck(settings.m_strictContacts);
 
         this.m_pointCount = 0;
 
@@ -491,10 +455,6 @@ export class Test extends b2ContactListener {
             this.addStatistic("Bodies", this.m_world.GetBodyCount());
             this.addStatistic("Contacts", this.m_world.GetContactCount());
             this.addStatistic("Joints", this.m_world.GetJointCount());
-            this.addStatistic("Particles", this.m_particleSystem.GetParticleCount());
-            this.addStatistic("Groups", this.m_particleSystem.GetParticleGroupCount());
-            this.addStatistic("Pairs", this.m_particleSystem.GetPairCount());
-            this.addStatistic("Triads", this.m_particleSystem.GetTriadCount());
             this.addStatistic("Proxies", this.m_world.GetProxyCount());
             this.addStatistic("Height", this.m_world.GetTreeHeight());
             this.addStatistic("Balance", this.m_world.GetTreeBalance());
@@ -569,7 +529,6 @@ export class Test extends b2ContactListener {
 
         if (this.m_mouseTracing && !this.m_mouseJoint) {
             const delay = 0.1;
-            /// b2Vec2 acceleration = 2 / delay * (1 / delay * (m_mouseWorld - m_mouseTracerPosition) - m_mouseTracerVelocity);
             const acceleration = new b2Vec2();
             acceleration.x =
                 (2 / delay) *
@@ -577,26 +536,8 @@ export class Test extends b2ContactListener {
             acceleration.y =
                 (2 / delay) *
                 ((1 / delay) * (this.m_mouseWorld.y - this.m_mouseTracerPosition.y) - this.m_mouseTracerVelocity.y);
-            /// m_mouseTracerVelocity += timeStep * acceleration;
             this.m_mouseTracerVelocity.AddScaled(timeStep, acceleration);
-            /// m_mouseTracerPosition += timeStep * m_mouseTracerVelocity;
             this.m_mouseTracerPosition.AddScaled(timeStep, this.m_mouseTracerVelocity);
-            const shape = new b2CircleShape();
-            shape.m_p.Copy(this.m_mouseTracerPosition);
-            shape.m_radius = this.getParticleSelectionRadius();
-            /// QueryCallback2 callback(m_particleSystem, &shape, m_mouseTracerVelocity);
-            const aabb = new b2AABB();
-            const xf = new b2Transform();
-            xf.SetIdentity();
-            shape.ComputeAABB(aabb, xf, 0);
-            this.m_particleSystem.QueryAABB(aabb, (index) => {
-                const p = this.m_particleSystem.GetPositionBuffer()[index];
-                if (shape.TestPoint(b2Transform.IDENTITY, p)) {
-                    const v = this.m_particleSystem.GetVelocityBuffer()[index];
-                    v.Copy(this.m_mouseTracerVelocity);
-                }
-                return true;
-            });
         }
 
         if (this.m_bombSpawning) {
@@ -650,121 +591,5 @@ export class Test extends b2ContactListener {
         return b2Vec2.ZERO;
     }
 
-    public static readonly k_ParticleColors = [
-        new b2Color().SetByteRGBA(0xff, 0x00, 0x00, 0xff), // red
-        new b2Color().SetByteRGBA(0x00, 0xff, 0x00, 0xff), // green
-        new b2Color().SetByteRGBA(0x00, 0x00, 0xff, 0xff), // blue
-        new b2Color().SetByteRGBA(0xff, 0x8c, 0x00, 0xff), // orange
-        new b2Color().SetByteRGBA(0x00, 0xce, 0xd1, 0xff), // turquoise
-        new b2Color().SetByteRGBA(0xff, 0x00, 0xff, 0xff), // magenta
-        new b2Color().SetByteRGBA(0xff, 0xd7, 0x00, 0xff), // gold
-        new b2Color().SetByteRGBA(0x00, 0xff, 0xff, 0xff), // cyan
-    ];
-
-    public static readonly k_ParticleColorsCount = Test.k_ParticleColors.length;
-
-    /**
-     * Apply a preset range of colors to a particle group.
-     *
-     * A different color out of k_ParticleColors is applied to each
-     * particlesPerColor particles in the specified group.
-     *
-     * If particlesPerColor is 0, the particles in the group are
-     * divided into k_ParticleColorsCount equal sets of colored
-     * particles.
-     */
-    public ColorParticleGroup(group: b2ParticleGroup, particlesPerColor: number) {
-        // DEBUG: b2Assert(group !== null);
-        const colorBuffer = this.m_particleSystem.GetColorBuffer();
-        const particleCount = group.GetParticleCount();
-        const groupStart = group.GetBufferIndex();
-        const groupEnd = particleCount + groupStart;
-        const colorCount = Test.k_ParticleColors.length;
-        if (!particlesPerColor) {
-            particlesPerColor = Math.floor(particleCount / colorCount);
-            if (!particlesPerColor) {
-                particlesPerColor = 1;
-            }
-        }
-        for (let i = groupStart; i < groupEnd; i++) {
-            /// colorBuffer[i].Copy(Testbed.Test.k_ParticleColors[Math.floor(i / particlesPerColor) % colorCount]);
-            colorBuffer[i] = Test.k_ParticleColors[Math.floor(i / particlesPerColor) % colorCount].Clone();
-        }
-    }
-
-    /**
-     * Remove particle parameters matching "filterMask" from the set
-     * of particle parameters available for this test.
-     */
-    public InitializeParticleParameters(filterMask: number) {
-        const defaultNumValues = ParticleParameter.k_defaultDefinition[0].numValues;
-        const defaultValues = ParticleParameter.k_defaultDefinition[0].values;
-        ///  m_particleParameters = new ParticleParameter::Value[defaultNumValues];
-        this.m_particleParameters = [];
-        // Disable selection of wall and barrier particle types.
-        let numValues = 0;
-        for (let i = 0; i < defaultNumValues; i++) {
-            if (defaultValues[i].value & filterMask) {
-                continue;
-            }
-            /// memcpy(&m_particleParameters[numValues], &defaultValues[i], sizeof(defaultValues[0]));
-            this.m_particleParameters[numValues] = new ParticleParameterValue(defaultValues[i]);
-            numValues++;
-        }
-        this.m_particleParameterDef = new ParticleParameterDefinition(this.m_particleParameters, numValues);
-        /// m_particleParameterDef.values = m_particleParameters;
-        /// m_particleParameterDef.numValues = numValues;
-        Test.SetParticleParameters([this.m_particleParameterDef], 1);
-    }
-
-    /**
-     * Perform destruction cleanup
-     */
-    public Destroy() {
-        if (this.m_particleParameters) {
-            Test.SetParticleParameters(ParticleParameter.k_defaultDefinition, 1);
-            ///  delete [] m_particleParameters;
-            this.m_particleParameters = null;
-        }
-    }
-
-    /**
-     * Set whether to restart the test on particle parameter
-     * changes. This parameter is re-enabled when the test changes.
-     */
-    public static SetRestartOnParticleParameterChange(enable: boolean): void {
-        Test.particleParameter.SetRestartOnChange(enable);
-    }
-
-    /**
-     * Set the currently selected particle parameter value.  This
-     * value must match one of the values in
-     * Main::k_particleTypes or one of the values referenced by
-     * particleParameterDef passed to SetParticleParameters().
-     */
-    public static SetParticleParameterValue(value: number): number {
-        const index = Test.particleParameter.FindIndexByValue(value);
-        // If the particle type isn't found, so fallback to the first entry in the
-        // parameter.
-        Test.particleParameter.Set(index >= 0 ? index : 0);
-        return Test.particleParameter.GetValue();
-    }
-
-    /**
-     * Get the currently selected particle parameter value.
-     */
-    public static GetParticleParameterValue(): number {
-        this.particleParameterSelectionEnabled = true;
-        return Test.particleParameter.GetValue();
-    }
-
-    /**
-     * Override the default particle parameters for the test.
-     */
-    public static SetParticleParameters(
-        particleParameterDef: ParticleParameterDefinition[],
-        particleParameterDefCount = particleParameterDef.length,
-    ) {
-        Test.particleParameter.SetDefinition(particleParameterDef, particleParameterDefCount);
-    }
+    public Destroy() {}
 }

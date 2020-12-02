@@ -26,11 +26,13 @@ import {
     b2WorldManifold,
     b2PolygonShape,
     XY,
+    b2RandomFloat,
 } from "@box2d/core";
 import { b2ParticleGroup, b2ParticleSystem, b2ParticleFlag, b2ParticleGroupDef } from "@box2d/particles";
 
-import { Test, RandomFloat, registerTest } from "../../test";
+import { registerTest } from "../../test";
 import { Settings } from "../../settings";
+import { AbstractParticleTest } from "./abstract_particle_test";
 
 interface SparkUserData {
     spark: boolean;
@@ -163,7 +165,7 @@ class ParticleVFX {
     }
 }
 
-class Sparky extends Test {
+class Sparky extends AbstractParticleTest {
     private static c_maxCircles = 3; /// 6;
 
     private static c_maxVFX = 20; /// 50;
@@ -199,7 +201,7 @@ class Sparky extends Test {
                 type: b2BodyType.b2_dynamicBody,
             });
             const shape = new b2CircleShape();
-            shape.m_p.Set(3 * RandomFloat(), Sparky.SHAPE_HEIGHT_OFFSET + Sparky.SHAPE_OFFSET * i);
+            shape.m_p.Set(3 * b2RandomFloat(-1, 1), Sparky.SHAPE_HEIGHT_OFFSET + Sparky.SHAPE_OFFSET * i);
             shape.m_radius = 2;
             const f = body.CreateFixture({ shape, density: 0.5 });
             // Tag this as a sparkable body.
@@ -208,8 +210,8 @@ class Sparky extends Test {
             });
         }
 
-        Test.SetRestartOnParticleParameterChange(false);
-        Test.SetParticleParameterValue(b2ParticleFlag.b2_powderParticle);
+        AbstractParticleTest.SetRestartOnParticleParameterChange(false);
+        AbstractParticleTest.SetParticleParameterValue(b2ParticleFlag.b2_powderParticle);
     }
 
     public BeginContact(contact: b2Contact) {
@@ -231,7 +233,7 @@ class Sparky extends Test {
     }
 
     public Step(settings: Settings, timeStep: number): void {
-        const particleFlags = Test.GetParticleParameterValue();
+        const particleFlags = AbstractParticleTest.GetParticleParameterValue();
         let dt = settings.m_hertz > 0 ? 1 / settings.m_hertz : 0;
         if (settings.m_pause && !settings.m_singleStep) {
             dt = 0;
@@ -271,9 +273,9 @@ class Sparky extends Test {
         this.m_VFX[this.m_VFXIndex] = new ParticleVFX(
             this.m_particleSystem,
             p,
-            RandomFloat(1, 2),
-            RandomFloat(10, 20),
-            RandomFloat(0.5, 1),
+            b2RandomFloat(1, 2),
+            b2RandomFloat(10, 20),
+            b2RandomFloat(0.5, 1),
             particleFlags,
         );
         if (++this.m_VFXIndex >= Sparky.c_maxVFX) {

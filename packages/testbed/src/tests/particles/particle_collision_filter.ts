@@ -16,12 +16,13 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import { b2ContactFilter, b2Vec2, b2ChainShape, b2PolygonShape, XY } from "@box2d/core";
+import { b2ContactFilter, b2Vec2, b2ChainShape, b2PolygonShape, XY, b2RandomFloat } from "@box2d/core";
 import { b2ParticleGroupDef, b2ParticleFlag, b2ParticleGroup } from "@box2d/particles";
 
-import { Test, RandomFloat, registerTest } from "../../test";
+import { registerTest } from "../../test";
 import { Settings } from "../../settings";
 import { hotKeyPress, HotKey } from "../../utils/hotkeys";
+import { AbstractParticleTest } from "./abstract_particle_test";
 
 // Optionally disables particle / fixture and particle / particle contacts.
 class ParticleContactDisabler extends b2ContactFilter {
@@ -40,7 +41,7 @@ class ParticleContactDisabler extends b2ContactFilter {
     }
 }
 
-class ParticleCollisionFilter extends Test {
+class ParticleCollisionFilter extends AbstractParticleTest {
     constructor() {
         super(b2Vec2.ZERO);
 
@@ -115,13 +116,13 @@ class ParticleCollisionFilter extends Test {
             const index = this.m_particleGroup.GetBufferIndex();
             // for (int i = 0; i < m_particleGroup.GetParticleCount(); ++i) {
             // 	b2Vec2& v = *(velocities + i);
-            // 	v.Set(RandomFloat(), RandomFloat());
+            // 	v.Set(b2RandomFloat(-1, 1), b2RandomFloat(-1, 1));
             // 	v.Normalize();
             // 	v *= kSpeedup;
             // }
             for (let i = 0; i < this.m_particleGroup.GetParticleCount(); ++i) {
                 const v = velocities[index + i];
-                v.Set(RandomFloat(), RandomFloat());
+                v.Set(b2RandomFloat(-1, 1), b2RandomFloat(-1, 1));
                 v.Normalize();
                 v.Scale(ParticleCollisionFilter.kSpeedup);
             }

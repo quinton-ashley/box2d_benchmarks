@@ -19,15 +19,16 @@
 import { b2PolygonShape, b2Transform, b2Vec2, XY } from "@box2d/core";
 import { b2ParticleFlag, b2ParticleDef } from "@box2d/particles";
 
-import { registerTest, Test } from "../../test";
+import { registerTest } from "../../test";
 import { Settings } from "../../settings";
+import { AbstractParticleTest } from "./abstract_particle_test";
 
 /**
  * Test behavior when particles fall on a convex ambigious Body
  * contact fixture junction.
  */
 
-class Pointy extends Test {
+class Pointy extends AbstractParticleTest {
     public m_killfieldShape = new b2PolygonShape();
 
     public m_killfieldTransform = new b2Transform();
@@ -51,7 +52,7 @@ class Pointy extends Test {
         }
 
         this.m_particleSystem.SetRadius(0.25 * 2); // HACK: increase particle radius
-        const particleType = Test.GetParticleParameterValue();
+        const particleType = AbstractParticleTest.GetParticleParameterValue();
         if (particleType === b2ParticleFlag.b2_waterParticle) {
             this.m_particleSystem.SetDamping(0.2);
         }
@@ -69,7 +70,7 @@ class Pointy extends Test {
     public Step(settings: Settings, timeStep: number) {
         super.Step(settings, timeStep);
 
-        const flags = Test.GetParticleParameterValue();
+        const flags = AbstractParticleTest.GetParticleParameterValue();
         const pd = new b2ParticleDef();
 
         pd.position.Set(0, 33);

@@ -19,9 +19,10 @@
 import { b2PolygonShape, b2Vec2, b2CircleShape, b2BodyType, XY } from "@box2d/core";
 import { b2ParticleGroupDef, b2ParticleFlag } from "@box2d/particles";
 
-import { registerTest, Test } from "../../test";
+import { registerTest } from "../../test";
+import { AbstractParticleTest } from "./abstract_particle_test";
 
-class ParticlesSurfaceTension extends Test {
+class ParticlesSurfaceTension extends AbstractParticleTest {
     constructor() {
         super(); // base class constructor
 

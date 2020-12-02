@@ -19,7 +19,7 @@
 import { b2PolygonShape, b2Vec2, b2Color, XY } from "@box2d/core";
 import { b2ParticleSystem, b2ParticleFlag } from "@box2d/particles";
 
-import { registerTest, Test } from "../../test";
+import { registerTest } from "../../test";
 import { Settings } from "../../settings";
 import { EmittedParticleCallback, RadialEmitter } from "../../utils/particles/particle_emitter";
 import {
@@ -29,6 +29,7 @@ import {
     ParticleParameterDefinition,
 } from "../../utils/particles/particle_parameter";
 import { HotKey, hotKeyPress } from "../../utils/hotkeys";
+import { AbstractParticleTest, particleColors } from "./abstract_particle_test";
 
 class ParticleLifetimeRandomizer extends EmittedParticleCallback {
     public m_minLifetime = 0;
@@ -57,7 +58,7 @@ class ParticleLifetimeRandomizer extends EmittedParticleCallback {
  * spawning particles with finite lifetimes that pour into the
  * box.
  */
-class Faucet extends Test {
+class Faucet extends AbstractParticleTest {
     /**
      * Used to cycle through particle colors.
      */
@@ -270,13 +271,13 @@ class Faucet extends Test {
             this.m_emitter.SetSize(new b2Vec2(0, faucetLength));
             this.m_emitter.SetColor(new b2Color(1, 1, 1, 1));
             this.m_emitter.SetEmitRate(120);
-            this.m_emitter.SetParticleFlags(Test.GetParticleParameterValue());
+            this.m_emitter.SetParticleFlags(AbstractParticleTest.GetParticleParameterValue());
         }
 
         // Don't restart the test when changing particle types.
-        Test.SetRestartOnParticleParameterChange(false);
+        AbstractParticleTest.SetRestartOnParticleParameterChange(false);
         // Limit the set of particle types.
-        Test.SetParticleParameters(Faucet.k_paramDef, Faucet.k_paramDefCount);
+        AbstractParticleTest.SetParticleParameters(Faucet.k_paramDef, Faucet.k_paramDefCount);
     }
 
     public Step(settings: Settings, timeStep: number): void {
@@ -289,20 +290,18 @@ class Faucet extends Test {
         super.Step(settings, timeStep);
         this.m_particleColorOffset += dt;
         // Keep m_particleColorOffset in the range 0..k_ParticleColorsCount.
-        if (this.m_particleColorOffset >= Test.k_ParticleColorsCount) {
-            this.m_particleColorOffset -= Test.k_ParticleColorsCount;
+        if (this.m_particleColorOffset >= particleColors.length) {
+            this.m_particleColorOffset -= particleColors.length;
         }
 
         // Propagate the currently selected particle flags.
-        this.m_emitter.SetParticleFlags(Test.GetParticleParameterValue());
+        this.m_emitter.SetParticleFlags(AbstractParticleTest.GetParticleParameterValue());
 
         // If this is a color mixing particle, add some color.
         ///  b2Color color(1, 1, 1, 1);
         if (this.m_emitter.GetParticleFlags() & b2ParticleFlag.b2_colorMixingParticle) {
             // Each second, select a different color.
-            this.m_emitter.SetColor(
-                Test.k_ParticleColors[Math.floor(this.m_particleColorOffset) % Test.k_ParticleColorsCount],
-            );
+            this.m_emitter.SetColor(particleColors[Math.floor(this.m_particleColorOffset) % particleColors.length]);
         } else {
             this.m_emitter.SetColor(new b2Color(1, 1, 1, 1));
         }
@@ -313,15 +312,23 @@ class Faucet extends Test {
 
     getHotkeys(): HotKey[] {
         return [
-            hotKeyPress("w", "Set Water", () => Test.SetParticleParameterValue(b2ParticleFlag.b2_waterParticle)),
-            hotKeyPress("q", "Set Powder", () => Test.SetParticleParameterValue(b2ParticleFlag.b2_powderParticle)),
-            hotKeyPress("t", "Set Tensile", () => Test.SetParticleParameterValue(b2ParticleFlag.b2_tensileParticle)),
-            hotKeyPress("v", "Set Viscous", () => Test.SetParticleParameterValue(b2ParticleFlag.b2_viscousParticle)),
+            hotKeyPress("w", "Set Water", () =>
+                AbstractParticleTest.SetParticleParameterValue(b2ParticleFlag.b2_waterParticle),
+            ),
+            hotKeyPress("q", "Set Powder", () =>
+                AbstractParticleTest.SetParticleParameterValue(b2ParticleFlag.b2_powderParticle),
+            ),
+            hotKeyPress("t", "Set Tensile", () =>
+                AbstractParticleTest.SetParticleParameterValue(b2ParticleFlag.b2_tensileParticle),
+            ),
+            hotKeyPress("v", "Set Viscous", () =>
+                AbstractParticleTest.SetParticleParameterValue(b2ParticleFlag.b2_viscousParticle),
+            ),
             hotKeyPress("c", "Set Color Mixing", () =>
-                Test.SetParticleParameterValue(b2ParticleFlag.b2_colorMixingParticle),
+                AbstractParticleTest.SetParticleParameterValue(b2ParticleFlag.b2_colorMixingParticle),
             ),
             hotKeyPress("s", "Set Static Pressure", () =>
-                Test.SetParticleParameterValue(b2ParticleFlag.b2_staticPressureParticle),
+                AbstractParticleTest.SetParticleParameterValue(b2ParticleFlag.b2_staticPressureParticle),
             ),
             hotKeyPress("m", "Increase Flow", () =>
                 this.SetEmitRate(
@@ -338,7 +345,7 @@ class Faucet extends Test {
 
     private SetEmitRate(emitRate: number) {
         this.m_emitter.SetEmitRate(emitRate);
-        Test.SetParticleParameterValue(0);
+        AbstractParticleTest.SetParticleParameterValue(0);
     }
 
     public GetDefaultViewZoom(): number {

@@ -19,7 +19,7 @@
 import { b2PolygonShape, b2Vec2, b2CircleShape, b2Transform, XY } from "@box2d/core";
 import { b2ParticleGroup, b2ParticleFlag, b2ParticleGroupFlag, b2ParticleGroupDef } from "@box2d/particles";
 
-import { registerTest, Test } from "../../test";
+import { registerTest } from "../../test";
 import { Settings } from "../../settings";
 import {
     ParticleParameterValue,
@@ -27,8 +27,9 @@ import {
     ParticleParameterDefinition,
 } from "../../utils/particles/particle_parameter";
 import { HotKey, hotKeyPress } from "../../utils/hotkeys";
+import { AbstractParticleTest, particleColors } from "./abstract_particle_test";
 
-class DrawingParticles extends Test {
+class DrawingParticles extends AbstractParticleTest {
     /**
      * Set bit 31 to distiguish these values from particle flags.
      */
@@ -134,10 +135,10 @@ class DrawingParticles extends Test {
         this.m_drawing = true;
 
         // DEBUG: b2Assert((DrawingParticles.k_paramDef[0].CalculateValueMask() & DrawingParticles.Parameters.e_parameterBegin) === 0);
-        Test.SetParticleParameters(DrawingParticles.k_paramDef, DrawingParticles.k_paramDefCount);
-        Test.SetRestartOnParticleParameterChange(false);
+        AbstractParticleTest.SetParticleParameters(DrawingParticles.k_paramDef, DrawingParticles.k_paramDefCount);
+        AbstractParticleTest.SetRestartOnParticleParameterChange(false);
 
-        this.m_particleFlags = Test.GetParticleParameterValue();
+        this.m_particleFlags = AbstractParticleTest.GetParticleParameterValue();
         this.m_groupFlags = 0;
     }
 
@@ -214,7 +215,7 @@ class DrawingParticles extends Test {
         this.m_drawing = drawing;
         this.m_particleFlags = particleFlags;
         this.m_groupFlags = groupFlags;
-        Test.SetParticleParameterValue(this.DetermineParticleParameter());
+        AbstractParticleTest.SetParticleParameterValue(this.DetermineParticleParameter());
     }
 
     public MouseMove(p: b2Vec2, leftDrag: boolean) {
@@ -231,7 +232,7 @@ class DrawingParticles extends Test {
 
             const joinGroup = this.m_lastGroup && this.m_groupFlags === this.m_lastGroup.GetGroupFlags();
             if (!joinGroup) {
-                this.m_colorIndex = (this.m_colorIndex + 1) % Test.k_ParticleColorsCount;
+                this.m_colorIndex = (this.m_colorIndex + 1) % particleColors.length;
             }
             const pd = new b2ParticleGroupDef();
             pd.shape = shape;
@@ -246,7 +247,7 @@ class DrawingParticles extends Test {
                 pd.flags |= b2ParticleFlag.b2_reactiveParticle;
             }
             pd.groupFlags = this.m_groupFlags;
-            pd.color.Copy(Test.k_ParticleColors[this.m_colorIndex]);
+            pd.color.Copy(particleColors[this.m_colorIndex]);
             pd.group = this.m_lastGroup;
             this.m_lastGroup = this.m_particleSystem.CreateParticleGroup(pd);
             this.m_mouseTracing = false;
@@ -280,7 +281,7 @@ class DrawingParticles extends Test {
     }
 
     public Step(settings: Settings, timeStep: number) {
-        const parameterValue = Test.GetParticleParameterValue();
+        const parameterValue = AbstractParticleTest.GetParticleParameterValue();
         this.m_drawing =
             (parameterValue & DrawingParticles.Parameters.e_parameterMove) !==
             DrawingParticles.Parameters.e_parameterMove;

@@ -19,11 +19,12 @@
 import { b2Vec2, b2Color, b2PolygonShape, b2BodyType, b2MassData, XY } from "@box2d/core";
 import { b2ParticleSystem, b2ParticleSystemDef } from "@box2d/particles";
 
-import { registerTest, Test } from "../../test";
+import { registerTest } from "../../test";
 import { Settings } from "../../settings";
 import { RadialEmitter } from "../../utils/particles/particle_emitter";
+import { AbstractParticleTest } from "./abstract_particle_test";
 
-class MultipleParticleSystems extends Test {
+class MultipleParticleSystems extends AbstractParticleTest {
     public m_particleSystem2: b2ParticleSystem;
 
     public m_emitters: RadialEmitter[];
@@ -94,7 +95,7 @@ class MultipleParticleSystems extends Test {
         this.m_particleSystem2.SetMaxParticleCount(MultipleParticleSystems.k_maxParticleCount);
 
         // Don't restart the test when changing particle types.
-        Test.SetRestartOnParticleParameterChange(false);
+        AbstractParticleTest.SetRestartOnParticleParameterChange(false);
 
         // Create the ground.
         {
