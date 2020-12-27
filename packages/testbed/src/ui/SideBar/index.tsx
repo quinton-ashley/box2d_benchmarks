@@ -38,7 +38,6 @@ export const SideBar = ({ testControlGroups: testControls }: SideBarProps) => {
         settingsCheckboxDef(manager, "m_enableWarmStarting", "Warm Starting"),
         settingsCheckboxDef(manager, "m_enableContinuous", "Time of Impact"),
         settingsCheckboxDef(manager, "m_enableSubStepping", "Sub-Stepping"),
-        settingsCheckboxDef(manager, "m_strictContacts", "Strict Particle/Body Contacts"),
     ];
     const drawControls = [
         settingsCheckboxDef(manager, "m_drawShapes", "Shapes"),
@@ -72,9 +71,9 @@ export const SideBar = ({ testControlGroups: testControls }: SideBarProps) => {
                 <SettingsSection legend="General" controls={settingsControls} />
                 <SettingsSection legend="Draw" controls={drawControls} />
                 <SettingsSection legend="Overlay" controls={overlayControls} />
-                <SettingsSection legend="Iterations" controls={iterationControls} />
                 {testControls.groups.map((group, i) => (
                     <SettingsSection
+                        defaultOpen
                         legend={`[Test] ${group.legend}`}
                         key={`${testControls.key}-${i}`}
                         controls={group.controls}

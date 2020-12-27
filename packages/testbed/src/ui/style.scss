@@ -67,11 +67,14 @@ main {
     }
 }
 
-#right_overlay > table {
-    float: right;
-    margin-right: #{$size-sidebar + $spacing-lg};
-}
+#right_overlay {
+    > table {
+        float: right;
+        margin-right: #{$size-sidebar + $spacing-lg};
+    }
 
-#right_overlay > table {
-    float: right;
+    th,
+    td {
+        text-align: right;
+    }
 }

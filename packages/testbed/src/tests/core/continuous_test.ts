@@ -96,29 +96,27 @@ class ContinuousTest extends Test {
     public Step(settings: Settings, timeStep: number): void {
         super.Step(settings, timeStep);
 
-        if (b2Gjk.calls > 0) {
-            this.addDebug(
-                "GJK Calls [ave Iters] (max Iters)",
+        this.addDebug(
+            "GJK Calls [ave Iters] (max Iters)",
+            b2Gjk.calls > 0 &&
                 `${b2Gjk.calls.toFixed(0)} [${(b2Gjk.iters / b2Gjk.calls).toFixed(1)}] (${b2Gjk.maxIters.toFixed(0)})`,
-            );
-        }
+        );
 
-        if (b2Toi.calls > 0) {
-            this.addDebug(
-                "Toi Calls [ave Iters] (max Iters)",
-                `${b2Toi.calls} [${(b2Toi.iters / b2Toi.calls).toFixed(1)}] (${b2Toi.maxIters})`,
-            );
+        this.addDebug(
+            "Toi Calls [ave Iters] (max Iters)",
+            b2Toi.calls > 0 && `${b2Toi.calls} [${(b2Toi.iters / b2Toi.calls).toFixed(1)}] (${b2Toi.maxIters})`,
+        );
 
-            this.addDebug(
-                "Toi Root [ave Iters] (max Iters)",
-                `${b2Toi.calls} [${(b2Toi.rootIters / b2Toi.calls).toFixed(1)}] (${b2Toi.maxRootIters})`,
-            );
+        this.addDebug(
+            "Toi Root [ave Iters] (max Iters)",
+            b2Toi.calls > 0 && `${b2Toi.calls} [${(b2Toi.rootIters / b2Toi.calls).toFixed(1)}] (${b2Toi.maxRootIters})`,
+        );
 
-            this.addDebug(
-                "Toi Time in ms [ave] (max)",
+        this.addDebug(
+            "Toi Time in ms [ave] (max)",
+            b2Toi.calls > 0 &&
                 `[${((1000 * b2Toi.time) / b2Toi.calls).toFixed(1)}] (${(1000 * b2Toi.maxTime).toFixed(1)})`,
-            );
-        }
+        );
 
         if (this.m_stepCount % 60 === 0) {
             this.Launch();

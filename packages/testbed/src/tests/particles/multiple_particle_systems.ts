@@ -155,6 +155,8 @@ class MultipleParticleSystems extends AbstractParticleTest {
             dt = 0;
         }
 
+        this.m_particleSystem2.SetStrictContactCheck(AbstractParticleTest.m_strictContacts);
+
         super.Step(settings, timeStep);
 
         for (const emitter of this.m_emitters) {

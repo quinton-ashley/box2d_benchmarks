@@ -22,6 +22,7 @@ import { b2ParticleSystem, b2ParticleSystemDef, b2ParticleGroup } from "@box2d/p
 import { Test } from "../../test";
 import { Settings } from "../../settings";
 import { ParticleParameter } from "../../utils/particles/particle_parameter";
+import { checkboxDef } from "../../ui/controls/Checkbox";
 
 export const particleColors = [
     new b2Color().SetByteRGBA(0xff, 0x00, 0x00, 0xff), // red
@@ -37,6 +38,8 @@ export const particleColors = [
 export class AbstractParticleTest extends Test {
     public m_particleSystem: b2ParticleSystem;
 
+    protected static m_strictContacts = false;
+
     public constructor(gravity: XY = { x: 0, y: -10 }) {
         super(gravity);
 
@@ -48,10 +51,20 @@ export class AbstractParticleTest extends Test {
         this.m_particleSystem.SetDensity(1.2);
     }
 
+    public setupControls() {
+        this.addTestControlGroup("Particles", [this.createStrictContactsCheckbox()]);
+    }
+
+    protected createStrictContactsCheckbox() {
+        return checkboxDef("Strict Particle/Body Contacts", AbstractParticleTest.m_strictContacts, (value) => {
+            AbstractParticleTest.m_strictContacts = value;
+        });
+    }
+
     public Step(settings: Settings, timeStep: number) {
         super.Step(settings, timeStep);
 
-        this.m_particleSystem.SetStrictContactCheck(settings.m_strictContacts);
+        this.m_particleSystem.SetStrictContactCheck(AbstractParticleTest.m_strictContacts);
 
         if (settings.m_drawStats) {
             this.addStatistic("Particles", this.m_particleSystem.GetParticleCount());
@@ -121,6 +134,9 @@ export class AbstractParticleTestWithControls extends AbstractParticleTest {
     }
 
     public setupControls() {
-        this.addTestControlGroup("Particles", [this.particleParameter.GetControl()]);
+        this.addTestControlGroup("Particles", [
+            this.createStrictContactsCheckbox(),
+            this.particleParameter.GetControl(),
+        ]);
     }
 }

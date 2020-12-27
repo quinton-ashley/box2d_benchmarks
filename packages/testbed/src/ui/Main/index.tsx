@@ -41,8 +41,8 @@ const TextTableRow = ({ label, value }: TextTableRowProps) => {
     }
     return (
         <tr>
-            <td>{label}</td>
             <td>{value}</td>
+            <td>{label}</td>
         </tr>
     );
 };

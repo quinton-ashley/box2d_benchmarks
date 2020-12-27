@@ -79,6 +79,4 @@ export class Settings {
     public m_pause = false;
 
     public m_singleStep = false;
-
-    public m_strictContacts = false;
 }

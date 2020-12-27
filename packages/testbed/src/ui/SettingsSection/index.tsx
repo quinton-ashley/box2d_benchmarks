@@ -31,11 +31,12 @@ const SettingsSectionRow = ({ control }: SettingsSectionRowProps) => {
 };
 
 interface SettingsSectionProps {
+    defaultOpen?: boolean;
     legend: string;
     controls: TestControl[];
 }
-export const SettingsSection = ({ legend, controls }: SettingsSectionProps) => (
-    <Section legend={legend} defaultOpen className="settings-section">
+export const SettingsSection = ({ legend, controls, defaultOpen }: SettingsSectionProps) => (
+    <Section legend={legend} defaultOpen={defaultOpen} className="settings-section">
         {controls.map((control) => (
             <SettingsSectionRow key={control.name} control={control} />
         ))}

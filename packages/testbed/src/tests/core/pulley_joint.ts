@@ -84,10 +84,9 @@ class PulleyJoint extends Test {
 
     public Step(settings: Settings, timeStep: number): void {
         super.Step(settings, timeStep);
-        const ratio = this.m_joint1.GetRatio();
-        const L = this.m_joint1.GetCurrentLengthA() + ratio * this.m_joint1.GetCurrentLengthB();
-        this.addDebug("L1", ratio.toFixed(2));
-        this.addDebug("L2", L.toFixed(2));
+        this.addDebug("Ratio", this.m_joint1.GetRatio().toFixed(2));
+        this.addDebug("Length A", this.m_joint1.GetCurrentLengthA().toFixed(2));
+        this.addDebug("Length B", this.m_joint1.GetCurrentLengthB().toFixed(2));
     }
 }
 
