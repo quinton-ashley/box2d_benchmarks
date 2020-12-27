@@ -103,4 +103,3 @@ export const SideBar = ({ testControlGroups: testControls }: SideBarProps) => {
         </div>
     );
 };
-1;
