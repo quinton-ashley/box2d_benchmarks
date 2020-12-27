@@ -121,7 +121,9 @@ class Rope extends Test {
         def.position = this.m_position2;
         def.tuning = this.m_tuning2;
         this.m_rope2 = new b2Rope(def);
+    }
 
+    public setupControls() {
         this.addTestControlGroup("Rope 1", this.ropeControls(0, this.m_tuning1));
         this.addTestControlGroup("Rope 2", this.ropeControls(1, this.m_tuning2));
         this.addTestControlGroup("Speed", [

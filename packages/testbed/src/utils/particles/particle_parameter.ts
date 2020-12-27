@@ -16,241 +16,76 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-import { b2Assert } from "@box2d/core";
 import { b2ParticleFlag } from "@box2d/particles";
 
-export enum ParticleParameterOptions {
-    OptionStrictContacts = 1 << 0,
-    OptionDrawShapes = 1 << 1,
-    OptionDrawParticles = 1 << 2,
-    OptionDrawJoints = 1 << 3,
-    OptionDrawAABBs = 1 << 4,
-    OptionDrawContactPoints = 1 << 5,
-    OptionDrawContactNormals = 1 << 6,
-    OptionDrawContactImpulse = 1 << 7,
-    OptionDrawFrictionImpulse = 1 << 8,
-    OptionDrawCOMs = 1 << 9,
-    OptionDrawStats = 1 << 10,
-    OptionDrawProfile = 1 << 11,
-}
+import type { TestManager } from "../../manager";
+import { TestControl } from "../../testControls";
+import { selectDef } from "../../ui/controls/Select";
 
-export class ParticleParameterValue {
-    /**
-     * ParticleParameterValue of a particle parameter.
-     */
-    constructor(value: ParticleParameterValue);
+export const baseParticleTypes = {
+    water: b2ParticleFlag.b2_waterParticle,
+    viscous: b2ParticleFlag.b2_viscousParticle,
+    powder: b2ParticleFlag.b2_powderParticle,
+    tensile: b2ParticleFlag.b2_tensileParticle,
+    "static pressure": b2ParticleFlag.b2_staticPressureParticle,
+};
 
-    constructor(value: number, options: ParticleParameterOptions, name: string);
-
-    constructor(...args: any[]) {
-        if (args[0] instanceof ParticleParameterValue) {
-            this.Copy(args[0]);
-        } else {
-            [this.value, this.options, this.name] = args;
-        }
-    }
-
-    /**
-     * ParticleParameterValue associated with the parameter.
-     */
-    public value = 0;
-
-    /**
-     * Any global (non particle-specific) options associated with
-     * this parameter
-     */
-    public options: ParticleParameterOptions = 0;
-
-    /**
-     * Name to display when this parameter is selected.
-     */
-    public name = "";
-
-    public Copy(other: ParticleParameterValue) {
-        this.value = other.value;
-        this.options = other.options;
-        this.name = other.name;
-        return this;
-    }
-}
-
-export class ParticleParameterDefinition {
-    /**
-     * Particle parameter definition.
-     */
-    constructor(values: ParticleParameterValue[], numValues = values.length) {
-        this.values = values;
-        this.numValues = numValues;
-    }
-
-    public values: ParticleParameterValue[];
-
-    public numValues = 0;
-
-    public CalculateValueMask(): number {
-        let mask = 0;
-        for (let i = 0; i < this.numValues; i++) {
-            mask |= this.values[i].value;
-        }
-        return mask;
-    }
-}
+export const defaultParticleTypes = {
+    ...baseParticleTypes,
+    spring: b2ParticleFlag.b2_springParticle,
+    elastic: b2ParticleFlag.b2_elasticParticle,
+    "color mixing": b2ParticleFlag.b2_colorMixingParticle,
+    wall: b2ParticleFlag.b2_wallParticle,
+    barrier: b2ParticleFlag.b2_barrierParticle | b2ParticleFlag.b2_wallParticle,
+};
 
 export class ParticleParameter {
-    public static readonly k_DefaultOptions: ParticleParameterOptions =
-        ParticleParameterOptions.OptionDrawShapes | ParticleParameterOptions.OptionDrawParticles;
+    private manager: TestManager;
 
-    public static readonly k_particleTypes = [
-        new ParticleParameterValue(b2ParticleFlag.b2_waterParticle, ParticleParameter.k_DefaultOptions, "water"),
-        new ParticleParameterValue(
-            b2ParticleFlag.b2_waterParticle,
-            ParticleParameter.k_DefaultOptions | ParticleParameterOptions.OptionStrictContacts,
-            "water (strict)",
-        ),
-        new ParticleParameterValue(b2ParticleFlag.b2_springParticle, ParticleParameter.k_DefaultOptions, "spring"),
-        new ParticleParameterValue(b2ParticleFlag.b2_elasticParticle, ParticleParameter.k_DefaultOptions, "elastic"),
-        new ParticleParameterValue(b2ParticleFlag.b2_viscousParticle, ParticleParameter.k_DefaultOptions, "viscous"),
-        new ParticleParameterValue(b2ParticleFlag.b2_powderParticle, ParticleParameter.k_DefaultOptions, "powder"),
-        new ParticleParameterValue(b2ParticleFlag.b2_tensileParticle, ParticleParameter.k_DefaultOptions, "tensile"),
-        new ParticleParameterValue(
-            b2ParticleFlag.b2_colorMixingParticle,
-            ParticleParameter.k_DefaultOptions,
-            "color mixing",
-        ),
-        new ParticleParameterValue(b2ParticleFlag.b2_wallParticle, ParticleParameter.k_DefaultOptions, "wall"),
-        new ParticleParameterValue(
-            b2ParticleFlag.b2_barrierParticle | b2ParticleFlag.b2_wallParticle,
-            ParticleParameter.k_DefaultOptions,
-            "barrier",
-        ),
-        new ParticleParameterValue(
-            b2ParticleFlag.b2_staticPressureParticle,
-            ParticleParameter.k_DefaultOptions,
-            "static pressure",
-        ),
-        new ParticleParameterValue(
-            b2ParticleFlag.b2_waterParticle,
-            ParticleParameter.k_DefaultOptions | ParticleParameterOptions.OptionDrawAABBs,
-            "water (bounding boxes)",
-        ),
-    ];
+    private restartOnChange = true;
 
-    public static readonly k_defaultDefinition = [new ParticleParameterDefinition(ParticleParameter.k_particleTypes)];
+    private types: Record<string, number> = defaultParticleTypes;
 
-    public m_index = 0;
+    private selectedKey = "";
 
-    public m_changed = false;
+    private defaultKey = "water";
 
-    public m_restartOnChange = false;
+    constructor(manager: TestManager) {
+        this.manager = manager;
+    }
 
-    public m_value: ParticleParameterValue | null = null;
+    public SetValues<T extends Record<string, number>>(types: T, defaultKey: keyof T) {
+        this.types = types;
+        this.defaultKey = defaultKey as string;
+    }
 
-    public m_definition = ParticleParameter.k_defaultDefinition;
-
-    public m_definitionCount = 0;
-
-    public m_valueCount = 0;
-
-    constructor() {
-        this.Reset();
+    public SetRestartOnChange(restartOnChange = true) {
+        this.restartOnChange = restartOnChange;
     }
 
     public Reset() {
-        this.m_restartOnChange = true;
-        this.m_index = 0;
-        this.SetDefinition(ParticleParameter.k_defaultDefinition);
-        this.Set(0);
+        this.types = defaultParticleTypes;
+        this.selectedKey = "";
+        this.defaultKey = "water";
+        this.restartOnChange = true;
     }
 
-    public SetDefinition(definition: ParticleParameterDefinition[], definitionCount = definition.length): void {
-        this.m_definition = definition;
-        this.m_definitionCount = definitionCount;
-        this.m_valueCount = 0;
-        for (let i = 0; i < this.m_definitionCount; ++i) {
-            this.m_valueCount += this.m_definition[i].numValues;
-        }
-        // Refresh the selected value.
-        this.Set(this.Get());
-    }
-
-    public Get(): number {
-        return this.m_index;
-    }
-
-    public Set(index: number): void {
-        this.m_changed = this.m_index !== index;
-        this.m_index = this.m_valueCount ? index % this.m_valueCount : index;
-        this.m_value = this.FindParticleParameterValue();
-        // DEBUG: b2Assert(this.m_value !== null);
-    }
-
-    public Increment(): void {
-        const index = this.Get();
-        this.Set(index >= this.m_valueCount ? 0 : index + 1);
-    }
-
-    public Decrement(): void {
-        const index = this.Get();
-        this.Set(index === 0 ? this.m_valueCount - 1 : index - 1);
-    }
-
-    public Changed(restart: boolean[]): boolean {
-        const changed = this.m_changed;
-        this.m_changed = false;
-        if (restart) {
-            restart[0] = changed && this.GetRestartOnChange();
-        }
-        return changed;
+    public GetSelectedKey() {
+        return this.selectedKey || this.defaultKey;
     }
 
     public GetValue(): number {
-        b2Assert(this.m_value !== null);
-        return this.m_value.value;
+        return this.types[this.GetSelectedKey()];
     }
 
-    public GetName(): string {
-        b2Assert(this.m_value !== null);
-        return this.m_value.name;
-    }
-
-    public GetOptions(): ParticleParameterOptions {
-        b2Assert(this.m_value !== null);
-        return this.m_value.options;
-    }
-
-    public SetRestartOnChange(enable: boolean): void {
-        this.m_restartOnChange = enable;
-    }
-
-    public GetRestartOnChange(): boolean {
-        return this.m_restartOnChange;
-    }
-
-    public FindIndexByValue(value: number): number {
-        let index = 0;
-        for (let i = 0; i < this.m_definitionCount; ++i) {
-            const definition = this.m_definition[i];
-            const { numValues } = definition;
-            for (let j = 0; j < numValues; ++j, ++index) {
-                if (definition.values[j].value === value) {
-                    return index;
-                }
+    public GetControl(): TestControl {
+        const names = Object.keys(this.types);
+        return selectDef("Particle Type", names, this.GetSelectedKey(), (value) => {
+            if (!this.selectedKey && value === this.defaultKey) this.selectedKey = value;
+            else if (this.selectedKey !== value) {
+                this.selectedKey = value;
+                if (this.restartOnChange) this.manager.scheduleRestart();
             }
-        }
-        return -1;
-    }
-
-    public FindParticleParameterValue(): ParticleParameterValue | null {
-        let start = 0;
-        const index = this.Get();
-        for (let i = 0; i < this.m_definitionCount; ++i) {
-            const definition = this.m_definition[i];
-            const end = start + definition.numValues;
-            if (index >= start && index < end) {
-                return definition.values[index - start];
-            }
-            start = end;
-        }
-        return null;
+        });
     }
 }

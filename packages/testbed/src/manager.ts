@@ -13,7 +13,7 @@ import { getTestsGrouped, Test, TestConstructor, TestEntry } from "./test";
 import { FpsCalculator } from "./utils/FpsCalculator";
 import type { TextTable, TextTableSetter } from "./ui/Main";
 import type { TestControlGroup } from "./ui";
-import { AbstractParticleTest } from "./tests/particles/abstract_particle_test";
+import { ParticleParameter } from "./utils/particles/particle_parameter";
 
 import "./tests";
 
@@ -60,6 +60,8 @@ export class TestManager {
 
     private m_hoveringCanvas = false;
 
+    private shouldRestart = false;
+
     private m_keyMap: { [s: string]: boolean } = {};
 
     private gl: WebGLRenderingContext | null = null;
@@ -75,6 +77,8 @@ export class TestManager {
     private setRightTable: TextTableSetter = () => {};
 
     private setTestControlGroups: (groups: TestControlGroup[]) => void = () => {};
+
+    private readonly particleParameter = new ParticleParameter(this);
 
     public constructor() {
         for (const { tests } of this.groupedTests) {
@@ -269,17 +273,22 @@ export class TestManager {
     }
 
     public LoadTest(restartTest = false): void {
-        AbstractParticleTest.particleParameterSelectionEnabled = false;
         const TestClass = this.testConstructor;
         if (!TestClass || !this.m_ctx || !this.gl || !this.defaultShader || !this.textures) return;
 
         if (!restartTest) {
-            AbstractParticleTest.particleParameter.Reset();
+            this.particleParameter.Reset();
         }
 
         this.m_test?.Destroy();
 
-        this.m_test = new TestClass(this.gl, this.defaultShader, this.textures);
+        this.m_test = new TestClass({
+            gl: this.gl,
+            shader: this.defaultShader,
+            textures: this.textures,
+            particleParameter: this.particleParameter,
+        });
+        this.m_test.setupControls();
         this.testBaseHotKeys = this.m_test.getBaseHotkeys();
         this.testHotKeys = this.m_test.getHotkeys();
         this.allHotKeys = [...this.ownHotKeys, ...this.testBaseHotKeys, ...this.testHotKeys];
@@ -311,11 +320,13 @@ export class TestManager {
         this.m_settings.m_singleStep = true;
     }
 
+    public scheduleRestart() {
+        this.shouldRestart = true;
+    }
+
     public SimulationLoop(): void {
         if (this.m_fpsCalculator.addFrame() <= 0 || !this.gl || !this.defaultShader || !this.m_ctx) return;
         const ctx = this.m_ctx;
-
-        const restartTest = [false];
 
         clearGlCanvas(this.gl, 0, 0, 0, 0);
         this.gl.enable(this.gl.BLEND);
@@ -344,16 +355,14 @@ export class TestManager {
             }
         }
 
-        // Update the state of the particle parameter.
-        AbstractParticleTest.particleParameter.Changed(restartTest);
-
         ctx.restore();
 
         if (this.m_settings.m_drawFpsMeter) this.DrawFpsMeter(ctx);
 
         this.UpdateText();
 
-        if (restartTest[0]) {
+        if (this.shouldRestart) {
+            this.shouldRestart = false;
             this.LoadTest(true);
         }
     }
@@ -382,9 +391,6 @@ export class TestManager {
             ["", ""],
         ];
         if (this.m_test) {
-            if (AbstractParticleTest.particleParameterSelectionEnabled)
-                this.m_test.addDebug("Particle Type", AbstractParticleTest.particleParameter.GetName());
-
             if (this.m_test.m_textLines.length) {
                 leftTable.push(
                     ["Description:", "!"],

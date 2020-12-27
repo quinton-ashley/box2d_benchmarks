@@ -128,7 +128,9 @@ class WreckingBall extends Test {
         this.m_distanceJointDef.bodyA = ground;
         this.m_distanceJoint = this.m_world.CreateJoint(this.m_distanceJointDef);
         this.m_stabilize = true;
+    }
 
+    public setupControls() {
         this.addTestControlGroup("Wrecking Ball", [
             checkboxDef("Stabilize", this.m_stabilize, (value: boolean) => {
                 this.m_stabilize = value;

@@ -79,8 +79,12 @@ const TestMain = ({ entry: { name, TestClass }, setTestControlGroups }: TestComp
         const wrapper = wrapperRef.current;
         if (glCanvas && debugCanvas && wrapper) {
             const loop = () => {
-                window.requestAnimationFrame(loop);
-                manager.SimulationLoop();
+                try {
+                    manager.SimulationLoop();
+                    window.requestAnimationFrame(loop);
+                } catch (e) {
+                    console.error("Error during simulation loop", e);
+                }
             };
             const init = () => {
                 const setTest = (test: TestEntry) => router.history.push(getTestLink(test));

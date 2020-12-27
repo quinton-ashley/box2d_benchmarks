@@ -89,7 +89,7 @@ export const SideBar = ({ testControlGroups: testControls }: SideBarProps) => {
             <div className="sidebar--buttons">
                 <Button label={paused ? "Continue (P)" : "Pause (P)"} onClick={() => manager.SetPause(!paused)} />
                 <Button label="Single Step (O)" onClick={() => manager.SingleStep()} />
-                <Button label="Restart (R)" onClick={() => manager.LoadTest()} />
+                <Button label="Restart (R)" onClick={() => manager.LoadTest(true)} />
             </div>
         </div>
     );

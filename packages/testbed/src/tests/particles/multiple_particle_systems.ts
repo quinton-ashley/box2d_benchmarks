@@ -94,9 +94,6 @@ class MultipleParticleSystems extends AbstractParticleTest {
         this.m_particleSystem2 = this.m_world.CreateParticleSystem(particleSystemDef);
         this.m_particleSystem2.SetMaxParticleCount(MultipleParticleSystems.k_maxParticleCount);
 
-        // Don't restart the test when changing particle types.
-        AbstractParticleTest.SetRestartOnParticleParameterChange(false);
-
         // Create the ground.
         {
             const ground = this.m_world.CreateBody();

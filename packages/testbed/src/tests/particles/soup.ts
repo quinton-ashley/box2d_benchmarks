@@ -19,17 +19,22 @@
 import { b2Body, b2PolygonShape, b2Vec2, b2BodyType, b2CircleShape, b2EdgeShape, b2MassData, XY } from "@box2d/core";
 import { b2ParticleFlag, b2ParticleGroupDef } from "@box2d/particles";
 
-import { registerTest } from "../../test";
-import { AbstractParticleTest } from "./abstract_particle_test";
+import { registerTest, TestContext } from "../../test";
+import { baseParticleTypes } from "../../utils/particles/particle_parameter";
+import { AbstractParticleTestWithControls } from "./abstract_particle_test";
 
-export class Soup extends AbstractParticleTest {
+export const particleTypes = {
+    ...baseParticleTypes,
+    "color mixing": b2ParticleFlag.b2_colorMixingParticle,
+};
+
+export class Soup extends AbstractParticleTestWithControls {
     public m_ground: b2Body;
 
-    constructor() {
-        super();
+    constructor({ particleParameter }: TestContext) {
+        super(particleParameter);
 
-        // Disable the selection of wall and barrier particles for this test.
-        this.InitializeParticleParameters(b2ParticleFlag.b2_wallParticle | b2ParticleFlag.b2_barrierParticle);
+        particleParameter.SetValues(particleTypes, "water");
 
         this.m_ground = this.m_world.CreateBody();
 
@@ -60,7 +65,7 @@ export class Soup extends AbstractParticleTest {
             shape.SetAsBox(2, 1, new b2Vec2(0, 1), 0);
             const pd = new b2ParticleGroupDef();
             pd.shape = shape;
-            pd.flags = AbstractParticleTest.GetParticleParameterValue();
+            pd.flags = particleParameter.GetValue();
             const group = this.m_particleSystem.CreateParticleGroup(pd);
             if (pd.flags & b2ParticleFlag.b2_colorMixingParticle) {
                 this.ColorParticleGroup(group, 0);

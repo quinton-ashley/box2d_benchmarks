@@ -24,7 +24,7 @@ import { PreloadedTextures } from "../../utils/gl/preload";
 import { DefaultShader } from "../../utils/gl/defaultShader";
 import { Sprite } from "../../utils/gl/Sprite";
 import { Settings } from "../../settings";
-import { registerTest } from "../../test";
+import { registerTest, TestContext } from "../../test";
 import { setRandomLightColor } from "../../utils/lights/lightUtils";
 import { AbstractLightTest } from "./abstract_light_test";
 import { selectDef } from "../../ui/controls/Select";
@@ -89,13 +89,18 @@ class OfficialDemo extends AbstractLightTest {
 
     directionalLight: DirectionalLight | null = null;
 
-    public constructor(
-        public readonly gl: WebGLRenderingContext,
-        public readonly shader: DefaultShader,
-        public readonly textures: PreloadedTextures,
-    ) {
+    public readonly gl: WebGLRenderingContext;
+
+    public readonly shader: DefaultShader;
+
+    public readonly textures: PreloadedTextures;
+
+    public constructor({ gl, shader, textures }: TestContext) {
         super(gl);
-        this.bg = new Sprite(gl, this.shader, textures.bg.texture);
+        this.gl = gl;
+        this.shader = shader;
+        this.textures = textures;
+        this.bg = new Sprite(gl, shader, textures.bg.texture);
 
         this.createBoundary();
 
@@ -122,7 +127,7 @@ class OfficialDemo extends AbstractLightTest {
                 categoryBits: Category.MARBLE,
                 maskBits: Mask.MARBLE,
             });
-            return new Marble(new Sprite(gl, this.shader, textures.marble.texture), boxBody);
+            return new Marble(new Sprite(gl, shader, textures.marble.texture), boxBody);
         };
 
         this.marbles = Array.from({ length: 5 }, createMarble);

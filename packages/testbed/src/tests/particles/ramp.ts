@@ -19,12 +19,12 @@
 import { b2PolygonShape, b2Vec2, b2CircleShape, XY } from "@box2d/core";
 import { b2ParticleFlag, b2ParticleGroupDef } from "@box2d/particles";
 
-import { registerTest } from "../../test";
-import { AbstractParticleTest } from "./abstract_particle_test";
+import { registerTest, TestContext } from "../../test";
+import { AbstractParticleTestWithControls } from "./abstract_particle_test";
 
-class Ramp extends AbstractParticleTest {
-    constructor() {
-        super();
+class Ramp extends AbstractParticleTestWithControls {
+    constructor({ particleParameter }: TestContext) {
+        super(particleParameter);
 
         {
             const ground = this.m_world.CreateBody();
@@ -51,7 +51,7 @@ class Ramp extends AbstractParticleTest {
         }
 
         this.m_particleSystem.SetRadius(0.25);
-        const particleType = AbstractParticleTest.GetParticleParameterValue();
+        const particleType = particleParameter.GetValue();
         if (particleType === b2ParticleFlag.b2_waterParticle) {
             this.m_particleSystem.SetDamping(0.2);
         }

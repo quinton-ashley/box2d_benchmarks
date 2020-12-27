@@ -94,9 +94,12 @@ class BoxStack extends Test {
     getHotkeys(): HotKey[] {
         return [
             hotKeyPress("Enter", "Launch a bullet", () => this.LaunchBullet()),
-            // fixme: Setting this here might cause differences in other tests too?
             hotKeyPress("b", "Toggle Block solving", () => b2SetBlockSolve(!b2GetBlockSolve())),
         ];
+    }
+
+    public Destroy() {
+        b2SetBlockSolve(true);
     }
 
     private LaunchBullet() {

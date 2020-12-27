@@ -90,7 +90,9 @@ class Sensors extends Test {
                 this.m_bodies[i].CreateFixture({ shape, density: 1 });
             }
         }
+    }
 
+    public setupControls() {
         this.addTestControlGroup("Sensor", [
             sliderDef("Force", 0, 2000, 1, this.m_force, (value: number) => {
                 this.m_force = value;

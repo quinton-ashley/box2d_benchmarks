@@ -59,7 +59,9 @@ export abstract class AbstractLightTest extends Test {
         );
         this.rayHandler.setAmbientLight(0, 0, 0, 0.5);
         this.rayHandler.setBlurNum(3);
+    }
 
+    public setupControls() {
         this.addTestControlGroup("Light", this.getLightControls());
     }
 

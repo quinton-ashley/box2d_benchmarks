@@ -36,9 +36,17 @@ import { DefaultShader } from "./utils/gl/defaultShader";
 import { PreloadedTextures } from "./utils/gl/preload";
 import type { TestControlGroup } from "./ui";
 import { TestControl } from "./testControls";
+import { ParticleParameter } from "./utils/particles/particle_parameter";
+
+export interface TestContext {
+    gl: WebGLRenderingContext;
+    shader: DefaultShader;
+    textures: PreloadedTextures;
+    particleParameter: ParticleParameter;
+}
 
 export interface TestConstructor {
-    new (gl: WebGLRenderingContext, shader: DefaultShader, textures: PreloadedTextures): Test;
+    new (context: TestContext): Test;
 }
 
 export interface TestEntry {
@@ -184,6 +192,8 @@ export class Test extends b2ContactListener {
 
         this.m_groundBody = this.m_world.CreateBody();
     }
+
+    public setupControls() {}
 
     protected addTestControlGroup(legend: string, controls: TestControl[]) {
         this.m_testControlGroups.push({

@@ -19,35 +19,21 @@
 import { b2ChainShape, b2Vec2, b2PolygonShape, b2EdgeShape, XY } from "@box2d/core";
 import { b2ParticleGroupDef, b2ParticleFlag } from "@box2d/particles";
 
-import { registerTest } from "../../test";
-import {
-    ParticleParameterValue,
-    ParticleParameter,
-    ParticleParameterDefinition,
-} from "../../utils/particles/particle_parameter";
-import { AbstractParticleTest } from "./abstract_particle_test";
+import { registerTest, TestContext } from "../../test";
+import { baseParticleTypes } from "../../utils/particles/particle_parameter";
+import { AbstractParticleTestWithControls } from "./abstract_particle_test";
 
-class LiquidTimer extends AbstractParticleTest {
-    public static readonly k_paramValues = [
-        new ParticleParameterValue(
-            b2ParticleFlag.b2_tensileParticle | b2ParticleFlag.b2_viscousParticle,
-            ParticleParameter.k_DefaultOptions,
-            "tensile + viscous",
-        ),
-    ];
+const particleTypes = {
+    "tensile + viscous": b2ParticleFlag.b2_tensileParticle | b2ParticleFlag.b2_viscousParticle,
+    ...baseParticleTypes,
+};
 
-    public static readonly k_paramDef = [
-        new ParticleParameterDefinition(LiquidTimer.k_paramValues),
-        new ParticleParameterDefinition(ParticleParameter.k_particleTypes),
-    ];
-
-    public static readonly k_paramDefCount = LiquidTimer.k_paramDef.length;
-
-    constructor() {
-        super();
+class LiquidTimer extends AbstractParticleTestWithControls {
+    constructor({ particleParameter }: TestContext) {
+        super(particleParameter);
 
         // Setup particle parameters.
-        AbstractParticleTest.SetParticleParameters(LiquidTimer.k_paramDef, LiquidTimer.k_paramDefCount);
+        particleParameter.SetValues(particleTypes, "tensile + viscous");
 
         {
             const ground = this.m_world.CreateBody();
@@ -63,7 +49,7 @@ class LiquidTimer extends AbstractParticleTest {
             const shape = new b2PolygonShape();
             shape.SetAsBox(2, 0.4, new b2Vec2(0, 3.6), 0);
             const pd = new b2ParticleGroupDef();
-            pd.flags = AbstractParticleTest.GetParticleParameterValue();
+            pd.flags = particleParameter.GetValue();
             pd.shape = shape;
             const group = this.m_particleSystem.CreateParticleGroup(pd);
             if (pd.flags & b2ParticleFlag.b2_colorMixingParticle) {

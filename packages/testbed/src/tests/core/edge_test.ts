@@ -147,7 +147,9 @@ class EdgeTest extends Test {
         this.m_body1 = null;
         this.m_body2 = null;
         this.CreateBoxes();
+    }
 
+    public setupControls() {
         this.addTestControlGroup("Custom", [
             radioDef("Type", ["Boxes", "Circles"], "Boxes", (value: string) => {
                 if (value === "Boxes") this.CreateBoxes();

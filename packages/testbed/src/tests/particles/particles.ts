@@ -19,12 +19,12 @@
 import { b2PolygonShape, b2Vec2, b2CircleShape, b2BodyType, XY } from "@box2d/core";
 import { b2ParticleGroupDef, b2ParticleFlag } from "@box2d/particles";
 
-import { registerTest } from "../../test";
-import { AbstractParticleTest } from "./abstract_particle_test";
+import { registerTest, TestContext } from "../../test";
+import { AbstractParticleTestWithControls } from "./abstract_particle_test";
 
-class Particles extends AbstractParticleTest {
-    constructor() {
-        super();
+class Particles extends AbstractParticleTestWithControls {
+    constructor({ particleParameter }: TestContext) {
+        super(particleParameter);
         {
             const ground = this.m_world.CreateBody();
 
@@ -51,7 +51,7 @@ class Particles extends AbstractParticleTest {
         }
 
         this.m_particleSystem.SetRadius(0.035 * 2); // HACK: increase particle radius
-        const particleType = AbstractParticleTest.GetParticleParameterValue();
+        const particleType = particleParameter.GetValue();
         this.m_particleSystem.SetDamping(0.2);
 
         {

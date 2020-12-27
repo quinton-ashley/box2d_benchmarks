@@ -30,9 +30,10 @@ import {
 } from "@box2d/core";
 import { b2ParticleGroup, b2ParticleSystem, b2ParticleFlag, b2ParticleGroupDef } from "@box2d/particles";
 
-import { registerTest } from "../../test";
+import { registerTest, TestContext } from "../../test";
 import { Settings } from "../../settings";
-import { AbstractParticleTest } from "./abstract_particle_test";
+import { AbstractParticleTestWithControls } from "./abstract_particle_test";
+import { baseParticleTypes } from "../../utils/particles/particle_parameter";
 
 interface SparkUserData {
     spark: boolean;
@@ -165,7 +166,7 @@ class ParticleVFX {
     }
 }
 
-class Sparky extends AbstractParticleTest {
+class Sparky extends AbstractParticleTestWithControls {
     private static c_maxCircles = 3; /// 6;
 
     private static c_maxVFX = 20; /// 50;
@@ -182,8 +183,8 @@ class Sparky extends AbstractParticleTest {
 
     private m_contactPoint = new b2Vec2();
 
-    constructor() {
-        super();
+    constructor({ particleParameter }: TestContext) {
+        super(particleParameter);
 
         // Set up array of sparks trackers.
         this.m_VFXIndex = 0;
@@ -210,8 +211,8 @@ class Sparky extends AbstractParticleTest {
             });
         }
 
-        AbstractParticleTest.SetRestartOnParticleParameterChange(false);
-        AbstractParticleTest.SetParticleParameterValue(b2ParticleFlag.b2_powderParticle);
+        particleParameter.SetValues(baseParticleTypes, "powder");
+        particleParameter.SetRestartOnChange(false);
     }
 
     public BeginContact(contact: b2Contact) {
@@ -233,7 +234,7 @@ class Sparky extends AbstractParticleTest {
     }
 
     public Step(settings: Settings, timeStep: number): void {
-        const particleFlags = AbstractParticleTest.GetParticleParameterValue();
+        const particleFlags = this.particleParameter.GetValue();
         let dt = settings.m_hertz > 0 ? 1 / settings.m_hertz : 0;
         if (settings.m_pause && !settings.m_singleStep) {
             dt = 0;

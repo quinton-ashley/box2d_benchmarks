@@ -24,7 +24,7 @@ import { HotKey, hotKeyPress } from "../../utils/hotkeys";
 import { PreloadedTextures } from "../../utils/gl/preload";
 import { DefaultShader } from "../../utils/gl/defaultShader";
 import { Settings } from "../../settings";
-import { registerTest } from "../../test";
+import { registerTest, TestContext } from "../../test";
 import { setRandomLightColor } from "../../utils/lights/lightUtils";
 import heart from "./heart.json";
 import { AbstractLightTest } from "./abstract_light_test";
@@ -44,12 +44,18 @@ class DrawWorld extends AbstractLightTest {
 
     dragStart = new b2Vec2();
 
-    public constructor(
-        public readonly gl: WebGLRenderingContext,
-        public readonly shader: DefaultShader,
-        public readonly textures: PreloadedTextures,
-    ) {
+    public readonly gl: WebGLRenderingContext;
+
+    public readonly shader: DefaultShader;
+
+    public readonly textures: PreloadedTextures;
+
+    public constructor({ gl, shader, textures }: TestContext) {
         super(gl);
+        this.gl = gl;
+        this.shader = shader;
+        this.textures = textures;
+
         this.mouseLight = this.createLight();
         this.mouseLight.setColor(1, 0, 0, 1);
 

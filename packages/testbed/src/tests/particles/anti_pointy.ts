@@ -19,20 +19,21 @@
 import { b2PolygonShape, b2Vec2, XY } from "@box2d/core";
 import { b2ParticleFlag, b2ParticleDef } from "@box2d/particles";
 
-import { registerTest } from "../../test";
+import { registerTest, TestContext } from "../../test";
 import { Settings } from "../../settings";
-import { AbstractParticleTest } from "./abstract_particle_test";
+import { AbstractParticleTestWithControls } from "./abstract_particle_test";
+import { baseParticleTypes } from "../../utils/particles/particle_parameter";
 
 /**
  * Test the behavior of particles falling onto a concave
  * ambiguous Body contact fixture junction.
  */
 
-class AntiPointy extends AbstractParticleTest {
+class AntiPointy extends AbstractParticleTestWithControls {
     public m_particlesToCreate = 300;
 
-    constructor() {
-        super();
+    constructor({ particleParameter }: TestContext) {
+        super(particleParameter);
 
         {
             const ground = this.m_world.CreateBody();
@@ -65,10 +66,11 @@ class AntiPointy extends AbstractParticleTest {
         this.m_particlesToCreate = 300;
 
         this.m_particleSystem.SetRadius(0.25 * 2); // HACK: increase particle radius
-        const particleType = AbstractParticleTest.GetParticleParameterValue();
+        const particleType = particleParameter.GetValue();
         if (particleType === b2ParticleFlag.b2_waterParticle) {
             this.m_particleSystem.SetDamping(0.2);
         }
+        particleParameter.SetValues(baseParticleTypes, "water");
     }
 
     public Step(settings: Settings, timeStep: number) {
@@ -80,7 +82,7 @@ class AntiPointy extends AbstractParticleTest {
 
         --this.m_particlesToCreate;
 
-        const flags = AbstractParticleTest.GetParticleParameterValue();
+        const flags = this.particleParameter.GetValue();
         const pd = new b2ParticleDef();
 
         pd.position.Set(0, 40);

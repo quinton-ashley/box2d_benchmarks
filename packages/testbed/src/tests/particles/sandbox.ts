@@ -38,17 +38,23 @@ import {
 } from "@box2d/core";
 import { b2ParticleHandle, b2ParticleSystem, b2ParticleFlag, b2ParticleGroup } from "@box2d/particles";
 
-import { registerTest } from "../../test";
+import { registerTest, TestContext } from "../../test";
 import { Settings } from "../../settings";
-import {
-    ParticleParameterValue,
-    ParticleParameter,
-    ParticleParameterOptions,
-    ParticleParameterDefinition,
-} from "../../utils/particles/particle_parameter";
 import { RadialEmitter } from "../../utils/particles/particle_emitter";
-import { HotKey, hotKeyPress } from "../../utils/hotkeys";
-import { AbstractParticleTest } from "./abstract_particle_test";
+import { AbstractParticleTestWithControls } from "./abstract_particle_test";
+
+const particleTypes = {
+    water: b2ParticleFlag.b2_waterParticle,
+    powder: b2ParticleFlag.b2_powderParticle,
+    tensile: b2ParticleFlag.b2_tensileParticle,
+    viscous: b2ParticleFlag.b2_viscousParticle,
+    "tensile powder": b2ParticleFlag.b2_tensileParticle | b2ParticleFlag.b2_powderParticle,
+
+    "viscous powder": b2ParticleFlag.b2_viscousParticle | b2ParticleFlag.b2_powderParticle,
+    "viscous tensile powder":
+        b2ParticleFlag.b2_viscousParticle | b2ParticleFlag.b2_tensileParticle | b2ParticleFlag.b2_powderParticle,
+    "tensile viscous water": b2ParticleFlag.b2_viscousParticle | b2ParticleFlag.b2_tensileParticle,
+};
 
 // /**
 //  * The following parameters are not static const members of the
@@ -250,7 +256,7 @@ class SpecialParticleTracker extends b2DestructionListener {
  * add new maze elements!
  */
 
-class Sandbox extends AbstractParticleTest {
+class Sandbox extends AbstractParticleTestWithControls {
     /**
      * Count of faucets in the world
      */
@@ -265,11 +271,6 @@ class Sandbox extends AbstractParticleTest {
      * How long have we been pushing the pumps?
      */
     public m_pumpTimer = 0;
-
-    /**
-     * Particle creation flags
-     */
-    public m_particleFlags = 0;
 
     /**
      * Pump force
@@ -298,44 +299,8 @@ class Sandbox extends AbstractParticleTest {
      */
     public m_specialTracker: SpecialParticleTracker;
 
-    public static readonly k_paramValues = [
-        new ParticleParameterValue(b2ParticleFlag.b2_waterParticle, ParticleParameter.k_DefaultOptions, "water"),
-        new ParticleParameterValue(
-            b2ParticleFlag.b2_waterParticle,
-            ParticleParameter.k_DefaultOptions | ParticleParameterOptions.OptionStrictContacts,
-            "water (strict)",
-        ),
-        new ParticleParameterValue(b2ParticleFlag.b2_powderParticle, ParticleParameter.k_DefaultOptions, "powder"),
-        new ParticleParameterValue(b2ParticleFlag.b2_tensileParticle, ParticleParameter.k_DefaultOptions, "tensile"),
-        new ParticleParameterValue(b2ParticleFlag.b2_viscousParticle, ParticleParameter.k_DefaultOptions, "viscous"),
-        new ParticleParameterValue(
-            b2ParticleFlag.b2_tensileParticle | b2ParticleFlag.b2_powderParticle,
-            ParticleParameter.k_DefaultOptions,
-            "tensile powder",
-        ),
-        new ParticleParameterValue(
-            b2ParticleFlag.b2_viscousParticle | b2ParticleFlag.b2_powderParticle,
-            ParticleParameter.k_DefaultOptions,
-            "viscous powder",
-        ),
-        new ParticleParameterValue(
-            b2ParticleFlag.b2_viscousParticle | b2ParticleFlag.b2_tensileParticle | b2ParticleFlag.b2_powderParticle,
-            ParticleParameter.k_DefaultOptions,
-            "viscous tensile powder",
-        ),
-        new ParticleParameterValue(
-            b2ParticleFlag.b2_viscousParticle | b2ParticleFlag.b2_tensileParticle,
-            ParticleParameter.k_DefaultOptions,
-            "tensile viscous water",
-        ),
-    ];
-
-    public static readonly k_paramDef = [new ParticleParameterDefinition(Sandbox.k_paramValues)];
-
-    public static readonly k_paramDefCount = Sandbox.k_paramDef.length;
-
-    constructor() {
-        super({ x: 0, y: -20 });
+    constructor({ particleParameter }: TestContext) {
+        super(particleParameter, { x: 0, y: -20 });
 
         // We need some ground for the pumps to slide against
         const ground = this.m_world.CreateBody();
@@ -399,9 +364,8 @@ class Sandbox extends AbstractParticleTest {
         this.m_killFieldTransform.SetPositionAngle(loc, 0);
 
         // Setup particle parameters.
-        AbstractParticleTest.SetParticleParameters(Sandbox.k_paramDef, Sandbox.k_paramDefCount);
-        this.m_particleFlags = AbstractParticleTest.GetParticleParameterValue();
-        AbstractParticleTest.SetRestartOnParticleParameterChange(false);
+        particleParameter.SetValues(particleTypes, "water");
+        particleParameter.SetRestartOnChange(false);
     }
 
     public Destroy() {
@@ -603,35 +567,11 @@ class Sandbox extends AbstractParticleTest {
         super.PostSolve(contact, impulse);
     }
 
-    getHotkeys(): HotKey[] {
-        return [
-            hotKeyPress("a", "Remove All Flags (Water)", () => this.ResetFlags()),
-            hotKeyPress("q", "Toggle Powder Flag", () => this.ToggleFlag(b2ParticleFlag.b2_powderParticle)),
-            hotKeyPress("t", "Toggle Tensile Flag", () => this.ToggleFlag(b2ParticleFlag.b2_tensileParticle)),
-            hotKeyPress("v", "Toggle Viscous Flag", () => this.ToggleFlag(b2ParticleFlag.b2_viscousParticle)),
-            hotKeyPress("w", "Toggle Wall Flag", () => this.ToggleFlag(b2ParticleFlag.b2_wallParticle)),
-        ];
-    }
-
     public getCenter(): XY {
         return {
             x: 0,
             y: 20,
         };
-    }
-
-    private ResetFlags() {
-        this.m_particleFlags = 0;
-        AbstractParticleTest.SetParticleParameterValue(0);
-    }
-
-    private ToggleFlag(flag: b2ParticleFlag) {
-        if (this.m_particleFlags & flag) {
-            this.m_particleFlags &= ~flag;
-        } else {
-            this.m_particleFlags |= flag;
-        }
-        AbstractParticleTest.SetParticleParameterValue(this.m_particleFlags);
     }
 
     /**
@@ -644,14 +584,14 @@ class Sandbox extends AbstractParticleTest {
         }
         super.Step(settings, timeStep);
 
-        this.m_particleFlags = AbstractParticleTest.GetParticleParameterValue();
+        const particleFlags = this.particleParameter.GetValue();
 
         // Step all the emitters
         for (let i = 0; i < this.m_faucetEmitterIndex; i++) {
             const particleIndices: number[] = [];
             const emitter = this.m_emitters[i];
             if (emitter) {
-                emitter.SetParticleFlags(this.m_particleFlags);
+                emitter.SetParticleFlags(particleFlags);
                 const particlesCreated = emitter.Step(dt, particleIndices, SandboxParams.k_numberOfSpecialParticles);
                 this.m_specialTracker.Add(particleIndices, particlesCreated);
             }

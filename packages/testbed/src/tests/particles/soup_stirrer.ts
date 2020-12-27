@@ -21,7 +21,7 @@ import { b2Body, b2Joint, b2CircleShape, b2BodyType, b2Transform, b2PrismaticJoi
 import { Soup } from "./soup";
 import { Settings } from "../../settings";
 import { HotKey, hotKeyPress } from "../../utils/hotkeys";
-import { registerTest } from "../../test";
+import { registerTest, TestContext } from "../../test";
 
 class SoupStirrer extends Soup {
     public m_stirrer: b2Body;
@@ -30,8 +30,8 @@ class SoupStirrer extends Soup {
 
     public m_oscillationOffset = 0;
 
-    constructor() {
-        super();
+    constructor(context: TestContext) {
+        super(context);
 
         this.m_particleSystem.SetDamping(1);
 
