@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useRouter } from "react-router-ts";
 
 import "./style.scss";
@@ -8,6 +8,7 @@ import { settingsCheckboxDef, settingsSliderDef } from "../../testControls";
 import { Button } from "../controls/Button";
 import type { TestControlGroupsState } from "..";
 import { TestsFolder } from "../TestsFolder";
+import { getTestLink } from "../../utils/reactUtils";
 
 interface SideBarProps {
     testControlGroups: TestControlGroupsState;
@@ -20,6 +21,10 @@ export const SideBar = ({ testControlGroups: testControls }: SideBarProps) => {
 
     const router = useRouter();
     const link = decodeURIComponent(router.path);
+    const hasValidTest = useMemo(
+        () => manager.groupedTests.some((group) => group.tests.some((test) => link === getTestLink(test))),
+        [manager, link],
+    );
 
     useEffect(() => {
         const connection = manager.onPauseChanged.connect(setPaused);
@@ -27,6 +32,9 @@ export const SideBar = ({ testControlGroups: testControls }: SideBarProps) => {
             connection.disconnect();
         };
     });
+    useEffect(() => {
+        if (!hasValidTest && tab !== "tests") setTab("tests");
+    }, [hasValidTest, tab]);
     const iterationControls = [
         settingsSliderDef(manager, "m_velocityIterations", "Velocity Iters", 0, 50, 1),
         settingsSliderDef(manager, "m_positionIterations", "Position Iters", 0, 50, 1),
@@ -85,11 +93,14 @@ export const SideBar = ({ testControlGroups: testControls }: SideBarProps) => {
                     <TestsFolder key={name} name={name} tests={tests} link={link} />
                 ))}
             </div>
-            <div className="sidebar--buttons">
-                <Button label={paused ? "Continue (P)" : "Pause (P)"} onClick={() => manager.SetPause(!paused)} />
-                <Button label="Single Step (O)" onClick={() => manager.SingleStep()} />
-                <Button label="Restart (R)" onClick={() => manager.LoadTest(true)} />
-            </div>
+            {tab === "controls" && (
+                <div className="sidebar--buttons">
+                    <Button label={paused ? "Continue (P)" : "Pause (P)"} onClick={() => manager.SetPause(!paused)} />
+                    <Button label="Single Step (O)" onClick={() => manager.SingleStep()} />
+                    <Button label="Restart (R)" onClick={() => manager.LoadTest(true)} />
+                </div>
+            )}
         </div>
     );
 };
+1;
