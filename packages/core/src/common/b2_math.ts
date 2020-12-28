@@ -1276,8 +1276,8 @@ export class b2Sweep {
     /**
      * Get the interpolated transform at a specific time.
      *
-     * @param transform the output transform
-     * @param beta is a factor in [0,1], where 0 indicates alpha0.
+     * @param transform The output transform
+     * @param beta Is a factor in [0,1], where 0 indicates alpha0.
      * @see https://fgiesen.wordpress.com/2012/08/15/linear-interpolation-past-present-and-future/
      */
     public GetTransform(xf: b2Transform, beta: number) {
@@ -1295,7 +1295,7 @@ export class b2Sweep {
     /**
      * Advance the sweep forward, yielding a new initial state.
      *
-     * @param alpha the new initial time.
+     * @param alpha The new initial time.
      */
     public Advance(alpha: number) {
         // DEBUG: b2Assert(this.alpha0 < 1);

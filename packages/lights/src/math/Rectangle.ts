@@ -22,11 +22,13 @@ export class Rectangle {
 
     public height = 0;
 
-    /** @param x bottom-left x coordinate
-     * @param y bottom-left y coordinate
-     * @param width width
-     * @param height height
-     * @return this rectangle for chaining */
+    /**
+     * @param x Bottom-left x coordinate
+     * @param y Bottom-left y coordinate
+     * @param width Width
+     * @param height Height
+     * @returns This rectangle for chaining
+     */
     public set(x: number, y: number, width: number, height: number) {
         this.x = x;
         this.y = y;
@@ -36,15 +38,19 @@ export class Rectangle {
         return this;
     }
 
-    /** @param x point x coordinate
-     * @param y point y coordinate
-     * @return whether the point is contained in the rectangle */
+    /**
+     * @param x Point x coordinate
+     * @param y Point y coordinate
+     * @returns Whether the point is contained in the rectangle
+     */
     public contains(x: number, y: number) {
         return this.x <= x && this.x + this.width >= x && this.y <= y && this.y + this.height >= y;
     }
 
-    /** @param r the other {@link Rectangle}
-     * @return whether this rectangle overlaps the other rectangle. */
+    /**
+     * @param r The other {@link Rectangle}
+     * @returns Whether this rectangle overlaps the other rectangle.
+     */
     public overlaps(r: Rectangle) {
         return (
             this.x < r.x + r.width && this.x + this.width > r.x && this.y < r.y + r.height && this.y + this.height > r.y

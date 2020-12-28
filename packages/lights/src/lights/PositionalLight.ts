@@ -135,12 +135,16 @@ export abstract class PositionalLight extends Light {
         return this.body;
     }
 
-    /** @return horizontal starting position of light in world coordinates * */
+    /**
+     * @returns Horizontal starting position of light in world coordinates
+     */
     public getX() {
         return this.start.x;
     }
 
-    /** @return vertical starting position of light in world coordinates * */
+    /**
+     * @returns Vertical starting position of light in world coordinates
+     */
     public getY() {
         return this.start.y;
     }

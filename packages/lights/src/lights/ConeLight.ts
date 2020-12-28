@@ -70,7 +70,7 @@ export class ConeLight extends PositionalLight {
     }
 
     /**
-     * @return this lights cone degree
+     * @returns This lights cone degree
      */
     public getConeDegree() {
         return this.coneDegree;
@@ -100,7 +100,7 @@ export class ConeLight extends PositionalLight {
         this.dirty = true;
     }
 
-    /** Updates lights sector basing on distance, direction and coneDegree * */
+    /** Updates lights sector basing on distance, direction and coneDegree */
     protected setEndPoints() {
         for (let i = 0; i < this.rayNum; i++) {
             const angle = this.direction + this.coneDegree - (2 * this.coneDegree * i) / (this.rayNum - 1);

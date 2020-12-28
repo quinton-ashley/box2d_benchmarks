@@ -22,9 +22,9 @@ export class FpsCalculator {
     };
 
     /**
-     * @param waitTime time to wait before updating the time, to avoid flickering
-     * @param cacheSize number of frames to cache
-     * @param startValue the start value of all cache items (in milliseconds)
+     * @param waitTime Time to wait before updating the time, to avoid flickering
+     * @param cacheSize Number of frames to cache
+     * @param startValue The start value of all cache items (in milliseconds)
      */
     public constructor(waitTime: number, cacheSize: number, startValue: number) {
         this.waitTime = waitTime;

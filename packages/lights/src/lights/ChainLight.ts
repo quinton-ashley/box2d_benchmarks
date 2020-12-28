@@ -238,7 +238,7 @@ export class ChainLight extends Light {
         this.dirty = true;
     }
 
-    /** Not applicable for this light type * */
+    /** Not applicable for this light type */
     public setDirection(_directionDegree: number) {}
 
     /**
@@ -444,7 +444,7 @@ export class ChainLight extends Light {
         }
     }
 
-    /** Internal method for bounding rectangle recalculation * */
+    /** Internal method for bounding rectangle recalculation */
     protected updateBoundingRects() {
         let maxX = this.startX[0];
         let minX = this.startX[0];

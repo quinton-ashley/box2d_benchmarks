@@ -166,8 +166,8 @@ export class b2BroadPhase<T> {
      * roughly equal to k * log(n), where k is the number of collisions and n is the
      * number of proxies in the tree.
      *
-     * @param input the ray-cast input data. The ray extends from p1 to p1 + maxFraction * (p2 - p1).
-     * @param callback a callback class that is called for each proxy that is hit by the ray.
+     * @param input The ray-cast input data. The ray extends from p1 to p1 + maxFraction * (p2 - p1).
+     * @param callback A callback class that is called for each proxy that is hit by the ray.
      */
     public RayCast(input: b2RayCastInput, callback: (input: b2RayCastInput, node: b2TreeNode<T>) => number): void {
         this.m_tree.RayCast(input, callback);
@@ -198,7 +198,7 @@ export class b2BroadPhase<T> {
      * Shift the world origin. Useful for large worlds.
      * The shift formula is: position -= newOrigin
      *
-     * @param newOrigin the new origin with respect to the old origin
+     * @param newOrigin The new origin with respect to the old origin
      */
     public ShiftOrigin(newOrigin: XY): void {
         this.m_tree.ShiftOrigin(newOrigin);

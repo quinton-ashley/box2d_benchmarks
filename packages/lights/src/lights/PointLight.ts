@@ -57,7 +57,7 @@ export class PointLight extends PositionalLight {
         this.dirty = true;
     }
 
-    /** Updates light basing on it's distance and rayNum * */
+    /** Updates light basing on it's distance and rayNum */
     setEndPoints() {
         const angleNum = 360 / (this.rayNum - 1);
         for (let i = 0; i < this.rayNum; i++) {
@@ -69,6 +69,6 @@ export class PointLight extends PositionalLight {
         }
     }
 
-    /** Not applicable for this light type * */
+    /** Not applicable for this light type */
     public setDirection(_directionDegree: number) {}
 }

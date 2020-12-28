@@ -46,11 +46,11 @@ export class FrameBuffer {
 
     /** Creates a new FrameBuffer having the given dimensions and potentially a depth and a stencil buffer attached.
      *
-     * @param format the format of the color buffer; according to the OpenGL ES 2 spec, only RGB565, RGBA4444 and RGB5_A1 are
+     * @param format The format of the color buffer; according to the OpenGL ES 2 spec, only RGB565, RGBA4444 and RGB5_A1 are
      *           color-renderable
-     * @param width the width of the framebuffer in pixels
-     * @param height the height of the framebuffer in pixels
-     * @param hasDepth whether to attach a depth buffer
+     * @param width The width of the framebuffer in pixels
+     * @param height The height of the framebuffer in pixels
+     * @param hasDepth Whether to attach a depth buffer
      * @throws com.badlogic.gdx.utils.GdxRuntimeException in case the FrameBuffer could not be created */
     public constructor(gl: WebGLRenderingContext, width: number, height: number) {
         this.gl = gl;
@@ -140,10 +140,10 @@ export class FrameBuffer {
 
     /** Unbinds the framebuffer and sets viewport sizes, all drawing will be performed to the normal framebuffer from here on.
      *
-     * @param x the x-axis position of the viewport in pixels
-     * @param y the y-asis position of the viewport in pixels
-     * @param width the width of the viewport in pixels
-     * @param height the height of the viewport in pixels */
+     * @param x The x-axis position of the viewport in pixels
+     * @param y The y-asis position of the viewport in pixels
+     * @param width The width of the viewport in pixels
+     * @param height The height of the viewport in pixels */
     public end(x: number, y: number, width: number, height: number) {
         this.unbind();
         this.gl.viewport(x, y, width, height);

@@ -47,8 +47,8 @@ export class b2ChainShape extends b2Shape {
     /**
      * Create a loop. This automatically adjusts connectivity.
      *
-     * @param vertices an array of vertices, these are copied
-     * @param count the vertex count
+     * @param vertices An array of vertices, these are copied
+     * @param count The vertex count
      */
     public CreateLoop(vertices: XY[], count = vertices.length): b2ChainShape {
         // DEBUG: b2Assert(count >= 3);
@@ -77,10 +77,10 @@ export class b2ChainShape extends b2Shape {
     /**
      * Create a chain with ghost vertices to connect multiple chains together.
      *
-     * @param vertices an array of vertices, these are copied
-     * @param count the vertex count
-     * @param prevVertex previous vertex from chain that connects to the start
-     * @param nextVertex next vertex from chain that connects to the end
+     * @param vertices An array of vertices, these are copied
+     * @param count The vertex count
+     * @param prevVertex Previous vertex from chain that connects to the start
+     * @param nextVertex Next vertex from chain that connects to the end
      */
     public CreateChain(
         vertices: XY[],

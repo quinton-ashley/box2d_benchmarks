@@ -269,10 +269,10 @@ export class b2PolygonShape extends b2Shape {
     /**
      * Build vertices to represent an axis-aligned box or an oriented box.
      *
-     * @param hx the half-width.
-     * @param hy the half-height.
-     * @param center the center of the box in local coordinates.
-     * @param angle the rotation of the box in local coordinates.
+     * @param hx The half-width.
+     * @param hy The half-height.
+     * @param center The center of the box in local coordinates.
+     * @param angle The rotation of the box in local coordinates.
      */
     public SetAsBox(hx: number, hy: number, center?: XY, angle = 0): b2PolygonShape {
         this.m_count = 4;

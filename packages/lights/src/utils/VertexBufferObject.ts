@@ -32,8 +32,8 @@ export class VertexBufferObject {
 
     /** Constructs a new interleaved VertexBufferObject.
      *
-     * @param isStatic whether the vertex data is static.
-     * @param attributes the {@link VertexAttributes}. */
+     * @param isStatic Whether the vertex data is static.
+     * @param attributes The {@link VertexAttributes}. */
     public constructor(gl: WebGLRenderingContext, usage: GLenum, data: ArrayBufferView) {
         this.gl = gl;
         this.buffer = gl.createBuffer()!;

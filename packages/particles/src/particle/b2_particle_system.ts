@@ -1016,7 +1016,7 @@ export class b2ParticleSystem {
      * the shape in constrast to DestroyParticle() which defers the
      * destruction until the next simulation step.
      *
-     * @return Number of particles destroyed.
+     * @returns Number of particles destroyed.
      * @param shape Shape which encloses particles
      *      that should be destroyed.
      * @param xf Transform applied to the shape.
@@ -1117,8 +1117,8 @@ export class b2ParticleSystem {
      *
      * warning: This function is locked during callbacks.
      *
-     * @param groupA the first group. Expands to encompass the second group.
-     * @param groupB the second group. It is destroyed.
+     * @param groupA The first group. Expands to encompass the second group.
+     * @param groupB The second group. It is destroyed.
      */
     public JoinParticleGroups(groupA: b2ParticleGroup, groupB: b2ParticleGroup): void {
         b2Assert(!this.m_world.IsLocked());
@@ -1149,7 +1149,7 @@ export class b2ParticleSystem {
      *
      * warning: This function is locked during callbacks.
      *
-     * @param group the group to be split.
+     * @param group The group to be split.
      */
     public SplitParticleGroup(group: b2ParticleGroup): void {
         this.UpdateContacts(true);
@@ -1172,7 +1172,7 @@ export class b2ParticleSystem {
      *
      * A null group indicates the end of the list.
      *
-     * @return the head of the world particle group list.
+     * @returns The head of the world particle group list.
      */
     public GetParticleGroupList(): b2ParticleGroup | null {
         return this.m_groupList;
@@ -1235,7 +1235,7 @@ export class b2ParticleSystem {
      * b2World::Step() skips over this particle system. All
      * b2ParticleSystem function calls still work.
      *
-     * @param paused paused is true to pause, false to un-pause.
+     * @param paused Paused is true to pause, false to un-pause.
      */
     public SetPaused(paused: boolean): void {
         this.m_paused = paused;
@@ -1245,7 +1245,7 @@ export class b2ParticleSystem {
      * Initially, true, then, the last value passed into
      * SetPaused().
      *
-     * @return true if the particle system is being updated in b2World::Step().
+     * @returns true if the particle system is being updated in b2World::Step().
      */
     public GetPaused(): boolean {
         return this.m_paused;
@@ -1352,7 +1352,7 @@ export class b2ParticleSystem {
      *
      * Array is length GetParticleCount()
      *
-     * @return the pointer to the head of the particle positions array.
+     * @returns The pointer to the head of the particle positions array.
      */
     public GetPositionBuffer(): b2Vec2[] {
         return this.m_positionBuffer.data;
@@ -1363,7 +1363,7 @@ export class b2ParticleSystem {
      *
      * Array is length GetParticleCount()
      *
-     * @return the pointer to the head of the particle velocities array.
+     * @returns The pointer to the head of the particle velocities array.
      */
     public GetVelocityBuffer(): b2Vec2[] {
         return this.m_velocityBuffer.data;
@@ -1374,7 +1374,7 @@ export class b2ParticleSystem {
      *
      * Array is length GetParticleCount()
      *
-     * @return the pointer to the head of the particle colors array.
+     * @returns The pointer to the head of the particle colors array.
      */
     public GetColorBuffer(): b2Color[] {
         this.m_colorBuffer.data = this.RequestBuffer(this.m_colorBuffer.data);
@@ -1386,7 +1386,7 @@ export class b2ParticleSystem {
      *
      * Array is length GetParticleCount()
      *
-     * @return the pointer to the head of the particle group array.
+     * @returns The pointer to the head of the particle group array.
      */
     public GetGroupBuffer(): Array<b2ParticleGroup | null> {
         return this.m_groupBuffer;
@@ -1397,7 +1397,7 @@ export class b2ParticleSystem {
      *
      * Array is length GetParticleCount()
      *
-     * @return the pointer to the head of the particle positions array.
+     * @returns The pointer to the head of the particle positions array.
      */
     public GetWeightBuffer(): number[] {
         return this.m_weightBuffer;
@@ -1408,7 +1408,7 @@ export class b2ParticleSystem {
      *
      * Array is length GetParticleCount()
      *
-     * @return the pointer to the head of the particle user-data array.
+     * @returns The pointer to the head of the particle user-data array.
      */
     public GetUserDataBuffer<T>(): T[] {
         this.m_userDataBuffer.data = this.RequestBuffer(this.m_userDataBuffer.data);
@@ -1420,7 +1420,7 @@ export class b2ParticleSystem {
      *
      * Array is length GetParticleCount()
      *
-     * @return the pointer to the head of the particle-flags array.
+     * @returns The pointer to the head of the particle-flags array.
      */
     public GetFlagsBuffer(): b2ParticleFlag[] {
         return this.m_flagsBuffer.data;
@@ -1468,8 +1468,8 @@ export class b2ParticleSystem {
      * external buffers are used, the maximum number of particles is
      * clamped to the size of the smallest external buffer.
      *
-     * @param buffer a pointer to a block of memory.
-     * @param capacity the number of values in the block.
+     * @param buffer A pointer to a block of memory.
+     * @param capacity The number of values in the block.
      */
     public SetFlagsBuffer(buffer: b2ParticleFlag[]): void {
         this.SetUserOverridableBuffer(this.m_flagsBuffer, buffer);
@@ -1761,8 +1761,8 @@ export class b2ParticleSystem {
      * Apply an impulse to one particle. This immediately modifies
      * the velocity. Similar to b2Body::ApplyLinearImpulse.
      *
-     * @param index the particle that will be modified.
-     * @param impulse impulse the world impulse vector, usually in N-seconds or kg-m/s.
+     * @param index The particle that will be modified.
+     * @param impulse Impulse the world impulse vector, usually in N-seconds or kg-m/s.
      */
     public ParticleApplyLinearImpulse(index: number, impulse: XY): void {
         this.ApplyLinearImpulse(index, index + 1, impulse);
@@ -1777,9 +1777,9 @@ export class b2ParticleSystem {
      * as much velocity as calling just ApplyLinearImpulse(0, 1,
      * impulse).
      *
-     * @param firstIndex the first particle to be modified.
-     * @param lastIndex the last particle to be modified.
-     * @param impulse the world impulse vector, usually in N-seconds or kg-m/s.
+     * @param firstIndex The first particle to be modified.
+     * @param lastIndex The last particle to be modified.
+     * @param impulse The world impulse vector, usually in N-seconds or kg-m/s.
      */
     public ApplyLinearImpulse(firstIndex: number, lastIndex: number, impulse: XY): void {
         const vel_data = this.m_velocityBuffer.data;
@@ -1798,8 +1798,8 @@ export class b2ParticleSystem {
     /**
      * Apply a force to the center of a particle.
      *
-     * @param index the particle that will be modified.
-     * @param force the world force vector, usually in Newtons (N).
+     * @param index The particle that will be modified.
+     * @param force The world force vector, usually in Newtons (N).
      */
     public ParticleApplyForce(index: number, force: XY): void {
         if (b2ParticleSystem.IsSignificantForce(force) && this.ForceCanBeApplied(this.m_flagsBuffer.data[index])) {
@@ -1815,9 +1815,9 @@ export class b2ParticleSystem {
      * function for indices 0..N is not the same as calling
      * ParticleApplyForce(i, force) for i in 0..N.
      *
-     * @param firstIndex the first particle to be modified.
-     * @param lastIndex the last particle to be modified.
-     * @param force the world force vector, usually in Newtons (N).
+     * @param firstIndex The first particle to be modified.
+     * @param lastIndex The last particle to be modified.
+     * @param force The world force vector, usually in Newtons (N).
      */
     public ApplyForce(firstIndex: number, lastIndex: number, force: XY): void {
         // Ensure we're not trying to apply force to particles that can't move,
@@ -1852,8 +1852,8 @@ export class b2ParticleSystem {
      * Query the particle system for all particles that potentially
      * overlap the provided AABB.
      *
-     * @param callback a user implemented callback class.
-     * @param aabb the query box.
+     * @param callback A user implemented callback class.
+     * @param aabb The query box.
      */
     public QueryAABB(aabb: b2AABB, callback: b2ParticleQueryCallback): void {
         if (this.m_proxyBuffer.count === 0) {
@@ -1904,9 +1904,9 @@ export class b2ParticleSystem {
      * overlap the provided shape's AABB. Calls QueryAABB
      * internally.
      *
-     * @param callback a user implemented callback class.
-     * @param shape the query shape
-     * @param xf the transform of the AABB
+     * @param callback A user implemented callback class.
+     * @param shape The query shape
+     * @param xf The transform of the AABB
      * @param childIndex
      */
     public QueryShapeAABB(
@@ -1939,9 +1939,9 @@ export class b2ParticleSystem {
      * point, any point, or n-points. The ray-cast ignores particles
      * that contain the starting point.
      *
-     * @param callback a user implemented callback class.
-     * @param point1 the ray starting point
-     * @param point2 the ray ending point
+     * @param callback A user implemented callback class.
+     * @param point1 The ray starting point
+     * @param point2 The ray ending point
      */
     public RayCast(point1: XY, point2: XY, callback: b2ParticleRayCastCallback): void {
         const s_aabb = b2ParticleSystem.RayCast_s_aabb;

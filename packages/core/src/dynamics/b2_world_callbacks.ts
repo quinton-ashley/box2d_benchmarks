@@ -145,10 +145,10 @@ export type b2QueryCallback = (fixture: b2Fixture) => boolean;
  * return fraction: clip the ray to this point
  * return 1: don't clip the ray and continue
  *
- * @param fixture the fixture hit by the ray
- * @param point the point of initial intersection
- * @param normal the normal vector at the point of intersection
- * @return -1 to filter, 0 to terminate, fraction to clip the ray for
+ * @param fixture The fixture hit by the ray
+ * @param point The point of initial intersection
+ * @param normal The normal vector at the point of intersection
+ * @returns -1 to filter, 0 to terminate, fraction to clip the ray for
  * closest hit, 1 to continue
  */
 export type b2RayCastCallback = (fixture: b2Fixture, point: b2Vec2, normal: b2Vec2, fraction: number) => number;

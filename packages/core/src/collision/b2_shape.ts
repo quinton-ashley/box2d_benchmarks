@@ -78,7 +78,7 @@ export abstract class b2Shape {
     /**
      * Get the type of this shape. You can use this to down cast to the concrete shape.
      *
-     * @return the shape type.
+     * @returns The shape type.
      */
     public GetType(): b2ShapeType {
         return this.m_type;
@@ -92,18 +92,18 @@ export abstract class b2Shape {
     /**
      * Test a point for containment in this shape. This only works for convex shapes.
      *
-     * @param xf the shape world transform.
-     * @param p a point in world coordinates.
+     * @param xf The shape world transform.
+     * @param p A point in world coordinates.
      */
     public abstract TestPoint(xf: b2Transform, p: XY): boolean;
 
     /**
      * Cast a ray against a child shape.
      *
-     * @param output the ray-cast results.
-     * @param input the ray-cast input parameters.
-     * @param transform the transform to be applied to the shape.
-     * @param childIndex the child shape index
+     * @param output The ray-cast results.
+     * @param input The ray-cast input parameters.
+     * @param transform The transform to be applied to the shape.
+     * @param childIndex The child shape index
      */
     public abstract RayCast(
         output: b2RayCastOutput,
@@ -115,9 +115,9 @@ export abstract class b2Shape {
     /**
      * Given a transform, compute the associated axis aligned bounding box for a child shape.
      *
-     * @param aabb returns the axis aligned box.
-     * @param xf the world transform of the shape.
-     * @param childIndex the child shape
+     * @param aabb Returns the axis aligned box.
+     * @param xf The world transform of the shape.
+     * @param childIndex The child shape
      */
     public abstract ComputeAABB(aabb: b2AABB, xf: b2Transform, childIndex: number): void;
 
@@ -125,8 +125,8 @@ export abstract class b2Shape {
      * Compute the mass properties of this shape using its dimensions and density.
      * The inertia tensor is computed about the local origin.
      *
-     * @param massData returns the mass data for this shape.
-     * @param density the density in kilograms per meter squared.
+     * @param massData Returns the mass data for this shape.
+     * @param density The density in kilograms per meter squared.
      */
     public abstract ComputeMass(massData: b2MassData, density: number): void;
 

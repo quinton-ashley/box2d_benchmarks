@@ -4,8 +4,8 @@ export class Matrix3 {
     private data = [1, 0, 0, 0, 1, 0, 0, 0, 1];
 
     /** Left-multiplies this vector by the given matrix
-     * @param mat the matrix
-     * @return this vector */
+     * @param mat The matrix
+     * @returns This vector */
     public mulVec2(p: XY) {
         const x = p.x * this.data[0] + p.y * this.data[3] + this.data[6];
         const y = p.x * this.data[1] + p.y * this.data[4] + this.data[7];
@@ -15,9 +15,9 @@ export class Matrix3 {
     }
 
     /** Sets this matrix to a translation matrix.
-     * @param x the translation in x
-     * @param y the translation in y
-     * @return This matrix for the purpose of chaining operations. */
+     * @param x The translation in x
+     * @param y The translation in y
+     * @returns This matrix for the purpose of chaining operations. */
     public setToTranslation(p: XY) {
         const val = this.data;
 
@@ -37,8 +37,8 @@ export class Matrix3 {
     }
 
     /** Sets this matrix to a rotation matrix that will rotate any vector in counter-clockwise direction around the z-axis.
-     * @param radians the angle in radians.
-     * @return This matrix for the purpose of chaining operations. */
+     * @param radians The angle in radians.
+     * @returns This matrix for the purpose of chaining operations. */
     public setToRotationRad(radians: number) {
         const cos = Math.cos(radians);
         const sin = Math.sin(radians);
@@ -59,7 +59,9 @@ export class Matrix3 {
         return this;
     }
 
-    /** @return The determinant of this matrix */
+    /**
+     * @returns The determinant of this matrix
+     */
     public det() {
         const val = this.data;
         return (
@@ -96,7 +98,7 @@ export class Matrix3 {
     }
 
     /** Inverts this matrix given that the determinant is != 0.
-     * @return This matrix for the purpose of chaining operations.
+     * @returns This matrix for the purpose of chaining operations.
      * @throws GdxRuntimeException if the matrix is singular (not invertible) */
     public inv() {
         const det = this.det();
@@ -121,7 +123,7 @@ export class Matrix3 {
     /** Postmultiplies this matrix with a (counter-clockwise) rotation matrix. Postmultiplication is also used by OpenGL ES' 1.x
      * glTranslate/glRotate/glScale.
      * @param radians The angle in radians
-     * @return This matrix for the purpose of chaining. */
+     * @returns This matrix for the purpose of chaining. */
     public rotateRad(radians: number) {
         if (radians === 0) return this;
         const cos = Math.cos(radians);

@@ -164,7 +164,7 @@ export abstract class RayHandler {
      * @param y      - light center y-coord
      * @param radius - maximal light distance
      *
-     * @return true if camera screen intersects or contains provided
+     * @returns true if camera screen intersects or contains provided
      * light, represented by circle/box area
      */
     intersect(x: number, y: number, radius: number) {
@@ -302,18 +302,18 @@ export abstract class RayHandler {
     protected updateLightShaderPerLight(_light: Light) {}
 
     /**
-     * Checks whether the given pois: number inside of any light volume
+     * Checks whether the given point inside of any light volume
      *
-     * @return true if pois: number inside of any light volume
+     * @returns true if point inside of any light volume
      */
     public pointAtLight(x: number, y: number) {
         return this.lightList.some((light) => light.contains(x, y));
     }
 
     /**
-     * Checks whether the given pois: number outside of all light volumes
+     * Checks whether the given point outside of all light volumes
      *
-     * @return true if pois: number NOT inside of any light volume
+     * @returns true if point NOT inside of any light volume
      */
     public pointAtShadow(x: number, y: number) {
         return !this.lightList.some((light) => light.contains(x, y));
@@ -493,7 +493,7 @@ export abstract class RayHandler {
     /**
      * Expert functionality, no support given
      *
-     * @return FrameBuffer that contains lightMap
+     * @returns FrameBuffer that contains lightMap
      */
     public getLightMapBuffer() {
         return this.lightMap.frameBuffer;

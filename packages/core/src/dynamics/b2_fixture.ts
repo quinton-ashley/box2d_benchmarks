@@ -179,7 +179,7 @@ export class b2Fixture {
     /**
      * Get the type of the child shape. You can use this to down cast to the concrete shape.
      *
-     * @return the shape type.
+     * @returns The shape type.
      */
     public GetType(): b2ShapeType {
         return this.m_shape.GetType();
@@ -207,7 +207,7 @@ export class b2Fixture {
     /**
      * Is this fixture a sensor (non-solid)?
      *
-     * @return the true if the shape is a sensor.
+     * @returns The true if the shape is a sensor.
      */
     public IsSensor(): boolean {
         return this.m_isSensor;
@@ -263,7 +263,7 @@ export class b2Fixture {
     /**
      * Get the parent body of this fixture. This is NULL if the fixture is not attached.
      *
-     * @return the parent body.
+     * @returns The parent body.
      */
     public GetBody(): b2Body {
         return this.m_body;
@@ -272,7 +272,7 @@ export class b2Fixture {
     /**
      * Get the next fixture in the parent body's fixture list.
      *
-     * @return the next shape.
+     * @returns The next shape.
      */
     public GetNext(): b2Fixture | null {
         return this.m_next;
@@ -296,7 +296,7 @@ export class b2Fixture {
     /**
      * Test a point for containment in this fixture.
      *
-     * @param p a point in world coordinates.
+     * @param p A point in world coordinates.
      */
     public TestPoint(p: XY): boolean {
         return this.m_shape.TestPoint(this.m_body.GetTransform(), p);
@@ -305,8 +305,8 @@ export class b2Fixture {
     /**
      * Cast a ray against this shape.
      *
-     * @param output the ray-cast results.
-     * @param input the ray-cast input parameters.
+     * @param output The ray-cast results.
+     * @param input The ray-cast input parameters.
      */
     public RayCast(output: b2RayCastOutput, input: b2RayCastInput, childIndex: number): boolean {
         return this.m_shape.RayCast(output, input, this.m_body.GetTransform(), childIndex);

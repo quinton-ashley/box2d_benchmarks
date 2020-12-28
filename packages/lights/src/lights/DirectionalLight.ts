@@ -19,7 +19,7 @@ export class DirectionalLight extends Light {
 
     protected cos = 0;
 
-    /** The body that could be set as ignored by this light type * */
+    /** The body that could be set as ignored by this light type */
     protected body: any = null;
 
     /**
@@ -185,13 +185,13 @@ export class DirectionalLight extends Light {
         return oddNodes;
     }
 
-    /** Not applicable for this light type * */
+    /** Not applicable for this light type */
     public attachToBody(_body: any) {}
 
-    /** Not applicable for this light type * */
+    /** Not applicable for this light type */
     public setPosition(_x: number, _y: number) {}
 
-    /** Returns the ignored by this light body or {@code null} if not set * */
+    /** Returns the ignored by this light body or {@code null} if not set */
 
     public getBody() {
         return this.body;
@@ -199,35 +199,35 @@ export class DirectionalLight extends Light {
 
     /** Not applicable for this light type
      * <p>Always return {@code 0}
-     * */
+     */
     public getX() {
         return 0;
     }
 
     /** Not applicable for this light type
      * <p>Always return {@code 0}
-     * */
+     */
     public getY() {
         return 0;
     }
 
-    /** Not applicable for this light type * */
+    /** Not applicable for this light type */
     public setPositionV(_position: XY) {}
 
-    /** Not applicable for this light type * */
+    /** Not applicable for this light type */
     public setDistance(_dist: number) {}
 
-    /** Not applicable for this light type * */
+    /** Not applicable for this light type */
     public setIgnoreAttachedBody(_flag: boolean) {}
 
     /** Not applicable for this light type
      * <p>Always return {@code false}
-     * */
+     */
     public getIgnoreAttachedBody() {
         return false;
     }
 
-    /** Sets the body to be ignored by this light, pass {@code null} to disable it * */
+    /** Sets the body to be ignored by this light, pass {@code null} to disable it */
     public setIgnoreBody(body: any) {
         this.body = body;
         this.ignoreBody = !!body;

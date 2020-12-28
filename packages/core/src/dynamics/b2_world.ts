@@ -108,7 +108,7 @@ export class b2World {
     /**
      * Construct a world object.
      *
-     * @param gravity the world gravity vector.
+     * @param gravity The world gravity vector.
      */
     public static Create(gravity: XY) {
         return new b2World(gravity);
@@ -417,9 +417,9 @@ export class b2World {
      * Take a time step. This performs collision detection, integration,
      * and constraint solution.
      *
-     * @param timeStep the amount of time to simulate, this should not vary.
-     * @param velocityIterations for the velocity constraint solver.
-     * @param positionIterations for the position constraint solver.
+     * @param timeStep The amount of time to simulate, this should not vary.
+     * @param velocityIterations For the velocity constraint solver.
+     * @param positionIterations For the position constraint solver.
      */
     private static Step_s_step = b2TimeStep.Create();
 
@@ -508,8 +508,8 @@ export class b2World {
      * Query the world for all fixtures that potentially overlap the
      * provided AABB.
      *
-     * @param aabb the query box.
-     * @param callback a user implemented callback class or function.
+     * @param aabb The query box.
+     * @param callback A user implemented callback class or function.
      */
     public QueryAABB(aabb: b2AABB, callback: b2QueryCallback): void {
         this.m_contactManager.m_broadPhase.Query(aabb, (proxy) => {
@@ -531,8 +531,8 @@ export class b2World {
      * Query the world for all fixtures that potentially overlap the
      * provided point.
      *
-     * @param point the query point.
-     * @param callback a user implemented callback class or function.
+     * @param point The query point.
+     * @param callback A user implemented callback class or function.
      */
     public QueryPointAABB(point: XY, callback: b2QueryCallback): void {
         this.m_contactManager.m_broadPhase.QueryPoint(point, (proxy) => {
@@ -613,9 +613,9 @@ export class b2World {
      * controls whether you get the closest point, any point, or n-points.
      * The ray-cast ignores shapes that contain the starting point.
      *
-     * @param point1 the ray starting point
-     * @param point2 the ray ending point
-     * @param callback a user implemented callback class or function.
+     * @param point1 The ray starting point
+     * @param point2 The ray ending point
+     * @param callback A user implemented callback class or function.
      */
     public RayCast(point1: XY, point2: XY, callback: b2RayCastCallback): void {
         const input = b2World.RayCast_s_input;
@@ -667,7 +667,7 @@ export class b2World {
      * Get the world body list. With the returned body, use b2Body::GetNext to get
      * the next body in the world list. A NULL body indicates the end of the list.
      *
-     * @return the head of the world body list.
+     * @returns The head of the world body list.
      */
     public GetBodyList(): b2Body | null {
         return this.m_bodyList;
@@ -677,7 +677,7 @@ export class b2World {
      * Get the world joint list. With the returned joint, use b2Joint::GetNext to get
      * the next joint in the world list. A NULL joint indicates the end of the list.
      *
-     * @return the head of the world joint list.
+     * @returns The head of the world joint list.
      */
     public GetJointList(): b2Joint | null {
         return this.m_jointList;
@@ -687,7 +687,7 @@ export class b2World {
      * Get the world contact list. With the returned contact, use b2Contact::GetNext to get
      * the next contact in the world list. A NULL contact indicates the end of the list.
      *
-     * @return the head of the world contact list.
+     * @returns The head of the world contact list.
      * @warning contacts are created and destroyed in the middle of a time step.
      * Use b2ContactListener to avoid missing contacts.
      */
@@ -837,7 +837,7 @@ export class b2World {
      * Shift the world origin. Useful for large worlds.
      * The body shift formula is: position -= newOrigin
      *
-     * @param newOrigin the new origin with respect to the old origin
+     * @param newOrigin The new origin with respect to the old origin
      */
     public ShiftOrigin(newOrigin: XY): void {
         b2Assert(!this.IsLocked());

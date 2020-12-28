@@ -74,10 +74,10 @@ export abstract class Light {
 
     protected gl: WebGLRenderingContext;
 
-    /** This light specific filter * */
+    /** This light specific filter */
     private contactFilter: LightContactFilter | null = null;
 
-    /** Global lights filter * */
+    /** Global lights filter */
     private static globalContactFilter: LightContactFilter | null = null;
 
     readonly rayCast: (point1: XY, point2: XY) => void;
@@ -163,7 +163,7 @@ export abstract class Light {
     public abstract attachToBody(body: any): void;
 
     /**
-     * @return attached body or {@code null}
+     * @returns Attached body or {@code null}
      *
      * @see #attachToBody(any)
      */
@@ -184,17 +184,17 @@ export abstract class Light {
     public abstract setPositionV(position: XY): void;
 
     /**
-     * @return horizontal starting position of light in world coordinates
+     * @returns Horizontal starting position of light in world coordinates
      */
     public abstract getX(): number;
 
     /**
-     * @return vertical starting position of light in world coordinates
+     * @returns Vertical starting position of light in world coordinates
      */
     public abstract getY(): number;
 
     /**
-     * @return starting position of light in world coordinates
+     * @returns Starting position of light in world coordinates
      *         <p>NOTE: changing this vector does nothing
      */
     public getPosition() {
@@ -268,7 +268,7 @@ export abstract class Light {
     }
 
     /**
-     * @return if this light is active
+     * @returns If this light is active
      */
     public isActive() {
         return this.active;
@@ -285,7 +285,7 @@ export abstract class Light {
     }
 
     /**
-     * @return if this light beams go through obstacles
+     * @returns If this light beams go through obstacles
      */
     public isXray() {
         return this.xray;
@@ -306,7 +306,7 @@ export abstract class Light {
     }
 
     /**
-     * @return if this light is static
+     * @returns If this light is static
      *         <p>Static light do not get any automatic updates but setting
      *         any parameters will update it. Static lights are useful for
      *         lights that you want to collide with static geometry but ignore
@@ -331,7 +331,7 @@ export abstract class Light {
     }
 
     /**
-     * @return if tips of this light beams are soft
+     * @returns If tips of this light beams are soft
      */
     public isSoft() {
         return this.soft;
@@ -347,7 +347,7 @@ export abstract class Light {
     }
 
     /**
-     * @return softness value for beams tips
+     * @returns Softness value for beams tips
      *         <p>Default: {@code 2.5 }
      */
     public getSoftShadowLength() {
@@ -365,31 +365,31 @@ export abstract class Light {
     }
 
     /**
-     * @return current color of this light
+     * @returns Current color of this light
      */
     public getColor() {
         return this.color;
     }
 
     /**
-     * @return rays distance of this light (without gamma correction)
+     * @returns Rays distance of this light (without gamma correction)
      */
     public getDistance() {
         return this.distance / lightSettings.gammaCorrection;
     }
 
     /**
-     * @return direction in degrees (0 if not applicable)
+     * @returns Direction in degrees (0 if not applicable)
      */
     public getDirection() {
         return this.direction;
     }
 
     /**
-     * Checks if given pois: number inside of this light area
+     * Checks if given point is inside of this light area
      *
-     * @param x - horizontal position of poin: number world coordinates
-     * @param y - vertical position of poin: number world coordinates
+     * @param x - horizontal position of point in world coordinates
+     * @param y - vertical position of point in world coordinates
      */
     public contains(_x: number, _y: number) {
         return false;
@@ -407,7 +407,7 @@ export abstract class Light {
     }
 
     /**
-     * @return if the attached body fixtures will be ignored during raycasting
+     * @returns If the attached body fixtures will be ignored during raycasting
      */
     public getIgnoreAttachedBody() {
         return this.ignoreBody;
@@ -432,7 +432,7 @@ export abstract class Light {
     }
 
     /**
-     * @return number of rays set for this light
+     * @returns Number of rays set for this light
      */
     public getRayNum() {
         return this.rayNum;

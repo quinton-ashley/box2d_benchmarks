@@ -230,7 +230,7 @@ export class b2Body {
      * If the density is non-zero, this function automatically updates the mass of the body.
      * Contacts are not created until the next time step.
      *
-     * @param def the fixture definition.
+     * @param def The fixture definition.
      * @warning This function is locked during callbacks.
      */
     public CreateFixture(def: b2FixtureDef): b2Fixture {
@@ -266,7 +266,7 @@ export class b2Body {
      * fixture has positive density.
      * All fixtures attached to a body are implicitly destroyed when the body is destroyed.
      *
-     * @param fixture the fixture to be removed.
+     * @param fixture The fixture to be removed.
      * @warning This function is locked during callbacks.
      */
     public DestroyFixture(fixture: b2Fixture): void {
@@ -332,8 +332,8 @@ export class b2Body {
      * This breaks any contacts and wakes the other bodies.
      * Manipulating a body's transform may cause non-physical behavior.
      *
-     * @param position the world position of the body's local origin.
-     * @param angle the world rotation in radians.
+     * @param position The world position of the body's local origin.
+     * @param angle The world rotation in radians.
      */
     public SetTransformVec(position: XY, angle: number): void {
         this.SetTransformXY(position.x, position.y, angle);
@@ -367,7 +367,7 @@ export class b2Body {
     /**
      * Get the body transform for the body's origin.
      *
-     * @return the world transform of the body's origin.
+     * @returns The world transform of the body's origin.
      */
     public GetTransform(): Readonly<b2Transform> {
         return this.m_xf;
@@ -376,7 +376,7 @@ export class b2Body {
     /**
      * Get the world body origin position.
      *
-     * @return the world position of the body's origin.
+     * @returns The world position of the body's origin.
      */
     public GetPosition(): Readonly<b2Vec2> {
         return this.m_xf.p;
@@ -385,7 +385,7 @@ export class b2Body {
     /**
      * Get the angle in radians.
      *
-     * @return the current world rotation angle in radians.
+     * @returns The current world rotation angle in radians.
      */
     public GetAngle(): number {
         return this.m_sweep.a;
@@ -412,7 +412,7 @@ export class b2Body {
     /**
      * Set the linear velocity of the center of mass.
      *
-     * @param v the new linear velocity of the center of mass.
+     * @param v The new linear velocity of the center of mass.
      */
     public SetLinearVelocity(v: XY): void {
         if (this.m_type === b2BodyType.b2_staticBody) {
@@ -429,7 +429,7 @@ export class b2Body {
     /**
      * Get the linear velocity of the center of mass.
      *
-     * @return the linear velocity of the center of mass.
+     * @returns The linear velocity of the center of mass.
      */
     public GetLinearVelocity(): Readonly<b2Vec2> {
         return this.m_linearVelocity;
@@ -438,7 +438,7 @@ export class b2Body {
     /**
      * Set the angular velocity.
      *
-     * @param omega the new angular velocity in radians/second.
+     * @param omega The new angular velocity in radians/second.
      */
     public SetAngularVelocity(w: number): void {
         if (this.m_type === b2BodyType.b2_staticBody) {
@@ -455,7 +455,7 @@ export class b2Body {
     /**
      * Get the angular velocity.
      *
-     * @return the angular velocity in radians/second.
+     * @returns The angular velocity in radians/second.
      */
     public GetAngularVelocity(): number {
         return this.m_angularVelocity;
@@ -466,9 +466,9 @@ export class b2Body {
      * applied at the center of mass, it will generate a torque and
      * affect the angular velocity. This wakes up the body.
      *
-     * @param force the world force vector, usually in Newtons (N).
-     * @param point the world position of the point of application.
-     * @param wake also wake up the body
+     * @param force The world force vector, usually in Newtons (N).
+     * @param point The world position of the point of application.
+     * @param wake Also wake up the body
      */
     public ApplyForce(force: XY, point: XY, wake = true): void {
         if (this.m_type !== b2BodyType.b2_dynamicBody) {
@@ -490,8 +490,8 @@ export class b2Body {
     /**
      * Apply a force to the center of mass. This wakes up the body.
      *
-     * @param force the world force vector, usually in Newtons (N).
-     * @param wake also wake up the body
+     * @param force The world force vector, usually in Newtons (N).
+     * @param wake Also wake up the body
      */
     public ApplyForceToCenter(force: XY, wake = true): void {
         if (this.m_type !== b2BodyType.b2_dynamicBody) {
@@ -513,8 +513,8 @@ export class b2Body {
      * Apply a torque. This affects the angular velocity
      * without affecting the linear velocity of the center of mass.
      *
-     * @param torque about the z-axis (out of the screen), usually in N-m.
-     * @param wake also wake up the body
+     * @param torque About the z-axis (out of the screen), usually in N-m.
+     * @param wake Also wake up the body
      */
     public ApplyTorque(torque: number, wake = true): void {
         if (this.m_type !== b2BodyType.b2_dynamicBody) {
@@ -536,9 +536,9 @@ export class b2Body {
      * It also modifies the angular velocity if the point of application
      * is not at the center of mass. This wakes up the body.
      *
-     * @param impulse the world impulse vector, usually in N-seconds or kg-m/s.
-     * @param point the world position of the point of application.
-     * @param wake also wake up the body
+     * @param impulse The world impulse vector, usually in N-seconds or kg-m/s.
+     * @param point The world position of the point of application.
+     * @param wake Also wake up the body
      */
     public ApplyLinearImpulse(impulse: XY, point: XY, wake = true): void {
         if (this.m_type !== b2BodyType.b2_dynamicBody) {
@@ -561,8 +561,8 @@ export class b2Body {
     /**
      * Apply an impulse at the center of gravity. This immediately modifies the velocity.
      *
-     * @param impulse the world impulse vector, usually in N-seconds or kg-m/s.
-     * @param wake also wake up the body
+     * @param impulse The world impulse vector, usually in N-seconds or kg-m/s.
+     * @param wake Also wake up the body
      */
     public ApplyLinearImpulseToCenter(impulse: XY, wake = true): void {
         if (this.m_type !== b2BodyType.b2_dynamicBody) {
@@ -583,8 +583,8 @@ export class b2Body {
     /**
      * Apply an angular impulse.
      *
-     * @param impulse the angular impulse in units of kg*m*m/s
-     * @param wake also wake up the body
+     * @param impulse The angular impulse in units of kg*m*m/s
+     * @param wake Also wake up the body
      */
     public ApplyAngularImpulse(impulse: number, wake = true): void {
         if (this.m_type !== b2BodyType.b2_dynamicBody) {
@@ -604,7 +604,7 @@ export class b2Body {
     /**
      * Get the total mass of the body.
      *
-     * @return the mass, usually in kilograms (kg).
+     * @returns The mass, usually in kilograms (kg).
      */
     public GetMass(): number {
         return this.m_mass;
@@ -613,7 +613,7 @@ export class b2Body {
     /**
      * Get the rotational inertia of the body about the local origin.
      *
-     * @return the rotational inertia, usually in kg-m^2.
+     * @returns The rotational inertia, usually in kg-m^2.
      */
     public GetInertia(): number {
         return this.m_I + this.m_mass * b2Vec2.Dot(this.m_sweep.localCenter, this.m_sweep.localCenter);
@@ -622,7 +622,7 @@ export class b2Body {
     /**
      * Get the mass data of the body.
      *
-     * @return a struct containing the mass, inertia and center of the body.
+     * @returns A struct containing the mass, inertia and center of the body.
      */
     public GetMassData(data: b2MassData): b2MassData {
         data.mass = this.m_mass;
@@ -639,7 +639,7 @@ export class b2Body {
      * Note that creating or destroying fixtures can also alter the mass.
      * This function has no effect if the body isn't dynamic.
      *
-     * @param massData the mass properties.
+     * @param massData The mass properties.
      */
     public SetMassData(massData: b2MassData): void {
         b2Assert(!this.m_world.IsLocked());
@@ -756,8 +756,8 @@ export class b2Body {
     /**
      * Get the world coordinates of a point given the local coordinates.
      *
-     * @param localPoint a point on the body measured relative the the body's origin.
-     * @return the same point expressed in world coordinates.
+     * @param localPoint A point on the body measured relative the the body's origin.
+     * @returns The same point expressed in world coordinates.
      */
     public GetWorldPoint<T extends XY>(localPoint: Readonly<XY>, out: T): T {
         return b2Transform.MultiplyVec2(this.m_xf, localPoint, out);
@@ -766,8 +766,8 @@ export class b2Body {
     /**
      * Get the world coordinates of a vector given the local coordinates.
      *
-     * @param localVector a vector fixed in the body.
-     * @return the same vector expressed in world coordinates.
+     * @param localVector A vector fixed in the body.
+     * @returns The same vector expressed in world coordinates.
      */
     public GetWorldVector<T extends XY>(localVector: Readonly<XY>, out: T): T {
         return b2Rot.MultiplyVec2(this.m_xf.q, localVector, out);
@@ -776,8 +776,8 @@ export class b2Body {
     /**
      * Gets a local point relative to the body's origin given a world point.
      *
-     * @param a point in world coordinates.
-     * @return the corresponding local point relative to the body's origin.
+     * @param a Point in world coordinates.
+     * @returns The corresponding local point relative to the body's origin.
      */
     public GetLocalPoint<T extends XY>(worldPoint: Readonly<XY>, out: T): T {
         return b2Transform.TransposeMultiplyVec2(this.m_xf, worldPoint, out);
@@ -786,8 +786,8 @@ export class b2Body {
     /**
      * Gets a local vector given a world vector.
      *
-     * @param a vector in world coordinates.
-     * @return the corresponding local vector.
+     * @param a Vector in world coordinates.
+     * @returns The corresponding local vector.
      */
     public GetLocalVector<T extends XY>(worldVector: Readonly<XY>, out: T): T {
         return b2Rot.TransposeMultiplyVec2(this.m_xf.q, worldVector, out);
@@ -796,8 +796,8 @@ export class b2Body {
     /**
      * Get the world linear velocity of a world point attached to this body.
      *
-     * @param a point in world coordinates.
-     * @return the world velocity of a point.
+     * @param a Point in world coordinates.
+     * @returns The world velocity of a point.
      */
     public GetLinearVelocityFromWorldPoint<T extends XY>(worldPoint: Readonly<XY>, out: T): T {
         return b2Vec2.AddCrossScalarVec2(
@@ -811,8 +811,8 @@ export class b2Body {
     /**
      * Get the world velocity of a local point.
      *
-     * @param a point in local coordinates.
-     * @return the world velocity of a point.
+     * @param a Point in local coordinates.
+     * @returns The world velocity of a point.
      */
     public GetLinearVelocityFromLocalPoint<T extends XY>(localPoint: Readonly<XY>, out: T): T {
         return this.GetLinearVelocityFromWorldPoint(this.GetWorldPoint(localPoint, out), out);
@@ -949,7 +949,7 @@ export class b2Body {
      * Set the sleep state of the body. A sleeping body has very
      * low CPU cost.
      *
-     * @param flag set to true to wake the body, false to put it to sleep.
+     * @param flag Set to true to wake the body, false to put it to sleep.
      */
     public SetAwake(flag: boolean): void {
         if (this.m_type === b2BodyType.b2_staticBody) {
@@ -971,7 +971,7 @@ export class b2Body {
     /**
      * Get the sleeping state of this body.
      *
-     * @return true if the body is sleeping.
+     * @returns true if the body is sleeping.
      */
     public IsAwake(): boolean {
         return this.m_awakeFlag;

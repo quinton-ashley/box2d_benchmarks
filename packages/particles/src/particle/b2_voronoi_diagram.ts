@@ -45,9 +45,9 @@ export class b2VoronoiDiagram {
     /**
      * Add a generator.
      *
-     * @param center the position of the generator.
-     * @param tag a tag used to identify the generator in callback functions.
-     * @param necessary whether to callback for nodes associated with the generator.
+     * @param center The position of the generator.
+     * @param tag A tag used to identify the generator in callback functions.
+     * @param necessary Whether to callback for nodes associated with the generator.
      */
     public AddGenerator(center: b2Vec2, tag: number, necessary: boolean): void {
         // DEBUG: b2Assert(this.m_generatorCount < this.m_generatorCapacity);
@@ -61,8 +61,8 @@ export class b2VoronoiDiagram {
      * Generate the Voronoi diagram. It is rasterized with a given
      * interval in the same range as the necessary generators exist.
      *
-     * @param radius the interval of the diagram.
-     * @param margin margin for which the range of the diagram is extended.
+     * @param radius The interval of the diagram.
+     * @param margin Margin for which the range of the diagram is extended.
      */
     public Generate(radius: number, margin: number): void {
         const inverseRadius = 1 / radius;
