@@ -24,30 +24,39 @@ import { b2Fixture } from "./b2_fixture";
 import { b2Shape } from "../collision/b2_shape";
 import type { b2ContactListener } from "./b2_world_callbacks";
 
-/// Friction mixing law. The idea is to allow either fixture to drive the friction to zero.
-/// For example, anything slides on ice.
+/**
+ * Friction mixing law. The idea is to allow either fixture to drive the friction to zero.
+ * For example, anything slides on ice.
+ */
 export function b2MixFriction(friction1: number, friction2: number): number {
     return Math.sqrt(friction1 * friction2);
 }
 
-/// Restitution mixing law. The idea is allow for anything to bounce off an inelastic surface.
-/// For example, a superball bounces on anything.
+/**
+ * Restitution mixing law. The idea is allow for anything to bounce off an inelastic surface.
+ * For example, a superball bounces on anything.
+ */
 export function b2MixRestitution(restitution1: number, restitution2: number): number {
     return restitution1 > restitution2 ? restitution1 : restitution2;
 }
 
-/// Restitution mixing law. This picks the lowest value.
+/**
+ * Restitution mixing law. This picks the lowest value.
+ */
 export function b2MixRestitutionThreshold(threshold1: number, threshold2: number) {
     return threshold1 < threshold2 ? threshold1 : threshold2;
 }
 
-/// A contact edge is used to connect bodies and contacts together
-/// in a contact graph where each body is a node and each contact
-/// is an edge. A contact edge belongs to a doubly linked list
-/// maintained in each attached body. Each contact has two contact
-/// nodes, one for each attached body.
+/**
+ * A contact edge is used to connect bodies and contacts together
+ * in a contact graph where each body is a node and each contact
+ * is an edge. A contact edge belongs to a doubly linked list
+ * maintained in each attached body. Each contact has two contact
+ * nodes, one for each attached body.
+ */
 export class b2ContactEdge {
-    private m_other: b2Body | null = null; /// < provides quick access to the other body attached.
+    /** Provides quick access to the other body attached. */
+    private m_other: b2Body | null = null;
 
     public get other(): b2Body {
         b2Assert(this.m_other !== null);
@@ -59,11 +68,14 @@ export class b2ContactEdge {
         this.m_other = value;
     }
 
-    public readonly contact: b2Contact; /// < the contact
+    /** The contact */
+    public readonly contact: b2Contact;
 
-    public prev: b2ContactEdge | null = null; /// < the previous contact edge in the body's contact list
+    /** The previous contact edge in the body's contact list */
+    public prev: b2ContactEdge | null = null;
 
-    public next: b2ContactEdge | null = null; /// < the next contact edge in the body's contact list
+    /** The next contact edge in the body's contact list */
+    public next: b2ContactEdge | null = null;
 
     constructor(contact: b2Contact) {
         this.contact = contact;
@@ -76,21 +88,29 @@ export class b2ContactEdge {
     }
 }
 
-/// The class manages contact between two shapes. A contact exists for each overlapping
-/// AABB in the broad-phase (except if filtered). Therefore a contact object may exist
-/// that has no contact points.
+/**
+ * The class manages contact between two shapes. A contact exists for each overlapping
+ * AABB in the broad-phase (except if filtered). Therefore a contact object may exist
+ * that has no contact points.
+ */
 export abstract class b2Contact<A extends b2Shape = b2Shape, B extends b2Shape = b2Shape> {
-    public m_islandFlag = false; /// Used when crawling contact graph when forming islands.
+    /** Used when crawling contact graph when forming islands. */
+    public m_islandFlag = false;
 
-    public m_touchingFlag = false; /// Set when the shapes are touching.
+    /** Set when the shapes are touching. */
+    public m_touchingFlag = false;
 
-    public m_enabledFlag = false; /// This contact can be disabled (by user)
+    /** This contact can be disabled (by user) */
+    public m_enabledFlag = false;
 
-    public m_filterFlag = false; /// This contact needs filtering because a fixture filter was changed.
+    /** This contact needs filtering because a fixture filter was changed. */
+    public m_filterFlag = false;
 
-    public m_bulletHitFlag = false; /// This bullet contact had a TOI event
+    /** This bullet contact had a TOI event */
+    public m_bulletHitFlag = false;
 
-    public m_toiFlag = false; /// This contact has a valid TOI in m_toi
+    /** This contact has a valid TOI in m_toi */
+    public m_toiFlag = false;
 
     // World pool and list pointers.
     public m_prev: b2Contact | null = null;
@@ -214,18 +234,24 @@ export abstract class b2Contact<A extends b2Shape = b2Shape, B extends b2Shape =
         this.m_restitution = b2MixRestitution(this.m_fixtureA.m_restitution, this.m_fixtureB.m_restitution);
     }
 
-    /// Override the default restitution velocity threshold mixture. You can call this in b2ContactListener::PreSolve.
-    /// The value persists until you set or reset.
+    /**
+     * Override the default restitution velocity threshold mixture. You can call this in b2ContactListener::PreSolve.
+     * The value persists until you set or reset.
+     */
     public SetRestitutionThreshold(threshold: number) {
         this.m_restitutionThreshold = threshold;
     }
 
-    /// Get the restitution threshold.
+    /**
+     * Get the restitution threshold.
+     */
     public GetRestitutionThreshold() {
         return this.m_restitutionThreshold;
     }
 
-    /// Reset the restitution threshold to the default value.
+    /**
+     * Reset the restitution threshold to the default value.
+     */
     public ResetRestitutionThreshold() {
         this.m_restitutionThreshold = b2MixRestitutionThreshold(
             this.m_fixtureA.m_restitutionThreshold,

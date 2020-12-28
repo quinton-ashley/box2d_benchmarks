@@ -78,7 +78,6 @@ export class b2VoronoiDiagram {
             }
         }
         if (necessary_count === 0) {
-            /// debugger;
             this.m_countX = 0;
             this.m_countY = 0;
             return;
@@ -96,7 +95,6 @@ export class b2VoronoiDiagram {
         const queue = new b2StackQueue<b2VoronoiDiagram_Task>(4 * this.m_countX * this.m_countY);
         for (let k = 0; k < this.m_generatorCount; k++) {
             const g = this.m_generatorBuffer[k];
-            ///  g.center = inverseRadius * (g.center - lower);
             g.center.Subtract(lower).Scale(inverseRadius);
             const x = Math.floor(g.center.x);
             const y = Math.floor(g.center.y);

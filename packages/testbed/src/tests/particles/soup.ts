@@ -110,7 +110,6 @@ export class Soup extends AbstractParticleTestWithControls {
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(0, 2), new b2Vec2(0.1, 2.1));
             body.CreateFixture({ shape, density: 1 });
-            ///  b2MassData massData = {0.1, 0.5 * (shape.m_vertex1 + shape.m_vertex2), 0};
             const massData = new b2MassData();
             massData.mass = 0.1;
             massData.center.x = 0.5 * shape.m_vertex1.x + shape.m_vertex2.x;
@@ -126,7 +125,6 @@ export class Soup extends AbstractParticleTestWithControls {
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(0.3, 2), new b2Vec2(0.4, 2.1));
             body.CreateFixture({ shape, density: 1 });
-            ///  b2MassData massData = {0.1, 0.5 * (shape.m_vertex1 + shape.m_vertex2), 0};
             const massData = new b2MassData();
             massData.mass = 0.1;
             massData.center.x = 0.5 * shape.m_vertex1.x + shape.m_vertex2.x;
@@ -142,7 +140,6 @@ export class Soup extends AbstractParticleTestWithControls {
             const shape = new b2EdgeShape();
             shape.SetTwoSided(new b2Vec2(-0.3, 2.1), new b2Vec2(-0.2, 2));
             body.CreateFixture({ shape, density: 1 });
-            ///  b2MassData massData = {0.1, 0.5 * (shape.m_vertex1 + shape.m_vertex2), 0};
             const massData = new b2MassData();
             massData.mass = 0.1;
             massData.center.x = 0.5 * shape.m_vertex1.x + shape.m_vertex2.x;

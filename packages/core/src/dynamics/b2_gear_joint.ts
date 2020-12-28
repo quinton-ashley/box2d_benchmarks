@@ -51,18 +51,24 @@ export interface b2IGearJointDef extends b2IJointDef {
     ratio?: number;
 }
 
-/// Gear joint definition. This definition requires two existing
-/// revolute or prismatic joints (any combination will work).
-/// @warning bodyB on the input joints must both be dynamic
+/**
+ * Gear joint definition. This definition requires two existing
+ * revolute or prismatic joints (any combination will work).
+ *
+ * @warning bodyB on the input joints must both be dynamic
+ */
 export class b2GearJointDef extends b2JointDef implements b2IGearJointDef {
-    /// The first revolute/prismatic joint attached to the gear joint.
+    /** The first revolute/prismatic joint attached to the gear joint. */
     public joint1!: b2RevoluteJoint | b2PrismaticJoint;
 
-    /// The second revolute/prismatic joint attached to the gear joint.
+    /** The second revolute/prismatic joint attached to the gear joint. */
     public joint2!: b2RevoluteJoint | b2PrismaticJoint;
 
-    /// The gear ratio.
-    /// @see b2GearJoint for explanation.
+    /**
+     * The gear ratio.
+     *
+     * @see b2GearJoint for explanation.
+     */
     public ratio = 1;
 
     constructor() {
@@ -70,15 +76,18 @@ export class b2GearJointDef extends b2JointDef implements b2IGearJointDef {
     }
 }
 
-/// A gear joint is used to connect two joints together. Either joint
-/// can be a revolute or prismatic joint. You specify a gear ratio
-/// to bind the motions together:
-/// coordinate1 + ratio * coordinate2 = constant
-/// The ratio can be negative or positive. If one joint is a revolute joint
-/// and the other joint is a prismatic joint, then the ratio will have units
-/// of length or units of 1/length.
-/// @warning You have to manually destroy the gear joint if joint1 or joint2
-/// is destroyed.
+/**
+ * A gear joint is used to connect two joints together. Either joint
+ * can be a revolute or prismatic joint. You specify a gear ratio
+ * to bind the motions together:
+ * coordinate1 + ratio * coordinate2 = constant
+ * The ratio can be negative or positive. If one joint is a revolute joint
+ * and the other joint is a prismatic joint, then the ratio will have units
+ * of length or units of 1/length.
+ *
+ * @warning You have to manually destroy the gear joint if joint1 or joint2
+ * is destroyed.
+ */
 export class b2GearJoint extends b2Joint {
     public m_joint1: b2RevoluteJoint | b2PrismaticJoint;
 

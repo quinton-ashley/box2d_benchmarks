@@ -41,14 +41,12 @@ const DEGTORAD = 0.0174532925199432957;
 
 type ControlState = TopdownCar["m_controlState"];
 
-/**
- * types of fixture user data
- */
+//  types of fixture user data
 const FUD_CAR_TIRE = 0;
 const FUD_GROUND_AREA = 1;
 
 /**
- * a class to allow subclassing of different fixture user data
+ * A class to allow subclassing of different fixture user data
  */
 class FixtureUserData {
     public m_type: number;
@@ -63,7 +61,7 @@ class FixtureUserData {
 }
 
 /**
- * class to allow marking a fixture as a car tire
+ * Class to allow marking a fixture as a car tire
  */
 class CarTireFUD extends FixtureUserData {
     constructor() {

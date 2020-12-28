@@ -54,30 +54,32 @@ export interface b2IDistanceJointDef extends b2IJointDef {
     damping?: number;
 }
 
-/// Distance joint definition. This requires defining an anchor point on both
-/// bodies and the non-zero distance of the distance joint. The definition uses
-/// local anchor points so that the initial configuration can violate the
-/// constraint slightly. This helps when saving and loading a game.
+/**
+ * Distance joint definition. This requires defining an anchor point on both
+ * bodies and the non-zero distance of the distance joint. The definition uses
+ * local anchor points so that the initial configuration can violate the
+ * constraint slightly. This helps when saving and loading a game.
+ */
 export class b2DistanceJointDef extends b2JointDef implements b2IDistanceJointDef {
-    /// The local anchor point relative to bodyA's origin.
+    /** The local anchor point relative to bodyA's origin. */
     public readonly localAnchorA = new b2Vec2();
 
-    /// The local anchor point relative to bodyB's origin.
+    /** The local anchor point relative to bodyB's origin. */
     public readonly localAnchorB = new b2Vec2();
 
-    /// The rest length of this joint. Clamped to a stable minimum value.
+    /** The rest length of this joint. Clamped to a stable minimum value. */
     public length = 1;
 
-    /// Minimum length. Clamped to a stable minimum value.
+    /** Minimum length. Clamped to a stable minimum value. */
     public minLength = 0;
 
-    /// Maximum length. Must be greater than or equal to the minimum length.
+    /** Maximum length. Must be greater than or equal to the minimum length. */
     public maxLength = b2_maxFloat;
 
-    /// The linear stiffness in N/m.
+    /** The linear stiffness in N/m. */
     public stiffness = 0;
 
-    /// The linear damping in N*s/m.
+    /** The linear damping in N*s/m. */
     public damping = 0;
 
     constructor() {
@@ -95,8 +97,10 @@ export class b2DistanceJointDef extends b2JointDef implements b2IDistanceJointDe
     }
 }
 
-/// A distance joint constrains two points on two bodies to remain at a fixed
-/// distance from each other. You can view this as a massless, rigid rod.
+/**
+ * A distance joint constrains two points on two bodies to remain at a fixed
+ * distance from each other. You can view this as a massless, rigid rod.
+ */
 export class b2DistanceJoint extends b2Joint {
     public m_stiffness: number;
 

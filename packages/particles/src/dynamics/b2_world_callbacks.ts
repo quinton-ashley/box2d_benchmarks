@@ -23,14 +23,18 @@ import { b2ParticleSystem, b2ParticleBodyContact, b2ParticleContact } from "../p
 // Declaration merging
 declare module "@box2d/core" {
     interface b2DestructionListener {
-        /// Called when any particle group is about to be destroyed.
+        /**
+         * Called when any particle group is about to be destroyed.
+         */
         SayGoodbyeParticleGroup(group: b2ParticleGroup): void;
 
-        /// Called when a particle is about to be destroyed.
-        /// The index can be used in conjunction with
-        /// b2ParticleSystem::GetUserDataBuffer() or
-        /// b2ParticleSystem::GetParticleHandleFromIndex() to determine which
-        /// particle has been destroyed.
+        /**
+         * Called when a particle is about to be destroyed.
+         * The index can be used in conjunction with
+         * b2ParticleSystem::GetUserDataBuffer() or
+         * b2ParticleSystem::GetParticleHandleFromIndex() to determine which
+         * particle has been destroyed.
+         */
         SayGoodbyeParticle(system: b2ParticleSystem, index: number): void;
     }
 

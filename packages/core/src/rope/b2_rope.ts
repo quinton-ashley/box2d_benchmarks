@@ -57,7 +57,6 @@ export enum b2BendingModel {
     b2_pbdTriangleBendingModel,
 }
 
-///
 export class b2RopeTuning {
     public stretchingModel = b2StretchingModel.b2_pbdStretchingModel;
 
@@ -100,7 +99,6 @@ export class b2RopeTuning {
     }
 }
 
-///
 export interface b2RopeDef {
     position: XY;
 
@@ -161,7 +159,6 @@ class b2RopeBend {
     public damper = 0;
 }
 
-///
 export class b2Rope {
     private readonly m_position = new b2Vec2();
 

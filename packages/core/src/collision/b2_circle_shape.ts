@@ -24,9 +24,11 @@ import { b2AABB, b2RayCastInput, b2RayCastOutput } from "./b2_collision";
 import { b2DistanceProxy } from "./b2_distance";
 import { b2MassData, b2Shape, b2ShapeType } from "./b2_shape";
 
-/// A solid circle shape
+/**
+ * A solid circle shape
+ */
 export class b2CircleShape extends b2Shape {
-    /// Position
+    /** Position */
     public readonly m_p = new b2Vec2();
 
     constructor(radius = 0) {
@@ -39,7 +41,9 @@ export class b2CircleShape extends b2Shape {
         return this;
     }
 
-    /// Implement b2Shape.
+    /**
+     * Implement b2Shape.
+     */
     public Clone(): b2CircleShape {
         return new b2CircleShape().Copy(this);
     }
@@ -53,35 +57,41 @@ export class b2CircleShape extends b2Shape {
         return this;
     }
 
-    /// @see b2Shape::GetChildCount
+    /**
+     * @see b2Shape::GetChildCount
+     */
     public GetChildCount(): number {
         return 1;
     }
 
-    /// Implement b2Shape.
     private static TestPoint_s_center = new b2Vec2();
 
     private static TestPoint_s_d = new b2Vec2();
 
+    /**
+     * Implement b2Shape.
+     */
     public TestPoint(transform: b2Transform, p: XY): boolean {
         const center = b2Transform.MultiplyVec2(transform, this.m_p, b2CircleShape.TestPoint_s_center);
         const d = b2Vec2.Subtract(p, center, b2CircleShape.TestPoint_s_d);
         return b2Vec2.Dot(d, d) <= this.m_radius ** 2;
     }
 
-    /// Implement b2Shape.
-    /// @note because the circle is solid, rays that start inside do not hit because the normal is
-    /// not defined.
-    // Collision Detection in Interactive 3D Environments by Gino van den Bergen
-    // From Section 3.1.2
-    // x = s + a * r
-    // norm(x) = radius
     private static RayCast_s_position = new b2Vec2();
 
     private static RayCast_s_s = new b2Vec2();
 
     private static RayCast_s_r = new b2Vec2();
 
+    /**
+     * Implement b2Shape.
+     *
+     * @note because the circle is solid, rays that start inside do not hit because the normal is
+     * not defined. Collision Detection in Interactive 3D Environments by Gino van den Bergen
+     * From Section 3.1.2
+     * x = s + a * r
+     * norm(x) = radius
+     */
     public RayCast(
         output: b2RayCastOutput,
         input: b2RayCastInput,
@@ -117,16 +127,20 @@ export class b2CircleShape extends b2Shape {
         return false;
     }
 
-    /// @see b2Shape::ComputeAABB
     private static ComputeAABB_s_p = new b2Vec2();
 
+    /**
+     * @see b2Shape::ComputeAABB
+     */
     public ComputeAABB(aabb: b2AABB, transform: b2Transform, _childIndex: number): void {
         const p = b2Transform.MultiplyVec2(transform, this.m_p, b2CircleShape.ComputeAABB_s_p);
         aabb.lowerBound.Set(p.x - this.m_radius, p.y - this.m_radius);
         aabb.upperBound.Set(p.x + this.m_radius, p.y + this.m_radius);
     }
 
-    /// @see b2Shape::ComputeMass
+    /**
+     * @see b2Shape::ComputeMass
+     */
     public ComputeMass(massData: b2MassData, density: number): void {
         const radius_sq = this.m_radius ** 2;
         massData.mass = density * Math.PI * radius_sq;

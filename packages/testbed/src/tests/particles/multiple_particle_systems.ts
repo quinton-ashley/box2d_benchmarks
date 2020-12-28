@@ -29,24 +29,16 @@ class MultipleParticleSystems extends AbstractParticleTest {
 
     public m_emitters: RadialEmitter[];
 
-    /**
-     * Maximum number of particles per system.
-     */
+    /** Maximum number of particles per system. */
     public static readonly k_maxParticleCount = 500;
 
-    /**
-     * Size of the box which is pushed around by particles.
-     */
+    /** Size of the box which is pushed around by particles. */
     public static readonly k_dynamicBoxSize = new b2Vec2(0.5, 0.5);
 
-    /**
-     * Mass of the box.
-     */
+    /** Mass of the box. */
     public static readonly k_boxMass = 1;
 
-    /**
-     * Emit rate of the emitters in particles per second.
-     */
+    /** Emit rate of the emitters in particles per second. */
     public static readonly k_emitRate = 100;
 
     /**
@@ -62,19 +54,13 @@ class MultipleParticleSystems extends AbstractParticleTest {
      */
     public static readonly k_emitterVelocity = new b2Vec2(7, -4);
 
-    /**
-     * Size of particle emitters.
-     */
+    /** Size of particle emitters. */
     public static readonly k_emitterSize = new b2Vec2(1, 1);
 
-    /**
-     * Color of the left emitter's particles.
-     */
+    /** Color of the left emitter's particles. */
     public static readonly k_leftEmitterColor = new b2Color().SetByteRGBA(0x22, 0x33, 0xff, 0xff);
 
-    /**
-     * Color of the right emitter's particles.
-     */
+    /** Color of the right emitter's particles. */
     public static readonly k_rightEmitterColor = new b2Color().SetByteRGBA(0xff, 0x22, 0x11, 0xff);
 
     constructor() {
@@ -116,7 +102,6 @@ class MultipleParticleSystems extends AbstractParticleTest {
                 0,
             );
             body.CreateFixture({ shape });
-            ///  b2MassData massData = { MultipleParticleSystems.k_boxMass, center, 0 };
             const massData = new b2MassData();
             massData.mass = MultipleParticleSystems.k_boxMass;
             massData.center.Copy(center);

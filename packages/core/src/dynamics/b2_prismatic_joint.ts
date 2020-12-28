@@ -86,41 +86,43 @@ export interface b2IPrismaticJointDef extends b2IJointDef {
     motorSpeed?: number;
 }
 
-/// Prismatic joint definition. This requires defining a line of
-/// motion using an axis and an anchor point. The definition uses local
-/// anchor points and a local axis so that the initial configuration
-/// can violate the constraint slightly. The joint translation is zero
-/// when the local anchor points coincide in world space. Using local
-/// anchors and a local axis helps when saving and loading a game.
+/**
+ * Prismatic joint definition. This requires defining a line of
+ * motion using an axis and an anchor point. The definition uses local
+ * anchor points and a local axis so that the initial configuration
+ * can violate the constraint slightly. The joint translation is zero
+ * when the local anchor points coincide in world space. Using local
+ * anchors and a local axis helps when saving and loading a game.
+ */
 export class b2PrismaticJointDef extends b2JointDef implements b2IPrismaticJointDef {
-    /// The local anchor point relative to bodyA's origin.
+    /** The local anchor point relative to bodyA's origin. */
     public readonly localAnchorA = new b2Vec2();
 
-    /// The local anchor point relative to bodyB's origin.
+    /** The local anchor point relative to bodyB's origin. */
     public readonly localAnchorB = new b2Vec2();
 
-    /// The local translation unit axis in bodyA.
+    /** The local translation unit axis in bodyA. */
     public readonly localAxisA = new b2Vec2(1, 0);
 
-    /// The constrained angle between the bodies: bodyB_angle - bodyA_angle.
+    /** The constrained angle between the bodies: bodyB_angle - bodyA_angle. */
     public referenceAngle = 0;
 
-    /// Enable/disable the joint limit.
+    /** Enable/disable the joint limit. */
     public enableLimit = false;
 
-    /// The lower translation limit, usually in meters.
+    /** The lower translation limit, usually in meters. */
     public lowerTranslation = 0;
 
-    /// The upper translation limit, usually in meters.
+    /** The upper translation limit, usually in meters. */
     public upperTranslation = 0;
 
-    /// Enable/disable the joint motor.
+    /** Enable/disable the joint motor. */
     public enableMotor = false;
 
-    /// The maximum motor torque, usually in N-m.
+    /** The maximum motor torque, usually in N-m. */
     public maxMotorForce = 0;
 
-    /// The desired motor speed in radians per second.
+    /** The desired motor speed in radians per second. */
     public motorSpeed = 0;
 
     constructor() {
@@ -182,10 +184,12 @@ export class b2PrismaticJointDef extends b2JointDef implements b2IPrismaticJoint
 // s1 = cross(d + r1, u), s2 = cross(r2, u)
 // a1 = cross(d + r1, v), a2 = cross(r2, v)
 
-/// A prismatic joint. This joint provides one degree of freedom: translation
-/// along an axis fixed in bodyA. Relative rotation is prevented. You can
-/// use a joint limit to restrict the range of motion and a joint motor to
-/// drive the motion or to model joint friction.
+/**
+ * A prismatic joint. This joint provides one degree of freedom: translation
+ * along an axis fixed in bodyA. Relative rotation is prevented. You can
+ * use a joint limit to restrict the range of motion and a joint motor to
+ * drive the motion or to model joint friction.
+ */
 export class b2PrismaticJoint extends b2Joint {
     public readonly m_localAnchorA = new b2Vec2();
 

@@ -67,9 +67,7 @@ class EmitterTracker {
      * Delete all emitters.
      */
     public Destroy() {
-        ///  for (std.map<RadialEmitter*, float32>.const_iterator it = m_emitterLifetime.begin(); it !== m_emitterLifetime.end(); ++it)
         for (const emitter of this.m_emitterLifetime) {
-            ///  delete it.first;
             emitter.emitter.Destroy();
         }
     }
@@ -80,7 +78,6 @@ class EmitterTracker {
      * of the object is handed to this class.
      */
     public Add(emitter: RadialEmitter, lifetime: number): void {
-        ///  m_emitterLifetime[emitter] = lifetime;
         this.m_emitterLifetime.push({ emitter, lifetime });
     }
 
@@ -88,25 +85,19 @@ class EmitterTracker {
      * Update all emitters destroying those who are too old.
      */
     public Step(dt: number): void {
-        ///  std.vector<RadialEmitter*> emittersToDestroy;
         const emittersToDestroy: RadialEmitter[] = [];
-        ///  for (std.map<RadialEmitter*, float32>.const_iterator it = m_emitterLifetime.begin(); it !== m_emitterLifetime.end(); ++it)
         for (const el of this.m_emitterLifetime) {
-            ///  const float32 lifetime = it.second - dt;
             const lifetime = el.lifetime - dt;
             if (lifetime <= 0) {
                 emittersToDestroy.push(el.emitter);
             }
-            ///  m_emitterLifetime[emitter] = lifetime;
             el.lifetime = lifetime;
 
             el.emitter.Step(dt);
         }
-        ///  for (std.vector<RadialEmitter*>.const_iterator it = emittersToDestroy.begin(); it !== emittersToDestroy.end(); ++it)
+
         for (const emitter of emittersToDestroy) {
-            /// delete emitter;
             emitter.Destroy();
-            ///  m_emitterLifetime.erase(m_emitterLifetime.find(emitter));
             this.m_emitterLifetime = this.m_emitterLifetime.filter((value) => {
                 return value.emitter !== emitter;
             });
@@ -148,49 +139,35 @@ class ParticleGroupTracker extends b2DestructionListener {
 }
 
 class FrackerSettings {
-    /**
-     * Width and height of the world in tiles.
-     */
+    /** Width and height of the world in tiles. */
     public static readonly k_worldWidthTiles = 24;
 
     public static readonly k_worldHeightTiles = 16;
 
-    /**
-     * Total number of tiles.
-     */
+    /** Total number of tiles. */
     public static readonly k_worldTiles = FrackerSettings.k_worldWidthTiles * FrackerSettings.k_worldHeightTiles;
 
-    /**
-     * Center of the world in world coordinates.
-     */
+    /** Center of the world in world coordinates. */
     public static readonly k_worldCenterX = 0;
 
     public static readonly k_worldCenterY = 2;
 
-    /**
-     * Size of each tile in world units.
-     */
+    /** Size of each tile in world units. */
     public static readonly k_tileWidth = 0.2;
 
     public static readonly k_tileHeight = 0.2;
 
-    /**
-     * Half width and height of tiles in world units.
-     */
+    /** Half width and height of tiles in world units. */
     public static readonly k_tileHalfWidth = FrackerSettings.k_tileWidth * 0.5;
 
     public static readonly k_tileHalfHeight = FrackerSettings.k_tileHeight * 0.5;
 
-    /**
-     * Half width and height of the world in world coordinates.
-     */
+    /** Half width and height of the world in world coordinates. */
     public static readonly k_worldHalfWidth = FrackerSettings.k_worldWidthTiles * FrackerSettings.k_tileWidth * 0.5;
 
     public static readonly k_worldHalfHeight = FrackerSettings.k_worldHeightTiles * FrackerSettings.k_tileHeight * 0.5;
 
-    /**
-     * Colors of tiles.
-     */
+    /** Colors of tiles. */
     public static readonly k_playerColor = new b2Color(1, 1, 1);
 
     public static readonly k_playerFrackColor = new b2Color(1, 0.5, 0.5);
@@ -203,14 +180,10 @@ class FrackerSettings {
 
     public static readonly k_frackingFluidColor = new b2Color(0.8, 0.4, 0);
 
-    /**
-     * Default density of each body.
-     */
+    /** Default density of each body. */
     public static readonly k_density = 0.1;
 
-    /**
-     * Radius of oil / water / fracking fluid particles.
-     */
+    /** Radius of oil / water / fracking fluid particles. */
     public static readonly k_particleRadius = (FrackerSettings.k_tileWidth + FrackerSettings.k_tileHeight) * 0.5 * 0.2;
 
     /**
@@ -225,19 +198,13 @@ class FrackerSettings {
 
     public static readonly k_waterProbability = 3;
 
-    /**
-     * Lifetime of a fracking fluid emitter in seconds.
-     */
+    /** Lifetime of a fracking fluid emitter in seconds. */
     public static readonly k_frackingFluidEmitterLifetime = 5;
 
-    /**
-     * Speed particles are sucked up the well.
-     */
+    /** Speed particles are sucked up the well. */
     public static readonly k_wellSuckSpeedInside = FrackerSettings.k_tileHeight * 5;
 
-    /**
-     * Speed particle are sucket towards the well bottom.
-     */
+    /** Speed particle are sucked towards the well bottom. */
     public static readonly k_wellSuckSpeedOutside = FrackerSettings.k_tileWidth * 1;
 
     /**
@@ -246,9 +213,7 @@ class FrackerSettings {
      */
     public static readonly k_frackingFluidChargeTime = 1;
 
-    /**
-     * Scores.
-     */
+    /** Scores. */
     public static readonly k_scorePerOilParticle = 1;
 
     public static readonly k_scorePerWaterParticle = -1;
@@ -322,10 +287,8 @@ class Fracker_DestructionListener extends ParticleGroupTracker {
      */
     public SayGoodbyeParticle(particleSystem: b2ParticleSystem, index: number): void {
         // DEBUG: b2Assert(particleSystem !== null);
-        ///  const void * const userData = particleSystem.GetUserDataBuffer()[index];
         const userData = particleSystem.GetUserDataBuffer()[index];
         if (userData) {
-            ///  const Material material = *((Material*)userData);
             const material = userData;
             switch (material) {
                 case Fracker_Material.OIL:
@@ -369,9 +332,7 @@ class Fracker extends AbstractParticleTest {
 
     public m_bodies: Array<b2Body | null> = [];
 
-    /**
-     * Set of particle groups the well has influence over.
-     */
+    /** Set of particle groups the well has influence over. */
     public m_listener = new Fracker_DestructionListener(this.m_world);
 
     constructor() {
@@ -408,7 +369,6 @@ class Fracker extends AbstractParticleTest {
      * Get the material of the tile at the specified tile position.
      */
     public GetMaterial(x: number, y: number): Fracker_Material {
-        ///  return *const_cast<Fracker*>(this).GetMaterialStorage(x, y);
         return this.m_material[Fracker.TileToArrayOffset(x, y)];
     }
 
@@ -416,7 +376,6 @@ class Fracker extends AbstractParticleTest {
      * Set the material of the tile at the specified tile position.
      */
     public SetMaterial(x: number, y: number, material: Fracker_Material): void {
-        ///  *GetMaterialStorage(x, y) = material;
         this.m_material[Fracker.TileToArrayOffset(x, y)] = material;
     }
 
@@ -424,7 +383,6 @@ class Fracker extends AbstractParticleTest {
      * Get the body associated with the specified tile position.
      */
     public GetBody(x: number, y: number): b2Body | null {
-        ///  return *const_cast<Fracker*>(this).GetBodyStorage(x, y);
         return this.m_bodies[Fracker.TileToArrayOffset(x, y)];
     }
 
@@ -432,7 +390,6 @@ class Fracker extends AbstractParticleTest {
      * Set the body associated with the specified tile position.
      */
     public SetBody(x: number, y: number, body: b2Body | null): void {
-        ///  b2Body** const currentBody = GetBodyStorage(x, y);
         const currentBody = this.m_bodies[Fracker.TileToArrayOffset(x, y)];
         if (currentBody) {
             this.m_world.DestroyBody(currentBody);
@@ -557,11 +514,9 @@ class Fracker extends AbstractParticleTest {
 
         // Tag each particle with its type.
         const particleCount = group.GetParticleCount();
-        ///  void** const userDataBuffer = m_particleSystem.GetUserDataBuffer() + group.GetBufferIndex();;
         const userDataBuffer = this.m_particleSystem.GetUserDataBuffer();
         const index = group.GetBufferIndex();
         for (let i = 0; i < particleCount; ++i) {
-            ///  userDataBuffer[i] = GetMaterialStorage(x, y);
             userDataBuffer[index + i] = this.m_material[Fracker.TileToArrayOffset(x, y)];
         }
         // Keep track of the total available oil.
@@ -782,14 +737,11 @@ class Fracker extends AbstractParticleTest {
         this.DestroyParticlesInTiles(this.m_wellX, this.m_wellTop, this.m_wellX, this.m_wellTop);
 
         // Only move particles in the groups being tracked.
-        ///  const std.set<b2ParticleGroup*> &particleGroups = m_listener.GetParticleGroups();
         const particleGroups = this.m_listener.GetParticleGroups();
-        ///  for (std.set<b2ParticleGroup*>.const_iterator it = particleGroups.begin(); it !== particleGroups.end(); ++it)
+
         for (const particleGroup of particleGroups) {
             const index = particleGroup.GetBufferIndex();
-            ///  const b2Vec2* const positionBuffer = m_particleSystem.GetPositionBuffer() + index;
             const positionBuffer = this.m_particleSystem.GetPositionBuffer();
-            ///  b2Vec2* const velocityBuffer = m_particleSystem.GetVelocityBuffer() + index;
             const velocityBuffer = this.m_particleSystem.GetVelocityBuffer();
             const particleCount = particleGroup.GetParticleCount();
             for (let i = 0; i < particleCount; ++i) {
@@ -798,7 +750,6 @@ class Fracker extends AbstractParticleTest {
                 const wellEnd = Fracker.CenteredPosition(Fracker.TileToWorld(this.m_wellX, this.m_wellBottom - 2));
                 const particlePosition = positionBuffer[index + i];
                 // Distance from the well's bottom.
-                ///  const b2Vec2 distance = particlePosition - wellEnd;
                 const distance = b2Vec2.Subtract(particlePosition, wellEnd, new b2Vec2());
                 // Distance from either well side wall.
                 const absDistX = Math.abs(distance.x);
@@ -809,10 +760,8 @@ class Fracker extends AbstractParticleTest {
                     distance.y < 0.0
                 ) {
                     // Suck the particles towards the end of the well.
-                    ///  b2Vec2 velocity = wellEnd - particlePosition;
                     const velocity = b2Vec2.Subtract(wellEnd, particlePosition, new b2Vec2());
                     velocity.Normalize();
-                    ///  velocityBuffer[i] = velocity * FrackerSettings.k_wellSuckSpeedOutside;
                     velocityBuffer[index + i].Copy(velocity.Scale(FrackerSettings.k_wellSuckSpeedOutside));
                 } else if (absDistX <= FrackerSettings.k_tileHalfWidth && distance.y > 0) {
                     // Suck the particles up the well with a random
@@ -820,7 +769,6 @@ class Fracker extends AbstractParticleTest {
                     const randomX = Math.random() * FrackerSettings.k_tileHalfWidth - distance.x;
                     const velocity = new b2Vec2(randomX, FrackerSettings.k_tileHeight);
                     velocity.Normalize();
-                    ///  velocityBuffer[i] = velocity * FrackerSettings.k_wellSuckSpeedInside;
                     velocityBuffer[index + i].Copy(velocity.Scale(FrackerSettings.k_wellSuckSpeedInside));
                 }
             }
@@ -869,7 +817,6 @@ class Fracker extends AbstractParticleTest {
      * outline (fill = false) or solid (fill = true).
      */
     public DrawQuad(position: b2Vec2, color: b2Color, fill = false): void {
-        ///  b2Vec2 verts[4];
         const verts = b2MakeArray(4, b2Vec2);
         const maxX = position.x + FrackerSettings.k_tileWidth;
         const maxY = position.y + FrackerSettings.k_tileHeight;
@@ -884,18 +831,18 @@ class Fracker extends AbstractParticleTest {
         }
     }
 
-    ///  // Get a pointer to the material of the tile at the specified position.
-    ///  Material* GetMaterialStorage(const int32 x, const int32 y)
-    ///  {
-    ///    return &m_material[Fracker.TileToArrayOffset(x, y)];
-    ///  }
+    //  // Get a pointer to the material of the tile at the specified position.
+    //  Material* GetMaterialStorage(const int32 x, const int32 y)
+    //  {
+    //    return &m_material[Fracker.TileToArrayOffset(x, y)];
+    //  }
 
-    ///  // A pointer to the body storage associated with the specified tile
-    ///  // position.
-    ///  b2Body** GetBodyStorage(const int32 x, const int32 y)
-    ///  {
-    ///    return &m_bodies[Fracker.TileToArrayOffset(x, y)];
-    ///  }
+    //  // A pointer to the body storage associated with the specified tile
+    //  // position.
+    //  b2Body** GetBodyStorage(const int32 x, const int32 y)
+    //  {
+    //    return &m_bodies[Fracker.TileToArrayOffset(x, y)];
+    //  }
 
     public GetDefaultViewZoom(): number {
         return 250;

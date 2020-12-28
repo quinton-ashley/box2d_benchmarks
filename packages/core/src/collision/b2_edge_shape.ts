@@ -24,32 +24,35 @@ import { b2AABB, b2RayCastInput, b2RayCastOutput } from "./b2_collision";
 import { b2DistanceProxy } from "./b2_distance";
 import { b2MassData, b2Shape, b2ShapeType } from "./b2_shape";
 
-/// A line segment (edge) shape. These can be connected in chains or loops
-/// to other edge shapes. Edges created independently are two-sided and do
-/// no provide smooth movement across junctions.
+/**
+ * A line segment (edge) shape. These can be connected in chains or loops
+ * to other edge shapes. Edges created independently are two-sided and do
+ * no provide smooth movement across junctions.
+ */
 export class b2EdgeShape extends b2Shape {
-    /// These are the edge vertices
+    /** These are the edge vertices */
     public readonly m_vertex1 = new b2Vec2();
 
     public readonly m_vertex2 = new b2Vec2();
 
-    /// Optional adjacent vertices. These are used for smooth collision.
+    /** Optional adjacent vertices. These are used for smooth collision. */
     public readonly m_vertex0 = new b2Vec2();
 
     public readonly m_vertex3 = new b2Vec2();
 
-    /// Uses m_vertex0 and m_vertex3 to create smooth collision.
+    /** Uses m_vertex0 and m_vertex3 to create smooth collision. */
     public m_oneSided = false;
 
     constructor() {
         super(b2ShapeType.e_edge, b2_polygonRadius);
     }
 
-    /// Set this as a part of a sequence. Vertex v0 precedes the edge and vertex v3
-    /// follows. These extra vertices are used to provide smooth movement
-    /// across junctions. This also makes the collision one-sided. The edge
-    /// normal points to the right looking from v1 to v2.
-    // void SetOneSided(const b2Vec2& v0, const b2Vec2& v1,const b2Vec2& v2, const b2Vec2& v3);
+    /**
+     * Set this as a part of a sequence. Vertex v0 precedes the edge and vertex v3
+     * follows. These extra vertices are used to provide smooth movement
+     * across junctions. This also makes the collision one-sided. The edge
+     * normal points to the right looking from v1 to v2.
+     */
     public SetOneSided(v0: XY, v1: XY, v2: XY, v3: XY): b2EdgeShape {
         this.m_vertex0.Copy(v0);
         this.m_vertex1.Copy(v1);
@@ -59,7 +62,9 @@ export class b2EdgeShape extends b2Shape {
         return this;
     }
 
-    /// Set this as an isolated edge. Collision is two-sided.
+    /**
+     * Set this as an isolated edge. Collision is two-sided.
+     */
     public SetTwoSided(v1: XY, v2: XY): b2EdgeShape {
         this.m_vertex1.Copy(v1);
         this.m_vertex2.Copy(v2);
@@ -67,7 +72,9 @@ export class b2EdgeShape extends b2Shape {
         return this;
     }
 
-    /// Implement b2Shape.
+    /**
+     * Implement b2Shape.
+     */
     public Clone(): b2EdgeShape {
         return new b2EdgeShape().Copy(this);
     }
@@ -86,21 +93,20 @@ export class b2EdgeShape extends b2Shape {
         return this;
     }
 
-    /// @see b2Shape::GetChildCount
+    /**
+     * @see b2Shape::GetChildCount
+     */
     public GetChildCount(): number {
         return 1;
     }
 
-    /// @see b2Shape::TestPoint
+    /**
+     * @see b2Shape::TestPoint
+     */
     public TestPoint(_xf: b2Transform, _p: XY): boolean {
         return false;
     }
 
-    /// Implement b2Shape.
-    // p = p1 + t * d
-    // v = v1 + s * e
-    // p1 + t * d = v1 + s * e
-    // s * e - t * d = p1 - v1
     private static RayCast_s_p1 = new b2Vec2();
 
     private static RayCast_s_p2 = new b2Vec2();
@@ -113,6 +119,14 @@ export class b2EdgeShape extends b2Shape {
 
     private static RayCast_s_r = new b2Vec2();
 
+    /**
+     * Implement b2Shape.
+     *
+     * p = p1 + t * d
+     * v = v1 + s * e
+     * p1 + t * d = v1 + s * e
+     * s * e - t * d = p1 - v1
+     */
     public RayCast(output: b2RayCastOutput, input: b2RayCastInput, xf: b2Transform, _childIndex: number): boolean {
         // Put the ray into the edge's frame of reference.
         const p1 = b2Transform.TransposeMultiplyVec2(xf, input.p1, b2EdgeShape.RayCast_s_p1);
@@ -169,11 +183,13 @@ export class b2EdgeShape extends b2Shape {
         return true;
     }
 
-    /// @see b2Shape::ComputeAABB
     private static ComputeAABB_s_v1 = new b2Vec2();
 
     private static ComputeAABB_s_v2 = new b2Vec2();
 
+    /**
+     * @see b2Shape::ComputeAABB
+     */
     public ComputeAABB(aabb: b2AABB, xf: b2Transform, _childIndex: number): void {
         const v1 = b2Transform.MultiplyVec2(xf, this.m_vertex1, b2EdgeShape.ComputeAABB_s_v1);
         const v2 = b2Transform.MultiplyVec2(xf, this.m_vertex2, b2EdgeShape.ComputeAABB_s_v2);
@@ -186,7 +202,9 @@ export class b2EdgeShape extends b2Shape {
         aabb.upperBound.AddXY(r, r);
     }
 
-    /// @see b2Shape::ComputeMass
+    /**
+     * @see b2Shape::ComputeMass
+     */
     public ComputeMass(massData: b2MassData, _density: number): void {
         massData.mass = 0;
         b2Vec2.Mid(this.m_vertex1, this.m_vertex2, massData.center);

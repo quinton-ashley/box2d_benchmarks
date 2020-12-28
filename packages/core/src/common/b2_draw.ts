@@ -28,7 +28,9 @@ export interface RGBA extends RGB {
     a: number;
 }
 
-/// Color for debug drawing. Each value has the range [0,1].
+/**
+ * Color for debug drawing. Each value has the range [0,1].
+ */
 export class b2Color implements RGBA {
     public static readonly ZERO: Readonly<RGBA> = new b2Color(0, 0, 0, 0);
 
@@ -175,8 +177,10 @@ export class b2Color implements RGBA {
     }
 }
 
-/// Implement and register this class with a b2World to provide debug drawing of physics
-/// entities in your game.
+/**
+ * Implement and register this class with a b2World to provide debug drawing of physics
+ * entities in your game.
+ */
 export interface b2Draw {
     PushTransform(xf: b2Transform): void;
 

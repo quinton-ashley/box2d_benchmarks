@@ -42,19 +42,25 @@ export enum b2JointType {
     e_areaJoint,
 }
 
-/// A joint edge is used to connect bodies and joints together
-/// in a joint graph where each body is a node and each joint
-/// is an edge. A joint edge belongs to a doubly linked list
-/// maintained in each attached body. Each joint has two joint
-/// nodes, one for each attached body.
+/**
+ * A joint edge is used to connect bodies and joints together
+ * in a joint graph where each body is a node and each joint
+ * is an edge. A joint edge belongs to a doubly linked list
+ * maintained in each attached body. Each joint has two joint
+ * nodes, one for each attached body.
+ */
 export class b2JointEdge {
-    public readonly other: b2Body; /// < provides quick access to the other body attached.
+    /** Provides quick access to the other body attached. */
+    public readonly other: b2Body;
 
-    public readonly joint: b2Joint; /// < the joint
+    /** The joint */
+    public readonly joint: b2Joint;
 
-    public prev: b2JointEdge | null = null; /// < the previous joint edge in the body's joint list
+    /** The previous joint edge in the body's joint list */
+    public prev: b2JointEdge | null = null;
 
-    public next: b2JointEdge | null = null; /// < the next joint edge in the body's joint list
+    /** The next joint edge in the body's joint list */
+    public next: b2JointEdge | null = null;
 
     constructor(joint: b2Joint, other: b2Body) {
         this.joint = joint;
@@ -62,39 +68,43 @@ export class b2JointEdge {
     }
 }
 
-/// Joint definitions are used to construct joints.
+/**
+ * Joint definitions are used to construct joints.
+ */
 export interface b2IJointDef {
-    /// The joint type is set automatically for concrete joint types.
+    /** The joint type is set automatically for concrete joint types. */
     type: b2JointType;
 
-    /// Use this to attach application specific data to your joints.
+    /** Use this to attach application specific data to your joints. */
     userData?: any;
 
-    /// The first attached body.
+    /** The first attached body. */
     bodyA: b2Body;
 
-    /// The second attached body.
+    /** The second attached body. */
     bodyB: b2Body;
 
-    /// Set this flag to true if the attached bodies should collide.
+    /** Set this flag to true if the attached bodies should collide. */
     collideConnected?: boolean;
 }
 
-/// Joint definitions are used to construct joints.
+/**
+ * Joint definitions are used to construct joints.
+ */
 export abstract class b2JointDef implements b2IJointDef {
-    /// The joint type is set automatically for concrete joint types.
+    /** The joint type is set automatically for concrete joint types. */
     public readonly type: b2JointType;
 
-    /// Use this to attach application specific data to your joints.
+    /** Use this to attach application specific data to your joints. */
     public userData: any = null;
 
-    /// The first attached body.
+    /** The first attached body. */
     public bodyA!: b2Body;
 
-    /// The second attached body.
+    /** The second attached body. */
     public bodyB!: b2Body;
 
-    /// Set this flag to true if the attached bodies should collide.
+    /** Set this flag to true if the attached bodies should collide. */
     public collideConnected = false;
 
     constructor(type: b2JointType) {
@@ -102,7 +112,9 @@ export abstract class b2JointDef implements b2IJointDef {
     }
 }
 
-/// Utility to compute linear stiffness values from frequency and damping ratio
+/**
+ * Utility to compute linear stiffness values from frequency and damping ratio
+ */
 // void b2LinearStiffness(float& stiffness, float& damping,
 // 	float frequencyHertz, float dampingRatio,
 // 	const b2Body* bodyA, const b2Body* bodyB);
@@ -129,7 +141,9 @@ export function b2LinearStiffness(
     def.damping = 2 * mass * dampingRatio * omega;
 }
 
-/// Utility to compute rotational stiffness values frequency and damping ratio
+/**
+ * Utility to compute rotational stiffness values frequency and damping ratio
+ */
 export function b2AngularStiffness(
     def: { stiffness: number; damping: number },
     frequencyHertz: number,
@@ -153,8 +167,10 @@ export function b2AngularStiffness(
     def.damping = 2 * I * dampingRatio * omega;
 }
 
-/// The base joint class. Joints are used to constraint two bodies together in
-/// various fashions. Some joints also feature limits and motors.
+/**
+ * The base joint class. Joints are used to constraint two bodies together in
+ * various fashions. Some joints also feature limits and motors.
+ */
 export abstract class b2Joint {
     public readonly m_type: b2JointType = b2JointType.e_unknownJoint;
 
@@ -192,61 +208,87 @@ export abstract class b2Joint {
         this.m_userData = def.userData;
     }
 
-    /// Get the type of the concrete joint.
+    /**
+     * Get the type of the concrete joint.
+     */
     public GetType(): b2JointType {
         return this.m_type;
     }
 
-    /// Get the first body attached to this joint.
+    /**
+     * Get the first body attached to this joint.
+     */
     public GetBodyA(): b2Body {
         return this.m_bodyA;
     }
 
-    /// Get the second body attached to this joint.
+    /**
+     * Get the second body attached to this joint.
+     */
     public GetBodyB(): b2Body {
         return this.m_bodyB;
     }
 
-    /// Get the anchor point on bodyA in world coordinates.
+    /**
+     * Get the anchor point on bodyA in world coordinates.
+     */
     public abstract GetAnchorA<T extends XY>(out: T): T;
 
-    /// Get the anchor point on bodyB in world coordinates.
+    /**
+     * Get the anchor point on bodyB in world coordinates.
+     */
     public abstract GetAnchorB<T extends XY>(out: T): T;
 
-    /// Get the reaction force on bodyB at the joint anchor in Newtons.
+    /**
+     * Get the reaction force on bodyB at the joint anchor in Newtons.
+     */
     public abstract GetReactionForce<T extends XY>(inv_dt: number, out: T): T;
 
-    /// Get the reaction torque on bodyB in N*m.
+    /**
+     * Get the reaction torque on bodyB in N*m.
+     */
     public abstract GetReactionTorque(inv_dt: number): number;
 
-    /// Get the next joint the world joint list.
+    /**
+     * Get the next joint the world joint list.
+     */
     public GetNext(): b2Joint | null {
         return this.m_next;
     }
 
-    /// Get the user data pointer.
+    /**
+     * Get the user data pointer.
+     */
     public GetUserData(): any {
         return this.m_userData;
     }
 
-    /// Set the user data pointer.
+    /**
+     * Set the user data pointer.
+     */
     public SetUserData(data: any): void {
         this.m_userData = data;
     }
 
-    /// Short-cut function to determine if either body is inactive.
+    /**
+     * Short-cut function to determine if either body is inactive.
+     */
     public IsEnabled(): boolean {
         return this.m_bodyA.IsEnabled() && this.m_bodyB.IsEnabled();
     }
 
-    /// Get collide connected.
-    /// Note: modifying the collide connect flag won't work correctly because
-    /// the flag is only checked when fixture AABBs begin to overlap.
+    /**
+     * Get collide connected.
+     * Note: modifying the collide connect flag won't work correctly because
+     * the flag is only checked when fixture AABBs begin to overlap.
+     */
     public GetCollideConnected(): boolean {
         return this.m_collideConnected;
     }
 
-    /// Shift the origin for any points stored in world coordinates.
+    /**
+     * Shift the origin for any points stored in world coordinates.
+     */
     public ShiftOrigin(_newOrigin: XY): void {}
 
     public abstract InitVelocityConstraints(data: b2SolverData): void;

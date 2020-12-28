@@ -21,8 +21,10 @@ import { b2_epsilon, b2_epsilon_sq, b2_polygonRadius, b2_linearSlop, b2MakeArray
 import { b2Vec2, b2Rot, b2Transform } from "../common/b2_math";
 import type { b2Shape } from "./b2_shape";
 
-/// A distance proxy is used by the GJK algorithm.
-/// It encapsulates any shape.
+/**
+ * A distance proxy is used by the GJK algorithm.
+ * It encapsulates any shape.
+ */
 export class b2DistanceProxy {
     public readonly m_buffer = b2MakeArray(2, b2Vec2);
 
@@ -100,16 +102,21 @@ export class b2DistanceProxy {
     }
 }
 
-/// Used to warm start b2Distance.
-/// Set count to zero on first call.
+/**
+ * Used to warm start b2Distance.
+ * Set count to zero on first call.
+ */
 export class b2SimplexCache {
-    public metric = 0; /// < length or area
+    /** Length or area */
+    public metric = 0;
 
     public count = 0;
 
-    public readonly indexA: [number, number, number] = [0, 0, 0]; /// < vertices on shape A
+    /** Vertices on shape A */
+    public readonly indexA: [number, number, number] = [0, 0, 0];
 
-    public readonly indexB: [number, number, number] = [0, 0, 0]; /// < vertices on shape B
+    /** Vertices on shape B */
+    public readonly indexB: [number, number, number] = [0, 0, 0];
 
     public Reset(): b2SimplexCache {
         this.metric = 0;
@@ -118,9 +125,11 @@ export class b2SimplexCache {
     }
 }
 
-/// Input for b2Distance.
-/// You have to option to use the shape radii
-/// in the computation. Even
+/**
+ * Input for b2Distance.
+ * You have to option to use the shape radii
+ * in the computation. Even
+ */
 export class b2DistanceInput {
     public readonly proxyA = new b2DistanceProxy();
 
@@ -142,15 +151,20 @@ export class b2DistanceInput {
     }
 }
 
-/// Output for b2Distance.
+/**
+ * Output for b2Distance.
+ */
 export class b2DistanceOutput {
-    public readonly pointA = new b2Vec2(); /// < closest point on shapeA
+    /** Closest point on shapeA */
+    public readonly pointA = new b2Vec2();
 
-    public readonly pointB = new b2Vec2(); /// < closest point on shapeB
+    /** Closest point on shapeB */
+    public readonly pointB = new b2Vec2();
 
     public distance = 0;
 
-    public iterations = 0; /// < number of GJK iterations used
+    /** Number of GJK iterations used */
+    public iterations = 0;
 
     public Reset(): b2DistanceOutput {
         this.pointA.SetZero();
@@ -161,7 +175,9 @@ export class b2DistanceOutput {
     }
 }
 
-/// Input parameters for b2ShapeCast
+/**
+ * Input parameters for b2ShapeCast
+ */
 export class b2ShapeCastInput {
     public readonly proxyA = new b2DistanceProxy();
 
@@ -174,7 +190,9 @@ export class b2ShapeCastInput {
     public readonly translationB = new b2Vec2();
 }
 
-/// Output results for b2ShapeCast
+/**
+ * Output results for b2ShapeCast
+ */
 export class b2ShapeCastOutput {
     public readonly point = new b2Vec2();
 
@@ -674,12 +692,6 @@ export function b2Distance(output: b2DistanceOutput, cache: b2SimplexCache, inpu
     }
 }
 
-/// Perform a linear shape cast of shape B moving and shape A fixed. Determines the hit point, normal, and translation fraction.
-
-// GJK-raycast
-// Algorithm by Gino van den Bergen.
-// "Smooth Mesh Contacts with GJK" in Game Physics Pearls. 2010
-// bool b2ShapeCast(b2ShapeCastOutput* output, const b2ShapeCastInput* input);
 const b2ShapeCast_s_n = new b2Vec2();
 const b2ShapeCast_s_simplex = new b2Simplex();
 const b2ShapeCast_s_wA = new b2Vec2();
@@ -688,6 +700,13 @@ const b2ShapeCast_s_v = new b2Vec2();
 const b2ShapeCast_s_p = new b2Vec2();
 const b2ShapeCast_s_pointA = new b2Vec2();
 const b2ShapeCast_s_pointB = new b2Vec2();
+
+/**
+ * Perform a linear shape cast of shape B moving and shape A fixed. Determines the hit point, normal, and translation fraction.
+ * GJK-raycast
+ * Algorithm by Gino van den Bergen.
+ * "Smooth Mesh Contacts with GJK" in Game Physics Pearls. 2010
+ */
 export function b2ShapeCast(output: b2ShapeCastOutput, input: b2ShapeCastInput): boolean {
     output.iterations = 0;
     output.lambda = 1;

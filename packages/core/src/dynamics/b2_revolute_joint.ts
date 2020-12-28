@@ -60,43 +60,47 @@ export interface b2IRevoluteJointDef extends b2IJointDef {
     maxMotorTorque?: number;
 }
 
-/// Revolute joint definition. This requires defining an anchor point where the
-/// bodies are joined. The definition uses local anchor points so that the
-/// initial configuration can violate the constraint slightly. You also need to
-/// specify the initial relative angle for joint limits. This helps when saving
-/// and loading a game.
-/// The local anchor points are measured from the body's origin
-/// rather than the center of mass because:
-/// 1. you might not know where the center of mass will be.
-/// 2. if you add/remove shapes from a body and recompute the mass,
-///    the joints will be broken.
+/**
+ * Revolute joint definition. This requires defining an anchor point where the
+ * bodies are joined. The definition uses local anchor points so that the
+ * initial configuration can violate the constraint slightly. You also need to
+ * specify the initial relative angle for joint limits. This helps when saving
+ * and loading a game.
+ * The local anchor points are measured from the body's origin
+ * rather than the center of mass because:
+ * 1. you might not know where the center of mass will be.
+ * 2. if you add/remove shapes from a body and recompute the mass,
+ * the joints will be broken.
+ */
 export class b2RevoluteJointDef extends b2JointDef implements b2IRevoluteJointDef {
-    /// The local anchor point relative to bodyA's origin.
+    /** The local anchor point relative to bodyA's origin. */
     public readonly localAnchorA = new b2Vec2();
 
-    /// The local anchor point relative to bodyB's origin.
+    /** The local anchor point relative to bodyB's origin. */
     public readonly localAnchorB = new b2Vec2();
 
-    /// The bodyB angle minus bodyA angle in the reference state (radians).
+    /** The bodyB angle minus bodyA angle in the reference state (radians). */
     public referenceAngle = 0;
 
-    /// A flag to enable joint limits.
+    /** A flag to enable joint limits. */
     public enableLimit = false;
 
-    /// The lower angle for the joint limit (radians).
+    /** The lower angle for the joint limit (radians). */
     public lowerAngle = 0;
 
-    /// The upper angle for the joint limit (radians).
+    /** The upper angle for the joint limit (radians). */
     public upperAngle = 0;
 
-    /// A flag to enable the joint motor.
+    /** A flag to enable the joint motor. */
     public enableMotor = false;
 
-    /// The desired motor speed. Usually in radians per second.
+    /** The desired motor speed. Usually in radians per second. */
     public motorSpeed = 0;
 
-    /// The maximum motor torque used to achieve the desired motor speed.
-    /// Usually in N-m.
+    /**
+     * The maximum motor torque used to achieve the desired motor speed.
+     * Usually in N-m.
+     */
     public maxMotorTorque = 0;
 
     constructor() {
@@ -112,12 +116,14 @@ export class b2RevoluteJointDef extends b2JointDef implements b2IRevoluteJointDe
     }
 }
 
-/// A revolute joint constrains two bodies to share a common point while they
-/// are free to rotate about the point. The relative rotation about the shared
-/// point is the joint angle. You can limit the relative rotation with
-/// a joint limit that specifies a lower and upper angle. You can use a motor
-/// to drive the relative rotation about the shared point. A maximum motor torque
-/// is provided so that infinite forces are not generated.
+/**
+ * A revolute joint constrains two bodies to share a common point while they
+ * are free to rotate about the point. The relative rotation about the shared
+ * point is the joint angle. You can limit the relative rotation with
+ * a joint limit that specifies a lower and upper angle. You can use a motor
+ * to drive the relative rotation about the shared point. A maximum motor torque
+ * is provided so that infinite forces are not generated.
+ */
 export class b2RevoluteJoint extends b2Joint {
     // Solver shared
     public readonly m_localAnchorA = new b2Vec2();

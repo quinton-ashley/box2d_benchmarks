@@ -44,8 +44,10 @@ const temp = {
     },
 };
 
-/// This tests stacking. It also shows how to use b2World::Query
-/// and b2TestOverlap.
+/**
+ * This tests stacking. It also shows how to use b2World::Query
+ * and b2TestOverlap.
+ */
 class PolygonShapes extends Test {
     public static readonly e_maxBodies = 256;
 

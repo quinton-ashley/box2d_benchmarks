@@ -18,7 +18,9 @@
 
 import { b2Vec2 } from "../common/b2_math";
 
-/// Profiling data. Times are in milliseconds.
+/**
+ * Profiling data. Times are in milliseconds.
+ */
 export class b2Profile {
     public step = 0;
 
@@ -54,7 +56,9 @@ export interface b2StepConfig {
     positionIterations: number;
 }
 
-/// This is an internal structure.
+/**
+ * This is an internal structure.
+ */
 export class b2TimeStep {
     public dt = 0; // time step
 
@@ -87,21 +91,27 @@ export class b2TimeStep {
     }
 }
 
-/// This is an internal structure.
+/**
+ * This is an internal structure.
+ */
 export class b2Position {
     public readonly c = new b2Vec2();
 
     public a = 0;
 }
 
-/// This is an internal structure.
+/**
+ * This is an internal structure.
+ */
 export class b2Velocity {
     public readonly v = new b2Vec2();
 
     public w = 0;
 }
 
-/// Solver Data
+/**
+ * Solver Data
+ */
 export class b2SolverData {
     public readonly step = b2TimeStep.Create();
 

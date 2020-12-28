@@ -16,18 +16,24 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-/// Timer for profiling. This has platform specific code and may
-/// not work on every platform.
+/**
+ * Timer for profiling. This has platform specific code and may
+ * not work on every platform.
+ */
 export class b2Timer {
     public m_start = performance.now();
 
-    /// Reset the timer.
+    /**
+     * Reset the timer.
+     */
     public Reset(): b2Timer {
         this.m_start = performance.now();
         return this;
     }
 
-    /// Get the time since construction or the last reset.
+    /**
+     * Get the time since construction or the last reset.
+     */
     public GetMilliseconds(): number {
         return performance.now() - this.m_start;
     }

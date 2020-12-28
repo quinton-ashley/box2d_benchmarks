@@ -62,49 +62,31 @@ class ParticleLifetimeRandomizer extends EmittedParticleCallback {
  * box.
  */
 class Faucet extends AbstractParticleTestWithControls {
-    /**
-     * Used to cycle through particle colors.
-     */
+    /** Used to cycle through particle colors. */
     public m_particleColorOffset = 0;
 
-    /**
-     * Particle emitter.
-     */
+    /** Particle emitter. */
     public m_emitter: RadialEmitter;
 
-    /**
-     * Callback which sets the lifetime of emitted particles.
-     */
+    /** Callback which sets the lifetime of emitted particles. */
     public m_lifetimeRandomizer: ParticleLifetimeRandomizer;
 
-    /**
-     * Minimum lifetime of particles in seconds.
-     */
+    /** Minimum lifetime of particles in seconds. */
     public static readonly k_particleLifetimeMin = 30;
 
-    /**
-     * Maximum lifetime of particles in seconds.
-     */
+    /** Maximum lifetime of particles in seconds. */
     public static readonly k_particleLifetimeMax = 50;
 
-    /**
-     * Height of the container.
-     */
+    /** Height of the container. */
     public static readonly k_containerHeight = 0.2;
 
-    /**
-     * Width of the container.
-     */
+    /** Width of the container. */
     public static readonly k_containerWidth = 1;
 
-    /**
-     * Thickness of the container's walls and bottom.
-     */
+    /** Thickness of the container's walls and bottom. */
     public static readonly k_containerThickness = 0.05;
 
-    /**
-     * Width of the faucet relative to the container width.
-     */
+    /** Width of the faucet relative to the container width. */
     public static readonly k_faucetWidth = 0.1;
 
     /**
@@ -113,9 +95,7 @@ class Faucet extends AbstractParticleTestWithControls {
      */
     public static readonly k_faucetHeight = 15;
 
-    /**
-     * Length of the faucet as a fraction of the particle diameter.
-     */
+    /** Length of the faucet as a fraction of the particle diameter. */
     public static readonly k_faucetLength = 2;
 
     /**
@@ -130,9 +110,7 @@ class Faucet extends AbstractParticleTestWithControls {
      */
     public static readonly k_spoutWidth = 1.1;
 
-    /**
-     * Maximum number of particles in the system.
-     */
+    /** Maximum number of particles in the system. */
     public static readonly k_maxParticleCount = 1000;
 
     /**
@@ -141,14 +119,10 @@ class Faucet extends AbstractParticleTestWithControls {
      */
     public static readonly k_emitRateChangeFactor = 1.05;
 
-    /**
-     * Minimum emit rate of the faucet in particles per second.
-     */
+    /** Minimum emit rate of the faucet in particles per second. */
     public static readonly k_emitRateMin = 1;
 
-    /**
-     * Maximum emit rate of the faucet in particles per second.
-     */
+    /** Maximum emit rate of the faucet in particles per second. */
     public static readonly k_emitRateMax = 240;
 
     constructor({ particleParameter }: TestContext) {
@@ -272,7 +246,6 @@ class Faucet extends AbstractParticleTestWithControls {
         this.m_emitter.SetParticleFlags(this.particleParameter.GetValue());
 
         // If this is a color mixing particle, add some color.
-        ///  b2Color color(1, 1, 1, 1);
         if (this.m_emitter.GetParticleFlags() & b2ParticleFlag.b2_colorMixingParticle) {
             // Each second, select a different color.
             this.m_emitter.SetColor(particleColors[Math.floor(this.m_particleColorOffset) % particleColors.length]);

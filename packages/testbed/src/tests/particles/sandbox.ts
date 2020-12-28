@@ -63,14 +63,10 @@ const particleTypes = {
 //  */
 // SandboxParams = {};
 class SandboxParams {
-    /**
-     * Total possible pump squares
-     */
+    /** Total possible pump squares */
     public static readonly k_maxPumps = 5;
 
-    /**
-     * Total possible emitters
-     */
+    /** Total possible emitters */
     public static readonly k_maxEmitters = 5;
 
     /**
@@ -79,19 +75,13 @@ class SandboxParams {
      */
     public static readonly k_flipTime = 6;
 
-    /**
-     * Radius of a tile
-     */
+    /** Radius of a tile */
     public static readonly k_tileRadius = 2;
 
-    /**
-     * Diameter of a tile
-     */
+    /** Diameter of a tile */
     public static readonly k_tileDiameter = 4;
 
-    /**
-     * Pump radius; slightly smaller than a tile
-     */
+    /** Pump radius; slightly smaller than a tile */
     public static readonly k_pumpRadius = 2 - 0.05;
 
     public static readonly k_playfieldLeftEdge = -20;
@@ -100,36 +90,24 @@ class SandboxParams {
 
     public static readonly k_playfieldBottomEdge = 40;
 
-    /**
-     * The world size in the TILE
-     */
+    /** The world size in the TILE */
     public static readonly k_tileWidth = 10;
 
     public static readonly k_tileHeight = 11;
 
-    /**
-     * Particles/second
-     */
+    /** Particles/second */
     public static readonly k_defaultEmitterRate = 30;
 
-    /**
-     * Fit cleanly inside one block
-     */
+    /** Fit cleanly inside one block */
     public static readonly k_defaultEmitterSize = 3;
 
-    /**
-     * How fast particles coming out of the particles should drop
-     */
+    /** How fast particles coming out of the particles should drop */
     public static readonly k_particleExitSpeedY = -9.8;
 
-    /**
-     * How hard the pumps can push
-     */
+    /** How hard the pumps can push */
     public static readonly k_pumpForce = 600;
 
-    /**
-     * Number of *special* particles.
-     */
+    /** Number of *special* particles. */
     public static readonly k_numberOfSpecialParticles = 256;
 }
 
@@ -138,9 +116,7 @@ class SandboxParams {
  * effect to them.
  */
 class SpecialParticleTracker extends b2DestructionListener {
-    /**
-     * Set of particle handles used to track special particles.
-     */
+    /** Set of particle handles used to track special particles. */
     public m_particles: b2ParticleHandle[] = [];
 
     /**
@@ -155,14 +131,10 @@ class SpecialParticleTracker extends b2DestructionListener {
      */
     public m_particleSystem: b2ParticleSystem;
 
-    /**
-     * Current offset into this.m_colorOscillationPeriod.
-     */
+    /** Current offset into this.m_colorOscillationPeriod. */
     public m_colorOscillationTime = 0;
 
-    /**
-     * Color oscillation period in seconds.
-     */
+    /** Color oscillation period in seconds. */
     public m_colorOscillationPeriod = 2;
 
     /**
@@ -257,46 +229,30 @@ class SpecialParticleTracker extends b2DestructionListener {
  */
 
 class Sandbox extends AbstractParticleTestWithControls {
-    /**
-     * Count of faucets in the world
-     */
+    /** Count of faucets in the world */
     public m_faucetEmitterIndex = 0;
 
-    /**
-     * Count of pumps in the world
-     */
+    /** Count of pumps in the world */
     public m_pumpIndex = 0;
 
-    /**
-     * How long have we been pushing the pumps?
-     */
+    /** How long have we been pushing the pumps? */
     public m_pumpTimer = 0;
 
-    /**
-     * Pump force
-     */
+    /** Pump force */
     public readonly m_pumpForce = new b2Vec2();
 
-    /**
-     * The shape we will use for the killfield
-     */
+    /** The shape we will use for the killfield */
     public m_killFieldShape: b2PolygonShape;
 
-    /**
-     * Transform for the killfield shape
-     */
+    /** Transform for the killfield shape */
     public m_killFieldTransform: b2Transform;
 
-    /**
-     * Pumps and emitters
-     */
+    /** Pumps and emitters */
     public readonly m_pumps: Array<b2Body | null> = [];
 
     public readonly m_emitters: Array<RadialEmitter | null> = [];
 
-    /**
-     * Special particle tracker.
-     */
+    /** Special particle tracker. */
     public m_specialTracker: SpecialParticleTracker;
 
     constructor({ particleParameter }: TestContext) {
@@ -371,7 +327,6 @@ class Sandbox extends AbstractParticleTestWithControls {
     public Destroy() {
         // deallocate our emitters
         for (let i = 0; i < this.m_faucetEmitterIndex; i++) {
-            ///  delete this.m_emitters[i];
             this.m_emitters[i] = null;
         }
     }
@@ -412,7 +367,6 @@ class Sandbox extends AbstractParticleTestWithControls {
         const boxShape = new b2PolygonShape();
         boxShape.SetAsBox(SandboxParams.k_tileRadius, SandboxParams.k_tileRadius);
 
-        ///  b2Vec2 triangle[3];
         const triangle = b2MakeArray(3, b2Vec2);
         triangle[0].Set(-SandboxParams.k_tileRadius, -SandboxParams.k_tileRadius);
         triangle[1].Set(SandboxParams.k_tileRadius, SandboxParams.k_tileRadius);

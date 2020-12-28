@@ -44,7 +44,6 @@ import { selectDef } from "../../ui/controls/Select";
 const bendingModels = ["Spring", "PBD Ang", "XPBD Ang", "PBD Dist", "PBD Height", "PBD Triangle"];
 const stretchingModels = ["PBD", "XPBD"];
 
-///
 class Rope extends Test {
     public readonly m_rope1: b2Rope;
 

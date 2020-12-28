@@ -108,10 +108,12 @@ function ComputeCentroid(vs: b2Vec2[], count: number, out: b2Vec2): b2Vec2 {
     return c;
 }
 
-/// A solid convex polygon. It is assumed that the interior of the polygon is to
-/// the left of each edge.
-/// Polygons have a maximum number of vertices equal to b2_maxPolygonVertices.
-/// In most cases you should not need many vertices for a convex polygon.
+/**
+ * A solid convex polygon. It is assumed that the interior of the polygon is to
+ * the left of each edge.
+ * Polygons have a maximum number of vertices equal to b2_maxPolygonVertices.
+ * In most cases you should not need many vertices for a convex polygon.
+ */
 export class b2PolygonShape extends b2Shape {
     public readonly m_centroid = new b2Vec2();
 
@@ -125,7 +127,9 @@ export class b2PolygonShape extends b2Shape {
         super(b2ShapeType.e_polygon, b2_polygonRadius);
     }
 
-    /// Implement b2Shape.
+    /**
+     * Implement b2Shape.
+     */
     public Clone(): b2PolygonShape {
         return new b2PolygonShape().Copy(this);
     }
@@ -146,15 +150,20 @@ export class b2PolygonShape extends b2Shape {
         return this;
     }
 
-    /// @see b2Shape::GetChildCount
+    /**
+     * @see b2Shape::GetChildCount
+     */
     public GetChildCount(): number {
         return 1;
     }
 
-    /// Create a convex hull from the given array of points.
-    /// @warning the points may be re-ordered, even if they form a convex polygon
-    /// @warning collinear points are handled but not removed. Collinear points
-    /// may lead to poor stacking behavior.
+    /**
+     * Create a convex hull from the given array of points.
+     *
+     * @warning the points may be re-ordered, even if they form a convex polygon
+     * @warning collinear points are handled but not removed. Collinear points
+     * may lead to poor stacking behavior.
+     */
     public Set(vertices: XY[], count = vertices.length): b2PolygonShape {
         // DEBUG: b2Assert(3 <= count && count <= b2_maxPolygonVertices);
         if (count < 3) {
@@ -257,11 +266,14 @@ export class b2PolygonShape extends b2Shape {
         return this;
     }
 
-    /// Build vertices to represent an axis-aligned box or an oriented box.
-    /// @param hx the half-width.
-    /// @param hy the half-height.
-    /// @param center the center of the box in local coordinates.
-    /// @param angle the rotation of the box in local coordinates.
+    /**
+     * Build vertices to represent an axis-aligned box or an oriented box.
+     *
+     * @param hx the half-width.
+     * @param hy the half-height.
+     * @param center the center of the box in local coordinates.
+     * @param angle the rotation of the box in local coordinates.
+     */
     public SetAsBox(hx: number, hy: number, center?: XY, angle = 0): b2PolygonShape {
         this.m_count = 4;
         this.m_vertices = b2MakeArray(this.m_count, b2Vec2);
@@ -294,7 +306,9 @@ export class b2PolygonShape extends b2Shape {
         return this;
     }
 
-    /// @see b2Shape::TestPoint
+    /**
+     * @see b2Shape::TestPoint
+     */
     public TestPoint(xf: b2Transform, p: XY): boolean {
         const pLocal = b2Transform.TransposeMultiplyVec2(xf, p, temp.TestPoint.pLocal);
 
@@ -308,9 +322,12 @@ export class b2PolygonShape extends b2Shape {
         return true;
     }
 
-    /// Implement b2Shape.
-    /// @note because the polygon is solid, rays that start inside do not hit because the normal is
-    /// not defined.
+    /**
+     * Implement b2Shape.
+     *
+     * @note because the polygon is solid, rays that start inside do not hit because the normal is
+     * not defined.
+     */
     public RayCast(output: b2RayCastOutput, input: b2RayCastInput, xf: b2Transform, _childIndex: number): boolean {
         // Put the ray into the polygon's frame of reference.
         const p1 = b2Transform.TransposeMultiplyVec2(xf, input.p1, temp.RayCast.p1);
@@ -368,7 +385,9 @@ export class b2PolygonShape extends b2Shape {
         return false;
     }
 
-    /// @see b2Shape::ComputeAABB
+    /**
+     * @see b2Shape::ComputeAABB
+     */
     public ComputeAABB(aabb: b2AABB, xf: b2Transform, _childIndex: number): void {
         const lower = b2Transform.MultiplyVec2(xf, this.m_vertices[0], aabb.lowerBound);
         const upper = aabb.upperBound.Copy(lower);
@@ -384,7 +403,9 @@ export class b2PolygonShape extends b2Shape {
         upper.AddXY(r, r);
     }
 
-    /// @see b2Shape::ComputeMass
+    /**
+     * @see b2Shape::ComputeMass
+     */
     public ComputeMass(massData: b2MassData, density: number): void {
         // Polygon mass, centroid, and inertia.
         // Let rho be the polygon density in mass per unit area.

@@ -23,17 +23,23 @@ import { b2TimeStep, b2Body, b2Assert } from "@box2d/core";
  * together in a bipartite graph.
  */
 export class b2ControllerEdge {
-    public readonly controller: b2Controller; /// < provides quick access to other end of this edge.
+    /** Provides quick access to other end of this edge. */
+    public readonly controller: b2Controller;
 
-    public readonly body: b2Body; /// < the body
+    /** The body */
+    public readonly body: b2Body;
 
-    public prevBody: b2ControllerEdge | null = null; /// < the previous controller edge in the controllers's joint list
+    /** The previous controller edge in the controller's joint list */
+    public prevBody: b2ControllerEdge | null = null;
 
-    public nextBody: b2ControllerEdge | null = null; /// < the next controller edge in the controllers's joint list
+    /** The next controller edge in the controller's joint list */
+    public nextBody: b2ControllerEdge | null = null;
 
-    public prevController: b2ControllerEdge | null = null; /// < the previous controller edge in the body's joint list
+    /** The previous controller edge in the body's joint list */
+    public prevController: b2ControllerEdge | null = null;
 
-    public nextController: b2ControllerEdge | null = null; /// < the next controller edge in the body's joint list
+    /** The next controller edge in the body's joint list */
+    public nextController: b2ControllerEdge | null = null;
 
     constructor(controller: b2Controller, body: b2Body) {
         this.controller = controller;

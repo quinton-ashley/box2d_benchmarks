@@ -31,9 +31,11 @@ import {
 import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
 
-/// This is a test of typical character collision scenarios. This does not
-/// show how you should implement a character in your application.
-/// Instead this is used to test smooth collision on edge chains.
+/**
+ * This is a test of typical character collision scenarios. This does not
+ * show how you should implement a character in your application.
+ * Instead this is used to test smooth collision on edge chains.
+ */
 class CharacterCollision extends Test {
     public m_character: b2Body;
 

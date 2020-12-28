@@ -50,78 +50,80 @@ const temp = {
 };
 
 export interface b2IWheelJointDef extends b2IJointDef {
-    /// The local anchor point relative to bodyA's origin.
+    /** The local anchor point relative to bodyA's origin. */
     localAnchorA?: XY;
 
-    /// The local anchor point relative to bodyB's origin.
+    /** The local anchor point relative to bodyB's origin. */
     localAnchorB?: XY;
 
-    /// The local translation axis in bodyA.
+    /** The local translation axis in bodyA. */
     localAxisA?: XY;
 
-    /// Enable/disable the joint limit.
+    /** Enable/disable the joint limit. */
     enableLimit?: boolean;
 
-    /// The lower translation limit, usually in meters.
+    /** The lower translation limit, usually in meters. */
     lowerTranslation?: number;
 
-    /// The upper translation limit, usually in meters.
+    /** The upper translation limit, usually in meters. */
     upperTranslation?: number;
 
-    /// Enable/disable the joint motor.
+    /** Enable/disable the joint motor. */
     enableMotor?: boolean;
 
-    /// The maximum motor torque, usually in N-m.
+    /** The maximum motor torque, usually in N-m. */
     maxMotorTorque?: number;
 
-    /// The desired motor speed in radians per second.
+    /** The desired motor speed in radians per second. */
     motorSpeed?: number;
 
-    /// Suspension stiffness. Typically in units N/m.
+    /** Suspension stiffness. Typically in units N/m. */
     stiffness?: number;
 
-    /// Suspension damping. Typically in units of N*s/m.
+    /** Suspension damping. Typically in units of N*s/m. */
     damping?: number;
 }
 
-/// Wheel joint definition. This requires defining a line of
-/// motion using an axis and an anchor point. The definition uses local
-/// anchor points and a local axis so that the initial configuration
-/// can violate the constraint slightly. The joint translation is zero
-/// when the local anchor points coincide in world space. Using local
-/// anchors and a local axis helps when saving and loading a game.
+/**
+ * Wheel joint definition. This requires defining a line of
+ * motion using an axis and an anchor point. The definition uses local
+ * anchor points and a local axis so that the initial configuration
+ * can violate the constraint slightly. The joint translation is zero
+ * when the local anchor points coincide in world space. Using local
+ * anchors and a local axis helps when saving and loading a game.
+ */
 export class b2WheelJointDef extends b2JointDef implements b2IWheelJointDef {
-    /// The local anchor point relative to bodyA's origin.
+    /** The local anchor point relative to bodyA's origin. */
     public readonly localAnchorA = new b2Vec2();
 
-    /// The local anchor point relative to bodyB's origin.
+    /** The local anchor point relative to bodyB's origin. */
     public readonly localAnchorB = new b2Vec2();
 
-    /// The local translation axis in bodyA.
+    /** The local translation axis in bodyA. */
     public readonly localAxisA = new b2Vec2(1, 0);
 
-    /// Enable/disable the joint limit.
+    /** Enable/disable the joint limit. */
     public enableLimit = false;
 
-    /// The lower translation limit, usually in meters.
+    /** The lower translation limit, usually in meters. */
     public lowerTranslation = 0;
 
-    /// The upper translation limit, usually in meters.
+    /** The upper translation limit, usually in meters. */
     public upperTranslation = 0;
 
-    /// Enable/disable the joint motor.
+    /** Enable/disable the joint motor. */
     public enableMotor = false;
 
-    /// The maximum motor torque, usually in N-m.
+    /** The maximum motor torque, usually in N-m. */
     public maxMotorTorque = 0;
 
-    /// The desired motor speed in radians per second.
+    /** The desired motor speed in radians per second. */
     public motorSpeed = 0;
 
-    /// Suspension stiffness. Typically in units N/m.
+    /** Suspension stiffness. Typically in units N/m. */
     public stiffness = 0;
 
-    /// Suspension damping. Typically in units of N*s/m.
+    /** Suspension damping. Typically in units of N*s/m. */
     public damping = 0;
 
     constructor() {
@@ -137,10 +139,12 @@ export class b2WheelJointDef extends b2JointDef implements b2IWheelJointDef {
     }
 }
 
-/// A wheel joint. This joint provides two degrees of freedom: translation
-/// along an axis fixed in bodyA and rotation in the plane. In other words, it is a point to
-/// line constraint with a rotational motor and a linear spring/damper. The spring/damper is
-/// initialized upon creation. This joint is designed for vehicle suspensions.
+/**
+ * A wheel joint. This joint provides two degrees of freedom: translation
+ * along an axis fixed in bodyA and rotation in the plane. In other words, it is a point to
+ * line constraint with a rotational motor and a linear spring/damper. The spring/damper is
+ * initialized upon creation. This joint is designed for vehicle suspensions.
+ */
 export class b2WheelJoint extends b2Joint {
     public readonly m_localAnchorA = new b2Vec2();
 
@@ -720,12 +724,16 @@ export class b2WheelJoint extends b2Joint {
         return inv_dt * this.m_motorImpulse;
     }
 
-    /// Is the joint limit enabled?
+    /**
+     * Is the joint limit enabled?
+     */
     public IsLimitEnabled(): boolean {
         return this.m_enableLimit;
     }
 
-    /// Enable/disable the joint translation limit.
+    /**
+     * Enable/disable the joint translation limit.
+     */
     public EnableLimit(flag: boolean): boolean {
         if (flag !== this.m_enableLimit) {
             this.m_bodyA.SetAwake(true);
@@ -737,17 +745,23 @@ export class b2WheelJoint extends b2Joint {
         return flag;
     }
 
-    /// Get the lower joint translation limit, usually in meters.
+    /**
+     * Get the lower joint translation limit, usually in meters.
+     */
     public GetLowerLimit(): number {
         return this.m_lowerTranslation;
     }
 
-    /// Get the upper joint translation limit, usually in meters.
+    /**
+     * Get the upper joint translation limit, usually in meters.
+     */
     public GetUpperLimit(): number {
         return this.m_upperTranslation;
     }
 
-    /// Set the joint translation limits, usually in meters.
+    /**
+     * Set the joint translation limits, usually in meters.
+     */
     public SetLimits(lower: number, upper: number): void {
         // b2Assert(lower <= upper);
         if (lower !== this.m_lowerTranslation || upper !== this.m_upperTranslation) {

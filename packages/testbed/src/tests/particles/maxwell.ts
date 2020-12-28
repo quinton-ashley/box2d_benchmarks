@@ -166,18 +166,13 @@ class Maxwell extends AbstractParticleTest {
             pd.flags = b2ParticleFlag.b2_powderParticle;
             pd.shape = shape;
             this.m_particleGroup = this.m_particleSystem.CreateParticleGroup(pd);
-            ///  b2Vec2* velocities =
-            ///    this.m_particleSystem.GetVelocityBuffer() +
-            ///    this.m_particleGroup.GetBufferIndex();
             const velocities = this.m_particleSystem.GetVelocityBuffer();
             const index = this.m_particleGroup.GetBufferIndex();
 
             for (let i = 0; i < this.m_particleGroup.GetParticleCount(); ++i) {
-                ///  b2Vec2& v = *(velocities + i);
                 const v = velocities[index + i];
                 v.Set(b2RandomFloat(-1, 1) + 1, b2RandomFloat(-1, 1) + 1);
                 v.Normalize();
-                ///  v *= this.m_temperature;
                 v.Scale(this.m_temperature);
             }
         }
@@ -251,22 +246,17 @@ class Maxwell extends AbstractParticleTest {
 
         if (this.m_particleGroup) {
             const index = this.m_particleGroup.GetBufferIndex();
-            ///  b2Vec2* const velocities = this.m_particleSystem.GetVelocityBuffer() + index;
             const velocities = this.m_particleSystem.GetVelocityBuffer();
-            ///  b2Vec2* const positions = this.m_particleSystem.GetPositionBuffer() + index;
             const positions = this.m_particleSystem.GetPositionBuffer();
 
             for (let i = 0; i < this.m_particleGroup.GetParticleCount(); i++) {
                 // Add energy to particles based upon the temperature.
-                ///  b2Vec2& v = velocities[i];
                 const v = velocities[index + i];
                 v.Normalize();
-                ///  v *= this.m_temperature;
                 v.Scale(this.m_temperature);
 
                 // Keep track of the number of particles above / below the
                 // divider / barrier position.
-                ///  b2Vec2& p = positions[i];
                 const p = positions[index + i];
                 if (p.y > this.m_position) {
                     top++;

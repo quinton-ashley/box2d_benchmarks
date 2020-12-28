@@ -28,7 +28,7 @@ const tempDamping = new b2Vec2();
  * in local co-ordinates.
  */
 export class b2TensorDampingController extends b2Controller {
-    /// Tensor to use in damping model
+    /** Tensor to use in damping model */
     public readonly T = new b2Mat22();
     /* Some examples (matrixes in format (row1; row2))
     (-a 0; 0 -a)    Standard isotropic damping with strength a
@@ -37,7 +37,7 @@ export class b2TensorDampingController extends b2Controller {
     */
     // By the way, tensor in this case just means matrix, don't let the terminology get you down.
 
-    /// Set this to a positive number to clamp the maximum amount of damping done.
+    /** Set this to a positive number to clamp the maximum amount of damping done. */
     public maxTimestep = 0;
     // Typically one wants maxTimestep to be 1/(max eigenvalue of T), so that damping will never cause something to reverse direction
 

@@ -58,21 +58,23 @@ export interface b2IMotorJointDef extends b2IJointDef {
     correctionFactor?: number;
 }
 
-/// Motor joint definition.
+/**
+ * Motor joint definition.
+ */
 export class b2MotorJointDef extends b2JointDef implements b2IMotorJointDef {
-    /// Position of bodyB minus the position of bodyA, in bodyA's frame, in meters.
+    /** Position of bodyB minus the position of bodyA, in bodyA's frame, in meters. */
     public readonly linearOffset = new b2Vec2();
 
-    /// The bodyB angle minus bodyA angle in radians.
+    /** The bodyB angle minus bodyA angle in radians. */
     public angularOffset = 0;
 
-    /// The maximum motor force in N.
+    /** The maximum motor force in N. */
     public maxForce = 1;
 
-    /// The maximum motor torque in N-m.
+    /** The maximum motor torque in N-m. */
     public maxTorque = 1;
 
-    /// Position correction factor in the range [0,1].
+    /** Position correction factor in the range [0,1]. */
     public correctionFactor = 0.3;
 
     constructor() {
@@ -90,9 +92,11 @@ export class b2MotorJointDef extends b2JointDef implements b2IMotorJointDef {
     }
 }
 
-/// A motor joint is used to control the relative motion
-/// between two bodies. A typical usage is to control the movement
-/// of a dynamic body with respect to the ground.
+/**
+ * A motor joint is used to control the relative motion
+ * between two bodies. A typical usage is to control the movement
+ * of a dynamic body with respect to the ground.
+ */
 export class b2MotorJoint extends b2Joint {
     // Solver shared
     public readonly m_linearOffset = new b2Vec2();

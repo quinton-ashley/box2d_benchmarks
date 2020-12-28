@@ -42,22 +42,28 @@ export interface b2IMouseJointDef extends b2IJointDef {
     damping?: number;
 }
 
-/// Mouse joint definition. This requires a world target point,
-/// tuning parameters, and the time step.
+/**
+ * Mouse joint definition. This requires a world target point,
+ * tuning parameters, and the time step.
+ */
 export class b2MouseJointDef extends b2JointDef implements b2IMouseJointDef {
-    /// The initial world target point. This is assumed
-    /// to coincide with the body anchor initially.
+    /**
+     * The initial world target point. This is assumed
+     * to coincide with the body anchor initially.
+     */
     public readonly target = new b2Vec2();
 
-    /// The maximum constraint force that can be exerted
-    /// to move the candidate body. Usually you will express
-    /// as some multiple of the weight (multiplier * mass * gravity).
+    /**
+     * The maximum constraint force that can be exerted
+     * to move the candidate body. Usually you will express
+     * as some multiple of the weight (multiplier * mass * gravity).
+     */
     public maxForce = 0;
 
-    /// The linear stiffness in N/m
+    /** The linear stiffness in N/m */
     public stiffness = 0;
 
-    /// The linear damping in N*s/m
+    /** The linear damping in N*s/m */
     public damping = 0;
 
     constructor() {
@@ -65,13 +71,15 @@ export class b2MouseJointDef extends b2JointDef implements b2IMouseJointDef {
     }
 }
 
-/// A mouse joint is used to make a point on a body track a
-/// specified world point. This a soft constraint with a maximum
-/// force. This allows the constraint to stretch and without
-/// applying huge forces.
-/// NOTE: this joint is not documented in the manual because it was
-/// developed to be used in the testbed. If you want to learn how to
-/// use the mouse joint, look at the testbed.
+/**
+ * A mouse joint is used to make a point on a body track a
+ * specified world point. This a soft constraint with a maximum
+ * force. This allows the constraint to stretch and without
+ * applying huge forces.
+ * NOTE: this joint is not documented in the manual because it was
+ * developed to be used in the testbed. If you want to learn how to
+ * use the mouse joint, look at the testbed.
+ */
 export class b2MouseJoint extends b2Joint {
     public readonly m_localAnchorB = new b2Vec2();
 

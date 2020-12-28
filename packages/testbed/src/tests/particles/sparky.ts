@@ -123,9 +123,7 @@ class ParticleVFX {
         const pos = this.m_particleSystem.GetPositionBuffer();
         const vel = this.m_particleSystem.GetVelocityBuffer();
         for (let i = bufferIndex; i < bufferIndex + this.m_pg.GetParticleCount(); i++) {
-            ///  vel[i] = pos[i] - origin;
             b2Vec2.Subtract(pos[i], origin, vel[i]);
-            ///  vel[i] *= speed;
             vel[i].Scale(speed);
         }
     }
@@ -167,9 +165,9 @@ class ParticleVFX {
 }
 
 class Sparky extends AbstractParticleTestWithControls {
-    private static c_maxCircles = 3; /// 6;
+    private static c_maxCircles = 3; // 6;
 
-    private static c_maxVFX = 20; /// 50;
+    private static c_maxVFX = 20; // 50;
 
     private static SHAPE_HEIGHT_OFFSET = 7;
 
@@ -257,7 +255,6 @@ class Sparky extends AbstractParticleTestWithControls {
             }
             vfx.Step(dt);
             if (vfx.IsDone()) {
-                /// delete vfx;
                 vfx.Drop();
                 this.m_VFX[i] = null;
             }
@@ -267,7 +264,6 @@ class Sparky extends AbstractParticleTestWithControls {
     public AddVFX(p: b2Vec2, particleFlags: b2ParticleFlag) {
         const vfx = this.m_VFX[this.m_VFXIndex];
         if (vfx !== null) {
-            /// delete vfx;
             vfx.Drop();
             this.m_VFX[this.m_VFXIndex] = null;
         }

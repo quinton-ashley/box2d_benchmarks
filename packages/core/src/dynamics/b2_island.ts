@@ -155,7 +155,9 @@ This might be faster than computing sin+cos.
 However, we can compute sin+cos of the same angle fast.
 */
 
-/// This is an internal class.
+/**
+ * This is an internal class.
+ */
 export class b2Island {
     public m_listener: b2ContactListener;
 

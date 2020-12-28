@@ -39,11 +39,13 @@ const temp = {
 
 let nextNodeid = 0;
 
-/// A node in the dynamic tree. The client does not interact with this directly.
+/**
+ * A node in the dynamic tree. The client does not interact with this directly.
+ */
 export class b2TreeNode<T> {
     public readonly id: number;
 
-    /// Enlarged AABB
+    /** Enlarged AABB */
     public readonly aabb = new b2AABB();
 
     public userData: T | null = null;
@@ -111,14 +113,16 @@ export class b2TreeNode<T> {
     }
 }
 
-/// A dynamic AABB tree broad-phase, inspired by Nathanael Presson's btDbvt.
-/// A dynamic tree arranges data in a binary tree to accelerate
-/// queries such as volume queries and ray casts. Leafs are proxies
-/// with an AABB. In the tree we expand the proxy AABB by b2_fatAABBFactor
-/// so that the proxy AABB is bigger than the client object. This allows the client
-/// object to move by small amounts without triggering a tree update.
-///
-/// Nodes are pooled
+/**
+ * A dynamic AABB tree broad-phase, inspired by Nathanael Presson's btDbvt.
+ * A dynamic tree arranges data in a binary tree to accelerate
+ * queries such as volume queries and ray casts. Leafs are proxies
+ * with an AABB. In the tree we expand the proxy AABB by b2_fatAABBFactor
+ * so that the proxy AABB is bigger than the client object. This allows the client
+ * object to move by small amounts without triggering a tree update.
+ *
+ * Nodes are pooled
+ */
 export class b2DynamicTree<T> {
     public m_root: b2TreeNode<T> | null = null;
 
@@ -702,7 +706,9 @@ export class b2DynamicTree<T> {
         return this.m_root.GetMaxBalance();
     }
 
-    /// Build an optimal tree. Very expensive. For testing.
+    /**
+     * Build an optimal tree. Very expensive. For testing.
+     */
     public RebuildBottomUp(): void {
         throw new Error("Not implemented");
         /*

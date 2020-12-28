@@ -49,9 +49,11 @@ import {
     b2RayCastCallback,
 } from "./b2_world_callbacks";
 
-/// The world class manages all physics entities, dynamic simulation,
-/// and asynchronous queries. The world also contains efficient memory
-/// management facilities.
+/**
+ * The world class manages all physics entities, dynamic simulation,
+ * and asynchronous queries. The world also contains efficient memory
+ * management facilities.
+ */
 export class b2World {
     public readonly m_contactManager = new b2ContactManager();
 
@@ -103,35 +105,47 @@ export class b2World {
         this.m_gravity.Copy(gravity);
     }
 
-    /// Construct a world object.
-    /// @param gravity the world gravity vector.
+    /**
+     * Construct a world object.
+     *
+     * @param gravity the world gravity vector.
+     */
     public static Create(gravity: XY) {
         return new b2World(gravity);
     }
 
-    /// Register a destruction listener. The listener is owned by you and must
-    /// remain in scope.
+    /**
+     * Register a destruction listener. The listener is owned by you and must
+     * remain in scope.
+     */
     public SetDestructionListener(listener: b2DestructionListener | null): void {
         this.m_destructionListener = listener;
     }
 
-    /// Register a contact filter to provide specific control over collision.
-    /// Otherwise the default filter is used (b2_defaultFilter). The listener is
-    /// owned by you and must remain in scope.
+    /**
+     * Register a contact filter to provide specific control over collision.
+     * Otherwise the default filter is used (b2_defaultFilter). The listener is
+     * owned by you and must remain in scope.
+     */
     public SetContactFilter(filter: b2ContactFilter): void {
         this.m_contactManager.m_contactFilter = filter;
     }
 
-    /// Register a contact event listener. The listener is owned by you and must
-    /// remain in scope.
+    /**
+     * Register a contact event listener. The listener is owned by you and must
+     * remain in scope.
+     */
     public SetContactListener(listener: b2ContactListener): void {
         this.m_contactManager.m_contactListener = listener;
         this.m_island.m_listener = listener;
     }
 
-    /// Create a rigid body given a definition. No reference to the definition
-    /// is retained.
-    /// @warning This function is locked during callbacks.
+    /**
+     * Create a rigid body given a definition. No reference to the definition
+     * is retained.
+     *
+     * @warning This function is locked during callbacks.
+     */
     public CreateBody(def: b2BodyDef = {}): b2Body {
         b2Assert(!this.IsLocked());
 
@@ -149,10 +163,13 @@ export class b2World {
         return b;
     }
 
-    /// Destroy a rigid body given a definition. No reference to the definition
-    /// is retained. This function is locked during callbacks.
-    /// @warning This automatically deletes all associated shapes and joints.
-    /// @warning This function is locked during callbacks.
+    /**
+     * Destroy a rigid body given a definition. No reference to the definition
+     * is retained. This function is locked during callbacks.
+     *
+     * @warning This automatically deletes all associated shapes and joints.
+     * @warning This function is locked during callbacks.
+     */
     public DestroyBody(b: b2Body): void {
         // DEBUG: b2Assert(this.m_bodyCount > 0);
         b2Assert(!this.IsLocked());
@@ -241,9 +258,12 @@ export class b2World {
         throw new Error();
     }
 
-    /// Create a joint to constrain bodies together. No reference to the definition
-    /// is retained. This may cause the connected bodies to cease colliding.
-    /// @warning This function is locked during callbacks.
+    /**
+     * Create a joint to constrain bodies together. No reference to the definition
+     * is retained. This may cause the connected bodies to cease colliding.
+     *
+     * @warning This function is locked during callbacks.
+     */
     public CreateJoint(def: b2IAreaJointDef): b2AreaJoint;
 
     public CreateJoint(def: b2IDistanceJointDef): b2DistanceJoint;
@@ -313,8 +333,11 @@ export class b2World {
         return j;
     }
 
-    /// Destroy a joint. This may cause the connected bodies to begin colliding.
-    /// @warning This function is locked during callbacks.
+    /**
+     * Destroy a joint. This may cause the connected bodies to begin colliding.
+     *
+     * @warning This function is locked during callbacks.
+     */
     public DestroyJoint(j: b2Joint): void {
         b2Assert(!this.IsLocked());
 
@@ -390,11 +413,14 @@ export class b2World {
         }
     }
 
-    /// Take a time step. This performs collision detection, integration,
-    /// and constraint solution.
-    /// @param timeStep the amount of time to simulate, this should not vary.
-    /// @param velocityIterations for the velocity constraint solver.
-    /// @param positionIterations for the position constraint solver.
+    /**
+     * Take a time step. This performs collision detection, integration,
+     * and constraint solution.
+     *
+     * @param timeStep the amount of time to simulate, this should not vary.
+     * @param velocityIterations for the velocity constraint solver.
+     * @param positionIterations for the position constraint solver.
+     */
     private static Step_s_step = b2TimeStep.Create();
 
     private static Step_s_stepTimer = new b2Timer();
@@ -461,13 +487,16 @@ export class b2World {
         this.m_profile.step = stepTimer.GetMilliseconds();
     }
 
-    /// Manually clear the force buffer on all bodies. By default, forces are cleared automatically
-    /// after each call to Step. The default behavior is modified by calling SetAutoClearForces.
-    /// The purpose of this function is to support sub-stepping. Sub-stepping is often used to maintain
-    /// a fixed sized time step under a variable frame-rate.
-    /// When you perform sub-stepping you will disable auto clearing of forces and instead call
-    /// ClearForces after all sub-steps are complete in one pass of your game loop.
-    /// @see SetAutoClearForces
+    /**
+     * Manually clear the force buffer on all bodies. By default, forces are cleared automatically
+     * after each call to Step. The default behavior is modified by calling SetAutoClearForces.
+     * The purpose of this function is to support sub-stepping. Sub-stepping is often used to maintain
+     * a fixed sized time step under a variable frame-rate.
+     * When you perform sub-stepping you will disable auto clearing of forces and instead call
+     * ClearForces after all sub-steps are complete in one pass of your game loop.
+     *
+     * @see SetAutoClearForces
+     */
     public ClearForces(): void {
         for (let body = this.m_bodyList; body; body = body.GetNext()) {
             body.m_force.SetZero();
@@ -475,10 +504,13 @@ export class b2World {
         }
     }
 
-    /// Query the world for all fixtures that potentially overlap the
-    /// provided AABB.
-    /// @param aabb the query box.
-    /// @param callback a user implemented callback class or function.
+    /**
+     * Query the world for all fixtures that potentially overlap the
+     * provided AABB.
+     *
+     * @param aabb the query box.
+     * @param callback a user implemented callback class or function.
+     */
     public QueryAABB(aabb: b2AABB, callback: b2QueryCallback): void {
         this.m_contactManager.m_broadPhase.Query(aabb, (proxy) => {
             const fixture_proxy = b2Verify(proxy.userData);
@@ -495,10 +527,13 @@ export class b2World {
         return out;
     }
 
-    /// Query the world for all fixtures that potentially overlap the
-    /// provided point.
-    /// @param point the query point.
-    /// @param callback a user implemented callback class or function.
+    /**
+     * Query the world for all fixtures that potentially overlap the
+     * provided point.
+     *
+     * @param point the query point.
+     * @param callback a user implemented callback class or function.
+     */
     public QueryPointAABB(point: XY, callback: b2QueryCallback): void {
         this.m_contactManager.m_broadPhase.QueryPoint(point, (proxy) => {
             const fixture_proxy = b2Verify(proxy.userData);
@@ -573,12 +608,15 @@ export class b2World {
 
     private static RayCast_s_point = new b2Vec2();
 
-    /// Ray-cast the world for all fixtures in the path of the ray. Your callback
-    /// controls whether you get the closest point, any point, or n-points.
-    /// The ray-cast ignores shapes that contain the starting point.
-    /// @param point1 the ray starting point
-    /// @param point2 the ray ending point
-    /// @param callback a user implemented callback class or function.
+    /**
+     * Ray-cast the world for all fixtures in the path of the ray. Your callback
+     * controls whether you get the closest point, any point, or n-points.
+     * The ray-cast ignores shapes that contain the starting point.
+     *
+     * @param point1 the ray starting point
+     * @param point2 the ray ending point
+     * @param callback a user implemented callback class or function.
+     */
     public RayCast(point1: XY, point2: XY, callback: b2RayCastCallback): void {
         const input = b2World.RayCast_s_input;
         input.maxFraction = 1;
@@ -625,30 +663,41 @@ export class b2World {
         return out;
     }
 
-    /// Get the world body list. With the returned body, use b2Body::GetNext to get
-    /// the next body in the world list. A NULL body indicates the end of the list.
-    /// @return the head of the world body list.
+    /**
+     * Get the world body list. With the returned body, use b2Body::GetNext to get
+     * the next body in the world list. A NULL body indicates the end of the list.
+     *
+     * @return the head of the world body list.
+     */
     public GetBodyList(): b2Body | null {
         return this.m_bodyList;
     }
 
-    /// Get the world joint list. With the returned joint, use b2Joint::GetNext to get
-    /// the next joint in the world list. A NULL joint indicates the end of the list.
-    /// @return the head of the world joint list.
+    /**
+     * Get the world joint list. With the returned joint, use b2Joint::GetNext to get
+     * the next joint in the world list. A NULL joint indicates the end of the list.
+     *
+     * @return the head of the world joint list.
+     */
     public GetJointList(): b2Joint | null {
         return this.m_jointList;
     }
 
-    /// Get the world contact list. With the returned contact, use b2Contact::GetNext to get
-    /// the next contact in the world list. A NULL contact indicates the end of the list.
-    /// @return the head of the world contact list.
-    /// @warning contacts are created and destroyed in the middle of a time step.
-    /// Use b2ContactListener to avoid missing contacts.
+    /**
+     * Get the world contact list. With the returned contact, use b2Contact::GetNext to get
+     * the next contact in the world list. A NULL contact indicates the end of the list.
+     *
+     * @return the head of the world contact list.
+     * @warning contacts are created and destroyed in the middle of a time step.
+     * Use b2ContactListener to avoid missing contacts.
+     */
     public GetContactList(): b2Contact | null {
         return this.m_contactManager.m_contactList;
     }
 
-    /// Enable/disable sleep.
+    /**
+     * Enable/disable sleep.
+     */
     public SetAllowSleeping(flag: boolean): void {
         if (flag === this.m_allowSleep) {
             return;
@@ -666,7 +715,9 @@ export class b2World {
         return this.m_allowSleep;
     }
 
-    /// Enable/disable warm starting. For testing.
+    /**
+     * Enable/disable warm starting. For testing.
+     */
     public SetWarmStarting(flag: boolean): void {
         this.m_warmStarting = flag;
     }
@@ -675,7 +726,9 @@ export class b2World {
         return this.m_warmStarting;
     }
 
-    /// Enable/disable continuous physics. For testing.
+    /**
+     * Enable/disable continuous physics. For testing.
+     */
     public SetContinuousPhysics(flag: boolean): void {
         this.m_continuousPhysics = flag;
     }
@@ -684,7 +737,9 @@ export class b2World {
         return this.m_continuousPhysics;
     }
 
-    /// Enable/disable single stepped continuous physics. For testing.
+    /**
+     * Enable/disable single stepped continuous physics. For testing.
+     */
     public SetSubStepping(flag: boolean): void {
         this.m_subStepping = flag;
     }
@@ -693,70 +748,97 @@ export class b2World {
         return this.m_subStepping;
     }
 
-    /// Get the number of broad-phase proxies.
+    /**
+     * Get the number of broad-phase proxies.
+     */
     public GetProxyCount(): number {
         return this.m_contactManager.m_broadPhase.GetProxyCount();
     }
 
-    /// Get the number of bodies.
+    /**
+     * Get the number of bodies.
+     */
     public GetBodyCount(): number {
         return this.m_bodyCount;
     }
 
-    /// Get the number of joints.
+    /**
+     * Get the number of joints.
+     */
     public GetJointCount(): number {
         return this.m_jointCount;
     }
 
-    /// Get the number of contacts (each may have 0 or more contact points).
+    /**
+     * Get the number of contacts (each may have 0 or more contact points).
+     */
     public GetContactCount(): number {
         return this.m_contactManager.m_contactCount;
     }
 
-    /// Get the height of the dynamic tree.
+    /**
+     * Get the height of the dynamic tree.
+     */
     public GetTreeHeight(): number {
         return this.m_contactManager.m_broadPhase.GetTreeHeight();
     }
 
-    /// Get the balance of the dynamic tree.
+    /**
+     * Get the balance of the dynamic tree.
+     */
     public GetTreeBalance(): number {
         return this.m_contactManager.m_broadPhase.GetTreeBalance();
     }
 
-    /// Get the quality metric of the dynamic tree. The smaller the better.
-    /// The minimum is 1.
+    /**
+     * Get the quality metric of the dynamic tree. The smaller the better.
+     * The minimum is 1.
+     */
     public GetTreeQuality(): number {
         return this.m_contactManager.m_broadPhase.GetTreeQuality();
     }
 
-    /// Change the global gravity vector.
+    /**
+     * Change the global gravity vector.
+     */
     public SetGravity(gravity: XY) {
         this.m_gravity.Copy(gravity);
     }
 
-    /// Get the global gravity vector.
+    /**
+     * Get the global gravity vector.
+     */
     public GetGravity(): Readonly<b2Vec2> {
         return this.m_gravity;
     }
 
-    /// Is the world locked (in the middle of a time step).
+    /**
+     * Is the world locked (in the middle of a time step).
+     */
     public IsLocked(): boolean {
         return this.m_locked;
     }
 
-    /// Set flag to control automatic clearing of forces after each time step.
+    /**
+     * Set flag to control automatic clearing of forces after each time step.
+     */
     public SetAutoClearForces(flag: boolean): void {
         this.m_clearForces = flag;
     }
 
-    /// Get the flag that controls automatic clearing of forces after each time step.
+    /**
+     * Get the flag that controls automatic clearing of forces after each time step.
+     */
     public GetAutoClearForces(): boolean {
         return this.m_clearForces;
     }
 
-    /// Shift the world origin. Useful for large worlds.
-    /// The body shift formula is: position -= newOrigin
-    /// @param newOrigin the new origin with respect to the old origin
+    /**
+     * Shift the world origin. Useful for large worlds.
+     * The body shift formula is: position -= newOrigin
+     *
+     * @param newOrigin the new origin with respect to the old origin
+     */
     public ShiftOrigin(newOrigin: XY): void {
         b2Assert(!this.IsLocked());
 
@@ -773,12 +855,16 @@ export class b2World {
         this.m_contactManager.m_broadPhase.ShiftOrigin(newOrigin);
     }
 
-    /// Get the contact manager for testing.
+    /**
+     * Get the contact manager for testing.
+     */
     public GetContactManager(): b2ContactManager {
         return this.m_contactManager;
     }
 
-    /// Get the current profile.
+    /**
+     * Get the current profile.
+     */
     public GetProfile(): b2Profile {
         return this.m_profile;
     }

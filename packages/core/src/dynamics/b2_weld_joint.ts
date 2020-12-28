@@ -50,24 +50,28 @@ export interface b2IWeldJointDef extends b2IJointDef {
     damping?: number;
 }
 
-/// Weld joint definition. You need to specify local anchor points
-/// where they are attached and the relative body angle. The position
-/// of the anchor points is important for computing the reaction torque.
+/**
+ * Weld joint definition. You need to specify local anchor points
+ * where they are attached and the relative body angle. The position
+ * of the anchor points is important for computing the reaction torque.
+ */
 export class b2WeldJointDef extends b2JointDef implements b2IWeldJointDef {
-    /// The local anchor point relative to bodyA's origin.
+    /** The local anchor point relative to bodyA's origin. */
     public readonly localAnchorA = new b2Vec2();
 
-    /// The local anchor point relative to bodyB's origin.
+    /** The local anchor point relative to bodyB's origin. */
     public readonly localAnchorB = new b2Vec2();
 
-    /// The bodyB angle minus bodyA angle in the reference state (radians).
+    /** The bodyB angle minus bodyA angle in the reference state (radians). */
     public referenceAngle = 0;
 
-    /// The rotational stiffness in N*m
-    /// Disable softness with a value of 0
+    /**
+     * The rotational stiffness in N*m
+     * Disable softness with a value of 0
+     */
     public stiffness = 0;
 
-    /// The rotational damping in N*m*s
+    /** The rotational damping in N*m*s */
     public damping = 0;
 
     constructor() {
@@ -83,8 +87,10 @@ export class b2WeldJointDef extends b2JointDef implements b2IWeldJointDef {
     }
 }
 
-/// A weld joint essentially glues two bodies together. A weld joint may
-/// distort somewhat because the island constraint solver is approximate.
+/**
+ * A weld joint essentially glues two bodies together. A weld joint may
+ * distort somewhat because the island constraint solver is approximate.
+ */
 export class b2WeldJoint extends b2Joint {
     public m_stiffness = 0;
 

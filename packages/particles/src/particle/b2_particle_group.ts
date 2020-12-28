@@ -22,15 +22,25 @@ import { b2ParticleFlag } from "./b2_particle";
 import type { b2ParticleSystem } from "./b2_particle_system";
 
 export enum b2ParticleGroupFlag {
-    /// Prevents overlapping or leaking.
+    /**
+     * Prevents overlapping or leaking.
+     */
     b2_solidParticleGroup = 1 << 0,
-    /// Keeps its shape.
+    /**
+     * Keeps its shape.
+     */
     b2_rigidParticleGroup = 1 << 1,
-    /// Won't be destroyed if it gets empty.
+    /**
+     * Won't be destroyed if it gets empty.
+     */
     b2_particleGroupCanBeEmpty = 1 << 2,
-    /// Will be destroyed on next simulation step.
+    /**
+     * Will be destroyed on next simulation step.
+     */
     b2_particleGroupWillBeDestroyed = 1 << 3,
-    /// Updates depth data on next simulation step.
+    /**
+     * Updates depth data on next simulation step.
+     */
     b2_particleGroupNeedsUpdateDepth = 1 << 4,
 
     b2_particleGroupInternalMask = b2_particleGroupWillBeDestroyed | b2_particleGroupNeedsUpdateDepth,
@@ -121,7 +131,6 @@ export class b2ParticleGroup {
 
     public readonly m_transform = new b2Transform();
 
-    /// m_transform.SetIdentity();
     public m_userData: any = null;
 
     constructor(system: b2ParticleSystem) {
@@ -207,7 +216,7 @@ export class b2ParticleGroup {
     public GetLinearVelocityFromWorldPoint<T extends XY>(worldPoint: XY, out: T): T {
         const s_t0 = b2ParticleGroup.GetLinearVelocityFromWorldPoint_s_t0;
         this.UpdateStatistics();
-        ///  return m_linearVelocity + b2Cross(m_angularVelocity, worldPoint - m_center);
+
         return b2Vec2.AddCrossScalarVec2(
             this.m_linearVelocity,
             this.m_angularVelocity,
@@ -249,30 +258,22 @@ export class b2ParticleGroup {
         const v = new b2Vec2();
         if (this.m_timestamp !== this.m_system.m_timestamp) {
             const m = this.m_system.GetParticleMass();
-            ///  this.m_mass = 0;
             this.m_mass = m * (this.m_lastIndex - this.m_firstIndex);
             this.m_center.SetZero();
             this.m_linearVelocity.SetZero();
             for (let i = this.m_firstIndex; i < this.m_lastIndex; i++) {
-                ///  this.m_mass += m;
-                ///  this.m_center += m * this.m_system.m_positionBuffer.data[i];
                 this.m_center.AddScaled(m, this.m_system.m_positionBuffer.data[i]);
-                ///  this.m_linearVelocity += m * this.m_system.m_velocityBuffer.data[i];
                 this.m_linearVelocity.AddScaled(m, this.m_system.m_velocityBuffer.data[i]);
             }
             if (this.m_mass > 0) {
                 const inv_mass = 1 / this.m_mass;
-                /// this.m_center *= 1 / this.m_mass;
                 this.m_center.Scale(inv_mass);
-                /// this.m_linearVelocity *= 1 / this.m_mass;
                 this.m_linearVelocity.Scale(inv_mass);
             }
             this.m_inertia = 0;
             this.m_angularVelocity = 0;
             for (let i = this.m_firstIndex; i < this.m_lastIndex; i++) {
-                /// b2Vec2 p = this.m_system.m_positionBuffer.data[i] - this.m_center;
                 b2Vec2.Subtract(this.m_system.m_positionBuffer.data[i], this.m_center, p);
-                /// b2Vec2 v = this.m_system.m_velocityBuffer.data[i] - this.m_linearVelocity;
                 b2Vec2.Subtract(this.m_system.m_velocityBuffer.data[i], this.m_linearVelocity, v);
                 this.m_inertia += m * b2Vec2.Dot(p, p);
                 this.m_angularVelocity += m * b2Vec2.Cross(p, v);

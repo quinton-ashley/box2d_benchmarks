@@ -31,18 +31,24 @@ const temp = {
     c2: new b2Vec2(),
 };
 
-/// This holds contact filtering data.
+/**
+ * This holds contact filtering data.
+ */
 export interface b2Filter {
-    /// The collision category bits. Normally you would just set one bit.
+    /** The collision category bits. Normally you would just set one bit. */
     categoryBits: number;
 
-    /// The collision mask bits. This states the categories that this
-    /// shape would accept for collision.
+    /**
+     * The collision mask bits. This states the categories that this
+     * shape would accept for collision.
+     */
     maskBits: number;
 
-    /// Collision groups allow a certain group of objects to never collide (negative)
-    /// or always collide (positive). Zero means no collision group. Non-zero group
-    /// filtering always wins against the mask bits.
+    /**
+     * Collision groups allow a certain group of objects to never collide (negative)
+     * or always collide (positive). Zero means no collision group. Non-zero group
+     * filtering always wins against the mask bits.
+     */
     groupIndex: number;
 }
 
@@ -52,38 +58,48 @@ export const b2DefaultFilter: Readonly<b2Filter> = {
     groupIndex: 0,
 };
 
-/// A fixture definition is used to create a fixture. This class defines an
-/// abstract fixture definition. You can reuse fixture definitions safely.
+/**
+ * A fixture definition is used to create a fixture. This class defines an
+ * abstract fixture definition. You can reuse fixture definitions safely.
+ */
 export interface b2FixtureDef {
-    /// The shape, this must be set. The shape will be cloned, so you
-    /// can create the shape on the stack.
+    /**
+     * The shape, this must be set. The shape will be cloned, so you
+     * can create the shape on the stack.
+     */
     shape: b2Shape;
 
-    /// Use this to store application specific fixture data.
+    /** Use this to store application specific fixture data. */
     userData?: any;
 
-    /// The friction coefficient, usually in the range [0,1].
+    /** The friction coefficient, usually in the range [0,1]. */
     friction?: number;
 
-    /// The restitution (elasticity) usually in the range [0,1].
+    /** The restitution (elasticity) usually in the range [0,1]. */
     restitution?: number;
 
-    /// Restitution velocity threshold, usually in m/s. Collisions above this
-    /// speed have restitution applied (will bounce).
+    /**
+     * Restitution velocity threshold, usually in m/s. Collisions above this
+     * speed have restitution applied (will bounce).
+     */
     restitutionThreshold?: number;
 
-    /// The density, usually in kg/m^2.
+    /** The density, usually in kg/m^2. */
     density?: number;
 
-    /// A sensor shape collects contact information but never generates a collision
-    /// response.
+    /**
+     * A sensor shape collects contact information but never generates a collision
+     * response.
+     */
     isSensor?: boolean;
 
-    /// Contact filtering data.
+    /** Contact filtering data. */
     filter?: Partial<b2Filter>;
 }
 
-/// This proxy is used internally to connect fixtures to the broad-phase.
+/**
+ * This proxy is used internally to connect fixtures to the broad-phase.
+ */
 export class b2FixtureProxy {
     public readonly aabb = new b2AABB();
 
@@ -110,11 +126,14 @@ const Synchronize_s_aabb1 = new b2AABB();
 const Synchronize_s_aabb2 = new b2AABB();
 const Synchronize_s_displacement = new b2Vec2();
 
-/// A fixture is used to attach a shape to a body for collision detection. A fixture
-/// inherits its transform from its parent. Fixtures hold additional non-geometric data
-/// such as friction, collision filters, etc.
-/// Fixtures are created via b2Body::CreateFixture.
-/// @warning you cannot reuse fixtures.
+/**
+ * A fixture is used to attach a shape to a body for collision detection. A fixture
+ * inherits its transform from its parent. Fixtures hold additional non-geometric data
+ * such as friction, collision filters, etc.
+ * Fixtures are created via b2Body::CreateFixture.
+ *
+ * @warning you cannot reuse fixtures.
+ */
 export class b2Fixture {
     public m_density = 0;
 
@@ -157,20 +176,27 @@ export class b2Fixture {
         this.m_density = def.density ?? 0;
     }
 
-    /// Get the type of the child shape. You can use this to down cast to the concrete shape.
-    /// @return the shape type.
+    /**
+     * Get the type of the child shape. You can use this to down cast to the concrete shape.
+     *
+     * @return the shape type.
+     */
     public GetType(): b2ShapeType {
         return this.m_shape.GetType();
     }
 
-    /// Get the child shape. You can modify the child shape, however you should not change the
-    /// number of vertices because this will crash some collision caching mechanisms.
-    /// Manipulating the shape may lead to non-physical behavior.
+    /**
+     * Get the child shape. You can modify the child shape, however you should not change the
+     * number of vertices because this will crash some collision caching mechanisms.
+     * Manipulating the shape may lead to non-physical behavior.
+     */
     public GetShape(): b2Shape {
         return this.m_shape;
     }
 
-    /// Set if this fixture is a sensor.
+    /**
+     * Set if this fixture is a sensor.
+     */
     public SetSensor(sensor: boolean): void {
         if (sensor !== this.m_isSensor) {
             this.m_body.SetAwake(true);
@@ -178,15 +204,20 @@ export class b2Fixture {
         }
     }
 
-    /// Is this fixture a sensor (non-solid)?
-    /// @return the true if the shape is a sensor.
+    /**
+     * Is this fixture a sensor (non-solid)?
+     *
+     * @return the true if the shape is a sensor.
+     */
     public IsSensor(): boolean {
         return this.m_isSensor;
     }
 
-    /// Set the contact filtering data. This will not update contacts until the next time
-    /// step when either parent body is active and awake.
-    /// This automatically calls Refilter.
+    /**
+     * Set the contact filtering data. This will not update contacts until the next time
+     * step when either parent body is active and awake.
+     * This automatically calls Refilter.
+     */
     public SetFilterData(filter: Readonly<Partial<b2Filter>>): void {
         this.m_filter.categoryBits = filter.categoryBits ?? b2DefaultFilter.categoryBits;
         this.m_filter.groupIndex = filter.groupIndex ?? b2DefaultFilter.groupIndex;
@@ -195,12 +226,16 @@ export class b2Fixture {
         this.Refilter();
     }
 
-    /// Get the contact filtering data.
+    /**
+     * Get the contact filtering data.
+     */
     public GetFilterData(): Readonly<b2Filter> {
         return this.m_filter;
     }
 
-    /// Call this if you want to establish collision that was previously disabled by b2ContactFilter::ShouldCollide.
+    /**
+     * Call this if you want to establish collision that was previously disabled by b2ContactFilter::ShouldCollide.
+     */
     public Refilter(): void {
         // Flag associated contacts for filtering.
         let edge = this.m_body.GetContactList();
@@ -225,81 +260,111 @@ export class b2Fixture {
         }
     }
 
-    /// Get the parent body of this fixture. This is NULL if the fixture is not attached.
-    /// @return the parent body.
+    /**
+     * Get the parent body of this fixture. This is NULL if the fixture is not attached.
+     *
+     * @return the parent body.
+     */
     public GetBody(): b2Body {
         return this.m_body;
     }
 
-    /// Get the next fixture in the parent body's fixture list.
-    /// @return the next shape.
+    /**
+     * Get the next fixture in the parent body's fixture list.
+     *
+     * @return the next shape.
+     */
     public GetNext(): b2Fixture | null {
         return this.m_next;
     }
 
-    /// Get the user data that was assigned in the fixture definition. Use this to
-    /// store your application specific data.
+    /**
+     * Get the user data that was assigned in the fixture definition. Use this to
+     * store your application specific data.
+     */
     public GetUserData(): any {
         return this.m_userData;
     }
 
-    /// Set the user data. Use this to store your application specific data.
+    /**
+     * Set the user data. Use this to store your application specific data.
+     */
     public SetUserData(data: any): void {
         this.m_userData = data;
     }
 
-    /// Test a point for containment in this fixture.
-    /// @param p a point in world coordinates.
+    /**
+     * Test a point for containment in this fixture.
+     *
+     * @param p a point in world coordinates.
+     */
     public TestPoint(p: XY): boolean {
         return this.m_shape.TestPoint(this.m_body.GetTransform(), p);
     }
 
-    /// Cast a ray against this shape.
-    /// @param output the ray-cast results.
-    /// @param input the ray-cast input parameters.
+    /**
+     * Cast a ray against this shape.
+     *
+     * @param output the ray-cast results.
+     * @param input the ray-cast input parameters.
+     */
     public RayCast(output: b2RayCastOutput, input: b2RayCastInput, childIndex: number): boolean {
         return this.m_shape.RayCast(output, input, this.m_body.GetTransform(), childIndex);
     }
 
-    /// Get the mass data for this fixture. The mass data is based on the density and
-    /// the shape. The rotational inertia is about the shape's origin. This operation
-    /// may be expensive.
+    /**
+     * Get the mass data for this fixture. The mass data is based on the density and
+     * the shape. The rotational inertia is about the shape's origin. This operation
+     * may be expensive.
+     */
     public GetMassData(massData = new b2MassData()): b2MassData {
         this.m_shape.ComputeMass(massData, this.m_density);
 
         return massData;
     }
 
-    /// Set the density of this fixture. This will _not_ automatically adjust the mass
-    /// of the body. You must call b2Body::ResetMassData to update the body's mass.
+    /**
+     * Set the density of this fixture. This will _not_ automatically adjust the mass
+     * of the body. You must call b2Body::ResetMassData to update the body's mass.
+     */
     public SetDensity(density: number): void {
         // DEBUG: b2Assert(Number.isFinite(density) && density >= 0);
         this.m_density = density;
     }
 
-    /// Get the density of this fixture.
+    /**
+     * Get the density of this fixture.
+     */
     public GetDensity(): number {
         return this.m_density;
     }
 
-    /// Get the coefficient of friction.
+    /**
+     * Get the coefficient of friction.
+     */
     public GetFriction(): number {
         return this.m_friction;
     }
 
-    /// Set the coefficient of friction. This will _not_ change the friction of
-    /// existing contacts.
+    /**
+     * Set the coefficient of friction. This will _not_ change the friction of
+     * existing contacts.
+     */
     public SetFriction(friction: number): void {
         this.m_friction = friction;
     }
 
-    /// Get the coefficient of restitution.
+    /**
+     * Get the coefficient of restitution.
+     */
     public GetRestitution(): number {
         return this.m_restitution;
     }
 
-    /// Set the coefficient of restitution. This will _not_ change the restitution of
-    /// existing contacts.
+    /**
+     * Set the coefficient of restitution. This will _not_ change the restitution of
+     * existing contacts.
+     */
     public SetRestitution(restitution: number): void {
         this.m_restitution = restitution;
     }
@@ -308,9 +373,11 @@ export class b2Fixture {
         this.m_restitutionThreshold = threshold;
     }
 
-    /// Get the fixture's AABB. This AABB may be enlarge and/or stale.
-    /// If you need a more accurate AABB, compute it using the shape and
-    /// the body transform.
+    /**
+     * Get the fixture's AABB. This AABB may be enlarge and/or stale.
+     * If you need a more accurate AABB, compute it using the shape and
+     * the body transform.
+     */
     public GetAABB(childIndex: number): Readonly<b2AABB> {
         // DEBUG: b2Assert(0 <= childIndex && childIndex < this.m_proxyCount);
         return this.m_proxies[childIndex].aabb;

@@ -78,18 +78,17 @@ export class b2ParticleSystem_UpdateBodyContactsCallback extends b2FixturePartic
                 this.m_system.m_flagsBuffer.data[a] & b2ParticleFlag.b2_wallParticle
                     ? 0
                     : this.m_system.GetParticleInvMass();
-            /// b2Vec2 rp = ap - bp;
+
             const rp = b2Vec2.Subtract(ap, bp, s_rp);
             const rpn = b2Vec2.Cross(rp, n);
             const invM = invAm + invBm + invBI * rpn * rpn;
 
-            /// b2ParticleBodyContact& contact = m_system.m_bodyContactBuffer.Append();
             const contact = this.m_system.m_bodyContactBuffer.data[this.m_system.m_bodyContactBuffer.Append()];
             contact.index = a;
             contact.body = b;
             contact.fixture = fixture;
             contact.weight = 1 - d * this.m_system.m_inverseDiameter;
-            /// contact.normal = -n;
+
             contact.normal.Copy(n.Negate());
             contact.mass = invM > 0 ? 1 / invM : 0;
             this.m_system.DetectStuckParticle(a);
@@ -119,47 +118,35 @@ export class b2ParticleSystem_SolveCollisionCallback extends b2FixtureParticleQu
         const input = s_input;
         if (this.m_system.m_iterationIndex === 0) {
             // Put 'ap' in the local space of the previous frame
-            /// b2Vec2 p1 = b2MulT(body.m_xf0, ap);
             const p1 = b2Transform.TransposeMultiplyVec2(body.m_xf0, ap, s_p1);
             if (fixture.GetShape().GetType() === b2ShapeType.e_circle) {
                 // Make relative to the center of the circle
-                /// p1 -= body.GetLocalCenter();
                 p1.Subtract(body.GetLocalCenter());
                 // Re-apply rotation about the center of the circle
-                /// p1 = b2Mul(body.m_xf0.q, p1);
                 b2Rot.MultiplyVec2(body.m_xf0.q, p1, p1);
                 // Subtract rotation of the current frame
-                /// p1 = b2MulT(body.m_xf.q, p1);
                 b2Rot.TransposeMultiplyVec2(body.m_xf.q, p1, p1);
                 // Return to local space
-                /// p1 += body.GetLocalCenter();
                 p1.Add(body.GetLocalCenter());
             }
             // Return to global space and apply rotation of current frame
-            /// input.p1 = b2Mul(body.m_xf, p1);
             b2Transform.MultiplyVec2(body.m_xf, p1, input.p1);
         } else {
-            /// input.p1 = ap;
             input.p1.Copy(ap);
         }
 
         const step = b2Verify(this.m_step);
-        /// input.p2 = ap + m_step.dt * av;
         b2Vec2.AddScaled(ap, step.dt, av, input.p2);
         input.maxFraction = 1;
         if (fixture.RayCast(output, input, childIndex)) {
             const n = output.normal;
-            /// b2Vec2 p = (1 - output.fraction) * input.p1 + output.fraction * input.p2 + b2_linearSlop * n;
             const p = s_p;
             p.x = (1 - output.fraction) * input.p1.x + output.fraction * input.p2.x + b2_linearSlop * n.x;
             p.y = (1 - output.fraction) * input.p1.y + output.fraction * input.p2.y + b2_linearSlop * n.y;
-            /// b2Vec2 v = m_step.inv_dt * (p - ap);
             const v = s_v;
             v.x = step.inv_dt * (p.x - ap.x);
             v.y = step.inv_dt * (p.y - ap.y);
-            /// m_system.m_velocityBuffer.data[a] = v;
             this.m_system.m_velocityBuffer.data[a].Copy(v);
-            /// b2Vec2 f = m_step.inv_dt * m_system.GetParticleMass() * (av - v);
             const f = s_f;
             f.x = step.inv_dt * this.m_system.GetParticleMass() * (av.x - v.x);
             f.y = step.inv_dt * this.m_system.GetParticleMass() * (av.y - v.y);

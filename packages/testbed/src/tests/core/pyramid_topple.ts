@@ -33,10 +33,10 @@ class PyramidTopple extends Test {
         };
 
         const world = this.m_world;
-        /// settings.positionIterations = 30; // cpSpaceSetIterations(space, 30);
-        /// world.SetGravity(new b2Vec2(0, -300)); // cpSpaceSetGravity(space, cpv(0, -300));
-        /// b2_timeToSleep = 0.5; // cpSpaceSetSleepTimeThreshold(space, 0.5 );
-        /// b2_linearSlop = 0.5; // cpSpaceSetCollisionSlop(space, 0.5 );
+        // settings.positionIterations = 30; // cpSpaceSetIterations(space, 30);
+        // world.SetGravity(new b2Vec2(0, -300)); // cpSpaceSetGravity(space, cpv(0, -300));
+        // b2_timeToSleep = 0.5; // cpSpaceSetSleepTimeThreshold(space, 0.5 );
+        // b2_linearSlop = 0.5; // cpSpaceSetCollisionSlop(space, 0.5 );
 
         // Add a floor.
         const body = world.CreateBody();

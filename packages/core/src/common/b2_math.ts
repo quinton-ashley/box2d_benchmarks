@@ -36,11 +36,13 @@ export function b2RadToDeg(radians: number) {
     return radians * b2_180_over_pi;
 }
 
-/// "Next Largest Power of 2
-/// Given a binary integer value x, the next largest power of 2 can be computed by a SWAR algorithm
-/// that recursively "folds" the upper bits into the lower bits. This process yields a bit vector with
-/// the same most significant 1 as x, but all 1's below it. Adding 1 to that value yields the next
-/// largest power of 2. For a 32-bit value:"
+/**
+ * "Next Largest Power of 2
+ * Given a binary integer value x, the next largest power of 2 can be computed by a SWAR algorithm
+ * that recursively "folds" the upper bits into the lower bits. This process yields a bit vector with
+ * the same most significant 1 as x, but all 1's below it. Adding 1 to that value yields the next
+ * largest power of 2. For a 32-bit value:"
+ */
 export function b2NextPowerOfTwo(x: number) {
     x |= x >> 1;
     x |= x >> 2;
@@ -71,7 +73,9 @@ export interface XY {
     y: number;
 }
 
-/// A 2D column vector.
+/**
+ * A 2D column vector.
+ */
 export class b2Vec2 implements XY {
     public static readonly ZERO: Readonly<XY> = new b2Vec2();
 
@@ -100,14 +104,18 @@ export class b2Vec2 implements XY {
         return new b2Vec2(this.x, this.y);
     }
 
-    /// Set this vector to all zeros.
+    /**
+     * Set this vector to all zeros.
+     */
     public SetZero() {
         this.x = 0;
         this.y = 0;
         return this;
     }
 
-    /// Set this vector to some specified coordinates.
+    /**
+     * Set this vector to some specified coordinates.
+     */
     public Set(x: number, y: number) {
         this.x = x;
         this.y = y;
@@ -120,35 +128,45 @@ export class b2Vec2 implements XY {
         return this;
     }
 
-    /// Add a vector to this vector.
+    /**
+     * Add a vector to this vector.
+     */
     public Add(v: XY) {
         this.x += v.x;
         this.y += v.y;
         return this;
     }
 
-    /// Add a vector to this vector.
+    /**
+     * Add a vector to this vector.
+     */
     public AddXY(x: number, y: number) {
         this.x += x;
         this.y += y;
         return this;
     }
 
-    /// Subtract a vector from this vector.
+    /**
+     * Subtract a vector from this vector.
+     */
     public Subtract(v: XY) {
         this.x -= v.x;
         this.y -= v.y;
         return this;
     }
 
-    /// Subtract a vector from this vector.
+    /**
+     * Subtract a vector from this vector.
+     */
     public SubtractXY(x: number, y: number) {
         this.x -= x;
         this.y -= y;
         return this;
     }
 
-    /// Multiply this vector by a scalar.
+    /**
+     * Multiply this vector by a scalar.
+     */
     public Scale(s: number) {
         this.x *= s;
         this.y *= s;
@@ -167,30 +185,40 @@ export class b2Vec2 implements XY {
         return this;
     }
 
-    /// Perform the dot product on two vectors.
+    /**
+     * Perform the dot product on two vectors.
+     */
     public Dot(v: XY) {
         return this.x * v.x + this.y * v.y;
     }
 
-    /// Perform the cross product on two vectors. In 2D this produces a scalar.
+    /**
+     * Perform the cross product on two vectors. In 2D this produces a scalar.
+     */
     public Cross(v: XY) {
         return this.x * v.y - this.y * v.x;
     }
 
-    /// Get the length of this vector (the norm).
+    /**
+     * Get the length of this vector (the norm).
+     */
     public Length() {
         const { x, y } = this;
         return Math.sqrt(x * x + y * y);
     }
 
-    /// Get the length squared. For performance, use this instead of
-    /// b2Vec2::Length (if possible).
+    /**
+     * Get the length squared. For performance, use this instead of
+     * b2Vec2::Length (if possible).
+     */
     public LengthSquared() {
         const { x, y } = this;
         return x * x + y * y;
     }
 
-    /// Convert this vector into a unit vector. Returns the length.
+    /**
+     * Convert this vector into a unit vector. Returns the length.
+     */
     public Normalize() {
         const length = this.Length();
         if (length < b2_epsilon) {
@@ -218,7 +246,9 @@ export class b2Vec2 implements XY {
         return this;
     }
 
-    /// Does this vector contain finite coordinates?
+    /**
+     * Does this vector contain finite coordinates?
+     */
     public IsValid() {
         return Number.isFinite(this.x) && Number.isFinite(this.y);
     }
@@ -235,14 +265,18 @@ export class b2Vec2 implements XY {
         return out;
     }
 
-    /// Negate this vector.
+    /**
+     * Negate this vector.
+     */
     public Negate() {
         this.x = -this.x;
         this.y = -this.y;
         return this;
     }
 
-    /// Skew this vector such that dot(skew_vec, other) == cross(vec, other)
+    /**
+     * Skew this vector such that dot(skew_vec, other) == cross(vec, other)
+     */
     public Skew() {
         const { x } = this;
         this.x = -this.y;
@@ -286,8 +320,10 @@ export class b2Vec2 implements XY {
         return a.x * b.y - a.y * b.x;
     }
 
-    /// Perform the cross product on a vector and a scalar. In 2D this produces
-    /// a vector.
+    /**
+     * Perform the cross product on a vector and a scalar. In 2D this produces
+     * a vector.
+     */
     public static CrossVec2Scalar<T extends XY>(v: XY, s: number, out: T) {
         const v_x = v.x;
         out.x = s * v.y;
@@ -302,8 +338,10 @@ export class b2Vec2 implements XY {
         return out;
     }
 
-    /// Perform the cross product on a scalar and a vector. In 2D this produces
-    /// a vector.
+    /**
+     * Perform the cross product on a scalar and a vector. In 2D this produces
+     * a vector.
+     */
     public static CrossScalarVec2<T extends XY>(s: number, v: XY, out: T) {
         const v_x = v.x;
         out.x = -s * v.y;
@@ -318,14 +356,18 @@ export class b2Vec2 implements XY {
         return out;
     }
 
-    /// Add two vectors component-wise.
+    /**
+     * Add two vectors component-wise.
+     */
     public static Add<T extends XY>(a: XY, b: XY, out: T) {
         out.x = a.x + b.x;
         out.y = a.y + b.y;
         return out;
     }
 
-    /// Subtract two vectors component-wise.
+    /**
+     * Subtract two vectors component-wise.
+     */
     public static Subtract<T extends XY>(a: XY, b: XY, out: T) {
         out.x = a.x - b.x;
         out.y = a.y - b.y;
@@ -381,7 +423,9 @@ export class b2Vec2 implements XY {
         return (a.x - b.x) ** 2 + (a.y - b.y) ** 2;
     }
 
-    /// Negate a vector.
+    /**
+     * Negate a vector.
+     */
     public static Negate<T extends XY>(v: XY, out: T) {
         out.x = -v.x;
         out.y = -v.y;
@@ -401,7 +445,9 @@ export class b2Vec2 implements XY {
         return out;
     }
 
-    /// Skew a vector such that dot(skew_vec, other) == cross(vec, other)
+    /**
+     * Skew a vector such that dot(skew_vec, other) == cross(vec, other)
+     */
     public static Skew<T extends XY>(v: XY, out: T) {
         const { x } = v;
         out.x = -v.y;
@@ -414,7 +460,9 @@ export interface XYZ extends XY {
     z: number;
 }
 
-/// A 2D column vector with 3 elements.
+/**
+ * A 2D column vector with 3 elements.
+ */
 export class b2Vec3 implements XYZ {
     public static readonly ZERO: Readonly<XYZ> = new b2Vec3(0, 0, 0);
 
@@ -436,7 +484,9 @@ export class b2Vec3 implements XYZ {
         return new b2Vec3(this.x, this.y, this.z);
     }
 
-    /// Set this vector to all zeros.
+    /**
+     * Set this vector to all zeros.
+     */
     public SetZero() {
         this.x = 0;
         this.y = 0;
@@ -444,7 +494,9 @@ export class b2Vec3 implements XYZ {
         return this;
     }
 
-    /// Set this vector to some specified coordinates.
+    /**
+     * Set this vector to some specified coordinates.
+     */
     public Set(x: number, y: number, z: number) {
         this.x = x;
         this.y = y;
@@ -459,7 +511,9 @@ export class b2Vec3 implements XYZ {
         return this;
     }
 
-    /// Negate this vector.
+    /**
+     * Negate this vector.
+     */
     public Negate() {
         this.x = -this.x;
         this.y = -this.y;
@@ -467,7 +521,9 @@ export class b2Vec3 implements XYZ {
         return this;
     }
 
-    /// Add a vector to this vector.
+    /**
+     * Add a vector to this vector.
+     */
     public Add(v: XYZ) {
         this.x += v.x;
         this.y += v.y;
@@ -475,7 +531,9 @@ export class b2Vec3 implements XYZ {
         return this;
     }
 
-    /// Add a vector to this vector.
+    /**
+     * Add a vector to this vector.
+     */
     public AddXYZ(x: number, y: number, z: number) {
         this.x += x;
         this.y += y;
@@ -483,7 +541,9 @@ export class b2Vec3 implements XYZ {
         return this;
     }
 
-    /// Subtract a vector from this vector.
+    /**
+     * Subtract a vector from this vector.
+     */
     public Subtract(v: XYZ) {
         this.x -= v.x;
         this.y -= v.y;
@@ -491,7 +551,9 @@ export class b2Vec3 implements XYZ {
         return this;
     }
 
-    /// Subtract a vector from this vector.
+    /**
+     * Subtract a vector from this vector.
+     */
     public SubtractXYZ(x: number, y: number, z: number) {
         this.x -= x;
         this.y -= y;
@@ -499,7 +561,9 @@ export class b2Vec3 implements XYZ {
         return this;
     }
 
-    /// Multiply this vector by a scalar.
+    /**
+     * Multiply this vector by a scalar.
+     */
     public Scale(s: number) {
         this.x *= s;
         this.y *= s;
@@ -507,12 +571,16 @@ export class b2Vec3 implements XYZ {
         return this;
     }
 
-    /// Perform the dot product on two vectors.
+    /**
+     * Perform the dot product on two vectors.
+     */
     public static Dot(a: XYZ, b: XYZ): number {
         return a.x * b.x + a.y * b.y + a.z * b.z;
     }
 
-    /// Perform the cross product on two vectors.
+    /**
+     * Perform the cross product on two vectors.
+     */
     public static Cross<T extends XYZ>(a: XYZ, b: XYZ, out: T) {
         const a_x = a.x;
         const a_y = a.y;
@@ -527,7 +595,9 @@ export class b2Vec3 implements XYZ {
     }
 }
 
-/// A 2-by-2 matrix. Stored in column-major order.
+/**
+ * A 2-by-2 matrix. Stored in column-major order.
+ */
 export class b2Mat22 {
     public static readonly IDENTITY: Readonly<b2Mat22> = new b2Mat22();
 
@@ -539,12 +609,16 @@ export class b2Mat22 {
         return new b2Mat22().Copy(this);
     }
 
-    /// Construct a matrix using columns.
+    /**
+     * Construct a matrix using columns.
+     */
     public static FromColumns(c1: XY, c2: XY) {
         return new b2Mat22().SetColumns(c1, c2);
     }
 
-    /// Construct a matrix using scalars.
+    /**
+     * Construct a matrix using scalars.
+     */
     public static FromScalars(r1c1: number, r1c2: number, r2c1: number, r2c2: number) {
         return new b2Mat22().SetScalars(r1c1, r1c2, r2c1, r2c2);
     }
@@ -553,14 +627,18 @@ export class b2Mat22 {
         return new b2Mat22().SetAngle(radians);
     }
 
-    /// Set this matrix using scalars.
+    /**
+     * Set this matrix using scalars.
+     */
     public SetScalars(r1c1: number, r1c2: number, r2c1: number, r2c2: number) {
         this.ex.Set(r1c1, r2c1);
         this.ey.Set(r1c2, r2c2);
         return this;
     }
 
-    /// Initialize this matrix using columns.
+    /**
+     * Initialize this matrix using columns.
+     */
     public SetColumns(c1: XY, c2: XY) {
         this.ex.Copy(c1);
         this.ey.Copy(c2);
@@ -581,14 +659,18 @@ export class b2Mat22 {
         return this;
     }
 
-    /// Set this to the identity matrix.
+    /**
+     * Set this to the identity matrix.
+     */
     public SetIdentity() {
         this.ex.Set(1, 0);
         this.ey.Set(0, 1);
         return this;
     }
 
-    /// Set this matrix to all zeros.
+    /**
+     * Set this matrix to all zeros.
+     */
     public SetZero() {
         this.ex.SetZero();
         this.ey.SetZero();
@@ -599,8 +681,10 @@ export class b2Mat22 {
         return Math.atan2(this.ex.y, this.ex.x);
     }
 
-    /// Solve A * x = b, where b is a column vector. This is more efficient
-    /// than computing the inverse in one-shot cases.
+    /**
+     * Solve A * x = b, where b is a column vector. This is more efficient
+     * than computing the inverse in one-shot cases.
+     */
     public Solve<T extends XY>(b_x: number, b_y: number, out: T) {
         const a11 = this.ex.x;
         const a12 = this.ey.x;
@@ -662,8 +746,10 @@ export class b2Mat22 {
         return out;
     }
 
-    /// Multiply a matrix times a vector. If a rotation matrix is provided,
-    /// then this transforms the vector from one frame to another.
+    /**
+     * Multiply a matrix times a vector. If a rotation matrix is provided,
+     * then this transforms the vector from one frame to another.
+     */
     public static MultiplyVec2<T extends XY>(M: b2Mat22, v: XY, out: T) {
         const v_x = v.x;
         const v_y = v.y;
@@ -672,8 +758,10 @@ export class b2Mat22 {
         return out;
     }
 
-    /// Multiply a matrix transpose times a vector. If a rotation matrix is provided,
-    /// then this transforms the vector from one frame to another (inverse transform).
+    /**
+     * Multiply a matrix transpose times a vector. If a rotation matrix is provided,
+     * then this transforms the vector from one frame to another (inverse transform).
+     */
     public static TransposeMultiplyVec2<T extends XY>(M: b2Mat22, v: XY, out: T) {
         const v_x = v.x;
         const v_y = v.y;
@@ -725,7 +813,9 @@ export class b2Mat22 {
     }
 }
 
-/// A 3-by-3 matrix. Stored in column-major order.
+/**
+ * A 3-by-3 matrix. Stored in column-major order.
+ */
 export class b2Mat33 {
     public static readonly IDENTITY: Readonly<b2Mat33> = new b2Mat33();
 
@@ -739,7 +829,9 @@ export class b2Mat33 {
         return new b2Mat33().Copy(this);
     }
 
-    /// Set this matrix using columns.
+    /**
+     * Set this matrix using columns.
+     */
     public SetColumns(c1: XYZ, c2: XYZ, c3: XYZ) {
         this.ex.Copy(c1);
         this.ey.Copy(c2);
@@ -761,7 +853,9 @@ export class b2Mat33 {
         return this;
     }
 
-    /// Set this matrix to all zeros.
+    /**
+     * Set this matrix to all zeros.
+     */
     public SetZero() {
         this.ex.SetZero();
         this.ey.SetZero();
@@ -776,8 +870,10 @@ export class b2Mat33 {
         return this;
     }
 
-    /// Solve A * x = b, where b is a column vector. This is more efficient
-    /// than computing the inverse in one-shot cases.
+    /**
+     * Solve A * x = b, where b is a column vector. This is more efficient
+     * than computing the inverse in one-shot cases.
+     */
     public Solve33<T extends XYZ>(b_x: number, b_y: number, b_z: number, out: T) {
         const a11 = this.ex.x;
         const a21 = this.ex.y;
@@ -798,9 +894,11 @@ export class b2Mat33 {
         return out;
     }
 
-    /// Solve A * x = b, where b is a column vector. This is more efficient
-    /// than computing the inverse in one-shot cases. Solve only the upper
-    /// 2-by-2 matrix equation.
+    /**
+     * Solve A * x = b, where b is a column vector. This is more efficient
+     * than computing the inverse in one-shot cases. Solve only the upper
+     * 2-by-2 matrix equation.
+     */
     public Solve22<T extends XY>(b_x: number, b_y: number, out: T) {
         const a11 = this.ex.x;
         const a12 = this.ey.x;
@@ -815,8 +913,10 @@ export class b2Mat33 {
         return out;
     }
 
-    /// Get the inverse of this matrix as a 2-by-2.
-    /// Returns the zero matrix if singular.
+    /**
+     * Get the inverse of this matrix as a 2-by-2.
+     * Returns the zero matrix if singular.
+     */
     public GetInverse22(M: b2Mat33) {
         const a = this.ex.x;
         const b = this.ey.x;
@@ -838,8 +938,10 @@ export class b2Mat33 {
         M.ez.z = 0;
     }
 
-    /// Get the symmetric inverse of this matrix as a 3-by-3.
-    /// Returns the zero matrix if singular.
+    /**
+     * Get the symmetric inverse of this matrix as a 3-by-3.
+     * Returns the zero matrix if singular.
+     */
     public GetSymInverse33(M: b2Mat33) {
         let det = b2Vec3.Dot(this.ex, b2Vec3.Cross(this.ey, this.ez, b2Vec3.s_t0));
         if (det !== 0) {
@@ -866,7 +968,9 @@ export class b2Mat33 {
         M.ez.z = det * (a11 * a22 - a12 * a12);
     }
 
-    /// Multiply a matrix times a vector.
+    /**
+     * Multiply a matrix times a vector.
+     */
     public static MultiplyVec3<T extends XYZ>(A: b2Mat33, v: XYZ, out: T) {
         const { x, y, z } = v;
         out.x = A.ex.x * x + A.ey.x * y + A.ez.x * z;
@@ -875,7 +979,9 @@ export class b2Mat33 {
         return out;
     }
 
-    /// Multiply a matrix times a vector.
+    /**
+     * Multiply a matrix times a vector.
+     */
     public static MultiplyVec2<T extends XY>(A: b2Mat33, v: XY, out: T) {
         const { x, y } = v;
         out.x = A.ex.x * x + A.ey.x * y;
@@ -884,17 +990,21 @@ export class b2Mat33 {
     }
 }
 
-/// Rotation
+/**
+ * Rotation
+ */
 export class b2Rot {
     public static readonly IDENTITY: Readonly<b2Rot> = new b2Rot();
 
-    /// Sine
+    /** Sine */
     public s = 0;
 
-    /// Cosine
+    /** Cosine */
     public c = 1;
 
-    /// Initialize from an angle in radians
+    /**
+     * Initialize from an angle in radians
+     */
     constructor(angle = 0) {
         if (angle) {
             this.s = Math.sin(angle);
@@ -912,40 +1022,52 @@ export class b2Rot {
         return this;
     }
 
-    /// Set using an angle in radians.
+    /**
+     * Set using an angle in radians.
+     */
     public Set(angle: number) {
         this.s = Math.sin(angle);
         this.c = Math.cos(angle);
         return this;
     }
 
-    /// Set to the identity rotation
+    /**
+     * Set to the identity rotation
+     */
     public SetIdentity() {
         this.s = 0;
         this.c = 1;
         return this;
     }
 
-    /// Get the angle in radians
+    /**
+     * Get the angle in radians
+     */
     public GetAngle() {
         return Math.atan2(this.s, this.c);
     }
 
-    /// Get the x-axis
+    /**
+     * Get the x-axis
+     */
     public GetXAxis<T extends XY>(out: T) {
         out.x = this.c;
         out.y = this.s;
         return out;
     }
 
-    /// Get the u-axis
+    /**
+     * Get the u-axis
+     */
     public GetYAxis<T extends XY>(out: T) {
         out.x = -this.s;
         out.y = this.c;
         return out;
     }
 
-    /// Multiply two rotations: q * r
+    /**
+     * Multiply two rotations: q * r
+     */
     public static Multiply(q: b2Rot, r: b2Rot, out: b2Rot) {
         // [qc -qs] * [rc -rs] = [qc*rc-qs*rs -qc*rs-qs*rc]
         // [qs  qc]   [rs  rc]   [qs*rc+qc*rs -qs*rs+qc*rc]
@@ -958,7 +1080,9 @@ export class b2Rot {
         return out;
     }
 
-    /// Transpose multiply two rotations: qT * r
+    /**
+     * Transpose multiply two rotations: qT * r
+     */
     public static TransposeMultiply(q: b2Rot, r: b2Rot, out: b2Rot) {
         // [ qc qs] * [rc -rs] = [qc*rc+qs*rs -qc*rs+qs*rc]
         // [-qs qc]   [rs  rc]   [-qs*rc+qc*rs qs*rs+qc*rc]
@@ -971,7 +1095,9 @@ export class b2Rot {
         return out;
     }
 
-    /// Rotate a vector
+    /**
+     * Rotate a vector
+     */
     public static MultiplyVec2<T extends XY>(q: b2Rot, v: XY, out: T) {
         const v_x = v.x;
         const v_y = v.y;
@@ -980,7 +1106,9 @@ export class b2Rot {
         return out;
     }
 
-    /// Inverse rotate a vector
+    /**
+     * Inverse rotate a vector
+     */
     public static TransposeMultiplyVec2<T extends XY>(q: b2Rot, v: XY, out: T) {
         const v_x = v.x;
         const v_y = v.y;
@@ -990,8 +1118,10 @@ export class b2Rot {
     }
 }
 
-/// A transform contains translation and rotation. It is used to represent
-/// the position and orientation of rigid frames.
+/**
+ * A transform contains translation and rotation. It is used to represent
+ * the position and orientation of rigid frames.
+ */
 export class b2Transform {
     public static readonly IDENTITY: Readonly<b2Transform> = new b2Transform();
 
@@ -1009,21 +1139,27 @@ export class b2Transform {
         return this;
     }
 
-    /// Set this to the identity transform.
+    /**
+     * Set this to the identity transform.
+     */
     public SetIdentity() {
         this.p.SetZero();
         this.q.SetIdentity();
         return this;
     }
 
-    /// Set this based on the position and rotation.
+    /**
+     * Set this based on the position and rotation.
+     */
     public SetPositionRotation(position: XY, q: Readonly<b2Rot>) {
         this.p.Copy(position);
         this.q.Copy(q);
         return this;
     }
 
-    /// Set this based on the position and angle.
+    /**
+     * Set this based on the position and angle.
+     */
     public SetPositionAngle(pos: XY, a: number) {
         this.p.Copy(pos);
         this.q.Set(a);
@@ -1095,26 +1231,32 @@ export class b2Transform {
     }
 }
 
-/// This describes the motion of a body/shape for TOI computation.
-/// Shapes are defined with respect to the body origin, which may
-/// no coincide with the center of mass. However, to support dynamics
-/// we must interpolate the center of mass position.
+/**
+ * This describes the motion of a body/shape for TOI computation.
+ * Shapes are defined with respect to the body origin, which may
+ * no coincide with the center of mass. However, to support dynamics
+ * we must interpolate the center of mass position.
+ */
 export class b2Sweep {
-    /// < local center of mass position
+    /** Local center of mass position */
     public readonly localCenter = new b2Vec2();
 
-    /// < center world positions
+    /** Center world position at time 0 */
     public readonly c0 = new b2Vec2();
 
+    /** Center world position at time 1 */
     public readonly c = new b2Vec2();
 
-    /// < world angles
+    /** World angle at time 0 */
     public a0 = 0;
 
+    /** World angle at time 1 */
     public a = 0;
 
-    /// Fraction of the current time step in the range [0,1]
-    /// c0 and a0 are the positions at alpha0.
+    /**
+     * Fraction of the current time step in the range [0,1]
+     * c0 and a0 are the positions at alpha0.
+     */
     public alpha0 = 0;
 
     public Clone(): b2Sweep {
@@ -1131,10 +1273,13 @@ export class b2Sweep {
         return this;
     }
 
-    /// Get the interpolated transform at a specific time.
-    /// @param transform the output transform
-    /// @param beta is a factor in [0,1], where 0 indicates alpha0.
-    // https://fgiesen.wordpress.com/2012/08/15/linear-interpolation-past-present-and-future/
+    /**
+     * Get the interpolated transform at a specific time.
+     *
+     * @param transform the output transform
+     * @param beta is a factor in [0,1], where 0 indicates alpha0.
+     * @see https://fgiesen.wordpress.com/2012/08/15/linear-interpolation-past-present-and-future/
+     */
     public GetTransform(xf: b2Transform, beta: number) {
         const oneMinusBeta = 1 - beta;
         xf.p.x = oneMinusBeta * this.c0.x + beta * this.c.x;
@@ -1147,8 +1292,11 @@ export class b2Sweep {
         return xf;
     }
 
-    /// Advance the sweep forward, yielding a new initial state.
-    /// @param alpha the new initial time.
+    /**
+     * Advance the sweep forward, yielding a new initial state.
+     *
+     * @param alpha the new initial time.
+     */
     public Advance(alpha: number) {
         // DEBUG: b2Assert(this.alpha0 < 1);
         const beta = (alpha - this.alpha0) / (1 - this.alpha0);
@@ -1158,7 +1306,9 @@ export class b2Sweep {
         this.alpha0 = alpha;
     }
 
-    /// Normalize an angle in radians to be between -pi and pi
+    /**
+     * Normalize an angle in radians to be between -pi and pi
+     */
     public Normalize() {
         const d = b2_two_pi * Math.floor(this.a0 / b2_two_pi);
         this.a0 -= d;

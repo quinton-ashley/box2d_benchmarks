@@ -56,28 +56,30 @@ export interface b2IPulleyJointDef extends b2IJointDef {
     ratio?: number;
 }
 
-/// Pulley joint definition. This requires two ground anchors,
-/// two dynamic body anchor points, and a pulley ratio.
+/**
+ * Pulley joint definition. This requires two ground anchors,
+ * two dynamic body anchor points, and a pulley ratio.
+ */
 export class b2PulleyJointDef extends b2JointDef implements b2IPulleyJointDef {
-    /// The first ground anchor in world coordinates. This point never moves.
+    /** The first ground anchor in world coordinates. This point never moves. */
     public readonly groundAnchorA = new b2Vec2(-1, 1);
 
-    /// The second ground anchor in world coordinates. This point never moves.
+    /** The second ground anchor in world coordinates. This point never moves. */
     public readonly groundAnchorB = new b2Vec2(1, 1);
 
-    /// The local anchor point relative to bodyA's origin.
+    /** The local anchor point relative to bodyA's origin. */
     public readonly localAnchorA = new b2Vec2(-1, 0);
 
-    /// The local anchor point relative to bodyB's origin.
+    /** The local anchor point relative to bodyB's origin. */
     public readonly localAnchorB = new b2Vec2(1, 0);
 
-    /// The a reference length for the segment attached to bodyA.
+    /** The a reference length for the segment attached to bodyA. */
     public lengthA = 0;
 
-    /// The a reference length for the segment attached to bodyB.
+    /** The a reference length for the segment attached to bodyB. */
     public lengthB = 0;
 
-    /// The pulley ratio, used to simulate a block-and-tackle.
+    /** The pulley ratio, used to simulate a block-and-tackle. */
     public ratio = 1;
 
     constructor() {
@@ -112,14 +114,16 @@ const defaultGroundAnchorB = b2Vec2.UNITX;
 const defaultLocalAnchorA = new b2Vec2(-1, 0);
 const defaultLocalAnchorB = b2Vec2.UNITX;
 
-/// The pulley joint is connected to two bodies and two fixed ground points.
-/// The pulley supports a ratio such that:
-/// length1 + ratio * length2 <= constant
-/// Yes, the force transmitted is scaled by the ratio.
-/// Warning: the pulley joint can get a bit squirrelly by itself. They often
-/// work better when combined with prismatic joints. You should also cover the
-/// the anchor points with static shapes to prevent one side from going to
-/// zero length.
+/**
+ * The pulley joint is connected to two bodies and two fixed ground points.
+ * The pulley supports a ratio such that:
+ * length1 + ratio * length2 <= constant
+ * Yes, the force transmitted is scaled by the ratio.
+ * Warning: the pulley joint can get a bit squirrelly by itself. They often
+ * work better when combined with prismatic joints. You should also cover the
+ * the anchor points with static shapes to prevent one side from going to
+ * zero length.
+ */
 export class b2PulleyJoint extends b2Joint {
     public readonly m_groundAnchorA = new b2Vec2();
 

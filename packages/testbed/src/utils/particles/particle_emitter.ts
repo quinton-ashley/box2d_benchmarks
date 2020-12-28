@@ -36,59 +36,37 @@ export class EmittedParticleCallback {
  * Emit particles from a circular region.
  */
 export class RadialEmitter {
-    /**
-     * Pointer to global world
-     */
+    /** Pointer to global world */
     public m_particleSystem: b2ParticleSystem | null = null;
 
-    /**
-     * Called for each created particle.
-     */
+    /** Called for each created particle. */
     public m_callback: EmittedParticleCallback | null = null;
 
-    /**
-     * Center of particle emitter
-     */
+    /** Center of particle emitter */
     public m_origin = new b2Vec2();
 
-    /**
-     * Launch direction.
-     */
+    /** Launch direction. */
     public m_startingVelocity = new b2Vec2();
 
-    /**
-     * Speed particles are emitted
-     */
+    /** Speed particles are emitted */
     public m_speed = 0;
 
-    /**
-     * Half width / height of particle emitter
-     */
+    /** Half width / height of particle emitter */
     public m_halfSize = new b2Vec2();
 
-    /**
-     * Particles per second
-     */
+    /** Particles per second */
     public m_emitRate = 1;
 
-    /**
-     * Initial color of particle emitted.
-     */
+    /** Initial color of particle emitted. */
     public m_color = new b2Color();
 
-    /**
-     * Number particles to emit on the next frame
-     */
+    /** Number particles to emit on the next frame */
     public m_emitRemainder = 0;
 
-    /**
-     * Flags for created particles, see b2ParticleFlag.
-     */
+    /** Flags for created particles, see b2ParticleFlag. */
     public m_flags: b2ParticleFlag = b2ParticleFlag.b2_waterParticle;
 
-    /**
-     * Group to put newly created particles in.
-     */
+    /** Group to put newly created particles in. */
     public m_group: b2ParticleGroup | null = null;
 
     public Destroy(): void {
@@ -290,7 +268,6 @@ export class RadialEmitter {
             // Send it flying
             pd.velocity.Copy(this.m_startingVelocity);
             if (this.m_speed !== 0) {
-                ///  pd.velocity += positionOnUnitCircle * m_speed;
                 pd.velocity.AddScaled(this.m_speed, positionOnUnitCircle);
             }
 

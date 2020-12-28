@@ -41,18 +41,20 @@ export interface b2IFrictionJointDef extends b2IJointDef {
     maxTorque?: number;
 }
 
-/// Friction joint definition.
+/**
+ * Friction joint definition.
+ */
 export class b2FrictionJointDef extends b2JointDef implements b2IFrictionJointDef {
-    /// The local anchor point relative to bodyA's origin.
+    /** The local anchor point relative to bodyA's origin. */
     public readonly localAnchorA = new b2Vec2();
 
-    /// The local anchor point relative to bodyB's origin.
+    /** The local anchor point relative to bodyB's origin. */
     public readonly localAnchorB = new b2Vec2();
 
-    /// The maximum friction force in N.
+    /** The maximum friction force in N. */
     public maxForce = 0;
 
-    /// The maximum friction torque in N-m.
+    /** The maximum friction torque in N-m. */
     public maxTorque = 0;
 
     constructor() {
@@ -67,8 +69,10 @@ export class b2FrictionJointDef extends b2JointDef implements b2IFrictionJointDe
     }
 }
 
-/// Friction joint. This is used for top-down friction.
-/// It provides 2D translational friction and angular friction.
+/**
+ * Friction joint. This is used for top-down friction.
+ * It provides 2D translational friction and angular friction.
+ */
 export class b2FrictionJoint extends b2Joint {
     public readonly m_localAnchorA = new b2Vec2();
 

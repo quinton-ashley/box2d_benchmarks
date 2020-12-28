@@ -50,7 +50,9 @@ const b2TimeOfImpact_s_normal = new b2Vec2();
 const b2TimeOfImpact_s_axisA = new b2Vec2();
 const b2TimeOfImpact_s_axisB = new b2Vec2();
 
-/// Input parameters for b2TimeOfImpact
+/**
+ * Input parameters for b2TimeOfImpact
+ */
 export class b2TOIInput {
     public readonly proxyA = new b2DistanceProxy();
 
@@ -71,7 +73,9 @@ export enum b2TOIOutputState {
     e_separated,
 }
 
-/// Output parameters for b2TimeOfImpact.
+/**
+ * Output parameters for b2TimeOfImpact.
+ */
 export class b2TOIOutput {
     public state = b2TOIOutputState.e_unknown;
 

@@ -24,14 +24,16 @@ import { b2EdgeShape, b2Vec2, b2BodyType, b2PolygonShape, b2Body, b2MakeArray } 
 
 import { registerTest, Test } from "../../test";
 
-/// This test shows how a distance joint can be used to stabilize a chain of
-/// bodies with a heavy payload. Notice that the distance joint just prevents
-/// excessive stretching and has no other effect.
-/// By disabling the distance joint you can see that the Box2D solver has trouble
-/// supporting heavy bodies with light bodies. Try playing around with the
-/// densities, time step, and iterations to see how they affect stability.
-/// This test also shows how to use contact filtering. Filtering is configured
-/// so that the payload does not collide with the chain.
+/**
+ * This test shows how a distance joint can be used to stabilize a chain of
+ * bodies with a heavy payload. Notice that the distance joint just prevents
+ * excessive stretching and has no other effect.
+ * By disabling the distance joint you can see that the Box2D solver has trouble
+ * supporting heavy bodies with light bodies. Try playing around with the
+ * densities, time step, and iterations to see how they affect stability.
+ * This test also shows how to use contact filtering. Filtering is configured
+ * so that the payload does not collide with the chain.
+ */
 class ChainProblem extends Test {
     constructor() {
         super();

@@ -25,11 +25,14 @@ import { b2MassData, b2Shape, b2ShapeType } from "./b2_shape";
 import { b2EdgeShape } from "./b2_edge_shape";
 import { b2Color, b2Draw } from "../common/b2_draw";
 
-/// A chain shape is a free form sequence of line segments.
-/// The chain has one-sided collision, with the surface normal pointing to the right of the edge.
-/// This provides a counter-clockwise winding like the polygon shape.
-/// Connectivity information is used to create smooth collisions.
-/// @warning the chain will not collide properly if there are self-intersections.
+/**
+ * A chain shape is a free form sequence of line segments.
+ * The chain has one-sided collision, with the surface normal pointing to the right of the edge.
+ * This provides a counter-clockwise winding like the polygon shape.
+ * Connectivity information is used to create smooth collisions.
+ *
+ * @warning the chain will not collide properly if there are self-intersections.
+ */
 export class b2ChainShape extends b2Shape {
     public m_vertices: b2Vec2[] = [];
 
@@ -41,9 +44,12 @@ export class b2ChainShape extends b2Shape {
         super(b2ShapeType.e_chain, b2_polygonRadius);
     }
 
-    /// Create a loop. This automatically adjusts connectivity.
-    /// @param vertices an array of vertices, these are copied
-    /// @param count the vertex count
+    /**
+     * Create a loop. This automatically adjusts connectivity.
+     *
+     * @param vertices an array of vertices, these are copied
+     * @param count the vertex count
+     */
     public CreateLoop(vertices: XY[], count = vertices.length): b2ChainShape {
         // DEBUG: b2Assert(count >= 3);
         if (count < 3) {
@@ -68,11 +74,14 @@ export class b2ChainShape extends b2Shape {
         return this;
     }
 
-    /// Create a chain with ghost vertices to connect multiple chains together.
-    /// @param vertices an array of vertices, these are copied
-    /// @param count the vertex count
-    /// @param prevVertex previous vertex from chain that connects to the start
-    /// @param nextVertex next vertex from chain that connects to the end
+    /**
+     * Create a chain with ghost vertices to connect multiple chains together.
+     *
+     * @param vertices an array of vertices, these are copied
+     * @param count the vertex count
+     * @param prevVertex previous vertex from chain that connects to the start
+     * @param nextVertex next vertex from chain that connects to the end
+     */
     public CreateChain(
         vertices: XY[],
         count: number,
@@ -97,7 +106,9 @@ export class b2ChainShape extends b2Shape {
         return this;
     }
 
-    /// Implement b2Shape. Vertices are cloned using b2Alloc.
+    /**
+     * Implement b2Shape. Vertices are cloned using b2Alloc.
+     */
     public Clone(): b2ChainShape {
         return new b2ChainShape().Copy(this);
     }
@@ -110,13 +121,17 @@ export class b2ChainShape extends b2Shape {
         return this.CreateChain(other.m_vertices, other.m_vertices.length, other.m_prevVertex, other.m_nextVertex);
     }
 
-    /// @see b2Shape::GetChildCount
+    /**
+     * @see b2Shape::GetChildCount
+     */
     public GetChildCount(): number {
         // edge count = vertex count - 1
         return this.m_vertices.length - 1;
     }
 
-    /// Get a child edge.
+    /**
+     * Get a child edge.
+     */
     public GetChildEdge(edge: b2EdgeShape, index: number): void {
         // DEBUG: b2Assert(0 <= index && index < this.m_vertices.length - 1);
         edge.m_radius = this.m_radius;
@@ -138,15 +153,20 @@ export class b2ChainShape extends b2Shape {
         }
     }
 
-    /// This always return false.
-    /// @see b2Shape::TestPoint
+    /**
+     * This always return false.
+     *
+     * @see b2Shape::TestPoint
+     */
     public TestPoint(_xf: b2Transform, _p: XY): boolean {
         return false;
     }
 
-    /// Implement b2Shape.
     private static RayCast_s_edgeShape = new b2EdgeShape();
 
+    /**
+     * Implement b2Shape.
+     */
     public RayCast(output: b2RayCastOutput, input: b2RayCastInput, xf: b2Transform, childIndex: number): boolean {
         // DEBUG: b2Assert(childIndex < this.m_vertices.length);
 
@@ -164,7 +184,6 @@ export class b2ChainShape extends b2Shape {
         return edgeShape.RayCast(output, input, xf, 0);
     }
 
-    /// @see b2Shape::ComputeAABB
     private static ComputeAABB_s_v1 = new b2Vec2();
 
     private static ComputeAABB_s_v2 = new b2Vec2();
@@ -173,6 +192,9 @@ export class b2ChainShape extends b2Shape {
 
     private static ComputeAABB_s_upper = new b2Vec2();
 
+    /**
+     * @see b2Shape::ComputeAABB
+     */
     public ComputeAABB(aabb: b2AABB, xf: b2Transform, childIndex: number): void {
         // DEBUG: b2Assert(childIndex < this.m_vertices.length);
 
@@ -194,8 +216,11 @@ export class b2ChainShape extends b2Shape {
         aabb.upperBound.y = upper.y + this.m_radius;
     }
 
-    /// Chains have zero mass.
-    /// @see b2Shape::ComputeMass
+    /**
+     * Chains have zero mass.
+     *
+     * @see b2Shape::ComputeMass
+     */
     public ComputeMass(massData: b2MassData, _density: number): void {
         massData.mass = 0;
         massData.center.SetZero();

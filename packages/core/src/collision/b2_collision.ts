@@ -29,32 +29,35 @@ import { b2Vec2, b2Rot, b2Transform, XY } from "../common/b2_math";
 import type { b2Shape } from "./b2_shape";
 import { b2Distance, b2DistanceInput, b2DistanceOutput, b2SimplexCache } from "./b2_distance";
 
-/// @file
-/// Structures and functions used for computing contact points, distance
-/// queries, and TOI queries.
-
+/**
+ * @file
+ * Structures and functions used for computing contact points, distance
+ * queries, and TOI queries.
+ */
 export enum b2ContactFeatureType {
     e_vertex = 0,
     e_face = 1,
 }
 
-/// The features that intersect to form the contact point
-/// This must be 4 bytes or less.
+/**
+ * The features that intersect to form the contact point
+ * This must be 4 bytes or less.
+ */
 export class b2ContactFeature {
     private m_key = 0;
 
     private m_key_invalid = false;
 
-    /// < Feature index on shapeA
+    /** Feature index on shapeA */
     private m_indexA = 0;
 
-    /// < Feature index on shapeB
+    /** Feature index on shapeB */
     private m_indexB = 0;
 
-    /// < The feature type on shapeA
+    /** The feature type on shapeA */
     private m_typeA = b2ContactFeatureType.e_vertex;
 
-    /// < The feature type on shapeB
+    /** The feature type on shapeB */
     private m_typeB = b2ContactFeatureType.e_vertex;
 
     public get key(): number {
@@ -111,7 +114,9 @@ export class b2ContactFeature {
     }
 }
 
-/// Contact ids to facilitate warm starting.
+/**
+ * Contact ids to facilitate warm starting.
+ */
 export class b2ContactID {
     public readonly cf = new b2ContactFeature();
 
@@ -133,24 +138,30 @@ export class b2ContactID {
     }
 }
 
-/// A manifold point is a contact point belonging to a contact
-/// manifold. It holds details related to the geometry and dynamics
-/// of the contact points.
-/// The local point usage depends on the manifold type:
-/// -e_circles: the local center of circleB
-/// -e_faceA: the local center of cirlceB or the clip point of polygonB
-/// -e_faceB: the clip point of polygonA
-/// This structure is stored across time steps, so we keep it small.
-/// Note: the impulses are used for internal caching and may not
-/// provide reliable contact forces, especially for high speed collisions.
+/**
+ * A manifold point is a contact point belonging to a contact
+ * manifold. It holds details related to the geometry and dynamics
+ * of the contact points.
+ * The local point usage depends on the manifold type:
+ * -e_circles: the local center of circleB
+ * -e_faceA: the local center of cirlceB or the clip point of polygonB
+ * -e_faceB: the clip point of polygonA
+ * This structure is stored across time steps, so we keep it small.
+ * Note: the impulses are used for internal caching and may not
+ * provide reliable contact forces, especially for high speed collisions.
+ */
 export class b2ManifoldPoint {
-    public readonly localPoint = new b2Vec2(); /// < usage depends on manifold type
+    /** Usage depends on manifold type */
+    public readonly localPoint = new b2Vec2();
 
-    public normalImpulse = 0; /// < the non-penetration impulse
+    /** The non-penetration impulse */
+    public normalImpulse = 0;
 
-    public tangentImpulse = 0; /// < the friction impulse
+    /** The friction impulse */
+    public tangentImpulse = 0;
 
-    public readonly id = new b2ContactID(); /// < uniquely identifies a contact point between two shapes
+    /** Uniquely identifies a contact point between two shapes */
+    public readonly id = new b2ContactID();
 
     public Reset(): void {
         this.localPoint.SetZero();
@@ -174,35 +185,37 @@ export enum b2ManifoldType {
     e_faceB,
 }
 
-/// A manifold for two touching convex shapes.
-/// Box2D supports multiple types of contact:
-/// - clip point versus plane with radius
-/// - point versus point with radius (circles)
-/// The local point usage depends on the manifold type:
-/// -e_circles: the local center of circleA
-/// -e_faceA: the center of faceA
-/// -e_faceB: the center of faceB
-/// Similarly the local normal usage:
-/// -e_circles: not used
-/// -e_faceA: the normal on polygonA
-/// -e_faceB: the normal on polygonB
-/// We store contacts in this way so that position correction can
-/// account for movement, which is critical for continuous physics.
-/// All contact scenarios must be expressed in one of these types.
-/// This structure is stored across time steps, so we keep it small.
+/**
+ * A manifold for two touching convex shapes.
+ * Box2D supports multiple types of contact:
+ * - clip point versus plane with radius
+ * - point versus point with radius (circles)
+ * The local point usage depends on the manifold type:
+ * -e_circles: the local center of circleA
+ * -e_faceA: the center of faceA
+ * -e_faceB: the center of faceB
+ * Similarly the local normal usage:
+ * -e_circles: not used
+ * -e_faceA: the normal on polygonA
+ * -e_faceB: the normal on polygonB
+ * We store contacts in this way so that position correction can
+ * account for movement, which is critical for continuous physics.
+ * All contact scenarios must be expressed in one of these types.
+ * This structure is stored across time steps, so we keep it small.
+ */
 export class b2Manifold {
-    /// < the points of contact
+    /** The points of contact */
     public readonly points = b2MakeArray(b2_maxManifoldPoints, b2ManifoldPoint);
 
-    /// < not use for Type::e_points
+    /** Not use for Type::e_points */
     public readonly localNormal = new b2Vec2();
 
-    /// < usage depends on manifold type
+    /** Usage depends on manifold type */
     public readonly localPoint = new b2Vec2();
 
     public type = b2ManifoldType.e_circles;
 
-    /// < the number of manifold points
+    /** The number of manifold points */
     public pointCount = 0;
 
     public Reset(): void {
@@ -233,15 +246,17 @@ export class b2Manifold {
     }
 }
 
-/// This is used to compute the current state of a contact manifold.
+/**
+ * This is used to compute the current state of a contact manifold.
+ */
 export class b2WorldManifold {
-    /// < world vector pointing from A to B
+    /** World vector pointing from A to B */
     public readonly normal = new b2Vec2();
 
-    /// < world contact point (point of intersection)
+    /** World contact point (point of intersection) */
     public readonly points = b2MakeArray(b2_maxManifoldPoints, b2Vec2);
 
-    /// < a negative value indicates overlap, in meters
+    /** A negative value indicates overlap, in meters */
     public readonly separations = b2MakeNumberArray(b2_maxManifoldPoints);
 
     private static Initialize_s_pointA = new b2Vec2();
@@ -339,16 +354,24 @@ export class b2WorldManifold {
     }
 }
 
-/// This is used for determining the state of contact points.
+/**
+ * This is used for determining the state of contact points.
+ */
 export enum b2PointState {
-    b2_nullState, /// < point does not exist
-    b2_addState, /// < point was added in the update
-    b2_persistState, /// < point persisted across the update
-    b2_removeState, /// < point was removed in the update
+    /** Point does not exist */
+    b2_nullState,
+    /** Point was added in the update */
+    b2_addState,
+    /** Point persisted across the update */
+    b2_persistState,
+    /** Point was removed in the update */
+    b2_removeState,
 }
 
-/// Compute the point states given two manifolds. The states pertain to the transition from manifold1
-/// to manifold2. So state1 is either persist or remove while state2 is either add or persist.
+/**
+ * Compute the point states given two manifolds. The states pertain to the transition from manifold1
+ * to manifold2. So state1 is either persist or remove while state2 is either add or persist.
+ */
 export function b2GetPointStates(
     state1: b2PointState[],
     state2: b2PointState[],
@@ -391,7 +414,9 @@ export function b2GetPointStates(
     }
 }
 
-/// Used for computing contact manifolds.
+/**
+ * Used for computing contact manifolds.
+ */
 export class b2ClipVertex {
     public readonly v = new b2Vec2();
 
@@ -404,7 +429,9 @@ export class b2ClipVertex {
     }
 }
 
-/// Ray-cast input data. The ray extends from p1 to p1 + maxFraction * (p2 - p1).
+/**
+ * Ray-cast input data. The ray extends from p1 to p1 + maxFraction * (p2 - p1).
+ */
 export class b2RayCastInput {
     public readonly p1 = new b2Vec2();
 
@@ -420,8 +447,10 @@ export class b2RayCastInput {
     }
 }
 
-/// Ray-cast output data. The ray hits at p1 + fraction * (p2 - p1), where p1 and p2
-/// come from b2RayCastInput.
+/**
+ * Ray-cast output data. The ray hits at p1 + fraction * (p2 - p1), where p1 and p2
+ * come from b2RayCastInput.
+ */
 export class b2RayCastOutput {
     public readonly normal = new b2Vec2();
 
@@ -434,11 +463,15 @@ export class b2RayCastOutput {
     }
 }
 
-/// An axis aligned bounding box.
+/**
+ * An axis aligned bounding box.
+ */
 export class b2AABB {
-    public readonly lowerBound = new b2Vec2(); /// < the lower vertex
+    /** The lower vertex */
+    public readonly lowerBound = new b2Vec2();
 
-    public readonly upperBound = new b2Vec2(); /// < the upper vertex
+    /** The upper vertex */
+    public readonly upperBound = new b2Vec2();
 
     public Copy(o: b2AABB): b2AABB {
         this.lowerBound.Copy(o.lowerBound);
@@ -446,7 +479,9 @@ export class b2AABB {
         return this;
     }
 
-    /// Verify that the bounds are sorted.
+    /**
+     * Verify that the bounds are sorted.
+     */
     public IsValid(): boolean {
         return (
             this.lowerBound.IsValid() &&
@@ -456,24 +491,32 @@ export class b2AABB {
         );
     }
 
-    /// Get the center of the AABB.
+    /**
+     * Get the center of the AABB.
+     */
     public GetCenter(out: XY) {
         return b2Vec2.Mid(this.lowerBound, this.upperBound, out);
     }
 
-    /// Get the extents of the AABB (half-widths).
+    /**
+     * Get the extents of the AABB (half-widths).
+     */
     public GetExtents(out: XY) {
         return b2Vec2.Extents(this.lowerBound, this.upperBound, out);
     }
 
-    /// Get the perimeter length
+    /**
+     * Get the perimeter length
+     */
     public GetPerimeter(): number {
         const wx = this.upperBound.x - this.lowerBound.x;
         const wy = this.upperBound.y - this.lowerBound.y;
         return 2 * (wx + wy);
     }
 
-    /// Combine an AABB into this one.
+    /**
+     * Combine an AABB into this one.
+     */
     public Combine1(aabb: b2AABB): b2AABB {
         this.lowerBound.x = Math.min(this.lowerBound.x, aabb.lowerBound.x);
         this.lowerBound.y = Math.min(this.lowerBound.y, aabb.lowerBound.y);
@@ -482,7 +525,9 @@ export class b2AABB {
         return this;
     }
 
-    /// Combine two AABBs into this one.
+    /**
+     * Combine two AABBs into this one.
+     */
     public Combine2(aabb1: b2AABB, aabb2: b2AABB): b2AABB {
         this.lowerBound.x = Math.min(aabb1.lowerBound.x, aabb2.lowerBound.x);
         this.lowerBound.y = Math.min(aabb1.lowerBound.y, aabb2.lowerBound.y);
@@ -496,7 +541,9 @@ export class b2AABB {
         return out;
     }
 
-    /// Does this aabb contain the provided AABB.
+    /**
+     * Does this aabb contain the provided AABB.
+     */
     public Contains(aabb: b2AABB): boolean {
         return (
             this.lowerBound.x <= aabb.lowerBound.x &&
@@ -629,7 +676,9 @@ export class b2AABB {
     }
 }
 
-/// Clipping for contact manifolds.
+/**
+ * Clipping for contact manifolds.
+ */
 export function b2ClipSegmentToLine(
     vOut: readonly [b2ClipVertex, b2ClipVertex],
     [vIn0, vIn1]: readonly [b2ClipVertex, b2ClipVertex],
@@ -669,10 +718,12 @@ export function b2ClipSegmentToLine(
     return count;
 }
 
-/// Determine if two generic shapes overlap.
 const b2TestOverlap_s_input = new b2DistanceInput();
 const b2TestOverlap_s_simplexCache = new b2SimplexCache();
 const b2TestOverlap_s_output = new b2DistanceOutput();
+/**
+ * Determine if two generic shapes overlap.
+ */
 export function b2TestOverlap(
     shapeA: b2Shape,
     indexA: number,
