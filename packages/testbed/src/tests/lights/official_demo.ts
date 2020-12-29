@@ -87,7 +87,7 @@ class OfficialDemo extends AbstractLightTest {
 
     private lightsType: LightsType = "Point";
 
-    directionalLight: DirectionalLight | null = null;
+    public directionalLight: DirectionalLight | null = null;
 
     public readonly gl: WebGLRenderingContext;
 
@@ -196,7 +196,7 @@ class OfficialDemo extends AbstractLightTest {
         this.lightsType = lightsType;
     }
 
-    getHotkeys(): HotKey[] {
+    public getHotkeys(): HotKey[] {
         return [
             hotKeyPress("c", "Random Light Colors", () => {
                 for (const marble of this.marbles) {

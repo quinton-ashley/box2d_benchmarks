@@ -29,9 +29,9 @@ export abstract class RayHandler {
      */
     public readonly simpleBlendFunc: BlendFunc;
 
-    readonly combined = new Float32Array(16);
+    public readonly combined = new Float32Array(16);
 
-    readonly ambientLight = new LightColor();
+    public readonly ambientLight = new LightColor();
 
     /**
      * This Array contain all the lights.
@@ -45,45 +45,45 @@ export abstract class RayHandler {
      *
      * <p>NOTE: DO NOT MODIFY THIS LIST
      */
-    readonly disabledLights: Light[] = [];
+    public readonly disabledLights: Light[] = [];
 
-    lightMap!: LightMap;
+    public lightMap!: LightMap;
 
-    lightShader: LightShader;
+    public lightShader: LightShader;
 
-    customLightShader: LightShader | null = null;
+    public customLightShader: LightShader | null = null;
 
-    culling = true;
+    public culling = true;
 
-    shadows = true;
+    public shadows = true;
 
-    blur = true;
+    public blur = true;
 
-    blurNum = 1;
+    public blurNum = 1;
 
-    customViewport = false;
+    public customViewport = false;
 
-    viewportX = 0;
+    public viewportX = 0;
 
-    viewportY = 0;
+    public viewportY = 0;
 
-    viewportWidth: number;
+    public viewportWidth: number;
 
-    viewportHeight: number;
+    public viewportHeight: number;
 
     /** How many lights passed culling and rendered to scene last time */
-    lightRenderedLastFrame = 0;
+    public lightRenderedLastFrame = 0;
 
     /** camera matrix corners */
-    x1 = 0;
+    public x1 = 0;
 
-    x2 = 0;
+    public x2 = 0;
 
-    y1 = 0;
+    public y1 = 0;
 
-    y2 = 0;
+    public y2 = 0;
 
-    gl: WebGLRenderingContext;
+    public gl: WebGLRenderingContext;
 
     /**
      * Class constructor specifying the physics world from where collision
@@ -167,7 +167,7 @@ export abstract class RayHandler {
      * @returns true if camera screen intersects or contains provided
      * light, represented by circle/box area
      */
-    intersect(x: number, y: number, radius: number) {
+    public intersect(x: number, y: number, radius: number) {
         return this.x1 < x + radius && this.x2 > x - radius && this.y1 < y + radius && this.y2 > y - radius;
     }
 

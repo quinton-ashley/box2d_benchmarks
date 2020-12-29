@@ -31,7 +31,7 @@ export class b2StackQueue<T> {
         return this.m_buffer.length;
     }
 
-    constructor(capacity: number) {
+    public constructor(capacity: number) {
         this.m_buffer.fill(null, 0, capacity);
     }
 

@@ -51,7 +51,7 @@ const FUD_GROUND_AREA = 1;
 class FixtureUserData {
     public m_type: number;
 
-    constructor(type: number) {
+    public constructor(type: number) {
         this.m_type = type;
     }
 
@@ -64,7 +64,7 @@ class FixtureUserData {
  * Class to allow marking a fixture as a car tire
  */
 class CarTireFUD extends FixtureUserData {
-    constructor() {
+    public constructor() {
         super(FUD_CAR_TIRE);
     }
 }
@@ -77,7 +77,7 @@ class GroundAreaFUD extends FixtureUserData {
 
     public outOfCourse: boolean;
 
-    constructor(fm: number, ooc: boolean) {
+    public constructor(fm: number, ooc: boolean) {
         super(FUD_GROUND_AREA);
         this.frictionModifier = fm;
         this.outOfCourse = ooc;
@@ -99,7 +99,7 @@ class TDTire {
 
     public m_maxLateralImpulse = 0;
 
-    constructor(world: b2World) {
+    public constructor(world: b2World) {
         this.m_body = world.CreateBody({
             type: b2BodyType.b2_dynamicBody,
         });
@@ -225,7 +225,7 @@ class TDCar {
 
     public frJoint: b2RevoluteJoint;
 
-    constructor(world: b2World) {
+    public constructor(world: b2World) {
         this.m_tires = [];
 
         // create car body
@@ -329,7 +329,7 @@ class TopdownCar extends Test {
         down: false,
     };
 
-    constructor() {
+    public constructor() {
         super(b2Vec2.ZERO);
 
         // set up ground areas
@@ -357,7 +357,7 @@ class TopdownCar extends Test {
         this.m_car = new TDCar(this.m_world);
     }
 
-    getHotkeys(): HotKey[] {
+    public getHotkeys(): HotKey[] {
         return [
             hotKeyState("a", "Turn Left", this.m_controlState, "left"),
             hotKeyState("d", "Turn Right", this.m_controlState, "right"),

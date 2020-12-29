@@ -26,7 +26,7 @@ class BuoyancyTest extends Test {
 
     public m_controller: b2BuoyancyController;
 
-    constructor() {
+    public constructor() {
         super();
 
         this.m_bodies = [];

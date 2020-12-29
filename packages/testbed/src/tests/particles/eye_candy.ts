@@ -10,7 +10,7 @@ class EyeCandy extends AbstractParticleTest {
 
     public m_joint: b2RevoluteJoint;
 
-    constructor() {
+    public constructor() {
         super();
 
         this.m_particleSystem.SetDamping(0.2);

@@ -77,7 +77,7 @@ export class b2MotorJointDef extends b2JointDef implements b2IMotorJointDef {
     /** Position correction factor in the range [0,1]. */
     public correctionFactor = 0.3;
 
-    constructor() {
+    public constructor() {
         super(b2JointType.e_motorJoint);
     }
 
@@ -142,7 +142,7 @@ export class b2MotorJoint extends b2Joint {
 
     public m_angularMass = 0;
 
-    constructor(def: b2IMotorJointDef) {
+    public constructor(def: b2IMotorJointDef) {
         super(def);
 
         this.m_linearOffset.Copy(def.linearOffset ?? b2Vec2.ZERO);

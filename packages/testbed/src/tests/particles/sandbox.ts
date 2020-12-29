@@ -141,7 +141,7 @@ class SpecialParticleTracker extends b2DestructionListener {
      * Register this class as a destruction listener so that it's
      * possible to keep track of special particles.
      */
-    constructor(world: b2World, system: b2ParticleSystem) {
+    public constructor(world: b2World, system: b2ParticleSystem) {
         super();
         // DEBUG: b2Assert(world !== null);
         // DEBUG: b2Assert(system !== null);
@@ -255,7 +255,7 @@ class Sandbox extends AbstractParticleTestWithControls {
     /** Special particle tracker. */
     public m_specialTracker: SpecialParticleTracker;
 
-    constructor({ particleParameter }: TestContext) {
+    public constructor({ particleParameter }: TestContext) {
         super(particleParameter, { x: 0, y: -20 });
 
         // We need some ground for the pumps to slide against

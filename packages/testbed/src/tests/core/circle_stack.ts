@@ -25,7 +25,7 @@ class CircleStack extends Test {
 
     public m_bodies: b2Body[] = [];
 
-    constructor() {
+    public constructor() {
         super();
 
         {

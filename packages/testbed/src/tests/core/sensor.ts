@@ -45,7 +45,7 @@ class Sensors extends Test {
 
     public m_touching = b2MakeBooleanArray(Sensors.e_count);
 
-    constructor() {
+    public constructor() {
         super();
 
         const ground = this.m_world.CreateBody();

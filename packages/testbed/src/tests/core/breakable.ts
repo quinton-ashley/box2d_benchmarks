@@ -51,7 +51,7 @@ class Breakable extends Test {
 
     public m_break = false;
 
-    constructor() {
+    public constructor() {
         super();
 
         // Ground body

@@ -52,7 +52,7 @@ export class b2Color implements RGBA {
 
     public a: number;
 
-    constructor(r = 0.5, g = 0.5, b = 0.5, a = 1) {
+    public constructor(r = 0.5, g = 0.5, b = 0.5, a = 1) {
         this.r = r;
         this.g = g;
         this.b = b;

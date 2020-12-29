@@ -74,7 +74,7 @@ export class b2WeldJointDef extends b2JointDef implements b2IWeldJointDef {
     /** The rotational damping in N*m*s */
     public damping = 0;
 
-    constructor() {
+    public constructor() {
         super(b2JointType.e_weldJoint);
     }
 
@@ -132,7 +132,7 @@ export class b2WeldJoint extends b2Joint {
 
     public readonly m_mass = new b2Mat33();
 
-    constructor(def: b2IWeldJointDef) {
+    public constructor(def: b2IWeldJointDef) {
         super(def);
 
         this.m_localAnchorA.Copy(def.localAnchorA ?? b2Vec2.ZERO);

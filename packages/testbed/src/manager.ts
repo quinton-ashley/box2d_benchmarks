@@ -163,7 +163,7 @@ export class TestManager {
         this.LoadTest();
     }
 
-    setTest(title: string, constructor: TestConstructor) {
+    public setTest(title: string, constructor: TestConstructor) {
         this.testTitle = title;
         this.testConstructor = constructor;
         this.LoadTest();

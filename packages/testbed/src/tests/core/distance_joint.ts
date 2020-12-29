@@ -47,7 +47,7 @@ class DistanceJoint extends Test {
 
     public m_dampingRatio: number;
 
-    constructor() {
+    public constructor() {
         super();
 
         const ground = this.m_world.CreateBody();

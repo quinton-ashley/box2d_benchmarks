@@ -53,7 +53,7 @@ class DrawingParticles extends AbstractParticleTestWithControls {
 
     public m_colorIndex = 0;
 
-    constructor({ particleParameter }: TestContext) {
+    public constructor({ particleParameter }: TestContext) {
         super(particleParameter);
 
         {

@@ -50,7 +50,7 @@ class Platformer extends Test {
 
     public m_character: b2Fixture;
 
-    constructor() {
+    public constructor() {
         super();
 
         // Ground

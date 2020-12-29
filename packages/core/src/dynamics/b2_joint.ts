@@ -62,7 +62,7 @@ export class b2JointEdge {
     /** The next joint edge in the body's joint list */
     public next: b2JointEdge | null = null;
 
-    constructor(joint: b2Joint, other: b2Body) {
+    public constructor(joint: b2Joint, other: b2Body) {
         this.joint = joint;
         this.other = other;
     }
@@ -107,7 +107,7 @@ export abstract class b2JointDef implements b2IJointDef {
     /** Set this flag to true if the attached bodies should collide. */
     public collideConnected = false;
 
-    constructor(type: b2JointType) {
+    public constructor(type: b2JointType) {
         this.type = type;
     }
 }
@@ -194,7 +194,7 @@ export abstract class b2Joint {
 
     public m_userData: any = null;
 
-    constructor(def: b2IJointDef) {
+    public constructor(def: b2IJointDef) {
         // DEBUG: b2Assert(def.bodyA !== def.bodyB);
 
         this.m_type = def.type;

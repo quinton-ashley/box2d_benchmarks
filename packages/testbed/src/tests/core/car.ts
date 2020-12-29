@@ -50,7 +50,7 @@ class Car extends Test {
 
     public m_spring2: b2WheelJoint;
 
-    constructor() {
+    public constructor() {
         super();
 
         this.m_speed = 50;
@@ -268,7 +268,7 @@ class Car extends Test {
         }
     }
 
-    getHotkeys(): HotKey[] {
+    public getHotkeys(): HotKey[] {
         return [
             hotKey("a", "Decelerate", (down) => this.m_spring1.SetMotorSpeed(down ? this.m_speed : 0)),
             hotKey("d", "Accelerate", (down) => this.m_spring1.SetMotorSpeed(down ? -this.m_speed : 0)),

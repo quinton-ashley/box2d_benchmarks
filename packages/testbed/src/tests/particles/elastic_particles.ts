@@ -23,7 +23,7 @@ import { registerTest } from "../../test";
 import { AbstractParticleTest } from "./abstract_particle_test";
 
 class ElasticParticles extends AbstractParticleTest {
-    constructor() {
+    public constructor() {
         super();
         {
             const ground = this.m_world.CreateBody();

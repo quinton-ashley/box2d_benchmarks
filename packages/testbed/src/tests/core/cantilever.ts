@@ -36,7 +36,7 @@ import { registerTest, Test } from "../../test";
 class Cantilever extends Test {
     public static readonly e_count = 8;
 
-    constructor() {
+    public constructor() {
         super();
 
         let ground = null;

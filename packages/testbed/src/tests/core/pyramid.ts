@@ -23,7 +23,7 @@ import { registerTest, Test } from "../../test";
 class Pyramid extends Test {
     public static readonly e_count = 20;
 
-    constructor() {
+    public constructor() {
         super();
 
         {

@@ -27,7 +27,7 @@ export type b2ContactRegister =
 export class b2ContactFactory {
     public readonly m_registers: b2ContactRegister[][];
 
-    constructor() {
+    public constructor() {
         const result = new Array<b2ContactRegister[]>(b2ShapeType.e_typeCount);
         for (let i = 0; i < b2ShapeType.e_typeCount; i++)
             result[i] = new Array<b2ContactRegister>(b2ShapeType.e_typeCount);

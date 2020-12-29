@@ -31,7 +31,7 @@ class ShapeEditing extends Test {
 
     public m_sensor = false;
 
-    constructor() {
+    public constructor() {
         super();
 
         {
@@ -52,7 +52,7 @@ class ShapeEditing extends Test {
         this.m_fixture1 = this.m_body.CreateFixture({ shape, density: 10 });
     }
 
-    getHotkeys(): HotKey[] {
+    public getHotkeys(): HotKey[] {
         return [
             hotKeyPress("c", "Create a Shape", () => {
                 if (this.m_fixture2 === null) {

@@ -39,7 +39,7 @@ class ParticleLifetimeRandomizer extends EmittedParticleCallback {
 
     public m_maxLifetime = 0;
 
-    constructor(minLifetime: number, maxLifetime: number) {
+    public constructor(minLifetime: number, maxLifetime: number) {
         super();
         this.m_minLifetime = minLifetime;
         this.m_maxLifetime = maxLifetime;
@@ -125,7 +125,7 @@ class Faucet extends AbstractParticleTestWithControls {
     /** Maximum emit rate of the faucet in particles per second. */
     public static readonly k_emitRateMax = 240;
 
-    constructor({ particleParameter }: TestContext) {
+    public constructor({ particleParameter }: TestContext) {
         super(particleParameter); // base class constructor
 
         this.m_emitter = new RadialEmitter();
@@ -257,7 +257,7 @@ class Faucet extends AbstractParticleTestWithControls {
         this.m_emitter.Step(dt);
     }
 
-    getHotkeys(): HotKey[] {
+    public getHotkeys(): HotKey[] {
         return [
             hotKeyPress("m", "Increase Flow", () =>
                 this.m_emitter.SetEmitRate(

@@ -34,7 +34,7 @@ class Impulse extends AbstractParticleTestWithControls {
 
     public m_useLinearImpulse = false;
 
-    constructor({ particleParameter }: TestContext) {
+    public constructor({ particleParameter }: TestContext) {
         super(particleParameter);
 
         // Create the containing box.
@@ -86,7 +86,7 @@ class Impulse extends AbstractParticleTestWithControls {
         }
     }
 
-    getHotkeys(): HotKey[] {
+    public getHotkeys(): HotKey[] {
         return [
             hotKeyPress("l", "Use Linear Impulse", () => {
                 this.m_useLinearImpulse = true;

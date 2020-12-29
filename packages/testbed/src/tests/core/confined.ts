@@ -27,7 +27,7 @@ class Confined extends Test {
 
     public static readonly e_rowCount = 0;
 
-    constructor() {
+    public constructor() {
         super(b2Vec2.ZERO);
 
         {
@@ -108,7 +108,7 @@ class Confined extends Test {
         });
     }
 
-    getHotkeys(): HotKey[] {
+    public getHotkeys(): HotKey[] {
         return [hotKeyPress("c", "Create Circle", () => this.CreateCircle())];
     }
 

@@ -19,7 +19,7 @@ import type { b2ParticleSystem } from "./b2_particle_system";
 export abstract class b2FixtureParticleQueryCallback {
     protected m_system: b2ParticleSystem;
 
-    constructor(system: b2ParticleSystem) {
+    public constructor(system: b2ParticleSystem) {
         this.m_system = system;
     }
 

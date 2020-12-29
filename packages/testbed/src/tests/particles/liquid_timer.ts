@@ -29,7 +29,7 @@ const particleTypes = {
 };
 
 class LiquidTimer extends AbstractParticleTestWithControls {
-    constructor({ particleParameter }: TestContext) {
+    public constructor({ particleParameter }: TestContext) {
         super(particleParameter);
 
         // Setup particle parameters.

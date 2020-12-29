@@ -126,7 +126,7 @@ export class b2WheelJointDef extends b2JointDef implements b2IWheelJointDef {
     /** Suspension damping. Typically in units of N*s/m. */
     public damping = 0;
 
-    constructor() {
+    public constructor() {
         super(b2JointType.e_wheelJoint);
     }
 
@@ -223,7 +223,7 @@ export class b2WheelJoint extends b2Joint {
 
     public m_gamma = 0;
 
-    constructor(def: b2IWheelJointDef) {
+    public constructor(def: b2IWheelJointDef) {
         super(def);
 
         this.m_localAnchorA.Copy(def.localAnchorA ?? b2Vec2.ZERO);

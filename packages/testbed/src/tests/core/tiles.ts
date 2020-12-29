@@ -34,7 +34,7 @@ class Tiles extends Test {
 
     public m_createTime = 0;
 
-    constructor() {
+    public constructor() {
         super();
 
         this.m_fixtureCount = 0;

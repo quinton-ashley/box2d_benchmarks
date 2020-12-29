@@ -22,7 +22,7 @@ import { registerTest, Test } from "../../test";
 
 // A basic slider crank created for GDC tutorial: Understanding Constraints
 class SliderCrank1 extends Test {
-    constructor() {
+    public constructor() {
         super();
 
         const ground = this.m_world.CreateBody({

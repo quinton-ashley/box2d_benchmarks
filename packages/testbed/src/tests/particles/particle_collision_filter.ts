@@ -42,7 +42,7 @@ class ParticleContactDisabler extends b2ContactFilter {
 }
 
 class ParticleCollisionFilter extends AbstractParticleTest {
-    constructor() {
+    public constructor() {
         super(b2Vec2.ZERO);
 
         // must also set b2_particleContactFilterParticle and
@@ -157,7 +157,7 @@ class ParticleCollisionFilter extends AbstractParticleTest {
         };
     }
 
-    getHotkeys(): HotKey[] {
+    public getHotkeys(): HotKey[] {
         return [
             hotKeyPress("a", "Toggle Fixture Collisions", () => this.ToggleFixtureCollisions()),
             hotKeyPress("s", "Toggle Particle Collisions", () => this.ToggleParticleCollisions()),

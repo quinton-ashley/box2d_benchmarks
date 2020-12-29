@@ -60,7 +60,7 @@ export class b2TreeNode<T> {
 
     public moved = false;
 
-    constructor() {
+    public constructor() {
         this.id = nextNodeid++;
     }
 

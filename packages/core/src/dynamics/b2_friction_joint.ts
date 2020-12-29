@@ -57,7 +57,7 @@ export class b2FrictionJointDef extends b2JointDef implements b2IFrictionJointDe
     /** The maximum friction torque in N-m. */
     public maxTorque = 0;
 
-    constructor() {
+    public constructor() {
         super(b2JointType.e_frictionJoint);
     }
 
@@ -112,7 +112,7 @@ export class b2FrictionJoint extends b2Joint {
 
     public m_angularMass = 0;
 
-    constructor(def: b2IFrictionJointDef) {
+    public constructor(def: b2IFrictionJointDef) {
         super(def);
 
         this.m_localAnchorA.Copy(def.localAnchorA);

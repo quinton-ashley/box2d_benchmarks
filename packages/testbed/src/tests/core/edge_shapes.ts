@@ -46,7 +46,7 @@ class EdgeShapes extends Test {
 
     public m_angle = 0;
 
-    constructor() {
+    public constructor() {
         super();
 
         this.m_bodies = new Array<b2Body>(EdgeShapes.e_maxBodies);
@@ -158,7 +158,7 @@ class EdgeShapes extends Test {
         }
     }
 
-    getHotkeys(): HotKey[] {
+    public getHotkeys(): HotKey[] {
         return [
             hotKeyPress("1", "Create Triangle", () => this.CreateBody(0)),
             hotKeyPress("2", "Create Flat Triangle", () => this.CreateBody(1)),

@@ -43,7 +43,7 @@ export class b2EdgeShape extends b2Shape {
     /** Uses m_vertex0 and m_vertex3 to create smooth collision. */
     public m_oneSided = false;
 
-    constructor() {
+    public constructor() {
         super(b2ShapeType.e_edge, b2_polygonRadius);
     }
 

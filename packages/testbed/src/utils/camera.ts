@@ -47,19 +47,19 @@ export class Camera {
 
     private height = 0;
 
-    getZoom() {
+    public getZoom() {
         return this.zoom;
     }
 
-    getCenter(): Readonly<XY> {
+    public getCenter(): Readonly<XY> {
         return this.center;
     }
 
-    getWidth() {
+    public getWidth() {
         return this.width;
     }
 
-    getHeight() {
+    public getHeight() {
         return this.height;
     }
 

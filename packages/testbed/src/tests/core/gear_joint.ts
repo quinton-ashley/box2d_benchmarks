@@ -43,7 +43,7 @@ class GearJoint extends Test {
 
     public m_joint5: b2GearJoint;
 
-    constructor() {
+    public constructor() {
         super();
 
         let ground = null;

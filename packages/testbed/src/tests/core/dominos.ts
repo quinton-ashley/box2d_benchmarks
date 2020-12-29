@@ -32,7 +32,7 @@ import {
 import { registerTest, Test } from "../../test";
 
 class Dominos extends Test {
-    constructor() {
+    public constructor() {
         super();
 
         let b1 = null;

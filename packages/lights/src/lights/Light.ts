@@ -22,11 +22,11 @@ export interface LightContactFilter {
  * @author kalle_h
  */
 export abstract class Light {
-    static readonly DefaultColor = new LightColor(0.75, 0.75, 0.5, 0.75);
+    public static readonly DefaultColor = new LightColor(0.75, 0.75, 0.5, 0.75);
 
-    static readonly DebugColor = new LightColor(1, 1, 0);
+    public static readonly DebugColor = new LightColor(1, 1, 0);
 
-    static readonly MIN_RAYS = 3;
+    public static readonly MIN_RAYS = 3;
 
     protected readonly color = new LightColor();
 
@@ -80,7 +80,7 @@ export abstract class Light {
     /** Global lights filter */
     private static globalContactFilter: LightContactFilter | null = null;
 
-    readonly rayCast: (point1: XY, point2: XY) => void;
+    public readonly rayCast: (point1: XY, point2: XY) => void;
 
     /**
      * Creates new active light and automatically adds it to the specified
@@ -133,12 +133,12 @@ export abstract class Light {
     /**
      * Updates this light
      */
-    abstract update(): void;
+    public abstract update(): void;
 
     /**
      * Render this light
      */
-    abstract render(): void;
+    public abstract render(): void;
 
     /**
      * Sets light distance

@@ -3,7 +3,7 @@ import { b2PolygonShape, b2FixtureDef, b2BodyType, b2Vec2 } from "@box2d/core";
 import { registerTest, Test } from "../../test";
 
 class DominoTower extends Test {
-    constructor() {
+    public constructor() {
         super();
 
         const DOMINO_WIDTH = 0.2;

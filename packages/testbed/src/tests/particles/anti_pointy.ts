@@ -32,7 +32,7 @@ import { baseParticleTypes } from "../../utils/particles/particle_parameter";
 class AntiPointy extends AbstractParticleTestWithControls {
     public m_particlesToCreate = 300;
 
-    constructor({ particleParameter }: TestContext) {
+    public constructor({ particleParameter }: TestContext) {
         super(particleParameter);
 
         {

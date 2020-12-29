@@ -37,7 +37,7 @@ class BodyTypes extends Test {
 
     public m_speed = 0;
 
-    constructor() {
+    public constructor() {
         super();
 
         const ground = this.m_world.CreateBody();
@@ -117,7 +117,7 @@ class BodyTypes extends Test {
         }
     }
 
-    getHotkeys(): HotKey[] {
+    public getHotkeys(): HotKey[] {
         return [
             hotKeyPress("d", "Set Dynamic Body", () => this.m_platform.SetType(b2BodyType.b2_dynamicBody)),
             hotKeyPress("s", "Set Static Body", () => this.m_platform.SetType(b2BodyType.b2_staticBody)),

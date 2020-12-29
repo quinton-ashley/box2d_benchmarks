@@ -34,7 +34,7 @@ class PrismaticJoint extends Test {
 
     public m_enableLimit = true;
 
-    constructor() {
+    public constructor() {
         super();
 
         let ground = null;
@@ -90,7 +90,7 @@ class PrismaticJoint extends Test {
         ]);
     }
 
-    getHotkeys(): HotKey[] {
+    public getHotkeys(): HotKey[] {
         return [
             hotKeyPress("l", "Toggle Limit", () => this.m_joint.EnableLimit(!this.m_joint.IsLimitEnabled())),
             hotKeyPress("m", "Start/Stop", () => this.m_joint.EnableMotor(!this.m_joint.IsMotorEnabled())),

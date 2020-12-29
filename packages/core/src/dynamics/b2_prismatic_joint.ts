@@ -125,7 +125,7 @@ export class b2PrismaticJointDef extends b2JointDef implements b2IPrismaticJoint
     /** The desired motor speed in radians per second. */
     public motorSpeed = 0;
 
-    constructor() {
+    public constructor() {
         super(b2JointType.e_prismaticJoint);
     }
 
@@ -256,7 +256,7 @@ export class b2PrismaticJoint extends b2Joint {
 
     public m_axialMass = 0;
 
-    constructor(def: b2IPrismaticJointDef) {
+    public constructor(def: b2IPrismaticJointDef) {
         super(def);
 
         this.m_localAnchorA.Copy(def.localAnchorA ?? b2Vec2.ZERO);

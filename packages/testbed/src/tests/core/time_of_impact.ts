@@ -38,7 +38,7 @@ class TimeOfImpact extends Test {
 
     public m_shapeB = new b2PolygonShape();
 
-    constructor() {
+    public constructor() {
         super();
 
         this.m_shapeA.SetAsBox(25, 5);

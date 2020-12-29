@@ -29,7 +29,7 @@ class WaveMachine extends AbstractParticleTestWithControls {
 
     public m_time = 0;
 
-    constructor({ particleParameter }: TestContext) {
+    public constructor({ particleParameter }: TestContext) {
         super(particleParameter);
 
         particleParameter.SetValues(baseParticleTypes, "water");

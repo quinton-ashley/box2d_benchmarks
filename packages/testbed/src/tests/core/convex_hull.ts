@@ -32,7 +32,7 @@ class ConvexHull extends Test {
 
     public m_auto = false;
 
-    constructor() {
+    public constructor() {
         super();
 
         this.Generate();
@@ -57,7 +57,7 @@ class ConvexHull extends Test {
         this.m_count = ConvexHull.e_count;
     }
 
-    getHotkeys(): HotKey[] {
+    public getHotkeys(): HotKey[] {
         return [
             hotKeyPress("a", "Toggle Autogeneration", () => {
                 this.m_auto = !this.m_auto;

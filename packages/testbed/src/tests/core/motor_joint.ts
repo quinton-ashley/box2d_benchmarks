@@ -35,7 +35,7 @@ class MotorJoint extends Test {
 
     public m_go = false;
 
-    constructor() {
+    public constructor() {
         super();
 
         let ground = null;
@@ -76,7 +76,7 @@ class MotorJoint extends Test {
         this.m_time = 0;
     }
 
-    getHotkeys(): HotKey[] {
+    public getHotkeys(): HotKey[] {
         return [
             hotKeyPress("s", "Start/Stop", () => {
                 this.m_go = !this.m_go;

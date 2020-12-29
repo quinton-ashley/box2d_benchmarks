@@ -44,7 +44,7 @@ class PolygonCollision extends Test {
 
     public m_angleB = 0;
 
-    constructor() {
+    public constructor() {
         super();
 
         this.m_polygonA.SetAsBox(0.2, 0.4);
@@ -59,7 +59,7 @@ class PolygonCollision extends Test {
         return 100;
     }
 
-    getHotkeys(): HotKey[] {
+    public getHotkeys(): HotKey[] {
         return [
             hotKeyPress("a", "Move Left", () => this.Adjust(-0.1, 0, 0)),
             hotKeyPress("d", "Move Right", () => this.Adjust(0.1, 0, 0)),

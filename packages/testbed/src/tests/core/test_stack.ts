@@ -30,7 +30,7 @@ import {
 import { registerTest, Test } from "../../test";
 
 class TestStack extends Test {
-    constructor() {
+    public constructor() {
         super();
 
         {

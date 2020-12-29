@@ -75,7 +75,7 @@ class Maxwell extends AbstractParticleTest {
 
     public static readonly k_temperatureDefault = 5;
 
-    constructor() {
+    public constructor() {
         super(b2Vec2.ZERO);
 
         // Create the container.
@@ -178,7 +178,7 @@ class Maxwell extends AbstractParticleTest {
         }
     }
 
-    getHotkeys(): HotKey[] {
+    public getHotkeys(): HotKey[] {
         return [
             hotKeyPress("a", "Toggle Barrier", () => this.ToggleBarrier()),
             hotKeyPress("m", "Increase the Particle Density", () => {

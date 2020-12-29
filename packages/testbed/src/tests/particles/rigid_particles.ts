@@ -23,7 +23,7 @@ import { registerTest } from "../../test";
 import { AbstractParticleTest } from "./abstract_particle_test";
 
 class RigidParticles extends AbstractParticleTest {
-    constructor() {
+    public constructor() {
         super();
 
         {

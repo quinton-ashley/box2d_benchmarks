@@ -54,7 +54,7 @@ class WreckingBall extends Test {
 
     public m_stabilize = false;
 
-    constructor() {
+    public constructor() {
         super();
 
         const ground = this.m_world.CreateBody();

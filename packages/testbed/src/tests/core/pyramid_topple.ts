@@ -3,7 +3,7 @@ import { b2World, b2Vec2, b2BodyType, b2PolygonShape, b2EdgeShape, XY } from "@b
 import { registerTest, Test } from "../../test";
 
 class PyramidTopple extends Test {
-    constructor() {
+    public constructor() {
         super();
 
         const WIDTH = 4;

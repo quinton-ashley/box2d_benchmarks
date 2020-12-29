@@ -95,7 +95,7 @@ export class b2Vec2 implements XY {
 
     public y: number;
 
-    constructor(x = 0, y = 0) {
+    public constructor(x = 0, y = 0) {
         this.x = x;
         this.y = y;
     }
@@ -474,7 +474,7 @@ export class b2Vec3 implements XYZ {
 
     public z: number;
 
-    constructor(x = 0, y = 0, z = 0) {
+    public constructor(x = 0, y = 0, z = 0) {
         this.x = x;
         this.y = y;
         this.z = z;
@@ -1005,7 +1005,7 @@ export class b2Rot {
     /**
      * Initialize from an angle in radians
      */
-    constructor(angle = 0) {
+    public constructor(angle = 0) {
         if (angle) {
             this.s = Math.sin(angle);
             this.c = Math.cos(angle);

@@ -103,7 +103,7 @@ export class b2RevoluteJointDef extends b2JointDef implements b2IRevoluteJointDe
      */
     public maxMotorTorque = 0;
 
-    constructor() {
+    public constructor() {
         super(b2JointType.e_revoluteJoint);
     }
 
@@ -179,7 +179,7 @@ export class b2RevoluteJoint extends b2Joint {
 
     public m_axialMass = 0;
 
-    constructor(def: b2IRevoluteJointDef) {
+    public constructor(def: b2IRevoluteJointDef) {
         super(def);
 
         this.m_localAnchorA.Copy(def.localAnchorA ?? b2Vec2.ZERO);

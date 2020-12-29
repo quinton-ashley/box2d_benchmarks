@@ -23,7 +23,7 @@ import { registerTest, Test } from "../../test";
 class MobileBalanced extends Test {
     public static readonly e_depth = 4;
 
-    constructor() {
+    public constructor() {
         super();
 
         // Create ground body.

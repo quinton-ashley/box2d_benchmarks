@@ -31,7 +31,7 @@ class EdgeTest extends Test {
 
     public m_body2: b2Body | null = null;
 
-    constructor() {
+    public constructor() {
         super();
 
         const vertices: b2Vec2[] = [
@@ -235,7 +235,7 @@ class EdgeTest extends Test {
         }
     }
 
-    getHotkeys(): HotKey[] {
+    public getHotkeys(): HotKey[] {
         return [
             hotKeyStep("a", "Apply Force Left", () => {
                 this.m_body1?.ApplyForceToCenter(new b2Vec2(-10, 0), true);

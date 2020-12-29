@@ -24,7 +24,7 @@ import { Settings } from "../../settings";
 class PulleyJoint extends Test {
     public m_joint1: b2PulleyJoint;
 
-    constructor() {
+    public constructor() {
         super();
 
         const y = 16;

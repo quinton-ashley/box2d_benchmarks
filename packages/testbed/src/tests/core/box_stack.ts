@@ -44,7 +44,7 @@ class BoxStack extends Test {
 
     public m_indices = b2MakeNumberArray(BoxStack.e_rowCount * BoxStack.e_columnCount);
 
-    constructor() {
+    public constructor() {
         super();
 
         {
@@ -91,7 +91,7 @@ class BoxStack extends Test {
         }
     }
 
-    getHotkeys(): HotKey[] {
+    public getHotkeys(): HotKey[] {
         return [
             hotKeyPress("Enter", "Launch a bullet", () => this.LaunchBullet()),
             hotKeyPress("b", "Toggle Block solving", () => b2SetBlockSolve(!b2GetBlockSolve())),

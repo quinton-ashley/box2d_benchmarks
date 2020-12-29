@@ -161,7 +161,7 @@ export class b2Fixture {
 
     public m_userData: any = null;
 
-    constructor(body: b2Body, def: b2FixtureDef) {
+    public constructor(body: b2Body, def: b2FixtureDef) {
         this.m_body = body;
         this.m_shape = def.shape.Clone();
         this.m_userData = def.userData;

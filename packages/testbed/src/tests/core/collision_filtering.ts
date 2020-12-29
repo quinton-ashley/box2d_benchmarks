@@ -52,7 +52,7 @@ class CollisionFiltering extends Test {
 
     public static readonly k_circleMask = 0xffff;
 
-    constructor() {
+    public constructor() {
         super();
 
         // Ground body

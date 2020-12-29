@@ -37,7 +37,7 @@ class Web extends Test {
 
     public m_joints = new Array<b2Joint | null>(8);
 
-    constructor() {
+    public constructor() {
         super();
 
         let ground = null;
@@ -184,7 +184,7 @@ class Web extends Test {
         }
     }
 
-    getHotkeys(): HotKey[] {
+    public getHotkeys(): HotKey[] {
         return [
             hotKeyPress("b", "Delete a Body", () => {
                 for (let i = 0; i < 4; ++i) {

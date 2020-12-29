@@ -46,7 +46,7 @@ class RevoluteJoint extends Test {
 
     public m_enableLimit = true;
 
-    constructor() {
+    public constructor() {
         super();
 
         let ground = null;

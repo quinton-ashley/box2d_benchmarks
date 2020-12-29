@@ -34,13 +34,13 @@ export class FrameBuffer {
     /** the framebuffer handle * */
     protected framebufferHandle: WebGLFramebuffer;
 
-    readonly gl: WebGLRenderingContext;
+    public readonly gl: WebGLRenderingContext;
 
-    readonly width: number;
+    public readonly width: number;
 
-    readonly height: number;
+    public readonly height: number;
 
-    readonly texture: WebGLTexture;
+    public readonly texture: WebGLTexture;
 
     private lastViewport!: Int32Array;
 
@@ -91,7 +91,7 @@ export class FrameBuffer {
         }
     }
 
-    bindTexture() {
+    public bindTexture() {
         this.gl.bindTexture(this.gl.TEXTURE_2D, this.texture);
     }
 

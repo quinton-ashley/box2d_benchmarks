@@ -32,7 +32,7 @@ class BulletTest extends Test {
 
     public m_x = 0;
 
-    constructor() {
+    public constructor() {
         super();
 
         {

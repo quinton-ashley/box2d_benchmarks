@@ -46,7 +46,7 @@ class DistanceTest extends Test {
 
     public m_polygonB = new b2PolygonShape();
 
-    constructor() {
+    public constructor() {
         super();
 
         this.m_transformA.SetIdentity();
@@ -71,7 +71,7 @@ class DistanceTest extends Test {
         };
     }
 
-    getHotkeys(): HotKey[] {
+    public getHotkeys(): HotKey[] {
         return [
             hotKeyPress("a", "Move Left", () => this.Adjust(-0.1, 0, 0)),
             hotKeyPress("d", "Move Right", () => this.Adjust(0.1, 0, 0)),

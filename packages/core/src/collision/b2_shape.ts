@@ -59,7 +59,7 @@ export abstract class b2Shape {
      */
     public m_radius = 0;
 
-    constructor(type: b2ShapeType, radius: number) {
+    public constructor(type: b2ShapeType, radius: number) {
         this.m_type = type;
         this.m_radius = radius;
     }

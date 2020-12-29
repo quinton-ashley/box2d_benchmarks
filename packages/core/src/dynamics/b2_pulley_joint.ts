@@ -82,7 +82,7 @@ export class b2PulleyJointDef extends b2JointDef implements b2IPulleyJointDef {
     /** The pulley ratio, used to simulate a block-and-tackle. */
     public ratio = 1;
 
-    constructor() {
+    public constructor() {
         super(b2JointType.e_pulleyJoint);
         this.collideConnected = true;
     }
@@ -171,7 +171,7 @@ export class b2PulleyJoint extends b2Joint {
 
     public m_mass = 0;
 
-    constructor(def: b2IPulleyJointDef) {
+    public constructor(def: b2IPulleyJointDef) {
         super(def);
 
         this.m_groundAnchorA.Copy(def.groundAnchorA ?? defaultGroundAnchorA);

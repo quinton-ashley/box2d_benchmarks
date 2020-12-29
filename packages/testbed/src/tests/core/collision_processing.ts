@@ -33,7 +33,7 @@ import { Settings } from "../../settings";
 // This test shows collision processing and tests
 // deferred body destruction.
 class CollisionProcessing extends Test {
-    constructor() {
+    public constructor() {
         super();
 
         // Ground body

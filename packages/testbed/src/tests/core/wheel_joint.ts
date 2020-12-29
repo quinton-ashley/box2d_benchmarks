@@ -45,7 +45,7 @@ class WheelJoint extends Test {
 
     public m_enableLimit = true;
 
-    constructor() {
+    public constructor() {
         super();
 
         const ground = this.m_world.CreateBody();

@@ -82,7 +82,7 @@ export class b2DistanceJointDef extends b2JointDef implements b2IDistanceJointDe
     /** The linear damping in N*s/m. */
     public damping = 0;
 
-    constructor() {
+    public constructor() {
         super(b2JointType.e_distanceJoint);
     }
 
@@ -156,7 +156,7 @@ export class b2DistanceJoint extends b2Joint {
 
     public m_mass = 0;
 
-    constructor(def: b2IDistanceJointDef) {
+    public constructor(def: b2IDistanceJointDef) {
         super(def);
 
         this.m_localAnchorA.Copy(def.localAnchorA);

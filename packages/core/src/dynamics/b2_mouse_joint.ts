@@ -66,7 +66,7 @@ export class b2MouseJointDef extends b2JointDef implements b2IMouseJointDef {
     /** The linear damping in N*s/m */
     public damping = 0;
 
-    constructor() {
+    public constructor() {
         super(b2JointType.e_mouseJoint);
     }
 }
@@ -115,7 +115,7 @@ export class b2MouseJoint extends b2Joint {
 
     public readonly m_C = new b2Vec2();
 
-    constructor(def: b2IMouseJointDef) {
+    public constructor(def: b2IMouseJointDef) {
         super(def);
 
         this.m_targetA.Copy(def.target ?? b2Vec2.ZERO);

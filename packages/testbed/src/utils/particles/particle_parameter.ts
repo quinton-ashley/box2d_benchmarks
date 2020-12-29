@@ -50,7 +50,7 @@ export class ParticleParameter {
 
     private defaultKey = "water";
 
-    constructor(manager: TestManager) {
+    public constructor(manager: TestManager) {
         this.manager = manager;
     }
 

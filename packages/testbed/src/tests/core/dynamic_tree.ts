@@ -78,7 +78,7 @@ class DynamicTree extends Test {
 
     public m_automated = false;
 
-    constructor() {
+    public constructor() {
         super();
 
         this.m_worldExtent = 15;
@@ -176,7 +176,7 @@ class DynamicTree extends Test {
         ++this.m_stepCount;
     }
 
-    getHotkeys(): HotKey[] {
+    public getHotkeys(): HotKey[] {
         return [
             hotKeyPress("a", "Toggle Automated", () => {
                 this.m_automated = !this.m_automated;

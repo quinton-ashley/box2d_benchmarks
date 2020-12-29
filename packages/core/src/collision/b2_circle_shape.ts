@@ -31,7 +31,7 @@ export class b2CircleShape extends b2Shape {
     /** Position */
     public readonly m_p = new b2Vec2();
 
-    constructor(radius = 0) {
+    public constructor(radius = 0) {
         super(b2ShapeType.e_circle, radius);
     }
 

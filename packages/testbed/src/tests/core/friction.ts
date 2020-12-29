@@ -21,7 +21,7 @@ import { b2EdgeShape, b2Vec2, b2PolygonShape, b2FixtureDef, b2BodyType, XY } fro
 import { registerTest, Test } from "../../test";
 
 class Friction extends Test {
-    constructor() {
+    public constructor() {
         super();
 
         {

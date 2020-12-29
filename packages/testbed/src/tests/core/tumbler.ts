@@ -28,7 +28,7 @@ class Tumbler extends Test {
 
     public m_count = 0;
 
-    constructor() {
+    public constructor() {
         super();
 
         const ground = this.m_world.CreateBody();

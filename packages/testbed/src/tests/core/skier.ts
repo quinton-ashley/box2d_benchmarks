@@ -16,7 +16,7 @@ class Skier extends Test {
 
     public m_fixed_camera: boolean;
 
-    constructor() {
+    public constructor() {
         super();
 
         const ground = this.m_world.CreateBody();
@@ -114,7 +114,7 @@ class Skier extends Test {
         return 50;
     }
 
-    getHotkeys(): HotKey[] {
+    public getHotkeys(): HotKey[] {
         return [
             hotKeyPress("c", "Switch Camera Fixed/Tracking", () => {
                 this.m_fixed_camera = !this.m_fixed_camera;

@@ -26,7 +26,7 @@ class ContinuousTest extends Test {
 
     public m_angularVelocity = 0;
 
-    constructor() {
+    public constructor() {
         super();
 
         {

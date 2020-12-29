@@ -34,7 +34,7 @@ class Pointy extends AbstractParticleTestWithControls {
 
     public m_killfieldTransform = new b2Transform();
 
-    constructor({ particleParameter }: TestContext) {
+    public constructor({ particleParameter }: TestContext) {
         super(particleParameter);
 
         particleParameter.SetValues(baseParticleTypes, "water");

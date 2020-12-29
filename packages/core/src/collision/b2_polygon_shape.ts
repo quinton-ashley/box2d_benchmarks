@@ -123,7 +123,7 @@ export class b2PolygonShape extends b2Shape {
 
     public m_count = 0;
 
-    constructor() {
+    public constructor() {
         super(b2ShapeType.e_polygon, b2_polygonRadius);
     }
 

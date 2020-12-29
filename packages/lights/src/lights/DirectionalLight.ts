@@ -62,7 +62,7 @@ export class DirectionalLight extends Light {
         this.updateMesh();
     }
 
-    updateMesh() {
+    public updateMesh() {
         const width = this.rayHandler.x2 - this.rayHandler.x1;
         const height = this.rayHandler.y2 - this.rayHandler.y1;
         const sizeOfScreen = width > height ? width : height;
@@ -145,7 +145,7 @@ export class DirectionalLight extends Light {
         }
     }
 
-    render() {
+    public render() {
         this.rayHandler.lightRenderedLastFrame++;
         this.lightMesh.render(this.rayHandler.lightShader, this.gl.TRIANGLE_STRIP, this.vertexNum);
         this.softShadowMesh?.render(this.rayHandler.lightShader, this.gl.TRIANGLE_STRIP, this.vertexNum);

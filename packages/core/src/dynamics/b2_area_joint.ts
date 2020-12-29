@@ -23,7 +23,7 @@ export class b2AreaJointDef extends b2JointDef implements b2IAreaJointDef {
 
     public damping = 0;
 
-    constructor() {
+    public constructor() {
         super(b2JointType.e_areaJoint);
     }
 
@@ -61,7 +61,7 @@ export class b2AreaJoint extends b2Joint {
 
     public readonly m_delta = new b2Vec2();
 
-    constructor(def: b2IAreaJointDef) {
+    public constructor(def: b2IAreaJointDef) {
         super(def);
 
         // DEBUG: b2Assert(def.bodies.length >= 3, "You cannot create an area joint with less than three bodies.");

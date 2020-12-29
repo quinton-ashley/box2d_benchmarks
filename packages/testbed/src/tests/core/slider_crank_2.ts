@@ -37,7 +37,7 @@ class SliderCrank2 extends Test {
 
     public m_joint2: b2PrismaticJoint;
 
-    constructor() {
+    public constructor() {
         super();
 
         let ground = null;
@@ -131,7 +131,7 @@ class SliderCrank2 extends Test {
         }
     }
 
-    getHotkeys(): HotKey[] {
+    public getHotkeys(): HotKey[] {
         return [
             hotKeyPress("f", "Toggle Friction", () => {
                 this.m_joint2.EnableMotor(!this.m_joint2.IsMotorEnabled());

@@ -63,7 +63,7 @@ class MultipleParticleSystems extends AbstractParticleTest {
     /** Color of the right emitter's particles. */
     public static readonly k_rightEmitterColor = new b2Color().SetByteRGBA(0xff, 0x22, 0x11, 0xff);
 
-    constructor() {
+    public constructor() {
         super();
 
         this.m_emitters = [new RadialEmitter(), new RadialEmitter()];

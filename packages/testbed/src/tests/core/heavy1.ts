@@ -21,7 +21,7 @@ import { b2EdgeShape, b2Vec2, b2BodyType, b2CircleShape } from "@box2d/core";
 import { registerTest, Test } from "../../test";
 
 class Heavy1 extends Test {
-    constructor() {
+    public constructor() {
         super();
 
         {

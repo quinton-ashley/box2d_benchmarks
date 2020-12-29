@@ -23,7 +23,7 @@ import { registerTest, TestContext } from "../../test";
 import { AbstractParticleTestWithControls } from "./abstract_particle_test";
 
 class CornerCase extends AbstractParticleTestWithControls {
-    constructor({ particleParameter }: TestContext) {
+    public constructor({ particleParameter }: TestContext) {
         super(particleParameter);
 
         {

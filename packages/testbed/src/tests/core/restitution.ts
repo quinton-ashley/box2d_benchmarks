@@ -23,7 +23,7 @@ import { registerTest, Test } from "../../test";
 // Note: even with a restitution of 1, there is some energy change
 // due to position correction.
 class Restitution extends Test {
-    constructor() {
+    public constructor() {
         super();
 
         const restitutionThreshold = 10;

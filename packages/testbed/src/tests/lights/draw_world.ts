@@ -38,11 +38,11 @@ class DrawWorld extends AbstractLightTest {
 
     private lights: PointLight[] = [];
 
-    currentEdgeFixture: b2Fixture | null = null;
+    public currentEdgeFixture: b2Fixture | null = null;
 
-    currentEdgeBody: b2Body | null = null;
+    public currentEdgeBody: b2Body | null = null;
 
-    dragStart = new b2Vec2();
+    public dragStart = new b2Vec2();
 
     public readonly gl: WebGLRenderingContext;
 
@@ -97,7 +97,7 @@ class DrawWorld extends AbstractLightTest {
         return 30;
     }
 
-    getHotkeys(): HotKey[] {
+    public getHotkeys(): HotKey[] {
         return [
             hotKeyPress("a", "Place current light", () => {
                 this.lights.push(this.mouseLight);

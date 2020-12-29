@@ -23,7 +23,7 @@ import { registerTest, Test } from "../../test";
 class ConveyorBelt extends Test {
     public m_platform: b2Fixture;
 
-    constructor() {
+    public constructor() {
         super();
 
         // Ground

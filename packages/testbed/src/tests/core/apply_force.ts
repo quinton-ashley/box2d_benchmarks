@@ -46,7 +46,7 @@ class ApplyForce extends Test {
 
     public ccwTorque = false;
 
-    constructor() {
+    public constructor() {
         super(b2Vec2.ZERO);
 
         const k_restitution = 0.4;
@@ -187,7 +187,7 @@ class ApplyForce extends Test {
         }
     }
 
-    getHotkeys(): HotKey[] {
+    public getHotkeys(): HotKey[] {
         return [
             hotKeyStep("w", "Apply Force", () => this.ApplyForce(-50)),
             hotKeyStep("s", "Apply Backward Force", () => this.ApplyForce(50)),

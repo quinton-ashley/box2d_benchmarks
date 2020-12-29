@@ -16,7 +16,7 @@ import { lightSettings } from "./settings";
 export class LightMap {
     private shadowShader: ShadowShader;
 
-    frameBuffer: FrameBuffer;
+    public frameBuffer: FrameBuffer;
 
     private vertBuffer: VertexBufferObject;
 
@@ -34,7 +34,7 @@ export class LightMap {
 
     private gl: WebGLRenderingContext;
 
-    lightMapDrawingDisabled = false;
+    public lightMapDrawingDisabled = false;
 
     public constructor(rayHandler: RayHandler, fboWidth: number, fboHeight: number) {
         this.rayHandler = rayHandler;
@@ -87,7 +87,7 @@ export class LightMap {
         this.gl.disable(this.gl.BLEND);
     }
 
-    renderTriangleFan(shader: WithoutShadowShader | DiffuseShader | ShadowShader | GaussianShader) {
+    public renderTriangleFan(shader: WithoutShadowShader | DiffuseShader | ShadowShader | GaussianShader) {
         this.vertBuffer.bind();
         shader.a_position.enable();
         shader.a_position.set(2, this.gl.FLOAT, false, 0, 0);
@@ -133,7 +133,7 @@ export class LightMap {
         this.gl.enable(this.gl.BLEND);
     }
 
-    dispose() {
+    public dispose() {
         this.shadowShader.dispose();
         this.blurShader.dispose();
         this.vertBuffer.dispose();

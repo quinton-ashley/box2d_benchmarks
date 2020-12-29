@@ -35,7 +35,7 @@ import { registerTest, Test } from "../../test";
  * so that the payload does not collide with the chain.
  */
 class ChainProblem extends Test {
-    constructor() {
+    public constructor() {
         super();
 
         const g = new b2Vec2(0, -10);

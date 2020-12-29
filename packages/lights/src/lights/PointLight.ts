@@ -58,7 +58,7 @@ export class PointLight extends PositionalLight {
     }
 
     /** Updates light basing on it's distance and rayNum */
-    setEndPoints() {
+    public setEndPoints() {
         const angleNum = 360 / (this.rayNum - 1);
         for (let i = 0; i < this.rayNum; i++) {
             const angle = angleNum * i;

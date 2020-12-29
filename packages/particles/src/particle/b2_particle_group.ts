@@ -133,7 +133,7 @@ export class b2ParticleGroup {
 
     public m_userData: any = null;
 
-    constructor(system: b2ParticleSystem) {
+    public constructor(system: b2ParticleSystem) {
         this.m_system = system;
     }
 

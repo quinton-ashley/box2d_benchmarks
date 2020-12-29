@@ -177,7 +177,7 @@ export class b2Body {
 
     public m_userData: any = null;
 
-    constructor(bd: b2BodyDef, world: b2World) {
+    public constructor(bd: b2BodyDef, world: b2World) {
         this.m_bulletFlag = bd.bullet ?? false;
         this.m_fixedRotationFlag = bd.fixedRotation ?? false;
         this.m_autoSleepFlag = bd.allowSleep ?? true;

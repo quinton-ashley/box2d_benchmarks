@@ -96,7 +96,7 @@ export function getTestsGrouped() {
 export class DestructionListener extends b2DestructionListener {
     public test: Test;
 
-    constructor(test: Test) {
+    public constructor(test: Test) {
         super();
 
         this.test = test;
@@ -181,7 +181,7 @@ export class Test extends b2ContactListener {
 
     public m_testControlGroups: TestControlGroup[] = [];
 
-    constructor(gravity: XY = { x: 0, y: -10 }) {
+    public constructor(gravity: XY = { x: 0, y: -10 }) {
         super();
 
         this.m_world = b2World.Create(gravity);
@@ -202,7 +202,7 @@ export class Test extends b2ContactListener {
         });
     }
 
-    getBaseHotkeys(): HotKey[] {
+    public getBaseHotkeys(): HotKey[] {
         return [
             hotKeyPress(" ", "Launch Bomb", () => {
                 this.LaunchBomb();
@@ -210,7 +210,7 @@ export class Test extends b2ContactListener {
         ];
     }
 
-    getHotkeys(): HotKey[] {
+    public getHotkeys(): HotKey[] {
         return [];
     }
 

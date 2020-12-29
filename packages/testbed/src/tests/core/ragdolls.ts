@@ -32,7 +32,7 @@ import {
 import { registerTest, Test } from "../../test";
 
 class Ragdolls extends Test {
-    constructor() {
+    public constructor() {
         super();
 
         {

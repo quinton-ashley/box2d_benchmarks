@@ -52,7 +52,7 @@ class ParticleVFX {
 
     private m_origColor = new b2Color();
 
-    constructor(
+    public constructor(
         particleSystem: b2ParticleSystem,
         origin: b2Vec2,
         size: number,
@@ -181,7 +181,7 @@ class Sparky extends AbstractParticleTestWithControls {
 
     private m_contactPoint = new b2Vec2();
 
-    constructor({ particleParameter }: TestContext) {
+    public constructor({ particleParameter }: TestContext) {
         super(particleParameter);
 
         // Set up array of sparks trackers.

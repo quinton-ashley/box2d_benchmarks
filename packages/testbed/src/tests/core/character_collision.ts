@@ -39,7 +39,7 @@ import { Settings } from "../../settings";
 class CharacterCollision extends Test {
     public m_character: b2Body;
 
-    constructor() {
+    public constructor() {
         super();
 
         // Ground body

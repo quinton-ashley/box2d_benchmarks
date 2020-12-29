@@ -30,7 +30,7 @@ class SoupStirrer extends Soup {
 
     public m_oscillationOffset = 0;
 
-    constructor(context: TestContext) {
+    public constructor(context: TestContext) {
         super(context);
 
         this.m_particleSystem.SetDamping(1);
@@ -82,7 +82,7 @@ class SoupStirrer extends Soup {
         }
     }
 
-    getHotkeys(): HotKey[] {
+    public getHotkeys(): HotKey[] {
         return [hotKeyPress("t", "Toggle Joint", () => this.ToggleJoint())];
     }
 

@@ -71,7 +71,7 @@ export abstract class PositionalLight extends Light {
         return this.vertexNum * 2;
     }
 
-    update() {
+    public update() {
         this.updateBody();
 
         if (this.cull()) return;
@@ -81,7 +81,7 @@ export abstract class PositionalLight extends Light {
         this.updateMesh();
     }
 
-    render() {
+    public render() {
         if (this.rayHandler.culling && this.culled) return;
 
         this.rayHandler.lightRenderedLastFrame++;

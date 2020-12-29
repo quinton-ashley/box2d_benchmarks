@@ -21,7 +21,7 @@ import { b2Vec2, b2ChainShape, b2FixtureDef, b2BodyType, b2PolygonShape, b2Circl
 import { registerTest, Test } from "../../test";
 
 class ContinousCollision extends Test {
-    constructor() {
+    public constructor() {
         super();
 
         {

@@ -24,7 +24,7 @@ import { registerTest, Test } from "../../test";
 class Heavy2 extends Test {
     public m_heavy: b2Body | null = null;
 
-    constructor() {
+    public constructor() {
         super();
 
         {
@@ -67,7 +67,7 @@ class Heavy2 extends Test {
         }
     }
 
-    getHotkeys(): HotKey[] {
+    public getHotkeys(): HotKey[] {
         return [hotKeyPress("h", "Toggle Heavy", () => this.ToggleHeavy())];
     }
 }

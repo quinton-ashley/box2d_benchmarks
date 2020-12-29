@@ -14,6 +14,7 @@ module.exports = {
         "@typescript-eslint/no-empty-function": "off",
         "no-useless-constructor": "off",
         "@typescript-eslint/no-useless-constructor": "error",
+        "@typescript-eslint/explicit-member-accessibility": "error",
         "react/require-default-props": "off",
         // Fixme: These are nice for finding errors, but ugly to handle userData with.
         // "@typescript-eslint/no-unsafe-call": "error",

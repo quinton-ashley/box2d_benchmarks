@@ -2,7 +2,7 @@ import { LightShader } from "./shaders";
 import { VertexBufferObject } from "./utils";
 
 export class LightMesh {
-    static readonly MIN_VERTS = 4;
+    public static readonly MIN_VERTS = 4;
 
     private vertices!: Float32Array;
 
@@ -20,7 +20,7 @@ export class LightMesh {
 
     private gl: WebGLRenderingContext;
 
-    lightMapDrawingDisabled = false;
+    public lightMapDrawingDisabled = false;
 
     public constructor(gl: WebGLRenderingContext, vertexNum: number) {
         this.gl = gl;
@@ -60,7 +60,7 @@ export class LightMesh {
         return this.colorScales;
     }
 
-    render(shader: LightShader, mode: GLenum, count: number) {
+    public render(shader: LightShader, mode: GLenum, count: number) {
         this.vertBuffer.bind();
         shader.a_position.enable();
         shader.a_position.set(2, this.gl.FLOAT, false, 0, 0);
@@ -76,13 +76,13 @@ export class LightMesh {
         this.gl.drawArrays(mode, 0, count);
     }
 
-    update() {
+    public update() {
         this.vertBuffer.setData(this.vertices);
         this.colorBuffer.setData(this.colors);
         this.sBuffer.setData(this.colorScales);
     }
 
-    dispose() {
+    public dispose() {
         this.vertBuffer.dispose();
         this.colorBuffer.dispose();
         this.sBuffer.dispose();

@@ -209,7 +209,7 @@ export class b2GrowableBuffer<T> {
 
     public allocator: () => T;
 
-    constructor(allocator: () => T) {
+    public constructor(allocator: () => T) {
         this.allocator = allocator;
     }
 
@@ -796,7 +796,7 @@ export class b2ParticleSystem {
         return (tag + (y << b2ParticleSystem.yShift) + (x << b2ParticleSystem.xShift)) >>> 0;
     }
 
-    constructor(def: b2ParticleSystemDef, world: b2World) {
+    public constructor(def: b2ParticleSystemDef, world: b2World) {
         this.SetStrictContactCheck(def.strictContactCheck);
         this.SetDensity(def.density);
         this.SetGravityScale(def.gravityScale);
@@ -5011,7 +5011,7 @@ export class b2ParticleSystem_InsideBoundsEnumerator {
      * Construct an enumerator with bounds of tags and a range of
      * proxies.
      */
-    constructor(system: b2ParticleSystem, lower: number, upper: number, first: number, last: number) {
+    public constructor(system: b2ParticleSystem, lower: number, upper: number, first: number, last: number) {
         this.m_system = system;
         this.m_xLower = (lower & b2ParticleSystem.xMask) >>> 0;
         this.m_xUpper = (upper & b2ParticleSystem.xMask) >>> 0;
@@ -5102,7 +5102,7 @@ export class b2ParticleSystem_FixtureParticle {
 
     public second = b2_invalidParticleIndex;
 
-    constructor(fixture: b2Fixture, particle: number) {
+    public constructor(fixture: b2Fixture, particle: number) {
         this.first = fixture;
         this.second = particle;
     }
@@ -5129,7 +5129,7 @@ export class b2ParticleSystem_ParticlePair {
 
     public second = b2_invalidParticleIndex;
 
-    constructor(particleA: number, particleB: number) {
+    public constructor(particleA: number, particleB: number) {
         this.first = particleA;
         this.second = particleB;
     }
@@ -5177,7 +5177,7 @@ export class b2ParticleSystem_ConnectionFilter {
 export class b2ParticleSystem_JoinParticleGroupsFilter extends b2ParticleSystem_ConnectionFilter {
     public m_threshold = 0;
 
-    constructor(threshold: number) {
+    public constructor(threshold: number) {
         super();
         this.m_threshold = threshold;
     }
@@ -5201,7 +5201,7 @@ export class b2ParticleSystem_JoinParticleGroupsFilter extends b2ParticleSystem_
 }
 
 export class b2ParticleSystem_CompositeShape extends b2Shape {
-    constructor(shapes: b2Shape[], shapeCount = shapes.length) {
+    public constructor(shapes: b2Shape[], shapeCount = shapes.length) {
         super(b2ShapeType.e_unknown, 0);
         this.m_shapes = shapes;
         this.m_shapeCount = shapeCount;
@@ -5276,7 +5276,7 @@ export class b2ParticleSystem_CompositeShape extends b2Shape {
 export class b2ParticleSystem_ReactiveFilter extends b2ParticleSystem_ConnectionFilter {
     public m_flagsBuffer: b2ParticleSystem_UserOverridableBuffer<b2ParticleFlag>;
 
-    constructor(flagsBuffer: b2ParticleSystem_UserOverridableBuffer<b2ParticleFlag>) {
+    public constructor(flagsBuffer: b2ParticleSystem_UserOverridableBuffer<b2ParticleFlag>) {
         super();
         this.m_flagsBuffer = flagsBuffer;
     }

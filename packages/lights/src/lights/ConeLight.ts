@@ -12,7 +12,7 @@ import { lightSettings } from "../settings";
  * @author kalle_h
  */
 export class ConeLight extends PositionalLight {
-    coneDegree!: number;
+    public coneDegree!: number;
 
     /**
      * Creates light shaped as a circle's sector with given radius, direction and arc angle

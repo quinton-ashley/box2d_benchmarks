@@ -21,7 +21,7 @@ import { b2Vec2, b2CircleShape, b2BodyType, b2RandomFloat, b2PolygonShape, XY } 
 import { registerTest, Test } from "../../test";
 
 class AddPair extends Test {
-    constructor() {
+    public constructor() {
         super(b2Vec2.ZERO);
 
         {

@@ -21,7 +21,7 @@ import { b2EdgeShape, b2Vec2, b2AreaJointDef, b2BodyType, b2CircleShape, b2Linea
 import { registerTest, Test } from "../../test";
 
 class BlobTest extends Test {
-    constructor() {
+    public constructor() {
         super();
 
         const ground = this.m_world.CreateBody();

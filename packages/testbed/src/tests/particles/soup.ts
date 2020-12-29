@@ -31,7 +31,7 @@ export const particleTypes = {
 export class Soup extends AbstractParticleTestWithControls {
     public m_ground: b2Body;
 
-    constructor({ particleParameter }: TestContext) {
+    public constructor({ particleParameter }: TestContext) {
         super(particleParameter);
 
         particleParameter.SetValues(particleTypes, "water");

@@ -323,7 +323,7 @@ export class ChainLight extends Light {
     /**
      * Applies attached body initial transform to all lights rays
      */
-    applyAttachment() {
+    public applyAttachment() {
         if (!this.body || this.staticLight) return;
 
         this.restorePosition.setToTranslation(this.bodyPosition);
@@ -353,7 +353,7 @@ export class ChainLight extends Light {
         return this.culled;
     }
 
-    updateBody() {
+    public updateBody() {
         if (!this.body || this.staticLight) return;
 
         const vec = this.rayHandler.getBodyPosition(this.body);

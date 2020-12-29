@@ -65,7 +65,7 @@ class Rope extends Test {
 
     public m_moveRight = false;
 
-    constructor() {
+    public constructor() {
         super();
         const N = 20;
         const L = 0.5;
@@ -184,7 +184,7 @@ class Rope extends Test {
         };
     }
 
-    getHotkeys(): HotKey[] {
+    public getHotkeys(): HotKey[] {
         return [
             hotKeyState("a", "Move Left", this, "m_moveLeft"),
             hotKeyState("d", "Move Right", this, "m_moveRight"),

@@ -71,7 +71,7 @@ export class b2GearJointDef extends b2JointDef implements b2IGearJointDef {
      */
     public ratio = 1;
 
-    constructor() {
+    public constructor() {
         super(b2JointType.e_gearJoint);
     }
 }
@@ -173,7 +173,7 @@ export class b2GearJoint extends b2Joint {
 
     public m_mass = 0;
 
-    constructor(def: b2IGearJointDef) {
+    public constructor(def: b2IGearJointDef) {
         super(def);
 
         this.m_joint1 = def.joint1;

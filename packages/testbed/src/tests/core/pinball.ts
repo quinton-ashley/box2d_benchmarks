@@ -45,7 +45,7 @@ class Pinball extends Test {
 
     public m_ball: b2Body;
 
-    constructor() {
+    public constructor() {
         super();
 
         // Ground body
@@ -146,7 +146,7 @@ class Pinball extends Test {
         };
     }
 
-    getHotkeys(): HotKey[] {
+    public getHotkeys(): HotKey[] {
         return [
             hotKey("a", "Hold Flipper", (down) => {
                 if (down) {

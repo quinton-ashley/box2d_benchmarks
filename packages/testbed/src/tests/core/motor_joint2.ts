@@ -23,7 +23,7 @@ import { registerTest, Test } from "../../test";
 // Adapted from MotorJoint.h
 
 class MotorJoint2 extends Test {
-    constructor() {
+    public constructor() {
         super();
 
         let ground: b2Body;

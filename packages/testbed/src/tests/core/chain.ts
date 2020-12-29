@@ -23,7 +23,7 @@ import { registerTest, Test } from "../../test";
 const TEST_BAD_BODY = false;
 
 class Chain extends Test {
-    constructor() {
+    public constructor() {
         super();
 
         let ground = null;

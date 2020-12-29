@@ -82,7 +82,7 @@ class Segway extends Test {
 
     public wheelJoint: b2RevoluteJoint;
 
-    constructor() {
+    public constructor() {
         super({ x: 0, y: -30 });
 
         this.angleController.gainP = 1000;

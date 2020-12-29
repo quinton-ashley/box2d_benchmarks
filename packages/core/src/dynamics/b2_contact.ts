@@ -77,7 +77,7 @@ export class b2ContactEdge {
     /** The next contact edge in the body's contact list */
     public next: b2ContactEdge | null = null;
 
-    constructor(contact: b2Contact) {
+    public constructor(contact: b2Contact) {
         this.contact = contact;
     }
 

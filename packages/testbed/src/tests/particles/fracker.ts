@@ -240,7 +240,7 @@ class Fracker_DestructionListener extends ParticleGroupTracker {
      * Initialize the particle system and world, setting this class
      * as a destruction listener for the world.
      */
-    constructor(world: b2World) {
+    public constructor(world: b2World) {
         super();
         // DEBUG: b2Assert(world !== null);
         this.m_world = world;
@@ -335,7 +335,7 @@ class Fracker extends AbstractParticleTest {
     /** Set of particle groups the well has influence over. */
     public m_listener = new Fracker_DestructionListener(this.m_world);
 
-    constructor() {
+    public constructor() {
         super();
 
         this.m_particleSystem.SetRadius(FrackerSettings.k_particleRadius);
@@ -636,7 +636,7 @@ class Fracker extends AbstractParticleTest {
         super.PostSolve(contact, impulse);
     }
 
-    getHotkeys(): HotKey[] {
+    public getHotkeys(): HotKey[] {
         return [
             hotKeyPress("a", "Left", () => this.AdjustPlayerPosition(-1, 0)),
             hotKeyPress("d", "Right", () => this.AdjustPlayerPosition(1, 0)),

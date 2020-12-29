@@ -41,7 +41,7 @@ export class b2ControllerEdge {
     /** The next controller edge in the body's joint list */
     public nextController: b2ControllerEdge | null = null;
 
-    constructor(controller: b2Controller, body: b2Body) {
+    public constructor(controller: b2Controller, body: b2Body) {
         this.controller = controller;
         this.body = body;
     }

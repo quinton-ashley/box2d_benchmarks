@@ -22,15 +22,15 @@ import { registerTest, Test } from "../../test";
 import { HotKey, hotKeyPress } from "../../utils/hotkeys";
 
 class CompoundShapes extends Test {
-    m_table1: b2Body;
+    public m_table1: b2Body;
 
-    m_table2: b2Body;
+    public m_table2: b2Body;
 
-    m_ship1: b2Body;
+    public m_ship1: b2Body;
 
-    m_ship2: b2Body;
+    public m_ship2: b2Body;
 
-    constructor() {
+    public constructor() {
         super();
 
         {
@@ -195,7 +195,7 @@ class CompoundShapes extends Test {
         }
     }
 
-    getHotkeys(): HotKey[] {
+    public getHotkeys(): HotKey[] {
         return [
             hotKeyPress("s", "Spawn Items", () => {
                 this.Spawn();

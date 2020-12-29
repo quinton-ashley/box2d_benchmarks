@@ -40,7 +40,7 @@ export class b2ChainShape extends b2Shape {
 
     public readonly m_nextVertex = new b2Vec2();
 
-    constructor() {
+    public constructor() {
         super(b2ShapeType.e_chain, b2_polygonRadius);
     }
 

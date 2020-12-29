@@ -48,7 +48,7 @@ class TheoJansen extends Test {
 
     public m_motorSpeed = 2;
 
-    constructor() {
+    public constructor() {
         super();
 
         this.m_offset.Set(0, 8);
@@ -259,7 +259,7 @@ class TheoJansen extends Test {
         }
     }
 
-    getHotkeys(): HotKey[] {
+    public getHotkeys(): HotKey[] {
         return [
             hotKeyPress("a", "Left", () => this.m_motorJoint.SetMotorSpeed(-this.m_motorSpeed)),
             hotKeyPress("s", "Brake", () => this.m_motorJoint.SetMotorSpeed(0)),

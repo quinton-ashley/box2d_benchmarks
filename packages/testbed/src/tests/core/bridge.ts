@@ -34,7 +34,7 @@ class Bridge extends Test {
 
     public m_middle!: b2Body;
 
-    constructor() {
+    public constructor() {
         super();
 
         let ground = null;

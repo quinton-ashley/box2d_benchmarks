@@ -31,7 +31,7 @@ import {
 import { registerTest, Test } from "../../test";
 
 class DumpShell extends Test {
-    constructor() {
+    public constructor() {
         super(b2Vec2.ZERO);
 
         // dump begin

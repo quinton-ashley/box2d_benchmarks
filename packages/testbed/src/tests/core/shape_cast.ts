@@ -62,7 +62,7 @@ class ShapeCast extends Test {
 
     public m_translationB = new b2Vec2();
 
-    constructor() {
+    public constructor() {
         super();
 
         // #if 1

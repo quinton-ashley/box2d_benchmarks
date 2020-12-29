@@ -249,7 +249,7 @@ class b2Simplex {
 
     public m_count = 0;
 
-    constructor() {
+    public constructor() {
         this.m_vertices = [this.m_v1, this.m_v2, this.m_v3];
     }
 
