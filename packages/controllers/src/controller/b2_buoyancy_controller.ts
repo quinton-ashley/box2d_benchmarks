@@ -95,7 +95,7 @@ export class b2BuoyancyController extends b2Controller {
             const massc = new b2Vec2();
             let area = 0;
             let mass = 0;
-            for (let fixture = body.GetFixtureList(); fixture; fixture = fixture.m_next) {
+            for (let fixture = body.GetFixtureList(); fixture; fixture = fixture.GetNext()) {
                 const sc = new b2Vec2();
                 const sarea = b2SubmergedAreaForShape(
                     fixture.GetShape(),

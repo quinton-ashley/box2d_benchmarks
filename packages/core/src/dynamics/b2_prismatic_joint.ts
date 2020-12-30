@@ -191,71 +191,76 @@ export class b2PrismaticJointDef extends b2JointDef implements b2IPrismaticJoint
  * drive the motion or to model joint friction.
  */
 export class b2PrismaticJoint extends b2Joint {
+    /** @internal protected */
     public readonly m_localAnchorA = new b2Vec2();
 
+    /** @internal protected */
     public readonly m_localAnchorB = new b2Vec2();
 
+    /** @internal protected */
     public readonly m_localXAxisA = new b2Vec2();
 
-    public readonly m_localYAxisA = new b2Vec2();
+    protected readonly m_localYAxisA = new b2Vec2();
 
+    /** @internal protected */
     public m_referenceAngle = 0;
 
-    public readonly m_impulse = new b2Vec2();
+    protected readonly m_impulse = new b2Vec2();
 
-    public m_motorImpulse = 0;
+    protected m_motorImpulse = 0;
 
-    public m_lowerImpulse = 0;
+    protected m_lowerImpulse = 0;
 
-    public m_upperImpulse = 0;
+    protected m_upperImpulse = 0;
 
-    public m_lowerTranslation = 0;
+    protected m_lowerTranslation = 0;
 
-    public m_upperTranslation = 0;
+    protected m_upperTranslation = 0;
 
-    public m_maxMotorForce = 0;
+    protected m_maxMotorForce = 0;
 
-    public m_motorSpeed = 0;
+    protected m_motorSpeed = 0;
 
-    public m_enableLimit = false;
+    protected m_enableLimit = false;
 
-    public m_enableMotor = false;
+    protected m_enableMotor = false;
 
     // Solver temp
-    public m_indexA = 0;
+    protected m_indexA = 0;
 
-    public m_indexB = 0;
+    protected m_indexB = 0;
 
-    public readonly m_localCenterA = new b2Vec2();
+    protected readonly m_localCenterA = new b2Vec2();
 
-    public readonly m_localCenterB = new b2Vec2();
+    protected readonly m_localCenterB = new b2Vec2();
 
-    public m_invMassA = 0;
+    protected m_invMassA = 0;
 
-    public m_invMassB = 0;
+    protected m_invMassB = 0;
 
-    public m_invIA = 0;
+    protected m_invIA = 0;
 
-    public m_invIB = 0;
+    protected m_invIB = 0;
 
-    public readonly m_axis = new b2Vec2();
+    protected readonly m_axis = new b2Vec2();
 
-    public readonly m_perp = new b2Vec2();
+    protected readonly m_perp = new b2Vec2();
 
-    public m_s1 = 0;
+    protected m_s1 = 0;
 
-    public m_s2 = 0;
+    protected m_s2 = 0;
 
-    public m_a1 = 0;
+    protected m_a1 = 0;
 
-    public m_a2 = 0;
+    protected m_a2 = 0;
 
-    public readonly m_K = new b2Mat22();
+    protected readonly m_K = new b2Mat22();
 
-    public m_translation = 0;
+    protected m_translation = 0;
 
-    public m_axialMass = 0;
+    protected m_axialMass = 0;
 
+    /** @internal protected */
     public constructor(def: b2IPrismaticJointDef) {
         super(def);
 
@@ -273,6 +278,7 @@ export class b2PrismaticJoint extends b2Joint {
         this.m_enableMotor = def.enableMotor ?? false;
     }
 
+    /** @internal protected */
     public InitVelocityConstraints(data: b2SolverData): void {
         this.m_indexA = this.m_bodyA.m_islandIndex;
         this.m_indexB = this.m_bodyB.m_islandIndex;
@@ -374,6 +380,7 @@ export class b2PrismaticJoint extends b2Joint {
         data.velocities[this.m_indexB].w = wB;
     }
 
+    /** @internal protected */
     public SolveVelocityConstraints(data: b2SolverData): void {
         const vA = data.velocities[this.m_indexA].v;
         let wA = data.velocities[this.m_indexA].w;
@@ -475,13 +482,17 @@ export class b2PrismaticJoint extends b2Joint {
         data.velocities[this.m_indexB].w = wB;
     }
 
-    // A velocity based solver computes reaction forces(impulses) using the velocity constraint solver.Under this context,
-    // the position solver is not there to resolve forces.It is only there to cope with integration error.
-    //
-    // Therefore, the pseudo impulses in the position solver do not have any physical meaning.Thus it is okay if they suck.
-    //
-    // We could take the active state from the velocity solver.However, the joint might push past the limit when the velocity
-    // solver indicates the limit is inactive.
+    /**
+     * A velocity based solver computes reaction forces(impulses) using the velocity constraint solver.Under this context,
+     * the position solver is not there to resolve forces.It is only there to cope with integration error.
+     *
+     * Therefore, the pseudo impulses in the position solver do not have any physical meaning.Thus it is okay if they suck.
+     *
+     * We could take the active state from the velocity solver.However, the joint might push past the limit when the velocity
+     * solver indicates the limit is inactive.
+     *
+     * @internal protected
+     */
     public SolvePositionConstraints(data: b2SolverData): boolean {
         const cA = data.positions[this.m_indexA].c;
         let aA = data.positions[this.m_indexA].a;

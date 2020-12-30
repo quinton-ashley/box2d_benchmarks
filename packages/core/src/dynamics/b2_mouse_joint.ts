@@ -81,40 +81,39 @@ export class b2MouseJointDef extends b2JointDef implements b2IMouseJointDef {
  * use the mouse joint, look at the testbed.
  */
 export class b2MouseJoint extends b2Joint {
-    public readonly m_localAnchorB = new b2Vec2();
+    protected readonly m_localAnchorB = new b2Vec2();
 
-    public readonly m_targetA = new b2Vec2();
+    protected readonly m_targetA = new b2Vec2();
 
-    public m_stiffness = 0;
+    protected m_stiffness = 0;
 
-    public m_damping = 0;
+    protected m_damping = 0;
 
-    public m_beta = 0;
+    protected m_beta = 0;
 
     // Solver shared
-    public readonly m_impulse = new b2Vec2();
+    protected readonly m_impulse = new b2Vec2();
 
-    public m_maxForce = 0;
+    protected m_maxForce = 0;
 
-    public m_gamma = 0;
+    protected m_gamma = 0;
 
     // Solver temp
-    public m_indexA = 0;
+    protected m_indexB = 0;
 
-    public m_indexB = 0;
+    protected readonly m_rB = new b2Vec2();
 
-    public readonly m_rB = new b2Vec2();
+    protected readonly m_localCenterB = new b2Vec2();
 
-    public readonly m_localCenterB = new b2Vec2();
+    protected m_invMassB = 0;
 
-    public m_invMassB = 0;
+    protected m_invIB = 0;
 
-    public m_invIB = 0;
+    protected readonly m_mass = new b2Mat22();
 
-    public readonly m_mass = new b2Mat22();
+    protected readonly m_C = new b2Vec2();
 
-    public readonly m_C = new b2Vec2();
-
+    /** @internal protected */
     public constructor(def: b2IMouseJointDef) {
         super(def);
 
@@ -163,6 +162,7 @@ export class b2MouseJoint extends b2Joint {
         return this.m_damping;
     }
 
+    /** @internal protected */
     public InitVelocityConstraints(data: b2SolverData): void {
         this.m_indexB = this.m_bodyB.m_islandIndex;
         this.m_localCenterB.Copy(this.m_bodyB.m_sweep.localCenter);
@@ -221,6 +221,7 @@ export class b2MouseJoint extends b2Joint {
         data.velocities[this.m_indexB].w = wB;
     }
 
+    /** @internal protected */
     public SolveVelocityConstraints(data: b2SolverData): void {
         const vB = data.velocities[this.m_indexB].v;
         let wB = data.velocities[this.m_indexB].w;
@@ -248,6 +249,7 @@ export class b2MouseJoint extends b2Joint {
         data.velocities[this.m_indexB].w = wB;
     }
 
+    /** @internal protected */
     public SolvePositionConstraints(_data: b2SolverData): boolean {
         return true;
     }

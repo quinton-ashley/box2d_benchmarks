@@ -114,69 +114,103 @@ export interface b2BodyDef {
  * A rigid body. These are created via b2World::CreateBody.
  */
 export class b2Body {
+    /** @internal */
     public m_type = b2BodyType.b2_staticBody;
 
+    /** @internal */
     public m_islandFlag = false;
 
+    /** @internal */
     public m_awakeFlag = false;
 
+    /** @internal */
     public m_autoSleepFlag = false;
 
+    /** @internal */
     public m_bulletFlag = false;
 
+    /** @internal */
     public m_fixedRotationFlag = false;
 
+    /** @internal */
     public m_enabledFlag = false;
 
+    /** @internal */
     public m_toiFlag = false;
 
+    /** @internal */
     public m_islandIndex = 0;
 
+    /** @internal */
     public readonly m_xf = new b2Transform(); // the body origin transform
 
+    /** @internal */
     public readonly m_sweep = new b2Sweep(); // the swept motion for CCD
 
+    /** @internal */
     public readonly m_linearVelocity = new b2Vec2();
 
+    /** @internal */
     public m_angularVelocity = 0;
 
+    /** @internal */
     public readonly m_force = new b2Vec2();
 
+    /** @internal */
     public m_torque = 0;
 
+    /** @internal */
     public readonly m_world: b2World;
 
+    /** @internal */
     public m_prev: b2Body | null = null;
 
+    /** @internal */
     public m_next: b2Body | null = null;
 
+    /** @internal */
     public m_fixtureList: b2Fixture | null = null;
 
+    /** @internal */
     public m_fixtureCount = 0;
 
+    /** @internal */
     public m_jointList: b2JointEdge | null = null;
 
+    /** @internal */
     public m_contactList: b2ContactEdge | null = null;
 
+    /** @internal */
     public m_mass = 1;
 
+    /** @internal */
     public m_invMass = 1;
 
-    // Rotational inertia about the center of mass.
+    /**
+     * Rotational inertia about the center of mass.
+     * @internal
+     */
     public m_I = 0;
 
+    /** @internal */
     public m_invI = 0;
 
+    /** @internal */
     public m_linearDamping = 0;
 
+    /** @internal */
     public m_angularDamping = 0;
 
+    /** @internal */
     public m_gravityScale = 1;
 
+    /** @internal */
     public m_sleepTime = 0;
 
+    /** @internal */
     public m_userData: any = null;
 
+    /** @internal */
     public constructor(bd: b2BodyDef, world: b2World) {
         this.m_bulletFlag = bd.bullet ?? false;
         this.m_fixedRotationFlag = bd.fixedRotation ?? false;
@@ -1108,6 +1142,7 @@ export class b2Body {
 
     private static SynchronizeFixtures_s_xf1 = new b2Transform();
 
+    /** @internal */
     public SynchronizeFixtures(): void {
         const broadPhase = this.m_world.m_contactManager.m_broadPhase;
         if (this.m_awakeFlag) {
@@ -1126,14 +1161,19 @@ export class b2Body {
         }
     }
 
+    /** @internal */
     public SynchronizeTransform(): void {
         this.m_xf.q.Set(this.m_sweep.a);
         b2Rot.MultiplyVec2(this.m_xf.q, this.m_sweep.localCenter, this.m_xf.p);
         b2Vec2.Subtract(this.m_sweep.c, this.m_xf.p, this.m_xf.p);
     }
 
-    // This is used to prevent connected bodies from colliding.
-    // It may lie, depending on the collideConnected flag.
+    /**
+     * This is used to prevent connected bodies from colliding.
+     * It may lie, depending on the collideConnected flag.
+     *
+     * @internal
+     */
     public ShouldCollide(other: b2Body): boolean {
         // At least one body should be dynamic.
         if (this.m_type !== b2BodyType.b2_dynamicBody && other.m_type !== b2BodyType.b2_dynamicBody) {
@@ -1142,7 +1182,7 @@ export class b2Body {
         return this.ShouldCollideConnected(other);
     }
 
-    public ShouldCollideConnected(other: b2Body): boolean {
+    private ShouldCollideConnected(other: b2Body): boolean {
         // Does a joint prevent collision?
         for (let jn: b2JointEdge | null = this.m_jointList; jn; jn = jn.next) {
             if (jn.other === other) {
@@ -1155,6 +1195,7 @@ export class b2Body {
         return true;
     }
 
+    /** @internal */
     public Advance(alpha: number): void {
         // Advance to the new safe time. This doesn't sync the broad-phase.
         this.m_sweep.Advance(alpha);

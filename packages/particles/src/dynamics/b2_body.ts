@@ -27,6 +27,6 @@ declare module "@box2d/core" {
 b2_augment(b2Body.prototype, {
     SetTransformXY(this: b2Body, original, x, y, angle): void {
         original(x, y, angle);
-        this.m_xf0.Copy(this.m_xf);
+        this.m_xf0.Copy(this.GetTransform());
     },
 });

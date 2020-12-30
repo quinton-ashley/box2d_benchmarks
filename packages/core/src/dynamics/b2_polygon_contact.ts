@@ -22,6 +22,7 @@ import { b2Manifold } from "../collision/b2_collision";
 import { b2PolygonShape } from "../collision/b2_polygon_shape";
 import { b2Contact } from "./b2_contact";
 
+/** @internal */
 export class b2PolygonContact extends b2Contact<b2PolygonShape, b2PolygonShape> {
     public Evaluate(manifold: b2Manifold, xfA: b2Transform, xfB: b2Transform): void {
         b2CollidePolygons(manifold, this.GetShapeA(), xfA, this.GetShapeB(), xfB);

@@ -24,6 +24,7 @@ import { b2EdgeShape } from "../collision/b2_edge_shape";
 import { b2PolygonShape } from "../collision/b2_polygon_shape";
 import { b2Contact } from "./b2_contact";
 
+/** @internal */
 export class b2ChainAndPolygonContact extends b2Contact<b2ChainShape, b2PolygonShape> {
     private static Evaluate_s_edge = new b2EdgeShape();
 

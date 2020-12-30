@@ -55,51 +55,53 @@ import {
  * management facilities.
  */
 export class b2World {
+    /** @internal */
     public readonly m_contactManager = new b2ContactManager();
 
-    public m_bodyList: b2Body | null = null;
+    private m_bodyList: b2Body | null = null;
 
-    public m_jointList: b2Joint | null = null;
+    private m_jointList: b2Joint | null = null;
 
-    public m_bodyCount = 0;
+    private m_bodyCount = 0;
 
-    public m_jointCount = 0;
+    private m_jointCount = 0;
 
-    public readonly m_gravity = new b2Vec2();
+    private readonly m_gravity = new b2Vec2();
 
-    public m_allowSleep = true;
+    private m_allowSleep = true;
 
-    public m_destructionListener: b2DestructionListener | null = null;
+    private m_destructionListener: b2DestructionListener | null = null;
 
     // This is used to compute the time step ratio to
     // support a variable time step.
-    public m_inv_dt0 = 0;
+    private m_inv_dt0 = 0;
 
+    /** @internal */
     public m_newContacts = false;
 
-    public m_locked = false;
+    private m_locked = false;
 
-    public m_clearForces = true;
+    private m_clearForces = true;
 
     // These are for debugging the solver.
-    public m_warmStarting = true;
+    private m_warmStarting = true;
 
-    public m_continuousPhysics = true;
+    private m_continuousPhysics = true;
 
-    public m_subStepping = false;
+    private m_subStepping = false;
 
-    public m_stepComplete = true;
+    private m_stepComplete = true;
 
-    public readonly m_profile = new b2Profile();
+    private readonly m_profile = new b2Profile();
 
-    public readonly m_island = new b2Island(
+    private readonly m_island = new b2Island(
         2 * b2_maxTOIContacts,
         b2_maxTOIContacts,
         0,
         this.m_contactManager.m_contactListener,
     );
 
-    public readonly s_stack: Array<b2Body | null> = [];
+    private readonly s_stack: Array<b2Body | null> = [];
 
     private constructor(gravity: XY) {
         this.m_gravity.Copy(gravity);
@@ -120,6 +122,13 @@ export class b2World {
      */
     public SetDestructionListener(listener: b2DestructionListener | null): void {
         this.m_destructionListener = listener;
+    }
+
+    /**
+     * Get the current destruction listener
+     */
+    public GetDestructionListener() {
+        return this.m_destructionListener;
     }
 
     /**
@@ -869,7 +878,7 @@ export class b2World {
         return this.m_profile;
     }
 
-    public Solve(step: b2TimeStep): void {
+    private Solve(step: b2TimeStep): void {
         this.m_profile.solveInit = 0;
         this.m_profile.solveVelocity = 0;
         this.m_profile.solvePosition = 0;
@@ -1049,6 +1058,7 @@ export class b2World {
 
     private static SolveTOI_s_toi_output = new b2TOIOutput();
 
+    /** @internal */
     public SolveTOI(step: b2TimeStep): void {
         const island = this.m_island;
         island.Clear();

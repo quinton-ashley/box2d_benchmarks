@@ -124,11 +124,9 @@ export class b2TreeNode<T> {
  * Nodes are pooled
  */
 export class b2DynamicTree<T> {
-    public m_root: b2TreeNode<T> | null = null;
+    private m_root: b2TreeNode<T> | null = null;
 
-    public m_freeList: b2TreeNode<T> | null = null;
-
-    public m_insertionCount = 0;
+    private m_freeList: b2TreeNode<T> | null = null;
 
     public Query(aabb: b2AABB, callback: (node: b2TreeNode<T>) => boolean): void {
         const stack = temp.stack as Array<b2TreeNode<T> | null>;
@@ -240,7 +238,7 @@ export class b2DynamicTree<T> {
         }
     }
 
-    public AllocateNode(): b2TreeNode<T> {
+    private AllocateNode(): b2TreeNode<T> {
         // Expand the node pool as needed.
         if (this.m_freeList === null) {
             return new b2TreeNode<T>();
@@ -256,7 +254,7 @@ export class b2DynamicTree<T> {
         return node;
     }
 
-    public FreeNode(node: b2TreeNode<T>): void {
+    private FreeNode(node: b2TreeNode<T>): void {
         node.parent = this.m_freeList;
         node.Reset();
         this.m_freeList = node;
@@ -339,9 +337,7 @@ export class b2DynamicTree<T> {
         return true;
     }
 
-    public InsertLeaf(leaf: b2TreeNode<T>): void {
-        ++this.m_insertionCount;
-
+    private InsertLeaf(leaf: b2TreeNode<T>): void {
         if (this.m_root === null) {
             this.m_root = leaf;
             this.m_root.parent = null;
@@ -452,7 +448,7 @@ export class b2DynamicTree<T> {
         // this.Validate();
     }
 
-    public RemoveLeaf(leaf: b2TreeNode<T>): void {
+    private RemoveLeaf(leaf: b2TreeNode<T>): void {
         if (leaf === this.m_root) {
             this.m_root = null;
             return;
@@ -494,7 +490,7 @@ export class b2DynamicTree<T> {
         // this.Validate();
     }
 
-    public Balance(A: b2TreeNode<T>): b2TreeNode<T> {
+    private Balance(A: b2TreeNode<T>): b2TreeNode<T> {
         // DEBUG: b2Assert(A !== null);
 
         if (A.IsLeaf() || A.height < 2) {
@@ -622,160 +618,11 @@ export class b2DynamicTree<T> {
         return totalArea / rootArea;
     }
 
-    public ComputeHeight(): number {
-        if (this.m_root === null) {
-            return 0;
-        }
-        const height = this.m_root.ComputeHeight();
-        return height;
-    }
-
-    public ValidateStructure(node: b2TreeNode<T> | null): void {
-        if (node === null) {
-            return;
-        }
-
-        if (node === this.m_root) {
-            // DEBUG: b2Assert(node.parent === null);
-        }
-
-        if (node.IsLeaf()) {
-            // DEBUG: b2Assert(node.child1 === null);
-            // DEBUG: b2Assert(node.child2 === null);
-            // DEBUG: b2Assert(node.height === 0);
-            return;
-        }
-
-        const child1 = b2Verify(node.child1);
-        const child2 = b2Verify(node.child2);
-
-        // DEBUG: b2Assert(child1.parent === node);
-        // DEBUG: b2Assert(child2.parent === node);
-
-        this.ValidateStructure(child1);
-        this.ValidateStructure(child2);
-    }
-
-    public ValidateMetrics(node: b2TreeNode<T> | null): void {
-        if (node === null) {
-            return;
-        }
-
-        if (node.IsLeaf()) {
-            // DEBUG: b2Assert(node.child1 === null);
-            // DEBUG: b2Assert(node.child2 === null);
-            // DEBUG: b2Assert(node.height === 0);
-            return;
-        }
-
-        const child1 = b2Verify(node.child1);
-        const child2 = b2Verify(node.child2);
-
-        // DEBUG: const height1 = child1.height;
-        // DEBUG: const height2 = child2.height;
-        // DEBUG: const height = 1 + Math.max(height1, height2);
-        // DEBUG: b2Assert(node.height === height);
-
-        // DEBUG: const { aabb } = temp;
-        // DEBUG: aabb.Combine2(child1.aabb, child2.aabb);
-
-        // DEBUG: b2Assert(aabb.lowerBound === node.aabb.lowerBound);
-        // DEBUG: b2Assert(aabb.upperBound === node.aabb.upperBound);
-
-        this.ValidateMetrics(child1);
-        this.ValidateMetrics(child2);
-    }
-
-    public Validate(): void {
-        // DEBUG: this.ValidateStructure(this.m_root);
-        // DEBUG: this.ValidateMetrics(this.m_root);
-        // let freeCount = 0;
-        // let freeNode: b2TreeNode<T> | null = this.m_freeList;
-        // while (freeNode !== null) {
-        //   freeNode = freeNode.parent;
-        //   ++freeCount;
-        // }
-        // DEBUG: b2Assert(this.GetHeight() === this.ComputeHeight());
-        // b2Assert(this.m_nodeCount + freeCount === this.m_nodeCapacity);
-    }
-
     public GetMaxBalance(): number {
         if (this.m_root === null) {
             return 0;
         }
         return this.m_root.GetMaxBalance();
-    }
-
-    /**
-     * Build an optimal tree. Very expensive. For testing.
-     */
-    public RebuildBottomUp(): void {
-        throw new Error("Not implemented");
-        /*
-    int32* nodes = (int32*)b2Alloc(m_nodeCount * sizeof(int32));
-    int32 count = 0;
-
-    // Build array of leaves. Free the rest.
-    for (int32 i = 0; i < m_nodeCapacity; ++i) {
-      if (m_nodes[i].height < 0) {
-        // free node in pool
-        continue;
-      }
-
-      if (m_nodes[i].IsLeaf()) {
-        m_nodes[i].parent = b2_nullNode;
-        nodes[count] = i;
-        ++count;
-      } else {
-        FreeNode(i);
-      }
-    }
-
-    while (count > 1) {
-      float32 minCost = b2_maxFloat;
-      int32 iMin = -1, jMin = -1;
-      for (int32 i = 0; i < count; ++i) {
-        b2AABB aabbi = m_nodes[nodes[i]].aabb;
-
-        for (int32 j = i + 1; j < count; ++j) {
-          b2AABB aabbj = m_nodes[nodes[j]].aabb;
-          b2AABB b;
-          b.Combine(aabbi, aabbj);
-          float32 cost = b.GetPerimeter();
-          if (cost < minCost) {
-            iMin = i;
-            jMin = j;
-            minCost = cost;
-          }
-        }
-      }
-
-      int32 index1 = nodes[iMin];
-      int32 index2 = nodes[jMin];
-      b2TreeNode<T>* child1 = m_nodes + index1;
-      b2TreeNode<T>* child2 = m_nodes + index2;
-
-      int32 parentIndex = AllocateNode();
-      b2TreeNode<T>* parent = m_nodes + parentIndex;
-      parent.child1 = index1;
-      parent.child2 = index2;
-      parent.height = 1 + Math.max(child1.height, child2.height);
-      parent.aabb.Combine(child1.aabb, child2.aabb);
-      parent.parent = b2_nullNode;
-
-      child1.parent = parentIndex;
-      child2.parent = parentIndex;
-
-      nodes[jMin] = nodes[count-1];
-      nodes[iMin] = parentIndex;
-      --count;
-    }
-
-    m_root = nodes[0];
-    b2Free(nodes);
-    */
-
-        this.Validate();
     }
 
     public ShiftOrigin(newOrigin: XY): void {

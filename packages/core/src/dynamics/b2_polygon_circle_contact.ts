@@ -23,6 +23,7 @@ import { b2CircleShape } from "../collision/b2_circle_shape";
 import { b2PolygonShape } from "../collision/b2_polygon_shape";
 import { b2Contact } from "./b2_contact";
 
+/** @internal */
 export class b2PolygonAndCircleContact extends b2Contact<b2PolygonShape, b2CircleShape> {
     public Evaluate(manifold: b2Manifold, xfA: b2Transform, xfB: b2Transform): void {
         b2CollidePolygonAndCircle(manifold, this.GetShapeA(), xfA, this.GetShapeB(), xfB);

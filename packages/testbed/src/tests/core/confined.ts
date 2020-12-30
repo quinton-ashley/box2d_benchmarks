@@ -114,7 +114,7 @@ class Confined extends Test {
 
     public Step(settings: Settings, timeStep: number): void {
         // let sleeping = true;
-        for (let b = this.m_world.GetBodyList(); b; b = b.m_next) {
+        for (let b = this.m_world.GetBodyList(); b; b = b.GetNext()) {
             if (b.GetType() !== b2BodyType.b2_dynamicBody) {
                 continue;
             }
@@ -134,7 +134,7 @@ class Confined extends Test {
 
         super.Step(settings, timeStep);
 
-        for (let b = this.m_world.GetBodyList(); b; b = b.m_next) {
+        for (let b = this.m_world.GetBodyList(); b; b = b.GetNext()) {
             if (b.GetType() !== b2BodyType.b2_dynamicBody) {
                 continue;
             }

@@ -99,49 +99,50 @@ export class b2MotorJointDef extends b2JointDef implements b2IMotorJointDef {
  */
 export class b2MotorJoint extends b2Joint {
     // Solver shared
-    public readonly m_linearOffset = new b2Vec2();
+    protected readonly m_linearOffset = new b2Vec2();
 
-    public m_angularOffset: number;
+    protected m_angularOffset: number;
 
-    public readonly m_linearImpulse = new b2Vec2();
+    protected readonly m_linearImpulse = new b2Vec2();
 
-    public m_angularImpulse = 0;
+    protected m_angularImpulse = 0;
 
-    public m_maxForce: number;
+    protected m_maxForce: number;
 
-    public m_maxTorque: number;
+    protected m_maxTorque: number;
 
-    public m_correctionFactor: number;
+    protected m_correctionFactor: number;
 
     // Solver temp
-    public m_indexA = 0;
+    protected m_indexA = 0;
 
-    public m_indexB = 0;
+    protected m_indexB = 0;
 
-    public readonly m_rA = new b2Vec2();
+    protected readonly m_rA = new b2Vec2();
 
-    public readonly m_rB = new b2Vec2();
+    protected readonly m_rB = new b2Vec2();
 
-    public readonly m_localCenterA = new b2Vec2();
+    protected readonly m_localCenterA = new b2Vec2();
 
-    public readonly m_localCenterB = new b2Vec2();
+    protected readonly m_localCenterB = new b2Vec2();
 
-    public readonly m_linearError = new b2Vec2();
+    protected readonly m_linearError = new b2Vec2();
 
-    public m_angularError = 0;
+    protected m_angularError = 0;
 
-    public m_invMassA = 0;
+    protected m_invMassA = 0;
 
-    public m_invMassB = 0;
+    protected m_invMassB = 0;
 
-    public m_invIA = 0;
+    protected m_invIA = 0;
 
-    public m_invIB = 0;
+    protected m_invIB = 0;
 
-    public readonly m_linearMass = new b2Mat22();
+    protected readonly m_linearMass = new b2Mat22();
 
-    public m_angularMass = 0;
+    protected m_angularMass = 0;
 
+    /** @internal protected */
     public constructor(def: b2IMotorJointDef) {
         super(def);
 
@@ -226,6 +227,7 @@ export class b2MotorJoint extends b2Joint {
         this.m_correctionFactor = factor;
     }
 
+    /** @internal protected */
     public InitVelocityConstraints(data: b2SolverData): void {
         this.m_indexA = this.m_bodyA.m_islandIndex;
         this.m_indexB = this.m_bodyB.m_islandIndex;
@@ -307,6 +309,7 @@ export class b2MotorJoint extends b2Joint {
         data.velocities[this.m_indexB].w = wB;
     }
 
+    /** @internal protected */
     public SolveVelocityConstraints(data: b2SolverData): void {
         const vA = data.velocities[this.m_indexA].v;
         let wA = data.velocities[this.m_indexA].w;
@@ -374,6 +377,7 @@ export class b2MotorJoint extends b2Joint {
         data.velocities[this.m_indexB].w = wB;
     }
 
+    /** @internal protected */
     public SolvePositionConstraints(_data: b2SolverData): boolean {
         return true;
     }

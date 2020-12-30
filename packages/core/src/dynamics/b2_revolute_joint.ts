@@ -126,59 +126,63 @@ export class b2RevoluteJointDef extends b2JointDef implements b2IRevoluteJointDe
  */
 export class b2RevoluteJoint extends b2Joint {
     // Solver shared
+    /** @internal protected */
     public readonly m_localAnchorA = new b2Vec2();
 
+    /** @internal protected */
     public readonly m_localAnchorB = new b2Vec2();
 
-    public readonly m_impulse = new b2Vec2();
+    protected readonly m_impulse = new b2Vec2();
 
-    public m_motorImpulse = 0;
+    protected m_motorImpulse = 0;
 
-    public m_lowerImpulse = 0;
+    protected m_lowerImpulse = 0;
 
-    public m_upperImpulse = 0;
+    protected m_upperImpulse = 0;
 
-    public m_enableMotor = false;
+    protected m_enableMotor = false;
 
-    public m_maxMotorTorque = 0;
+    protected m_maxMotorTorque = 0;
 
-    public m_motorSpeed = 0;
+    protected m_motorSpeed = 0;
 
-    public m_enableLimit = false;
+    protected m_enableLimit = false;
 
+    /** @internal protected */
     public m_referenceAngle = 0;
 
-    public m_lowerAngle = 0;
+    protected m_lowerAngle = 0;
 
-    public m_upperAngle = 0;
+    protected m_upperAngle = 0;
 
     // Solver temp
-    public m_indexA = 0;
+    protected m_indexA = 0;
 
-    public m_indexB = 0;
+    protected m_indexB = 0;
 
-    public readonly m_rA = new b2Vec2();
+    protected readonly m_rA = new b2Vec2();
 
-    public readonly m_rB = new b2Vec2();
+    protected readonly m_rB = new b2Vec2();
 
-    public readonly m_localCenterA = new b2Vec2();
+    protected readonly m_localCenterA = new b2Vec2();
 
-    public readonly m_localCenterB = new b2Vec2();
+    protected readonly m_localCenterB = new b2Vec2();
 
-    public m_invMassA = 0;
+    protected m_invMassA = 0;
 
-    public m_invMassB = 0;
+    protected m_invMassB = 0;
 
-    public m_invIA = 0;
+    protected m_invIA = 0;
 
-    public m_invIB = 0;
+    protected m_invIB = 0;
 
-    public readonly m_K = new b2Mat22();
+    protected readonly m_K = new b2Mat22();
 
-    public m_angle = 0;
+    protected m_angle = 0;
 
-    public m_axialMass = 0;
+    protected m_axialMass = 0;
 
+    /** @internal protected */
     public constructor(def: b2IRevoluteJointDef) {
         super(def);
 

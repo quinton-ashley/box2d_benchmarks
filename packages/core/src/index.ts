@@ -58,14 +58,7 @@ export * from "./dynamics/b2_contact_manager";
 
 export * from "./dynamics/b2_contact";
 export * from "./dynamics/b2_contact_factory";
-export * from "./dynamics/b2_contact_solver";
-export * from "./dynamics/b2_circle_contact";
-export * from "./dynamics/b2_polygon_contact";
-export * from "./dynamics/b2_polygon_circle_contact";
-export * from "./dynamics/b2_edge_circle_contact";
-export * from "./dynamics/b2_edge_polygon_contact";
-export * from "./dynamics/b2_chain_circle_contact";
-export * from "./dynamics/b2_chain_polygon_contact";
+export { b2SetBlockSolve, b2GetBlockSolve } from "./dynamics/b2_contact_solver";
 
 export * from "./dynamics/b2_joint";
 export * from "./dynamics/b2_area_joint";

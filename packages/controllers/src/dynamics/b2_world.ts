@@ -87,7 +87,9 @@ b2_augment(b2World.prototype, {
         }
         original(body);
     },
-    Solve(this: b2World, original, step) {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    Solve(this: b2World, original: (step: b2TimeStep) => void, step: b2TimeStep) {
         for (let controller = this.m_controllerList; controller; controller = controller.m_next) {
             controller.Step(step);
         }

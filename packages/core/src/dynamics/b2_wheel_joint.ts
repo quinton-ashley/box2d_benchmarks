@@ -146,83 +146,84 @@ export class b2WheelJointDef extends b2JointDef implements b2IWheelJointDef {
  * initialized upon creation. This joint is designed for vehicle suspensions.
  */
 export class b2WheelJoint extends b2Joint {
-    public readonly m_localAnchorA = new b2Vec2();
+    protected readonly m_localAnchorA = new b2Vec2();
 
-    public readonly m_localAnchorB = new b2Vec2();
+    protected readonly m_localAnchorB = new b2Vec2();
 
-    public readonly m_localXAxisA = new b2Vec2();
+    protected readonly m_localXAxisA = new b2Vec2();
 
-    public readonly m_localYAxisA = new b2Vec2();
+    protected readonly m_localYAxisA = new b2Vec2();
 
-    public m_impulse = 0;
+    protected m_impulse = 0;
 
-    public m_motorImpulse = 0;
+    protected m_motorImpulse = 0;
 
-    public m_springImpulse = 0;
+    protected m_springImpulse = 0;
 
-    public m_lowerImpulse = 0;
+    protected m_lowerImpulse = 0;
 
-    public m_upperImpulse = 0;
+    protected m_upperImpulse = 0;
 
-    public m_translation = 0;
+    protected m_translation = 0;
 
-    public m_lowerTranslation = 0;
+    protected m_lowerTranslation = 0;
 
-    public m_upperTranslation = 0;
+    protected m_upperTranslation = 0;
 
-    public m_maxMotorTorque = 0;
+    protected m_maxMotorTorque = 0;
 
-    public m_motorSpeed = 0;
+    protected m_motorSpeed = 0;
 
-    public m_enableLimit = false;
+    protected m_enableLimit = false;
 
-    public m_enableMotor = false;
+    protected m_enableMotor = false;
 
-    public m_stiffness = 0;
+    protected m_stiffness = 0;
 
-    public m_damping = 0;
+    protected m_damping = 0;
 
     // Solver temp
-    public m_indexA = 0;
+    protected m_indexA = 0;
 
-    public m_indexB = 0;
+    protected m_indexB = 0;
 
-    public readonly m_localCenterA = new b2Vec2();
+    protected readonly m_localCenterA = new b2Vec2();
 
-    public readonly m_localCenterB = new b2Vec2();
+    protected readonly m_localCenterB = new b2Vec2();
 
-    public m_invMassA = 0;
+    protected m_invMassA = 0;
 
-    public m_invMassB = 0;
+    protected m_invMassB = 0;
 
-    public m_invIA = 0;
+    protected m_invIA = 0;
 
-    public m_invIB = 0;
+    protected m_invIB = 0;
 
-    public readonly m_ax = new b2Vec2();
+    protected readonly m_ax = new b2Vec2();
 
-    public readonly m_ay = new b2Vec2();
+    protected readonly m_ay = new b2Vec2();
 
-    public m_sAx = 0;
+    protected m_sAx = 0;
 
-    public m_sBx = 0;
+    protected m_sBx = 0;
 
-    public m_sAy = 0;
+    protected m_sAy = 0;
 
-    public m_sBy = 0;
+    protected m_sBy = 0;
 
-    public m_mass = 0;
+    protected m_mass = 0;
 
-    public m_motorMass = 0;
+    protected m_motorMass = 0;
 
-    public m_axialMass = 0;
+    protected m_axialMass = 0;
 
-    public m_springMass = 0;
+    protected m_springMass = 0;
 
-    public m_bias = 0;
+    protected m_bias = 0;
 
-    public m_gamma = 0;
+    protected m_gamma = 0;
 
+    /** @internal protected */
     public constructor(def: b2IWheelJointDef) {
         super(def);
 
@@ -270,6 +271,7 @@ export class b2WheelJoint extends b2Joint {
         return this.m_damping;
     }
 
+    /** @internal protected */
     public InitVelocityConstraints(data: b2SolverData): void {
         this.m_indexA = this.m_bodyA.m_islandIndex;
         this.m_indexB = this.m_bodyB.m_islandIndex;
@@ -399,6 +401,7 @@ export class b2WheelJoint extends b2Joint {
         data.velocities[this.m_indexB].w = wB;
     }
 
+    /** @internal protected */
     public SolveVelocityConstraints(data: b2SolverData): void {
         const mA = this.m_invMassA;
         const mB = this.m_invMassB;
@@ -509,6 +512,7 @@ export class b2WheelJoint extends b2Joint {
         data.velocities[this.m_indexB].w = wB;
     }
 
+    /** @internal protected */
     public SolvePositionConstraints(data: b2SolverData): boolean {
         const cA = data.positions[this.m_indexA].c;
         let aA = data.positions[this.m_indexA].a;

@@ -172,29 +172,35 @@ export function b2AngularStiffness(
  * various fashions. Some joints also feature limits and motors.
  */
 export abstract class b2Joint {
-    public readonly m_type: b2JointType = b2JointType.e_unknownJoint;
+    protected readonly m_type: b2JointType = b2JointType.e_unknownJoint;
 
+    /** @internal protected */
     public m_prev: b2Joint | null = null;
 
+    /** @internal protected */
     public m_next: b2Joint | null = null;
 
+    /** @internal protected */
     public readonly m_edgeA: b2JointEdge;
 
+    /** @internal protected */
     public readonly m_edgeB: b2JointEdge;
 
+    /** @internal protected */
     public m_bodyA: b2Body;
 
+    /** @internal protected */
     public m_bodyB: b2Body;
 
-    public m_index = 0;
-
+    /** @internal protected */
     public m_islandFlag = false;
 
+    /** @internal protected */
     public m_collideConnected = false;
 
-    public m_userData: any = null;
+    protected m_userData: any = null;
 
-    public constructor(def: b2IJointDef) {
+    protected constructor(def: b2IJointDef) {
         // DEBUG: b2Assert(def.bodyA !== def.bodyB);
 
         this.m_type = def.type;
@@ -291,11 +297,17 @@ export abstract class b2Joint {
      */
     public ShiftOrigin(_newOrigin: XY): void {}
 
+    /** @internal protected */
     public abstract InitVelocityConstraints(data: b2SolverData): void;
 
+    /** @internal protected */
     public abstract SolveVelocityConstraints(data: b2SolverData): void;
 
-    // This returns true if the position errors are within tolerance.
+    /**
+     * This returns true if the position errors are within tolerance.
+     *
+     * @internal protected
+     */
     public abstract SolvePositionConstraints(data: b2SolverData): boolean;
 
     public Draw(draw: b2Draw): void {

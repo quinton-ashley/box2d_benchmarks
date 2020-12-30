@@ -102,60 +102,61 @@ export class b2DistanceJointDef extends b2JointDef implements b2IDistanceJointDe
  * distance from each other. You can view this as a massless, rigid rod.
  */
 export class b2DistanceJoint extends b2Joint {
-    public m_stiffness: number;
+    protected m_stiffness: number;
 
-    public m_damping: number;
+    protected m_damping: number;
 
-    public m_bias = 0;
+    protected m_bias = 0;
 
-    public m_length: number;
+    protected m_length: number;
 
-    public m_minLength: number;
+    protected m_minLength: number;
 
-    public m_maxLength: number;
+    protected m_maxLength: number;
 
     // Solver shared
-    public readonly m_localAnchorA = new b2Vec2();
+    protected readonly m_localAnchorA = new b2Vec2();
 
-    public readonly m_localAnchorB = new b2Vec2();
+    protected readonly m_localAnchorB = new b2Vec2();
 
-    public m_gamma = 0;
+    protected m_gamma = 0;
 
-    public m_impulse = 0;
+    protected m_impulse = 0;
 
-    public m_lowerImpulse = 0;
+    protected m_lowerImpulse = 0;
 
-    public m_upperImpulse = 0;
+    protected m_upperImpulse = 0;
 
     // Solver temp
-    public m_indexA = 0;
+    protected m_indexA = 0;
 
-    public m_indexB = 0;
+    protected m_indexB = 0;
 
-    public readonly m_u = new b2Vec2();
+    protected readonly m_u = new b2Vec2();
 
-    public readonly m_rA = new b2Vec2();
+    protected readonly m_rA = new b2Vec2();
 
-    public readonly m_rB = new b2Vec2();
+    protected readonly m_rB = new b2Vec2();
 
-    public readonly m_localCenterA = new b2Vec2();
+    protected readonly m_localCenterA = new b2Vec2();
 
-    public readonly m_localCenterB = new b2Vec2();
+    protected readonly m_localCenterB = new b2Vec2();
 
-    public m_currentLength = 0;
+    protected m_currentLength = 0;
 
-    public m_invMassA = 0;
+    protected m_invMassA = 0;
 
-    public m_invMassB = 0;
+    protected m_invMassB = 0;
 
-    public m_invIA = 0;
+    protected m_invIA = 0;
 
-    public m_invIB = 0;
+    protected m_invIB = 0;
 
-    public m_softMass = 0;
+    protected m_softMass = 0;
 
-    public m_mass = 0;
+    protected m_mass = 0;
 
+    /** @internal protected */
     public constructor(def: b2IDistanceJointDef) {
         super(def);
 
@@ -247,6 +248,7 @@ export class b2DistanceJoint extends b2Joint {
         return this.m_damping;
     }
 
+    /** @internal protected */
     public InitVelocityConstraints(data: b2SolverData): void {
         this.m_indexA = this.m_bodyA.m_islandIndex;
         this.m_indexB = this.m_bodyB.m_islandIndex;
@@ -339,6 +341,7 @@ export class b2DistanceJoint extends b2Joint {
         data.velocities[this.m_indexB].w = wB;
     }
 
+    /** @internal protected */
     public SolveVelocityConstraints(data: b2SolverData): void {
         const vA = data.velocities[this.m_indexA].v;
         let wA = data.velocities[this.m_indexA].w;
@@ -427,6 +430,7 @@ export class b2DistanceJoint extends b2Joint {
         data.velocities[this.m_indexB].w = wB;
     }
 
+    /** @internal protected */
     public SolvePositionConstraints(data: b2SolverData): boolean {
         const cA = data.positions[this.m_indexA].c;
         let aA = data.positions[this.m_indexA].a;

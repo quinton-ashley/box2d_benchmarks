@@ -21,7 +21,7 @@
  * not work on every platform.
  */
 export class b2Timer {
-    public m_start = performance.now();
+    private m_start = performance.now();
 
     /**
      * Reset the timer.

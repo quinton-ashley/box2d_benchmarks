@@ -244,7 +244,7 @@ class Fracker_DestructionListener extends ParticleGroupTracker {
         super();
         // DEBUG: b2Assert(world !== null);
         this.m_world = world;
-        this.m_previousListener = world.m_destructionListener;
+        this.m_previousListener = world.GetDestructionListener();
         this.m_world.SetDestructionListener(this);
     }
 

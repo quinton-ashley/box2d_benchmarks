@@ -89,90 +89,91 @@ export class b2GearJointDef extends b2JointDef implements b2IGearJointDef {
  * is destroyed.
  */
 export class b2GearJoint extends b2Joint {
-    public m_joint1: b2RevoluteJoint | b2PrismaticJoint;
+    protected m_joint1: b2RevoluteJoint | b2PrismaticJoint;
 
-    public m_joint2: b2RevoluteJoint | b2PrismaticJoint;
+    protected m_joint2: b2RevoluteJoint | b2PrismaticJoint;
 
-    public m_typeA = b2JointType.e_unknownJoint;
+    protected m_typeA = b2JointType.e_unknownJoint;
 
-    public m_typeB = b2JointType.e_unknownJoint;
+    protected m_typeB = b2JointType.e_unknownJoint;
 
     // Body A is connected to body C
     // Body B is connected to body D
-    public m_bodyC: b2Body;
+    protected m_bodyC: b2Body;
 
-    public m_bodyD: b2Body;
+    protected m_bodyD: b2Body;
 
     // Solver shared
-    public readonly m_localAnchorA = new b2Vec2();
+    protected readonly m_localAnchorA = new b2Vec2();
 
-    public readonly m_localAnchorB = new b2Vec2();
+    protected readonly m_localAnchorB = new b2Vec2();
 
-    public readonly m_localAnchorC = new b2Vec2();
+    protected readonly m_localAnchorC = new b2Vec2();
 
-    public readonly m_localAnchorD = new b2Vec2();
+    protected readonly m_localAnchorD = new b2Vec2();
 
-    public readonly m_localAxisC = new b2Vec2();
+    protected readonly m_localAxisC = new b2Vec2();
 
-    public readonly m_localAxisD = new b2Vec2();
+    protected readonly m_localAxisD = new b2Vec2();
 
-    public m_referenceAngleA = 0;
+    protected m_referenceAngleA = 0;
 
-    public m_referenceAngleB = 0;
+    protected m_referenceAngleB = 0;
 
-    public m_constant = 0;
+    protected m_constant = 0;
 
-    public m_ratio = 0;
+    protected m_ratio = 0;
 
-    public m_impulse = 0;
+    protected m_impulse = 0;
 
     // Solver temp
-    public m_indexA = 0;
+    protected m_indexA = 0;
 
-    public m_indexB = 0;
+    protected m_indexB = 0;
 
-    public m_indexC = 0;
+    protected m_indexC = 0;
 
-    public m_indexD = 0;
+    protected m_indexD = 0;
 
-    public readonly m_lcA = new b2Vec2();
+    protected readonly m_lcA = new b2Vec2();
 
-    public readonly m_lcB = new b2Vec2();
+    protected readonly m_lcB = new b2Vec2();
 
-    public readonly m_lcC = new b2Vec2();
+    protected readonly m_lcC = new b2Vec2();
 
-    public readonly m_lcD = new b2Vec2();
+    protected readonly m_lcD = new b2Vec2();
 
-    public m_mA = 0;
+    protected m_mA = 0;
 
-    public m_mB = 0;
+    protected m_mB = 0;
 
-    public m_mC = 0;
+    protected m_mC = 0;
 
-    public m_mD = 0;
+    protected m_mD = 0;
 
-    public m_iA = 0;
+    protected m_iA = 0;
 
-    public m_iB = 0;
+    protected m_iB = 0;
 
-    public m_iC = 0;
+    protected m_iC = 0;
 
-    public m_iD = 0;
+    protected m_iD = 0;
 
-    public readonly m_JvAC = new b2Vec2();
+    protected readonly m_JvAC = new b2Vec2();
 
-    public readonly m_JvBD = new b2Vec2();
+    protected readonly m_JvBD = new b2Vec2();
 
-    public m_JwA = 0;
+    protected m_JwA = 0;
 
-    public m_JwB = 0;
+    protected m_JwB = 0;
 
-    public m_JwC = 0;
+    protected m_JwC = 0;
 
-    public m_JwD = 0;
+    protected m_JwD = 0;
 
-    public m_mass = 0;
+    protected m_mass = 0;
 
+    /** @internal protected */
     public constructor(def: b2IGearJointDef) {
         super(def);
 
@@ -269,6 +270,7 @@ export class b2GearJoint extends b2Joint {
         this.m_impulse = 0;
     }
 
+    /** @internal protected */
     public InitVelocityConstraints(data: b2SolverData): void {
         this.m_indexA = this.m_bodyA.m_islandIndex;
         this.m_indexB = this.m_bodyB.m_islandIndex;
@@ -369,6 +371,7 @@ export class b2GearJoint extends b2Joint {
         data.velocities[this.m_indexD].w = wD;
     }
 
+    /** @internal protected */
     public SolveVelocityConstraints(data: b2SolverData): void {
         const vA = data.velocities[this.m_indexA].v;
         let wA = data.velocities[this.m_indexA].w;
@@ -402,6 +405,7 @@ export class b2GearJoint extends b2Joint {
         data.velocities[this.m_indexD].w = wD;
     }
 
+    /** @internal protected */
     public SolvePositionConstraints(data: b2SolverData): boolean {
         const cA = data.positions[this.m_indexA].c;
         let aA = data.positions[this.m_indexA].a;

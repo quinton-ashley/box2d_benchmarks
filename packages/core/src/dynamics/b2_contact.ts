@@ -94,57 +94,102 @@ export class b2ContactEdge {
  * that has no contact points.
  */
 export abstract class b2Contact<A extends b2Shape = b2Shape, B extends b2Shape = b2Shape> {
-    /** Used when crawling contact graph when forming islands. */
+    /**
+     * Used when crawling contact graph when forming islands.
+     *
+     * @internal protected
+     */
     public m_islandFlag = false;
 
-    /** Set when the shapes are touching. */
+    /**
+     * Set when the shapes are touching.
+     *
+     * @internal protected
+     */
     public m_touchingFlag = false;
 
-    /** This contact can be disabled (by user) */
+    /**
+     * This contact can be disabled (by user)
+     *
+     * @internal protected
+     */
     public m_enabledFlag = false;
 
-    /** This contact needs filtering because a fixture filter was changed. */
+    /**
+     * This contact needs filtering because a fixture filter was changed.
+     *
+     * @internal protected
+     */
     public m_filterFlag = false;
 
-    /** This bullet contact had a TOI event */
+    /**
+     * This bullet contact had a TOI event
+     *
+     * @internal protected
+     */
     public m_bulletHitFlag = false;
 
-    /** This contact has a valid TOI in m_toi */
+    /**
+     * This contact has a valid TOI in m_toi
+     *
+     * @internal protected
+     */
     public m_toiFlag = false;
 
-    // World pool and list pointers.
+    /**
+     * World pool and list pointers.
+     *
+     * @internal protected
+     */
     public m_prev: b2Contact | null = null;
 
+    /** @internal protected */
     public m_next: b2Contact | null = null;
 
-    // Nodes for connecting bodies.
+    /**
+     * Nodes for connecting bodies.
+     *
+     * @internal protected
+     */
     public readonly m_nodeA: b2ContactEdge = new b2ContactEdge(this);
 
+    /** @internal protected */
     public readonly m_nodeB: b2ContactEdge = new b2ContactEdge(this);
 
+    /** @internal protected */
     public m_fixtureA!: b2Fixture;
 
+    /** @internal protected */
     public m_fixtureB!: b2Fixture;
 
+    /** @internal protected */
     public m_indexA = 0;
 
+    /** @internal protected */
     public m_indexB = 0;
 
+    /** @internal protected */
     public m_manifold = new b2Manifold(); // TODO: readonly
 
+    /** @internal protected */
     public m_toiCount = 0;
 
+    /** @internal protected */
     public m_toi = 0;
 
+    /** @internal protected */
     public m_friction = 0;
 
+    /** @internal protected */
     public m_restitution = 0;
 
+    /** @internal protected */
     public m_restitutionThreshold = 0;
 
+    /** @internal protected */
     public m_tangentSpeed = 0;
 
-    public m_oldManifold = new b2Manifold(); // TODO: readonly
+    protected m_oldManifold = new b2Manifold(); // TODO: readonly
 
     public GetManifold() {
         return this.m_manifold;
@@ -206,6 +251,7 @@ export abstract class b2Contact<A extends b2Shape = b2Shape, B extends b2Shape =
 
     public abstract Evaluate(manifold: b2Manifold, xfA: b2Transform, xfB: b2Transform): void;
 
+    /** @internal protected */
     public FlagForFiltering(): void {
         this.m_filterFlag = true;
     }
@@ -299,6 +345,7 @@ export abstract class b2Contact<A extends b2Shape = b2Shape, B extends b2Shape =
         );
     }
 
+    /** @internal protected */
     public Update(listener: b2ContactListener): void {
         const tManifold = this.m_oldManifold;
         this.m_oldManifold = this.m_manifold;

@@ -88,7 +88,7 @@ Object.assign(b2World.prototype, {
         }
 
         // Use the smallest radius, since that represents the worst-case.
-        return b2CalculateParticleIterations(this.m_gravity.Length(), GetSmallestRadius(this), timeStep);
+        return b2CalculateParticleIterations(this.GetGravity().Length(), GetSmallestRadius(this), timeStep);
     },
 });
 
@@ -99,13 +99,15 @@ b2_augment(b2World.prototype, {
         return body;
     },
 
-    Solve(this: b2World, original, step) {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    Solve(this: b2World, original: (step: b2TimeStep) => void, step: b2TimeStep) {
         for (let p = this.m_particleSystemList; p; p = p.m_next) {
             p.Solve(step); // Particle Simulation
         }
         // update previous transforms
-        for (let b = this.m_bodyList; b; b = b.m_next) {
-            b.m_xf0.Copy(b.m_xf);
+        for (let b = this.GetBodyList(); b; b = b.GetNext()) {
+            b.m_xf0.Copy(b.GetTransform());
         }
 
         original(step);

@@ -125,52 +125,53 @@ const defaultLocalAnchorB = b2Vec2.UNITX;
  * zero length.
  */
 export class b2PulleyJoint extends b2Joint {
-    public readonly m_groundAnchorA = new b2Vec2();
+    protected readonly m_groundAnchorA = new b2Vec2();
 
-    public readonly m_groundAnchorB = new b2Vec2();
+    protected readonly m_groundAnchorB = new b2Vec2();
 
-    public m_lengthA = 0;
+    protected m_lengthA = 0;
 
-    public m_lengthB = 0;
+    protected m_lengthB = 0;
 
     // Solver shared
-    public readonly m_localAnchorA = new b2Vec2();
+    protected readonly m_localAnchorA = new b2Vec2();
 
-    public readonly m_localAnchorB = new b2Vec2();
+    protected readonly m_localAnchorB = new b2Vec2();
 
-    public m_constant = 0;
+    protected m_constant = 0;
 
-    public m_ratio = 0;
+    protected m_ratio = 0;
 
-    public m_impulse = 0;
+    protected m_impulse = 0;
 
     // Solver temp
-    public m_indexA = 0;
+    protected m_indexA = 0;
 
-    public m_indexB = 0;
+    protected m_indexB = 0;
 
-    public readonly m_uA = new b2Vec2();
+    protected readonly m_uA = new b2Vec2();
 
-    public readonly m_uB = new b2Vec2();
+    protected readonly m_uB = new b2Vec2();
 
-    public readonly m_rA = new b2Vec2();
+    protected readonly m_rA = new b2Vec2();
 
-    public readonly m_rB = new b2Vec2();
+    protected readonly m_rB = new b2Vec2();
 
-    public readonly m_localCenterA = new b2Vec2();
+    protected readonly m_localCenterA = new b2Vec2();
 
-    public readonly m_localCenterB = new b2Vec2();
+    protected readonly m_localCenterB = new b2Vec2();
 
-    public m_invMassA = 0;
+    protected m_invMassA = 0;
 
-    public m_invMassB = 0;
+    protected m_invMassB = 0;
 
-    public m_invIA = 0;
+    protected m_invIA = 0;
 
-    public m_invIB = 0;
+    protected m_invIB = 0;
 
-    public m_mass = 0;
+    protected m_mass = 0;
 
+    /** @internal protected */
     public constructor(def: b2IPulleyJointDef) {
         super(def);
 
@@ -190,6 +191,7 @@ export class b2PulleyJoint extends b2Joint {
         this.m_impulse = 0;
     }
 
+    /** @internal protected */
     public InitVelocityConstraints(data: b2SolverData): void {
         this.m_indexA = this.m_bodyA.m_islandIndex;
         this.m_indexB = this.m_bodyB.m_islandIndex;
@@ -270,6 +272,7 @@ export class b2PulleyJoint extends b2Joint {
         data.velocities[this.m_indexB].w = wB;
     }
 
+    /** @internal protected */
     public SolveVelocityConstraints(data: b2SolverData): void {
         const vA = data.velocities[this.m_indexA].v;
         let wA = data.velocities[this.m_indexA].w;
@@ -295,6 +298,7 @@ export class b2PulleyJoint extends b2Joint {
         data.velocities[this.m_indexB].w = wB;
     }
 
+    /** @internal protected */
     public SolvePositionConstraints(data: b2SolverData): boolean {
         const cA = data.positions[this.m_indexA].c;
         let aA = data.positions[this.m_indexA].a;

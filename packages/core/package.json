@@ -26,12 +26,13 @@
     "dist"
   ],
   "scripts": {
-    "build": "rimraf dist && tsc"
+    "build": "rimraf dist && tsc && idtsc"
   },
   "browserslist": [
     "> 5%"
   ],
   "devDependencies": {
+    "idtsc": "^0.9.0",
     "rimraf": "^3.0.2",
     "typescript": "^4.0.2"
   },

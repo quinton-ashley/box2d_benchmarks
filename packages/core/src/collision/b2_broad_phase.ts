@@ -29,7 +29,7 @@ type b2Pair<T> = [b2TreeNode<T>, b2TreeNode<T>];
  * It is up to the client to consume the new pairs and to track subsequent overlap.
  */
 export class b2BroadPhase<T> {
-    public readonly m_tree = new b2DynamicTree<T>();
+    private readonly m_tree = new b2DynamicTree<T>();
 
     private m_proxyCount = 0;
 
@@ -204,12 +204,12 @@ export class b2BroadPhase<T> {
         this.m_tree.ShiftOrigin(newOrigin);
     }
 
-    public BufferMove(proxy: b2TreeNode<T>): void {
+    private BufferMove(proxy: b2TreeNode<T>): void {
         this.m_moveBuffer[this.m_moveCount] = proxy;
         ++this.m_moveCount;
     }
 
-    public UnBufferMove(proxy: b2TreeNode<T>): void {
+    private UnBufferMove(proxy: b2TreeNode<T>): void {
         const i = this.m_moveBuffer.indexOf(proxy);
         this.m_moveBuffer[i] = null;
     }

@@ -43,7 +43,7 @@ export function b2GetBlockSolve() {
     return g_blockSolve;
 }
 
-export class b2VelocityConstraintPoint {
+class b2VelocityConstraintPoint {
     public readonly rA = new b2Vec2();
 
     public readonly rB = new b2Vec2();
@@ -59,6 +59,7 @@ export class b2VelocityConstraintPoint {
     public velocityBias = 0;
 }
 
+/** @internal */
 export class b2ContactVelocityConstraint {
     public readonly points = b2MakeArray(b2_maxManifoldPoints, b2VelocityConstraintPoint);
 
@@ -127,6 +128,7 @@ class b2ContactPositionConstraint {
     public pointCount = 0;
 }
 
+/** @internal */
 export class b2ContactSolverDef {
     public readonly step = b2TimeStep.Create();
 
@@ -202,6 +204,7 @@ class b2PositionSolverManifold {
     }
 }
 
+/** @internal */
 export class b2ContactSolver {
     public readonly m_step = b2TimeStep.Create();
 

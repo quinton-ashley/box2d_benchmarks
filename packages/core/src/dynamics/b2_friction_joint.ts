@@ -74,44 +74,45 @@ export class b2FrictionJointDef extends b2JointDef implements b2IFrictionJointDe
  * It provides 2D translational friction and angular friction.
  */
 export class b2FrictionJoint extends b2Joint {
-    public readonly m_localAnchorA = new b2Vec2();
+    protected readonly m_localAnchorA = new b2Vec2();
 
-    public readonly m_localAnchorB = new b2Vec2();
+    protected readonly m_localAnchorB = new b2Vec2();
 
     // Solver shared
-    public readonly m_linearImpulse = new b2Vec2();
+    protected readonly m_linearImpulse = new b2Vec2();
 
-    public m_angularImpulse = 0;
+    protected m_angularImpulse = 0;
 
-    public m_maxForce = 0;
+    protected m_maxForce = 0;
 
-    public m_maxTorque = 0;
+    protected m_maxTorque = 0;
 
     // Solver temp
-    public m_indexA = 0;
+    protected m_indexA = 0;
 
-    public m_indexB = 0;
+    protected m_indexB = 0;
 
-    public readonly m_rA = new b2Vec2();
+    protected readonly m_rA = new b2Vec2();
 
-    public readonly m_rB = new b2Vec2();
+    protected readonly m_rB = new b2Vec2();
 
-    public readonly m_localCenterA = new b2Vec2();
+    protected readonly m_localCenterA = new b2Vec2();
 
-    public readonly m_localCenterB = new b2Vec2();
+    protected readonly m_localCenterB = new b2Vec2();
 
-    public m_invMassA = 0;
+    protected m_invMassA = 0;
 
-    public m_invMassB = 0;
+    protected m_invMassB = 0;
 
-    public m_invIA = 0;
+    protected m_invIA = 0;
 
-    public m_invIB = 0;
+    protected m_invIB = 0;
 
-    public readonly m_linearMass = new b2Mat22();
+    protected readonly m_linearMass = new b2Mat22();
 
-    public m_angularMass = 0;
+    protected m_angularMass = 0;
 
+    /** @internal protected */
     public constructor(def: b2IFrictionJointDef) {
         super(def);
 

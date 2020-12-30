@@ -117,6 +117,7 @@ export class b2ParticleSystem_SolveCollisionCallback extends b2FixtureParticleQu
         const output = s_output;
         const input = s_input;
         if (this.m_system.m_iterationIndex === 0) {
+            const xf = body.GetTransform();
             // Put 'ap' in the local space of the previous frame
             const p1 = b2Transform.TransposeMultiplyVec2(body.m_xf0, ap, s_p1);
             if (fixture.GetShape().GetType() === b2ShapeType.e_circle) {
@@ -125,12 +126,12 @@ export class b2ParticleSystem_SolveCollisionCallback extends b2FixtureParticleQu
                 // Re-apply rotation about the center of the circle
                 b2Rot.MultiplyVec2(body.m_xf0.q, p1, p1);
                 // Subtract rotation of the current frame
-                b2Rot.TransposeMultiplyVec2(body.m_xf.q, p1, p1);
+                b2Rot.TransposeMultiplyVec2(xf.q, p1, p1);
                 // Return to local space
                 p1.Add(body.GetLocalCenter());
             }
             // Return to global space and apply rotation of current frame
-            b2Transform.MultiplyVec2(body.m_xf, p1, input.p1);
+            b2Transform.MultiplyVec2(xf, p1, input.p1);
         } else {
             input.p1.Copy(ap);
         }

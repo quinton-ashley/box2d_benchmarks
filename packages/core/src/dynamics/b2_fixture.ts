@@ -135,32 +135,43 @@ const Synchronize_s_displacement = new b2Vec2();
  * @warning you cannot reuse fixtures.
  */
 export class b2Fixture {
+    /** @internal protected */
     public m_density = 0;
 
+    /** @internal protected */
     public m_next: b2Fixture | null = null;
 
+    /** @internal protected */
     public readonly m_body: b2Body;
 
+    /** @internal protected */
     public readonly m_shape: b2Shape;
 
+    /** @internal protected */
     public m_friction = 0;
 
+    /** @internal protected */
     public m_restitution = 0;
 
+    /** @internal protected */
     public m_restitutionThreshold = 0;
 
+    /** @internal protected */
     public readonly m_proxies: b2FixtureProxy[] = [];
 
+    /** @internal protected */
     public get m_proxyCount(): number {
         return this.m_proxies.length;
     }
 
-    public readonly m_filter: b2Filter;
+    protected readonly m_filter: b2Filter;
 
+    /** @internal protected */
     public m_isSensor = false;
 
-    public m_userData: any = null;
+    protected m_userData: any = null;
 
+    /** @internal protected */
     public constructor(body: b2Body, def: b2FixtureDef) {
         this.m_body = body;
         this.m_shape = def.shape.Clone();
@@ -383,7 +394,11 @@ export class b2Fixture {
         return this.m_proxies[childIndex].aabb;
     }
 
-    // These support body activation/deactivation.
+    /**
+     * These support body activation/deactivation.
+     *
+     * @internal protected
+     */
     public CreateProxies(broadPhase: b2BroadPhase<b2FixtureProxy>, xf: b2Transform): void {
         b2Assert(this.m_proxies.length === 0);
         // Create proxies in the broad-phase.
@@ -393,6 +408,7 @@ export class b2Fixture {
         }
     }
 
+    /** @internal protected */
     public DestroyProxies(broadPhase: b2BroadPhase<b2FixtureProxy>): void {
         // Destroy proxies in the broad-phase.
         for (const proxy of this.m_proxies) {
@@ -401,6 +417,7 @@ export class b2Fixture {
         this.m_proxies.length = 0;
     }
 
+    /** @internal protected */
     public Synchronize(broadPhase: b2BroadPhase<b2FixtureProxy>, transform1: b2Transform, transform2: b2Transform) {
         const { c1, c2 } = temp;
         const displacement = Synchronize_s_displacement;

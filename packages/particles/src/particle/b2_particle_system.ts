@@ -2425,9 +2425,8 @@ export class b2ParticleSystem {
         // DEBUG: b2Assert(this.m_groupCount > 0);
         // DEBUG: b2Assert(group !== null);
 
-        if (this.m_world.m_destructionListener) {
-            this.m_world.m_destructionListener.SayGoodbyeParticleGroup(group);
-        }
+        const destructionListener = this.m_world.GetDestructionListener();
+        destructionListener?.SayGoodbyeParticleGroup(group);
 
         this.SetGroupFlags(group, 0);
         for (let i = group.m_firstIndex; i < group.m_lastIndex; i++) {
@@ -4244,12 +4243,12 @@ export class b2ParticleSystem {
         }
         // DEBUG: b2Assert(newIndices.length === this.m_count);
         let allParticleFlags = 0;
+        const destructionListener = this.m_world.GetDestructionListener();
         for (let i = 0; i < this.m_count; i++) {
             const flags = this.m_flagsBuffer.data[i];
             if (flags & b2ParticleFlag.b2_zombieParticle) {
-                const destructionListener = this.m_world.m_destructionListener;
-                if (flags & b2ParticleFlag.b2_destructionListenerParticle && destructionListener) {
-                    destructionListener.SayGoodbyeParticle(this, i);
+                if (flags & b2ParticleFlag.b2_destructionListenerParticle) {
+                    destructionListener?.SayGoodbyeParticle(this, i);
                 }
                 // Destroy particle handle.
                 if (this.m_handleIndexBuffer.data) {
@@ -4628,7 +4627,7 @@ export class b2ParticleSystem {
      */
     public GetFixtureContactFilter(): b2ContactFilter | null {
         return this.m_allParticleFlags & b2ParticleFlag.b2_fixtureContactFilterParticle
-            ? this.m_world.m_contactManager.m_contactFilter
+            ? this.m_world.GetContactManager().m_contactFilter
             : null;
     }
 
@@ -4639,7 +4638,7 @@ export class b2ParticleSystem {
      */
     public GetParticleContactFilter(): b2ContactFilter | null {
         return this.m_allParticleFlags & b2ParticleFlag.b2_particleContactFilterParticle
-            ? this.m_world.m_contactManager.m_contactFilter
+            ? this.m_world.GetContactManager().m_contactFilter
             : null;
     }
 
@@ -4650,7 +4649,7 @@ export class b2ParticleSystem {
      */
     public GetFixtureContactListener(): b2ContactListener | null {
         return this.m_allParticleFlags & b2ParticleFlag.b2_fixtureContactListenerParticle
-            ? this.m_world.m_contactManager.m_contactListener
+            ? this.m_world.GetContactManager().m_contactListener
             : null;
     }
 
@@ -4661,7 +4660,7 @@ export class b2ParticleSystem {
      */
     public GetParticleContactListener(): b2ContactListener | null {
         return this.m_allParticleFlags & b2ParticleFlag.b2_particleContactListenerParticle
-            ? this.m_world.m_contactManager.m_contactListener
+            ? this.m_world.GetContactManager().m_contactListener
             : null;
     }
 
