@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+// Structures and functions used for computing contact points, distance queries, and TOI queries.
 // DEBUG: import { b2Assert } from "../common/b2_common";
 import {
     b2_maxFloat,
@@ -33,11 +34,6 @@ import { b2Vec2, b2Rot, b2Transform, XY } from "../common/b2_math";
 import type { b2Shape } from "./b2_shape";
 import { b2Distance, b2DistanceInput, b2DistanceOutput, b2SimplexCache } from "./b2_distance";
 
-/**
- * @file
- * Structures and functions used for computing contact points, distance
- * queries, and TOI queries.
- */
 export enum b2ContactFeatureType {
     e_vertex = 0,
     e_face = 1,
