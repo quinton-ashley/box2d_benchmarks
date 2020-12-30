@@ -1,6 +1,6 @@
 {
   "name": "@box2d/controllers",
-  "version": "0.7.5",
+  "version": "0.8.0",
   "description": "A TypeScript port of LiquidFuns controllers for @box2d/core",
   "keywords": [
     "box2d",
@@ -31,7 +31,7 @@
     "> 5%"
   ],
   "dependencies": {
-    "@box2d/core": "^0.7.5"
+    "@box2d/core": "^0.8.0"
   },
   "devDependencies": {
     "rimraf": "^3.0.2",
