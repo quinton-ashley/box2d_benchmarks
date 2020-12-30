@@ -3,10 +3,11 @@ import { b2Vec2, b2Transform, b2Rot } from "../common/b2_math";
 import { b2ContactFeatureType, b2Manifold, b2ManifoldType, b2ClipVertex, b2ClipSegmentToLine } from "./b2_collision";
 import { b2PolygonShape } from "./b2_polygon_shape";
 
-// Find the max separation between poly1 and poly2 using edge normals from poly1.
 const b2FindMaxSeparation_s_xf = new b2Transform();
 const b2FindMaxSeparation_s_n = new b2Vec2();
 const b2FindMaxSeparation_s_v1 = new b2Vec2();
+
+/** Find the max separation between poly1 and poly2 using edge normals from poly1. */
 function b2FindMaxSeparation(
     edgeIndex: [number],
     poly1: b2PolygonShape,
@@ -105,13 +106,6 @@ function b2FindIncidentEdge(
     cf1.typeB = b2ContactFeatureType.e_vertex;
 }
 
-// Find edge normal of max separation on A - return if separating axis is found
-// Find edge normal of max separation on B - return if separation axis is found
-// Choose reference edge as min(minA, minB)
-// Find incident edge
-// Clip
-
-// The normal points from 1 to 2
 const b2CollidePolygons_s_incidentEdge = [new b2ClipVertex(), new b2ClipVertex()] as const;
 const b2CollidePolygons_s_clipPoints1 = [new b2ClipVertex(), new b2ClipVertex()] as const;
 const b2CollidePolygons_s_clipPoints2 = [new b2ClipVertex(), new b2ClipVertex()] as const;
@@ -125,6 +119,16 @@ const b2CollidePolygons_s_tangent = new b2Vec2();
 const b2CollidePolygons_s_ntangent = new b2Vec2();
 const b2CollidePolygons_s_v11 = new b2Vec2();
 const b2CollidePolygons_s_v12 = new b2Vec2();
+
+/**
+ * Find edge normal of max separation on A - return if separating axis is found
+ * Find edge normal of max separation on B - return if separation axis is found
+ * Choose reference edge as min(minA, minB)
+ * Find incident edge
+ * Clip
+
+ * The normal points from 1 to 2
+ */
 export function b2CollidePolygons(
     manifold: b2Manifold,
     polyA: b2PolygonShape,

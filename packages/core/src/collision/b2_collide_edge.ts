@@ -160,7 +160,7 @@ enum b2EPAxisType {
     e_edgeB,
 }
 
-// This structure is used to keep track of the best separating axis.
+/** This structure is used to keep track of the best separating axis. */
 class b2EPAxis {
     public normal = new b2Vec2();
 
@@ -171,7 +171,7 @@ class b2EPAxis {
     public separation = 0;
 }
 
-// This holds polygon B expressed in frame A.
+/** This holds polygon B expressed in frame A. */
 class b2TempPolygon {
     public vertices: b2Vec2[] = b2MakeArray(b2_maxPolygonVertices, b2Vec2);
 
@@ -180,7 +180,7 @@ class b2TempPolygon {
     public count = 0;
 }
 
-// Reference face used for clipping
+/** Reference face used for clipping */
 class b2ReferenceFace {
     public i1 = 0;
 
@@ -201,7 +201,6 @@ class b2ReferenceFace {
     public sideOffset2 = 0;
 }
 
-// static b2EPAxis b2ComputeEdgeSeparation(const b2TempPolygon& polygonB, const b2Vec2& v1, const b2Vec2& normal1)
 const b2ComputeEdgeSeparation_s_axis = new b2EPAxis();
 const b2ComputeEdgeSeparation_s_axes = [new b2Vec2(), new b2Vec2()] as const;
 function b2ComputeEdgeSeparation(
@@ -241,7 +240,6 @@ function b2ComputeEdgeSeparation(
     return axis;
 }
 
-// static b2EPAxis b2ComputePolygonSeparation(const b2TempPolygon& polygonB, const b2Vec2& v1, const b2Vec2& v2)
 const b2ComputePolygonSeparation_s_axis = new b2EPAxis();
 const b2ComputePolygonSeparation_s_n = new b2Vec2();
 function b2ComputePolygonSeparation(

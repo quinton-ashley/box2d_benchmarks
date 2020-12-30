@@ -115,9 +115,6 @@ export abstract class b2JointDef implements b2IJointDef {
 /**
  * Utility to compute linear stiffness values from frequency and damping ratio
  */
-// void b2LinearStiffness(float& stiffness, float& damping,
-// 	float frequencyHertz, float dampingRatio,
-// 	const b2Body* bodyA, const b2Body* bodyB);
 export function b2LinearStiffness(
     def: { stiffness: number; damping: number },
     frequencyHertz: number,

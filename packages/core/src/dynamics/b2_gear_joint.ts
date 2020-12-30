@@ -97,10 +97,10 @@ export class b2GearJoint extends b2Joint {
 
     protected m_typeB = b2JointType.e_unknownJoint;
 
-    // Body A is connected to body C
-    // Body B is connected to body D
+    /** Body A is connected to body C */
     protected m_bodyC: b2Body;
 
+    /** Body B is connected to body D */
     protected m_bodyD: b2Body;
 
     // Solver shared

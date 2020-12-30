@@ -16,15 +16,6 @@
  * 3. This notice may not be removed or altered from any source distribution.
  */
 
-/**
- * \mainpage Box2D API Documentation
- * \section intro_sec Getting Started
- * For documentation please see http://box2d.org/documentation.html
- * For discussion please visit http://box2d.org/forum
- */
-
-// These include files constitute the main Box2D API
-
 export * from "./common/b2_common";
 export * from "./common/b2_settings";
 export * from "./common/b2_math";

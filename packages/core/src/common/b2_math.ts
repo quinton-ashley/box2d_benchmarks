@@ -778,7 +778,7 @@ export class b2Mat22 {
         return out;
     }
 
-    // A * B
+    /** A * B */
     public static Multiply(A: b2Mat22, B: b2Mat22, out: b2Mat22) {
         const A_ex_x = A.ex.x;
         const A_ex_y = A.ex.y;
@@ -795,7 +795,7 @@ export class b2Mat22 {
         return out;
     }
 
-    // A^T * B
+    /** A^T * B */
     public static TransposeMultiply(A: b2Mat22, B: b2Mat22, out: b2Mat22) {
         const A_ex_x = A.ex.x;
         const A_ex_y = A.ex.y;
@@ -1214,16 +1214,20 @@ export class b2Transform {
         return out;
     }
 
-    // v2 = A.q.Rot(B.q.Rot(v1) + B.p) + A.p
-    //    = (A.q * B.q).Rot(v1) + A.q.Rot(B.p) + A.p
+    /**
+     * v2 = A.q.Rot(B.q.Rot(v1) + B.p) + A.p
+     *    = (A.q * B.q).Rot(v1) + A.q.Rot(B.p) + A.p
+     */
     public static Multiply(A: b2Transform, B: b2Transform, out: b2Transform) {
         b2Rot.Multiply(A.q, B.q, out.q);
         b2Rot.MultiplyVec2(A.q, B.p, out.p).Add(A.p);
         return out;
     }
 
-    // v2 = A.q' * (B.q * v1 + B.p - A.p)
-    //    = A.q' * B.q * v1 + A.q' * (B.p - A.p)
+    /**
+     * v2 = A.q' * (B.q * v1 + B.p - A.p)
+     *    = A.q' * B.q * v1 + A.q' * (B.p - A.p)
+     */
     public static TransposeMultiply(A: b2Transform, B: b2Transform, out: b2Transform) {
         b2Rot.TransposeMultiply(A.q, B.q, out.q);
         b2Rot.TransposeMultiplyVec2(A.q, b2Vec2.Subtract(B.p, A.p, out.p), out.p);

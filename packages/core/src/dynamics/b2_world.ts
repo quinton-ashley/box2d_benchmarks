@@ -72,8 +72,10 @@ export class b2World {
 
     private m_destructionListener: b2DestructionListener | null = null;
 
-    // This is used to compute the time step ratio to
-    // support a variable time step.
+    /**
+     * This is used to compute the time step ratio to
+     * support a variable time step.
+     */
     private m_inv_dt0 = 0;
 
     /** @internal */

@@ -7,8 +7,6 @@ import { b2SolverData } from "./b2_time_step";
 import type { b2Body } from "./b2_body";
 
 export interface b2IAreaJointDef extends b2IJointDef {
-    // world: b2World;
-
     bodies: b2Body[];
 
     stiffness?: number;

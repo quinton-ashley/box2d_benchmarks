@@ -24,7 +24,7 @@ import { b2BodyType } from "./b2_body";
 import { b2FixtureProxy } from "./b2_fixture";
 import { b2ContactFilter, b2ContactListener } from "./b2_world_callbacks";
 
-// Delegate of b2World.
+/** Delegate of b2World. */
 export class b2ContactManager {
     public readonly m_broadPhase = new b2BroadPhase<b2FixtureProxy>();
 
@@ -38,7 +38,7 @@ export class b2ContactManager {
 
     public readonly m_contactFactory = new b2ContactFactory();
 
-    // Broad-phase callback.
+    /** Broad-phase callback. */
     public AddPair = (proxyA: b2FixtureProxy, proxyB: b2FixtureProxy): void => {
         // DEBUG: b2Assert(proxyA instanceof b2FixtureProxy);
         // DEBUG: b2Assert(proxyB instanceof b2FixtureProxy);
@@ -203,9 +203,11 @@ export class b2ContactManager {
         --this.m_contactCount;
     }
 
-    // This is the top level collision call for the time step. Here
-    // all the narrow phase collision is processed for the world
-    // contact list.
+    /**
+     * This is the top level collision call for the time step. Here
+     * all the narrow phase collision is processed for the world
+     * contact list.
+     */
     public Collide(): void {
         // Update awake contacts.
         let c: b2Contact | null = this.m_contactList;
