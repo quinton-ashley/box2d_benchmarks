@@ -1,6 +1,6 @@
 {
   "name": "@box2d/testbed",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "private": true,
   "description": "A Testbed for all @box2d packages",
   "homepage": "https://lusito.github.io/box2d.ts/",
@@ -28,10 +28,10 @@
     "> 5%"
   ],
   "dependencies": {
-    "@box2d/controllers": "^0.8.0",
-    "@box2d/core": "^0.8.0",
-    "@box2d/lights": "^0.8.0",
-    "@box2d/particles": "^0.8.0",
+    "@box2d/controllers": "^0.9.0",
+    "@box2d/core": "^0.9.0",
+    "@box2d/lights": "^0.9.0",
+    "@box2d/particles": "^0.9.0",
     "@react-nano/router": "^0.11.0",
     "@types/randomcolor": "^0.5.6",
     "@types/react": "^17.0.20",

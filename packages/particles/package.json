@@ -1,6 +1,6 @@
 {
   "name": "@box2d/particles",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "description": "A TypeScript port of LiquidFuns particles for @box2d/core",
   "keywords": [
     "box2d",
@@ -36,7 +36,7 @@
     "> 5%"
   ],
   "dependencies": {
-    "@box2d/core": "^0.8.0"
+    "@box2d/core": "^0.9.0"
   },
   "devDependencies": {
     "rimraf": "^3.0.2",
