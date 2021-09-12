@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { useRouter } from "react-router-ts";
+import { useRouter } from "@react-nano/router";
 
 import "./style.scss";
 import { useManager } from "../../manager";

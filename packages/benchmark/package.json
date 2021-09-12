@@ -38,13 +38,13 @@
     "@box2d/core": "^0.8.0",
     "@flyover/box2d": "^1.0.1",
     "box2d.js": "^1.0.4",
-    "planck-js": "^0.3.22"
+    "planck-js": "^0.3.31"
   },
   "devDependencies": {
-    "parcel-bundler": "^1.12.4",
+    "parcel-bundler": "^1.12.5",
     "rimraf": "^3.0.2",
-    "ts-node": "^9.0.0",
-    "typescript": "^4.0.3"
+    "ts-node": "^10.2.1",
+    "typescript": "^4.4.3"
   },
   "publishConfig": {
     "access": "public"

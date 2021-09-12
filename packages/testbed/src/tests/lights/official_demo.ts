@@ -292,14 +292,14 @@ class OfficialDemo extends AbstractLightTest {
     private initChainLights() {
         this.clearLights();
         for (const marble of this.marbles) {
-            const light = new ChainLight(this.rayHandler, RAYS_PER_BALL, Light.DefaultColor, LIGHT_DISTANCE, 1, [
-                -5,
-                0,
-                0,
-                3,
-                5,
-                0,
-            ]);
+            const light = new ChainLight(
+                this.rayHandler,
+                RAYS_PER_BALL,
+                Light.DefaultColor,
+                LIGHT_DISTANCE,
+                1,
+                [-5, 0, 0, 3, 5, 0],
+            );
             light.attachToBody(marble.body, random(0, 360));
             setRandomLightColor(light);
             marble.light = light;

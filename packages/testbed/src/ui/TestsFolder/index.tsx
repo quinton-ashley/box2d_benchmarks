@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-ts";
+import { Link } from "@react-nano/router";
 
 import { getTestLink } from "../../utils/reactUtils";
 import { TestEntry } from "../../test";

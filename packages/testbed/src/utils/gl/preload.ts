@@ -16,7 +16,7 @@ export async function loadImages<T extends { [s: string]: string }>(gl: WebGLRen
     const textures = {} as { [key in keyof T]: TextureInfo };
     const imagePromises = Object.keys(imagesToLoad).map(
         (key) =>
-            new Promise((resolve) => {
+            new Promise<void>((resolve) => {
                 const texture = gl.createTexture() as WebGLTexture;
                 gl.bindTexture(gl.TEXTURE_2D, texture);
                 // let's assume all images are not a power of 2

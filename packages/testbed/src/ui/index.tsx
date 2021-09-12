@@ -1,7 +1,7 @@
 import React, { useReducer } from "react";
 import ReactDOM from "react-dom";
 import "typeface-open-sans";
-import { Router } from "react-router-ts";
+import { Router } from "@react-nano/router";
 
 import { Main } from "./Main";
 import { TestControl } from "../testControls";
