@@ -13,6 +13,7 @@
     "bench": "yarn workspace @box2d/benchmark test",
     "bench:web": "yarn workspace @box2d/benchmark start",
     "build": "yarn workspaces run build",
+    "build:docs": "vuepress build packages/documentation -d docs/docs",
     "build:libs": "yarn workspace @box2d/core build && yarn workspace @box2d/controllers build && yarn workspace @box2d/particles build && yarn workspace @box2d/lights build",
     "build:testbed": "yarn workspace @box2d/testbed build",
     "credit": "all-contributors add",
@@ -29,6 +30,7 @@
     "lint:style:fix": "yarn run lint:style:base --write",
     "release": "lerna publish",
     "start": "yarn workspace @box2d/testbed start",
+    "start:docs": "vuepress dev packages/documentation",
     "start:fresh": "yarn run build:libs && yarn workspace @box2d/testbed start",
     "updiff": "yarn workspace @box2d/updiff start",
     "updiff:cpp": "yarn workspace @box2d/updiff run convert:cpp",
@@ -40,6 +42,8 @@
     "@lusito/stylelint-config": "^1.6.0",
     "all-contributors-cli": "^6.20.0",
     "lerna": "^4.0.0",
-    "sort-package-json": "^1.51.0"
+    "sort-package-json": "^1.53.1",
+    "vuepress": "^1.8.3",
+    "vuepress-plugin-fulltext-search": "^2.2.1"
   }
 }
