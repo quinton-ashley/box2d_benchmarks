@@ -3,6 +3,7 @@ import { LightMap } from "./LightMap";
 import { LightShader, createLightShader } from "./shaders";
 import { XY } from "./math";
 import { BlendFunc, LightColor, RGBA } from "./utils";
+import { removeFromArray } from "./utils/arrayUtils";
 import { lightSettings, NO_GAMMA_CORRECTION } from "./settings";
 
 /**
@@ -340,8 +341,7 @@ export abstract class RayHandler {
 
     public removeLight(light: Light) {
         const list = light.isActive() ? this.lightList : this.disabledLights;
-        const index = list.indexOf(light);
-        if (index >= 0) list.splice(0, 1);
+        removeFromArray(list, light);
     }
 
     /**

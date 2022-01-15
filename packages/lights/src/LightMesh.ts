@@ -74,6 +74,9 @@ export class LightMesh {
         shader.s.set(1, this.gl.FLOAT, false, 0, 0);
         this.sBuffer.unbind();
         this.gl.drawArrays(mode, 0, count);
+        shader.a_position.disable();
+        shader.quad_colors.disable();
+        shader.s.disable();
     }
 
     public update() {

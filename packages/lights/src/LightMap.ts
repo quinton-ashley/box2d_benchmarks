@@ -97,6 +97,8 @@ export class LightMap {
         shader.a_texCoord.set(2, this.gl.FLOAT, false, 0, 0);
         this.uvBuffer.unbind();
         this.gl.drawArrays(this.gl.TRIANGLE_FAN, 0, 4);
+        shader.a_position.disable();
+        shader.a_texCoord.disable();
     }
 
     public gaussianBlur() {

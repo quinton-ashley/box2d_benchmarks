@@ -3,6 +3,7 @@ import { LightMesh } from "../LightMesh";
 import { LightColor, RGBA } from "../utils";
 import { XY, Vector2, makeNumberArray } from "../math";
 import { lightSettings } from "../settings";
+import { removeFromArray } from "../utils/arrayUtils";
 
 export type DebugDrawPolygon = (vertices: XY[], vertexCount: number, color: RGBA) => void;
 
@@ -60,7 +61,7 @@ export abstract class Light {
 
     protected softShadowLength = 2.5;
 
-    protected lightMesh!: LightMesh;
+    protected readonly lightMesh: LightMesh;
 
     protected softShadowMesh: LightMesh | null = null;
 
@@ -260,7 +261,9 @@ export abstract class Light {
     }
 
     /**
-     * Disposes all light resources
+     * Disposes all light resources.
+     * Don't forget to remove the light from the RayHandler first!
+     * FIXME: this is too confusing
      */
     public dispose() {
         this.lightMesh.dispose();
@@ -279,8 +282,14 @@ export abstract class Light {
      */
     public setActive(active: boolean) {
         if (active !== this.active) {
-            this.rayHandler.removeLight(this);
             this.active = active;
+            if (active) {
+                this.rayHandler.lightList.push(this);
+                removeFromArray(this.rayHandler.disabledLights, this);
+            } else {
+                this.rayHandler.disabledLights.push(this);
+                removeFromArray(this.rayHandler.lightList, this);
+            }
         }
     }
 
