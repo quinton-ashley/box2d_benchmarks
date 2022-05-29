@@ -37,13 +37,14 @@
     "updiff:ts": "yarn workspace @box2d/updiff run convert:ts"
   },
   "devDependencies": {
-    "@lusito/eslint-config-react": "^1.7.0",
-    "@lusito/prettier-config": "^1.7.0",
-    "@lusito/stylelint-config": "^1.6.0",
+    "@lusito/eslint-config-react": "^2.0.3",
+    "@lusito/prettier-config": "^2.0.0",
+    "@lusito/stylelint-config": "^2.0.2",
     "all-contributors-cli": "^6.20.0",
-    "lerna": "^4.0.0",
-    "sort-package-json": "^1.53.1",
-    "vuepress": "^1.8.3",
+    "lerna": "^5.0.0",
+    "postcss": "^8.4.14",
+    "sort-package-json": "^1.57.0",
+    "vuepress": "^1.9.7",
     "vuepress-plugin-fulltext-search": "^2.2.1"
   }
 }

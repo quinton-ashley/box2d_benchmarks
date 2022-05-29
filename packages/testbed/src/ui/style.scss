@@ -15,13 +15,15 @@ body,
     height: 100%;
     flex-direction: column;
     position: relative;
+
     > .menubar {
         flex-grow: 0;
         flex-shrink: 0;
     }
 }
+
 main {
-    background: rgb(51, 51, 51);
+    background: rgb(51 51 51);
     flex-grow: 1;
     position: relative;
     overflow: hidden;
@@ -49,6 +51,7 @@ main {
 #left_overlay {
     text-shadow: 2px 2px 2px black;
 }
+
 #title_overlay {
     text-align: center;
     margin-right: #{$size-sidebar + $spacing-lg};
@@ -59,9 +62,11 @@ main {
     th {
         text-align: left;
     }
+
     td {
         padding: 0 0 0 $spacing-lg;
     }
+
     td:empty::after {
         content: "\00a0";
     }

@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES2018",
-    "module": "CommonJS",
+    "module": "ESNext",
     "declaration": true,
     "noEmit": true,
     "lib": ["ES2018", "DOM"],

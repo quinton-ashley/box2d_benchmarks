@@ -4,6 +4,7 @@ module.exports = {
     extends: ["@lusito/eslint-config-react"],
     rules: {
         ...utils.getA11yOffRules(), // just for now
+        "selector-id-pattern": "off",
         "max-classes-per-file": "off",
         "no-useless-constructor": "off",
         "@typescript-eslint/no-parameter-properties": "off",
@@ -12,10 +13,8 @@ module.exports = {
         "no-bitwise": "off",
         "no-multi-assign": "off",
         "@typescript-eslint/no-empty-function": "off",
-        "no-useless-constructor": "off",
         "@typescript-eslint/no-useless-constructor": "error",
         "@typescript-eslint/explicit-member-accessibility": "error",
-        "react/require-default-props": "off",
         // Fixme: These are nice for finding errors, but ugly to handle userData with.
         // "@typescript-eslint/no-unsafe-call": "error",
         // "@typescript-eslint/no-unsafe-return": "error",

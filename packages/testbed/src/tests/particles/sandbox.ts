@@ -214,9 +214,7 @@ class SpecialParticleTracker extends b2DestructionListener {
         // NOTE: user data could be used as an alternative method to look up
         // the local handle pointer from the index.
         // DEBUG: const length = this.m_particles.length;
-        this.m_particles = this.m_particles.filter((value) => {
-            return value.GetIndex() !== index;
-        });
+        this.m_particles = this.m_particles.filter((value) => value.GetIndex() !== index);
         // DEBUG: b2Assert((length - this.m_particles.length) === 1);
     }
 }

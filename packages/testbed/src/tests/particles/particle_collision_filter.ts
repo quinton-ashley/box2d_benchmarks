@@ -165,13 +165,13 @@ class ParticleCollisionFilter extends AbstractParticleTest {
     }
 
     public ToggleFixtureCollisions(): void {
-        this.m_contactDisabler.m_enableFixtureParticleCollisions = !this.m_contactDisabler
-            .m_enableFixtureParticleCollisions;
+        this.m_contactDisabler.m_enableFixtureParticleCollisions =
+            !this.m_contactDisabler.m_enableFixtureParticleCollisions;
     }
 
     public ToggleParticleCollisions(): void {
-        this.m_contactDisabler.m_enableParticleParticleCollisions = !this.m_contactDisabler
-            .m_enableParticleParticleCollisions;
+        this.m_contactDisabler.m_enableParticleParticleCollisions =
+            !this.m_contactDisabler.m_enableParticleParticleCollisions;
     }
 
     public m_contactDisabler = new ParticleContactDisabler();

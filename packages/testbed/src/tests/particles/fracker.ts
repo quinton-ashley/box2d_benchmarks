@@ -98,9 +98,7 @@ class EmitterTracker {
 
         for (const emitter of emittersToDestroy) {
             emitter.Destroy();
-            this.m_emitterLifetime = this.m_emitterLifetime.filter((value) => {
-                return value.emitter !== emitter;
-            });
+            this.m_emitterLifetime = this.m_emitterLifetime.filter((value) => value.emitter !== emitter);
         }
     }
 }

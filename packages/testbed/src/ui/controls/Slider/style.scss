@@ -35,6 +35,7 @@
             background: $color-slider-grab;
             -webkit-appearance: none;
         }
+
         &::-moz-range-thumb {
             border: none;
             height: $size-control;
@@ -50,6 +51,7 @@
             &::-webkit-slider-thumb {
                 background: $color-slider-grab-active;
             }
+
             &::-moz-range-thumb {
                 background: $color-slider-grab-active;
             }

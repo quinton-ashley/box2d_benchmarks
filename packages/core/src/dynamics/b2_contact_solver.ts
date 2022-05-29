@@ -642,6 +642,7 @@ export class b2ContactSolver {
                 // Compute b'
                 b.Subtract(b2Mat22.MultiplyVec2(vc.K, a, b2Vec2.s_t0));
 
+                // eslint-disable-next-line no-unreachable-loop
                 for (;;) {
                     //
                     // Case 1: vn = 0

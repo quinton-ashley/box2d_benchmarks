@@ -36,6 +36,7 @@ import { Test, registerTest } from "../../test";
 import { Settings } from "../../settings";
 import { HotKey, hotKeyState } from "../../utils/hotkeys";
 
+// eslint-disable-next-line @typescript-eslint/no-loss-of-precision
 const DEGTORAD = 0.0174532925199432957;
 // const RADTODEG = 57.295779513082320876;
 

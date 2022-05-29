@@ -636,19 +636,17 @@ export class b2ParticleSystem {
     public m_internalAllocatedCapacity = 0;
 
     /** Maps particle indices to handles. */
-    public m_handleIndexBuffer: b2ParticleSystem_UserOverridableBuffer<b2ParticleHandle | null> = new b2ParticleSystem_UserOverridableBuffer<b2ParticleHandle | null>();
+    public m_handleIndexBuffer: b2ParticleSystem_UserOverridableBuffer<b2ParticleHandle | null> =
+        new b2ParticleSystem_UserOverridableBuffer<b2ParticleHandle | null>();
 
-    public m_flagsBuffer: b2ParticleSystem_UserOverridableBuffer<
-        b2ParticleFlag
-    > = new b2ParticleSystem_UserOverridableBuffer<b2ParticleFlag>();
+    public m_flagsBuffer: b2ParticleSystem_UserOverridableBuffer<b2ParticleFlag> =
+        new b2ParticleSystem_UserOverridableBuffer<b2ParticleFlag>();
 
-    public m_positionBuffer: b2ParticleSystem_UserOverridableBuffer<
-        b2Vec2
-    > = new b2ParticleSystem_UserOverridableBuffer<b2Vec2>();
+    public m_positionBuffer: b2ParticleSystem_UserOverridableBuffer<b2Vec2> =
+        new b2ParticleSystem_UserOverridableBuffer<b2Vec2>();
 
-    public m_velocityBuffer: b2ParticleSystem_UserOverridableBuffer<
-        b2Vec2
-    > = new b2ParticleSystem_UserOverridableBuffer<b2Vec2>();
+    public m_velocityBuffer: b2ParticleSystem_UserOverridableBuffer<b2Vec2> =
+        new b2ParticleSystem_UserOverridableBuffer<b2Vec2>();
 
     public m_forceBuffer: b2Vec2[] = [];
 
@@ -697,17 +695,14 @@ export class b2ParticleSystem {
     /** Stuck particle detection parameters and record keeping */
     public m_stuckThreshold = 0;
 
-    public m_lastBodyContactStepBuffer: b2ParticleSystem_UserOverridableBuffer<
-        number
-    > = new b2ParticleSystem_UserOverridableBuffer<number>();
+    public m_lastBodyContactStepBuffer: b2ParticleSystem_UserOverridableBuffer<number> =
+        new b2ParticleSystem_UserOverridableBuffer<number>();
 
-    public m_bodyContactCountBuffer: b2ParticleSystem_UserOverridableBuffer<
-        number
-    > = new b2ParticleSystem_UserOverridableBuffer<number>();
+    public m_bodyContactCountBuffer: b2ParticleSystem_UserOverridableBuffer<number> =
+        new b2ParticleSystem_UserOverridableBuffer<number>();
 
-    public m_consecutiveContactStepsBuffer: b2ParticleSystem_UserOverridableBuffer<
-        number
-    > = new b2ParticleSystem_UserOverridableBuffer<number>();
+    public m_consecutiveContactStepsBuffer: b2ParticleSystem_UserOverridableBuffer<number> =
+        new b2ParticleSystem_UserOverridableBuffer<number>();
 
     public m_stuckParticleBuffer = new b2GrowableBuffer<number>(() => 0);
 
@@ -727,16 +722,14 @@ export class b2ParticleSystem {
      * corresponds to b2ParticleSystemDef::lifetimeGranularity
      * seconds.
      */
-    public m_expirationTimeBuffer: b2ParticleSystem_UserOverridableBuffer<
-        number
-    > = new b2ParticleSystem_UserOverridableBuffer<number>();
+    public m_expirationTimeBuffer: b2ParticleSystem_UserOverridableBuffer<number> =
+        new b2ParticleSystem_UserOverridableBuffer<number>();
 
     /**
      * List of particle indices sorted by expiration time.
      */
-    public m_indexByExpirationTimeBuffer: b2ParticleSystem_UserOverridableBuffer<
-        number
-    > = new b2ParticleSystem_UserOverridableBuffer<number>();
+    public m_indexByExpirationTimeBuffer: b2ParticleSystem_UserOverridableBuffer<number> =
+        new b2ParticleSystem_UserOverridableBuffer<number>();
 
     /**
      * Time elapsed in 32:32 fixed point.  Each non-fractional unit
@@ -4278,9 +4271,8 @@ export class b2ParticleSystem {
                         this.m_bodyContactCountBuffer.data[newCount] = this.m_bodyContactCountBuffer.data[i];
                     }
                     if (this.m_consecutiveContactStepsBuffer.data) {
-                        this.m_consecutiveContactStepsBuffer.data[newCount] = this.m_consecutiveContactStepsBuffer.data[
-                            i
-                        ];
+                        this.m_consecutiveContactStepsBuffer.data[newCount] =
+                            this.m_consecutiveContactStepsBuffer.data[i];
                     }
                     this.m_positionBuffer.data[newCount].Copy(this.m_positionBuffer.data[i]);
                     this.m_velocityBuffer.data[newCount].Copy(this.m_velocityBuffer.data[i]);
@@ -4311,21 +4303,11 @@ export class b2ParticleSystem {
 
         // predicate functions
         const Test = {
-            IsProxyInvalid: (proxy: b2ParticleSystem_Proxy) => {
-                return proxy.index < 0;
-            },
-            IsContactInvalid: (contact: b2ParticleContact) => {
-                return contact.indexA < 0 || contact.indexB < 0;
-            },
-            IsBodyContactInvalid: (contact: b2ParticleBodyContact) => {
-                return contact.index < 0;
-            },
-            IsPairInvalid: (pair: b2ParticlePair) => {
-                return pair.indexA < 0 || pair.indexB < 0;
-            },
-            IsTriadInvalid: (triad: b2ParticleTriad) => {
-                return triad.indexA < 0 || triad.indexB < 0 || triad.indexC < 0;
-            },
+            IsProxyInvalid: (proxy: b2ParticleSystem_Proxy) => proxy.index < 0,
+            IsContactInvalid: (contact: b2ParticleContact) => contact.indexA < 0 || contact.indexB < 0,
+            IsBodyContactInvalid: (contact: b2ParticleBodyContact) => contact.index < 0,
+            IsPairInvalid: (pair: b2ParticlePair) => pair.indexA < 0 || pair.indexB < 0,
+            IsTriadInvalid: (triad: b2ParticleTriad) => triad.indexA < 0 || triad.indexB < 0 || triad.indexC < 0,
         };
 
         // update proxies
@@ -5107,9 +5089,7 @@ export class b2ParticleSystem_FixtureParticle {
     }
 }
 
-export class b2ParticleSystem_FixtureParticleSet extends b2ParticleSystem_FixedSetAllocator<
-    b2ParticleSystem_FixtureParticle
-> {
+export class b2ParticleSystem_FixtureParticleSet extends b2ParticleSystem_FixedSetAllocator<b2ParticleSystem_FixtureParticle> {
     public Initialize(
         _bodyContactBuffer: b2GrowableBuffer<b2ParticleBodyContact>,
         _flagsBuffer: b2ParticleSystem_UserOverridableBuffer<b2ParticleFlag>,

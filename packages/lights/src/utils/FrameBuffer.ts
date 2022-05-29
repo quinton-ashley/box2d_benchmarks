@@ -57,6 +57,7 @@ export class FrameBuffer {
         this.width = width;
         this.height = height;
         this.texture = this.createTexture();
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         this.framebufferHandle = this.gl.createFramebuffer()!;
         this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.framebufferHandle);
 
@@ -105,6 +106,7 @@ export class FrameBuffer {
         this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.LINEAR);
         this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.CLAMP_TO_EDGE);
         this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.CLAMP_TO_EDGE);
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         return texture!;
     }
 

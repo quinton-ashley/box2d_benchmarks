@@ -36,6 +36,7 @@ export class VertexBufferObject {
      * @param attributes The {@link VertexAttributes}. */
     public constructor(gl: WebGLRenderingContext, usage: GLenum, data: ArrayBufferView) {
         this.gl = gl;
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         this.buffer = gl.createBuffer()!;
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.buffer);
         this.gl.bufferData(this.gl.ARRAY_BUFFER, data, usage);

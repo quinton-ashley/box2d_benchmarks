@@ -1,13 +1,14 @@
 #!/usr/bin/env node
+// eslint-disable-next-line import/no-unresolved
 import got from "got";
 import fs from "fs";
 import rimraf from "rimraf";
 
 async function fetch(user: string, repo: string, out: string, includeFiles: RegExp, excludeFiles?: RegExp) {
-    const repoPrefixRaw = `https://raw.githubusercontent.com/${user}/${repo}/master`;
+    const repoPrefixRaw = `https://raw.githubusercontent.com/${user}/${repo}/main`;
     const repoPrefixApi = `https://api.github.com/repos/${user}/${repo}`;
 
-    const jsonData = await got<any>(`${repoPrefixApi}/git/trees/master?recursive=1`, { responseType: "json" }).then(
+    const jsonData = await got<any>(`${repoPrefixApi}/git/trees/main?recursive=1`, { responseType: "json" }).then(
         (res) => res.body,
     );
 
