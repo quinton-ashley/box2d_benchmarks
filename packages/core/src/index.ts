@@ -47,7 +47,6 @@ export * from "./dynamics/b2_fixture";
 export { b2Body, b2BodyType, b2BodyDef } from "./dynamics/b2_body";
 export { b2World } from "./dynamics/b2_world";
 export * from "./dynamics/b2_world_callbacks";
-export * from "./dynamics/b2_island";
 export * from "./dynamics/b2_time_step";
 export * from "./dynamics/b2_contact_manager";
 

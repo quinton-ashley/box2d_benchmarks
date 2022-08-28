@@ -541,10 +541,10 @@
   resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.16.6.tgz#8f194828193e8fa79166f34a4b4e52f3e769a314"
   integrity sha512-Gr86ujcNuPDnNOY8mi383Hvi8IYrJVJYuf3XcuBM/Dgd+bINn/7tHqsj+tKkoreMbmGsFLsltI/JJd8fOFWGDQ==
 
-"@babel/parser@^7.18.3":
-  version "7.18.3"
-  resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.18.3.tgz#39e99c7b0c4c56cef4d1eed8de9f506411c2ebc2"
-  integrity sha512-rL50YcEuHbbauAFAysNsJA4/f89fGTOBRNs9P81sniKnKAr4xULe5AecolcsKbi88xu0ByWYDj/S1AJ3FSFuSQ==
+"@babel/parser@^7.18.13":
+  version "7.18.13"
+  resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.18.13.tgz#5b2dd21cae4a2c5145f1fbd8ca103f9313d3b7e4"
+  integrity sha512-dgXcIfMuQ0kgzLB2b9tRZs7TTFFaGM2AbtA4fJgUUYukzGH4jwsS7hzQHEGs67jdehpm22vkgKwvbU+aEflgwg==
 
 "@babel/plugin-bugfix-safari-id-destructuring-collision-in-function-expression@^7.16.2":
   version "7.16.2"
@@ -8626,15 +8626,15 @@ icss-utils@^4.1.0:
   dependencies:
     postcss "^7.0.14"
 
-idtsc@^0.11.0:
-  version "0.11.0"
-  resolved "https://registry.yarnpkg.com/idtsc/-/idtsc-0.11.0.tgz#cc876c5a58831e30f40df129bab490a6f5424cb2"
-  integrity sha512-GKIlSpUUGRYTAp720pa6HUH0TpobGXs3xv9hxLCJa/61j8NEE9LKGEVeWr3yjRcnsdDJigcMJ1zN61P61ggq7g==
+idtsc@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/idtsc/-/idtsc-1.0.0.tgz#bb52b240dcc4b999e2b7f60667d4de061c7e2d21"
+  integrity sha512-o6eF4oUBPLSRe8oHd6UD6/EvoDy98uFaELcxNkKIY8TM3WuxrSMQrLOLRXbFK/06VHFGp56dCSNv7JF+p5+gnw==
   dependencies:
-    "@babel/parser" "^7.18.3"
+    "@babel/parser" "^7.18.13"
     glob "^8.0.3"
-    recast "^0.21.1"
-    typescript "^4.7.2"
+    recast "^0.21.2"
+    typescript "^4.8.2"
     yargs "^17.5.1"
 
 ieee754@^1.1.4:
@@ -12717,10 +12717,10 @@ readdirp@~3.6.0:
   dependencies:
     picomatch "^2.2.1"
 
-recast@^0.21.1:
-  version "0.21.1"
-  resolved "https://registry.yarnpkg.com/recast/-/recast-0.21.1.tgz#9b3f4f68c1fe9c1513a1c02ff572fdef02231de2"
-  integrity sha512-PF61BHLaOGF5oIKTpSrDM6Qfy2d7DIx5qblgqG+wjqHuFH97OgAqBYFIJwEuHTrM6pQGT17IJ8D0C/jVu/0tig==
+recast@^0.21.2:
+  version "0.21.2"
+  resolved "https://registry.yarnpkg.com/recast/-/recast-0.21.2.tgz#f1995f76397da403e8ed9beafb01a6ff8c29ed10"
+  integrity sha512-jUR1+NtaBQdKDqBJ+qxwMm5zR8aLSNh268EfgAbY+EP4wcNEWb6hZFhFeYjaYanwgDahx5t47CH8db7X2NfKdQ==
   dependencies:
     ast-types "0.15.2"
     esprima "~4.0.0"
@@ -14689,6 +14689,11 @@ typescript@^4.7.2:
   version "4.7.2"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.7.2.tgz#1f9aa2ceb9af87cca227813b4310fff0b51593c4"
   integrity sha512-Mamb1iX2FDUpcTRzltPxgWMKy3fhg0TN378ylbktPGPK/99KbDtMQ4W1hwgsbPAsG3a0xKa1vmw4VKZQbkvz5A==
+
+typescript@^4.8.2:
+  version "4.8.2"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.8.2.tgz#e3b33d5ccfb5914e4eeab6699cf208adee3fd790"
+  integrity sha512-C0I1UsrrDHo2fYI5oaCGbSejwX4ch+9Y5jTQELvovfmFkK3HHSZJB8MSJcWLmCUBzQBchCrZ9rMRV6GuNrvGtw==
 
 uc.micro@^1.0.1, uc.micro@^1.0.5:
   version "1.0.6"
