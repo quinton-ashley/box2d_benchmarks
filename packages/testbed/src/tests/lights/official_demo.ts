@@ -225,7 +225,7 @@ class OfficialDemo extends AbstractLightTest {
             this.directionalLight.setDirection(this.sunDirection);
         }
 
-        this.renderLights(timeStep);
+        this.renderLights(settings, timeStep);
 
         return timeStep;
     }

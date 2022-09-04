@@ -1,5 +1,6 @@
 // MIT License
 
+import { b2AABB, b2Draw, RGBA } from "@box2d/core";
 import { b2CalculateParticleIterations } from "@box2d/particles";
 
 // Copyright (c) 2019 Erin Catto
@@ -21,6 +22,15 @@ import { b2CalculateParticleIterations } from "@box2d/particles";
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
+
+const noop = () => undefined;
+
+export interface TestDebugDraw extends b2Draw {
+    prepareCamera(centerX: number, centerY: number, zoom: number, flipY?: boolean): void;
+    finish(): void;
+    DrawStringWorld(x: number, y: number, message: string): void;
+    DrawAABB(aabb: b2AABB, color: RGBA): void;
+}
 
 export class Settings {
     public m_testIndex = 0;
@@ -79,4 +89,21 @@ export class Settings {
     public m_pause = false;
 
     public m_singleStep = false;
+
+    public m_debugDraw: TestDebugDraw = {
+        prepareCamera: noop,
+        finish: noop,
+        PushTransform: noop,
+        PopTransform: noop,
+        DrawPolygon: noop,
+        DrawSolidPolygon: noop,
+        DrawCircle: noop,
+        DrawSolidCircle: noop,
+        DrawSegment: noop,
+        DrawTransform: noop,
+        DrawPoint: noop,
+        DrawParticles: noop,
+        DrawAABB: noop,
+        DrawStringWorld: noop,
+    };
 }

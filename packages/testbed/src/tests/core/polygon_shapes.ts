@@ -32,7 +32,6 @@ import {
 
 import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
-import { g_debugDraw } from "../../utils/draw";
 import { HotKey, hotKeyPress } from "../../utils/hotkeys";
 
 const queryCallbackMaxCount = 4;
@@ -177,6 +176,8 @@ class PolygonShapes extends Test {
     public Step(settings: Settings, timeStep: number): void {
         super.Step(settings, timeStep);
 
+        const draw = settings.m_debugDraw;
+
         let count = 0;
         const { circle, transform } = temp.Step;
         circle.m_radius = 2;
@@ -203,7 +204,7 @@ class PolygonShapes extends Test {
             if (overlap) {
                 const color = new b2Color(0.95, 0.95, 0.6);
                 const center = body.GetWorldCenter();
-                g_debugDraw.DrawPoint(center, 5, color);
+                draw.DrawPoint(center, 5, color);
                 ++count;
             }
 
@@ -211,7 +212,7 @@ class PolygonShapes extends Test {
         });
 
         const color = new b2Color(0.4, 0.7, 0.8);
-        g_debugDraw.DrawCircle(circle.m_p, circle.m_radius, color);
+        draw.DrawCircle(circle.m_p, circle.m_radius, color);
     }
 }
 

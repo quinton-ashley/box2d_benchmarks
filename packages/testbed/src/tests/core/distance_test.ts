@@ -30,7 +30,6 @@ import {
 
 import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
-import { g_debugDraw } from "../../utils/draw";
 import { hotKeyPress, HotKey } from "../../utils/hotkeys";
 
 class DistanceTest extends Test {
@@ -106,28 +105,29 @@ class DistanceTest extends Test {
         this.addDebug("Distance", output.distance.toFixed(2));
         this.addDebug("Iterations", output.iterations);
 
+        const draw = settings.m_debugDraw;
         {
             const color = new b2Color(0.9, 0.9, 0.9);
             const v = [];
             for (let i = 0; i < this.m_polygonA.m_count; ++i) {
                 v[i] = b2Transform.MultiplyVec2(this.m_transformA, this.m_polygonA.m_vertices[i], new b2Vec2());
             }
-            g_debugDraw.DrawPolygon(v, this.m_polygonA.m_count, color);
+            draw.DrawPolygon(v, this.m_polygonA.m_count, color);
 
             for (let i = 0; i < this.m_polygonB.m_count; ++i) {
                 v[i] = b2Transform.MultiplyVec2(this.m_transformB, this.m_polygonB.m_vertices[i], new b2Vec2());
             }
-            g_debugDraw.DrawPolygon(v, this.m_polygonB.m_count, color);
+            draw.DrawPolygon(v, this.m_polygonB.m_count, color);
         }
 
         const x1 = output.pointA;
         const x2 = output.pointB;
 
         const c1 = new b2Color(1, 0, 0);
-        g_debugDraw.DrawPoint(x1, 4, c1);
+        draw.DrawPoint(x1, 4, c1);
 
         const c2 = new b2Color(1, 1, 0);
-        g_debugDraw.DrawPoint(x2, 4, c2);
+        draw.DrawPoint(x2, 4, c2);
     }
 }
 

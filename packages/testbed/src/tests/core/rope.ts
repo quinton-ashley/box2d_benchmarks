@@ -34,7 +34,6 @@ import {
 
 import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
-import { g_debugDraw } from "../../utils/draw";
 import { HotKey, hotKeyPress, hotKeyState } from "../../utils/hotkeys";
 import { TestControl } from "../../testControls";
 import { sliderDef } from "../../ui/controls/Slider";
@@ -219,8 +218,9 @@ class Rope extends Test {
 
         super.Step(settings, timeStep);
 
-        this.m_rope1.Draw(g_debugDraw);
-        this.m_rope2.Draw(g_debugDraw);
+        const draw = settings.m_debugDraw;
+        this.m_rope1.Draw(draw);
+        this.m_rope2.Draw(draw);
     }
 }
 

@@ -34,7 +34,6 @@ import {
 
 import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
-import { g_debugDraw } from "../../utils/draw";
 
 const colorA = new b2Color(0.9, 0.9, 0.9);
 const colorB = new b2Color(0.5, 0.9, 0.5);
@@ -157,10 +156,11 @@ class ShapeCast extends Test {
             b2Transform.MultiplyVec2(this.m_transformA, this.m_vAs[i], vertices[i]);
         }
 
+        const draw = settings.m_debugDraw;
         if (this.m_countA === 1) {
-            g_debugDraw.DrawCircle(vertices[0], this.m_radiusA, colorA);
+            draw.DrawCircle(vertices[0], this.m_radiusA, colorA);
         } else {
-            g_debugDraw.DrawPolygon(vertices, this.m_countA, colorA);
+            draw.DrawPolygon(vertices, this.m_countA, colorA);
         }
 
         for (let i = 0; i < this.m_countB; ++i) {
@@ -168,9 +168,9 @@ class ShapeCast extends Test {
         }
 
         if (this.m_countB === 1) {
-            g_debugDraw.DrawCircle(vertices[0], this.m_radiusB, colorB);
+            draw.DrawCircle(vertices[0], this.m_radiusB, colorB);
         } else {
-            g_debugDraw.DrawPolygon(vertices, this.m_countB, colorB);
+            draw.DrawPolygon(vertices, this.m_countB, colorB);
         }
 
         for (let i = 0; i < this.m_countB; ++i) {
@@ -178,16 +178,16 @@ class ShapeCast extends Test {
         }
 
         if (this.m_countB === 1) {
-            g_debugDraw.DrawCircle(vertices[0], this.m_radiusB, colorB2);
+            draw.DrawCircle(vertices[0], this.m_radiusB, colorB2);
         } else {
-            g_debugDraw.DrawPolygon(vertices, this.m_countB, colorB2);
+            draw.DrawPolygon(vertices, this.m_countB, colorB2);
         }
 
         if (hit) {
             const p1 = output.point;
-            g_debugDraw.DrawPoint(p1, 10, colorHit);
+            draw.DrawPoint(p1, 10, colorHit);
             const p2 = b2Vec2.Add(p1, output.normal, b2Vec2.s_t0);
-            g_debugDraw.DrawSegment(p1, p2, colorHit);
+            draw.DrawSegment(p1, p2, colorHit);
         }
     }
 }

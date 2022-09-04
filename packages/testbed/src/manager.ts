@@ -3,7 +3,6 @@ import { createContext, useContext } from "react";
 import { Signal } from "typed-signals";
 
 import { g_camera } from "./utils/camera";
-import { DebugDraw, g_debugDraw } from "./utils/draw";
 import { hotKeyPress, HotKey } from "./utils/hotkeys";
 import { PreloadedTextures, preloadTextures } from "./utils/gl/preload";
 import { createDefaultShader } from "./utils/gl/defaultShader";
@@ -13,6 +12,7 @@ import { getTestsGrouped, Test, TestConstructor, TestEntry } from "./test";
 import { FpsCalculator } from "./utils/FpsCalculator";
 import type { TextTable, TextTableSetter } from "./ui/Main";
 import type { TestControlGroup } from "./ui";
+import { DebugDraw } from "./utils/DebugDraw";
 import { ParticleParameter } from "./utils/particles/particle_parameter";
 
 import "./tests";
@@ -135,7 +135,9 @@ export class TestManager {
         window.addEventListener("orientationchange", onResize);
         onResize();
 
-        g_debugDraw.m_ctx = this.m_ctx = debugCanvas.getContext("2d");
+        this.m_ctx = debugCanvas.getContext("2d");
+        if (!this.m_ctx) throw new Error("Could not create 2d context for debug-draw");
+        this.m_settings.m_debugDraw = new DebugDraw(this.m_ctx);
 
         // disable context menu to use right-click
         window.addEventListener(
@@ -274,7 +276,15 @@ export class TestManager {
 
     public LoadTest(restartTest = false): void {
         const TestClass = this.testConstructor;
-        if (!TestClass || !this.m_ctx || !this.gl || !this.defaultShader || !this.textures) return;
+        if (
+            !TestClass ||
+            !this.m_ctx ||
+            !this.gl ||
+            !this.defaultShader ||
+            !this.textures ||
+            !this.m_settings.m_debugDraw
+        )
+            return;
 
         if (!restartTest) {
             this.particleParameter.Reset();
@@ -325,8 +335,8 @@ export class TestManager {
     }
 
     public SimulationLoop(): void {
-        if (this.m_fpsCalculator.addFrame() <= 0 || !this.gl || !this.defaultShader || !this.m_ctx) return;
-        const ctx = this.m_ctx;
+        const draw = this.m_settings.m_debugDraw;
+        if (this.m_fpsCalculator.addFrame() <= 0 || !this.gl || !this.defaultShader || !this.m_ctx || !draw) return;
 
         clearGlCanvas(this.gl, 0, 0, 0, 0);
         this.gl.enable(this.gl.BLEND);
@@ -334,19 +344,9 @@ export class TestManager {
         this.defaultShader.uMVMatrix.set(false, g_camera.modelView);
         this.defaultShader.uPMatrix.set(false, g_camera.projection);
 
-        // Draw World
-        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-        ctx.save();
-
-        // 0,0 at center of canvas, x right, y up
-        ctx.translate(0.5 * g_camera.getWidth(), 0.5 * g_camera.getHeight());
-        ctx.scale(1, -1);
-        // apply camera
-        const zoom = g_camera.getZoom();
-        ctx.scale(zoom, zoom);
-        ctx.lineWidth /= zoom;
         const center = g_camera.getCenter();
-        ctx.translate(-center.x, -center.y);
+        const zoom = g_camera.getZoom();
+        draw.prepareCamera(center.x, center.y, zoom, true);
 
         this.m_test?.RunStep(this.m_settings);
         if (this.m_hoveringCanvas) {
@@ -355,9 +355,9 @@ export class TestManager {
             }
         }
 
-        ctx.restore();
+        draw.finish();
 
-        if (this.m_settings.m_drawFpsMeter) this.DrawFpsMeter(ctx);
+        if (this.m_settings.m_drawFpsMeter) this.DrawFpsMeter(this.m_ctx);
 
         this.UpdateText();
 

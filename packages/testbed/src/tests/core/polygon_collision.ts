@@ -28,7 +28,6 @@ import {
 
 import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
-import { g_debugDraw } from "../../utils/draw";
 import { HotKey, hotKeyPress } from "../../utils/hotkeys";
 
 class PolygonCollision extends Test {
@@ -93,22 +92,23 @@ class PolygonCollision extends Test {
 
         this.addDebug("Point Count", manifold.pointCount);
 
+        const draw = settings.m_debugDraw;
         {
             const color = new b2Color(0.9, 0.9, 0.9);
             const v = [];
             for (let i = 0; i < this.m_polygonA.m_count; ++i) {
                 v[i] = b2Transform.MultiplyVec2(this.m_transformA, this.m_polygonA.m_vertices[i], new b2Vec2());
             }
-            g_debugDraw.DrawPolygon(v, this.m_polygonA.m_count, color);
+            draw.DrawPolygon(v, this.m_polygonA.m_count, color);
 
             for (let i = 0; i < this.m_polygonB.m_count; ++i) {
                 v[i] = b2Transform.MultiplyVec2(this.m_transformB, this.m_polygonB.m_vertices[i], new b2Vec2());
             }
-            g_debugDraw.DrawPolygon(v, this.m_polygonB.m_count, color);
+            draw.DrawPolygon(v, this.m_polygonB.m_count, color);
         }
 
         for (let i = 0; i < manifold.pointCount; ++i) {
-            g_debugDraw.DrawPoint(worldManifold.points[i], 4, new b2Color(0.9, 0.3, 0.3));
+            draw.DrawPoint(worldManifold.points[i], 4, new b2Color(0.9, 0.3, 0.3));
         }
     }
 }

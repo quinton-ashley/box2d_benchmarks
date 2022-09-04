@@ -30,7 +30,6 @@ import {
 
 import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
-import { g_debugDraw } from "../../utils/draw";
 import { HotKey, hotKeyPress } from "../../utils/hotkeys";
 import { radioDef } from "../../ui/controls/Radio";
 import { sliderDef } from "../../ui/controls/Slider";
@@ -196,17 +195,17 @@ class RayCast extends Test {
         switch (this.m_mode) {
             case "Closest":
                 this.addDebug("Ray-Cast Mode", "Find closest fixture along the ray");
-                this.rayCastClosest(point1, point2);
+                this.rayCastClosest(point1, point2, settings);
                 break;
 
             case "Any":
                 this.addDebug("Ray-Cast Mode", "Check for obstruction");
-                this.rayCastAny(point1, point2);
+                this.rayCastAny(point1, point2, settings);
                 break;
 
             case "Multiple":
                 this.addDebug("Ray-Cast Mode", "Gather multiple fixtures");
-                this.rayCastMultiple(point1, point2);
+                this.rayCastMultiple(point1, point2, settings);
                 break;
         }
 
@@ -254,7 +253,7 @@ class RayCast extends Test {
     }
 
     // This callback finds the closest hit. Polygon 0 is filtered.
-    private rayCastClosest(point1: b2Vec2, point2: b2Vec2) {
+    private rayCastClosest(point1: b2Vec2, point2: b2Vec2, settings: Settings) {
         let hit = false;
         const resultPoint = new b2Vec2();
         const resultNormal = new b2Vec2();
@@ -276,19 +275,20 @@ class RayCast extends Test {
             return fraction;
         });
 
+        const draw = settings.m_debugDraw;
         if (hit) {
-            g_debugDraw.DrawPoint(resultPoint, 5, new b2Color(0.4, 0.9, 0.4));
-            g_debugDraw.DrawSegment(point1, resultPoint, new b2Color(0.8, 0.8, 0.8));
+            draw.DrawPoint(resultPoint, 5, new b2Color(0.4, 0.9, 0.4));
+            draw.DrawSegment(point1, resultPoint, new b2Color(0.8, 0.8, 0.8));
             const head = b2Vec2.Add(resultPoint, b2Vec2.Scale(0.5, resultNormal, b2Vec2.s_t0), new b2Vec2());
-            g_debugDraw.DrawSegment(resultPoint, head, new b2Color(0.9, 0.9, 0.4));
+            draw.DrawSegment(resultPoint, head, new b2Color(0.9, 0.9, 0.4));
         } else {
-            g_debugDraw.DrawSegment(point1, point2, new b2Color(0.8, 0.8, 0.8));
+            draw.DrawSegment(point1, point2, new b2Color(0.8, 0.8, 0.8));
         }
     }
 
     // This callback finds any hit. Polygon 0 is filtered. For this type of query we are usually
     // just checking for obstruction, so the actual fixture and hit point are irrelevant.
-    private rayCastAny(point1: b2Vec2, point2: b2Vec2) {
+    private rayCastAny(point1: b2Vec2, point2: b2Vec2, settings: Settings) {
         let hit = false;
         const resultPoint = new b2Vec2();
         const resultNormal = new b2Vec2();
@@ -309,20 +309,21 @@ class RayCast extends Test {
             return 0;
         });
 
+        const draw = settings.m_debugDraw;
         if (hit) {
-            g_debugDraw.DrawPoint(resultPoint, 5, new b2Color(0.4, 0.9, 0.4));
-            g_debugDraw.DrawSegment(point1, resultPoint, new b2Color(0.8, 0.8, 0.8));
+            draw.DrawPoint(resultPoint, 5, new b2Color(0.4, 0.9, 0.4));
+            draw.DrawSegment(point1, resultPoint, new b2Color(0.8, 0.8, 0.8));
             const head = b2Vec2.Add(resultPoint, b2Vec2.Scale(0.5, resultNormal, b2Vec2.s_t0), new b2Vec2());
-            g_debugDraw.DrawSegment(resultPoint, head, new b2Color(0.9, 0.9, 0.4));
+            draw.DrawSegment(resultPoint, head, new b2Color(0.9, 0.9, 0.4));
         } else {
-            g_debugDraw.DrawSegment(point1, point2, new b2Color(0.8, 0.8, 0.8));
+            draw.DrawSegment(point1, point2, new b2Color(0.8, 0.8, 0.8));
         }
     }
 
     // This ray cast collects multiple hits along the ray. Polygon 0 is filtered.
     // The fixtures are not necessary reported in order, so we might not capture
     // the closest fixture.
-    private rayCastMultiple(point1: b2Vec2, point2: b2Vec2) {
+    private rayCastMultiple(point1: b2Vec2, point2: b2Vec2, settings: Settings) {
         const e_maxCount = 3;
         const resultPoints = b2MakeArray(e_maxCount, b2Vec2);
         const resultNormals = b2MakeArray(e_maxCount, b2Vec2);
@@ -350,15 +351,17 @@ class RayCast extends Test {
             // By returning 1, we instruct the caller to continue without clipping the ray.
             return 1;
         });
-        g_debugDraw.DrawSegment(point1, point2, new b2Color(0.8, 0.8, 0.8));
+
+        const draw = settings.m_debugDraw;
+        draw.DrawSegment(point1, point2, new b2Color(0.8, 0.8, 0.8));
 
         for (let i = 0; i < count; ++i) {
             const p = resultPoints[i];
             const n = resultNormals[i];
-            g_debugDraw.DrawPoint(p, 5, new b2Color(0.4, 0.9, 0.4));
-            g_debugDraw.DrawSegment(point1, p, new b2Color(0.8, 0.8, 0.8));
+            draw.DrawPoint(p, 5, new b2Color(0.4, 0.9, 0.4));
+            draw.DrawSegment(point1, p, new b2Color(0.8, 0.8, 0.8));
             const head = b2Vec2.Add(p, b2Vec2.Scale(0.5, n, b2Vec2.s_t0), new b2Vec2());
-            g_debugDraw.DrawSegment(p, head, new b2Color(0.9, 0.9, 0.4));
+            draw.DrawSegment(p, head, new b2Color(0.9, 0.9, 0.4));
         }
     }
 }

@@ -20,7 +20,6 @@ import { b2MotorJoint, b2EdgeShape, b2Vec2, b2BodyType, b2PolygonShape, b2MotorJ
 
 import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
-import { g_debugDraw } from "../../utils/draw";
 import { HotKey, hotKeyPress } from "../../utils/hotkeys";
 
 /**
@@ -98,7 +97,7 @@ class MotorJoint extends Test {
         this.m_joint.SetLinearOffset(linearOffset);
         this.m_joint.SetAngularOffset(angularOffset);
 
-        g_debugDraw.DrawPoint(linearOffset, 4, new b2Color(0.9, 0.9, 0.9));
+        settings.m_debugDraw.DrawPoint(linearOffset, 4, new b2Color(0.9, 0.9, 0.9));
 
         super.Step(settings, timeStep);
     }

@@ -20,7 +20,6 @@ import { b2Vec2, b2RandomFloat, b2Clamp, b2PolygonShape, b2Color } from "@box2d/
 
 import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
-import { g_debugDraw } from "../../utils/draw";
 import { hotKeyPress, HotKey } from "../../utils/hotkeys";
 
 class ConvexHull extends Test {
@@ -72,11 +71,12 @@ class ConvexHull extends Test {
         const shape = new b2PolygonShape();
         shape.Set(this.m_test_points, this.m_count);
 
-        g_debugDraw.DrawPolygon(shape.m_vertices, shape.m_count, new b2Color(0.9, 0.9, 0.9));
+        const draw = settings.m_debugDraw;
+        draw.DrawPolygon(shape.m_vertices, shape.m_count, new b2Color(0.9, 0.9, 0.9));
 
         for (let i = 0; i < this.m_count; ++i) {
-            g_debugDraw.DrawPoint(this.m_test_points[i], 3, new b2Color(0.3, 0.9, 0.3));
-            g_debugDraw.DrawStringWorld(this.m_test_points[i].x + 0.05, this.m_test_points[i].y + 0.05, `${i}`);
+            draw.DrawPoint(this.m_test_points[i], 3, new b2Color(0.3, 0.9, 0.3));
+            draw.DrawStringWorld(this.m_test_points[i].x + 0.05, this.m_test_points[i].y + 0.05, `${i}`);
         }
 
         shape.Validate();

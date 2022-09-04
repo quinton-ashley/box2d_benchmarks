@@ -26,6 +26,7 @@ import { b2Body, b2BodyType } from "../dynamics/b2_body";
 import { b2Fixture } from "../dynamics/b2_fixture";
 import { b2World } from "../dynamics/b2_world";
 import { b2MakeArray } from "./b2_common";
+import { b2AABB } from "../collision/b2_collision";
 
 const temp = {
     cA: new b2Vec2(),
@@ -53,13 +54,24 @@ export function GetShapeColor(b: b2Body) {
     return debugColors.body;
 }
 
-export function DrawShapes(draw: b2Draw, world: b2World) {
+function testOverlap(fixture: b2Fixture, aabb: b2AABB) {
+    for (let i = 0; i < fixture.m_proxyCount; i++) {
+        if (aabb.TestOverlap(fixture.GetAABB(i))) {
+            return true;
+        }
+    }
+    return false;
+}
+
+export function DrawShapes(draw: b2Draw, world: b2World, within?: b2AABB) {
     for (let b = world.GetBodyList(); b; b = b.m_next) {
         const xf = b.m_xf;
 
         draw.PushTransform(xf);
 
         for (let f: b2Fixture | null = b.GetFixtureList(); f; f = f.m_next) {
+            if (within && !testOverlap(f, within)) continue;
+
             f.GetShape().Draw(draw, GetShapeColor(b));
         }
 
@@ -86,7 +98,7 @@ export function DrawPairs(draw: b2Draw, world: b2World) {
     }
 }
 
-export function DrawAABBs(draw: b2Draw, world: b2World) {
+export function DrawAABBs(draw: b2Draw, world: b2World, within?: b2AABB) {
     const { vs } = temp;
     for (let b = world.GetBodyList(); b; b = b.m_next) {
         if (!b.IsEnabled()) {
@@ -95,9 +107,9 @@ export function DrawAABBs(draw: b2Draw, world: b2World) {
 
         for (let f: b2Fixture | null = b.GetFixtureList(); f; f = f.m_next) {
             for (let i = 0; i < f.m_proxyCount; ++i) {
-                const proxy = f.m_proxies[i];
+                const { aabb } = f.m_proxies[i].treeNode;
+                if (within && !within.TestOverlap(aabb)) continue;
 
-                const { aabb } = proxy.treeNode;
                 vs[0].Set(aabb.lowerBound.x, aabb.lowerBound.y);
                 vs[1].Set(aabb.upperBound.x, aabb.lowerBound.y);
                 vs[2].Set(aabb.upperBound.x, aabb.upperBound.y);

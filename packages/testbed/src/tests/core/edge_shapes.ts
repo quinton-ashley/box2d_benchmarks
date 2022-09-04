@@ -30,7 +30,6 @@ import {
 
 import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
-import { g_debugDraw } from "../../utils/draw";
 import { hotKeyPress, HotKey } from "../../utils/hotkeys";
 
 class EdgeShapes extends Test {
@@ -188,13 +187,14 @@ class EdgeShapes extends Test {
             return fraction;
         });
 
+        const draw = settings.m_debugDraw;
         if (resultFixture) {
-            g_debugDraw.DrawPoint(resultPoint, 5, new b2Color(0.4, 0.9, 0.4));
-            g_debugDraw.DrawSegment(point1, resultPoint, new b2Color(0.8, 0.8, 0.8));
+            draw.DrawPoint(resultPoint, 5, new b2Color(0.4, 0.9, 0.4));
+            draw.DrawSegment(point1, resultPoint, new b2Color(0.8, 0.8, 0.8));
             const head = b2Vec2.Add(resultPoint, b2Vec2.Scale(0.5, resultNormal, b2Vec2.s_t0), new b2Vec2());
-            g_debugDraw.DrawSegment(resultPoint, head, new b2Color(0.9, 0.9, 0.4));
+            draw.DrawSegment(resultPoint, head, new b2Color(0.9, 0.9, 0.4));
         } else {
-            g_debugDraw.DrawSegment(point1, point2, new b2Color(0.8, 0.8, 0.8));
+            draw.DrawSegment(point1, point2, new b2Color(0.8, 0.8, 0.8));
         }
 
         if (advanceRay) {

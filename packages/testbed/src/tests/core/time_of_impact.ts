@@ -31,7 +31,6 @@ import {
 
 import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
-import { g_debugDraw } from "../../utils/draw";
 
 class TimeOfImpact extends Test {
     public m_shapeA = new b2PolygonShape();
@@ -88,7 +87,8 @@ class TimeOfImpact extends Test {
         for (let i = 0; i < this.m_shapeA.m_count; ++i) {
             vertices[i] = b2Transform.MultiplyVec2(transformA, this.m_shapeA.m_vertices[i], new b2Vec2());
         }
-        g_debugDraw.DrawPolygon(vertices, this.m_shapeA.m_count, new b2Color(0.9, 0.9, 0.9));
+        const draw = settings.m_debugDraw;
+        draw.DrawPolygon(vertices, this.m_shapeA.m_count, new b2Color(0.9, 0.9, 0.9));
 
         const transformB = new b2Transform();
         sweepB.GetTransform(transformB, 0);
@@ -98,22 +98,22 @@ class TimeOfImpact extends Test {
         for (let i = 0; i < this.m_shapeB.m_count; ++i) {
             vertices[i] = b2Transform.MultiplyVec2(transformB, this.m_shapeB.m_vertices[i], new b2Vec2());
         }
-        g_debugDraw.DrawPolygon(vertices, this.m_shapeB.m_count, new b2Color(0.5, 0.9, 0.5));
-        g_debugDraw.DrawStringWorld(transformB.p.x, transformB.p.y, `${(0).toFixed(1)}`);
+        draw.DrawPolygon(vertices, this.m_shapeB.m_count, new b2Color(0.5, 0.9, 0.5));
+        draw.DrawStringWorld(transformB.p.x, transformB.p.y, `${(0).toFixed(1)}`);
 
         sweepB.GetTransform(transformB, output.t);
         for (let i = 0; i < this.m_shapeB.m_count; ++i) {
             vertices[i] = b2Transform.MultiplyVec2(transformB, this.m_shapeB.m_vertices[i], new b2Vec2());
         }
-        g_debugDraw.DrawPolygon(vertices, this.m_shapeB.m_count, new b2Color(0.5, 0.7, 0.9));
-        g_debugDraw.DrawStringWorld(transformB.p.x, transformB.p.y, `${output.t.toFixed(3)}`);
+        draw.DrawPolygon(vertices, this.m_shapeB.m_count, new b2Color(0.5, 0.7, 0.9));
+        draw.DrawStringWorld(transformB.p.x, transformB.p.y, `${output.t.toFixed(3)}`);
 
         sweepB.GetTransform(transformB, 1);
         for (let i = 0; i < this.m_shapeB.m_count; ++i) {
             vertices[i] = b2Transform.MultiplyVec2(transformB, this.m_shapeB.m_vertices[i], new b2Vec2());
         }
-        g_debugDraw.DrawPolygon(vertices, this.m_shapeB.m_count, new b2Color(0.9, 0.5, 0.5));
-        g_debugDraw.DrawStringWorld(transformB.p.x, transformB.p.y, `${(1).toFixed(1)}`);
+        draw.DrawPolygon(vertices, this.m_shapeB.m_count, new b2Color(0.9, 0.5, 0.5));
+        draw.DrawStringWorld(transformB.p.x, transformB.p.y, `${(1).toFixed(1)}`);
 
         // #if 0
         for (let t = 0; t < 1; t += 0.1) {
@@ -121,8 +121,8 @@ class TimeOfImpact extends Test {
             for (let i = 0; i < this.m_shapeB.m_count; ++i) {
                 vertices[i] = b2Transform.MultiplyVec2(transformB, this.m_shapeB.m_vertices[i], new b2Vec2());
             }
-            g_debugDraw.DrawPolygon(vertices, this.m_shapeB.m_count, new b2Color(0.5, 0.5, 0.5));
-            g_debugDraw.DrawStringWorld(transformB.p.x, transformB.p.y, `${t.toFixed(1)}`);
+            draw.DrawPolygon(vertices, this.m_shapeB.m_count, new b2Color(0.5, 0.5, 0.5));
+            draw.DrawStringWorld(transformB.p.x, transformB.p.y, `${t.toFixed(1)}`);
         }
         // #endif
     }

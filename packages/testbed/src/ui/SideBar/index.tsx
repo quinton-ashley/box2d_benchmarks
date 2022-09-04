@@ -35,34 +35,35 @@ export const SideBar = ({ testControlGroups: testControls }: SideBarProps) => {
     useEffect(() => {
         if (!hasValidTest && tab !== "tests") setTab("tests");
     }, [hasValidTest, tab]);
+    const settings = manager.m_settings;
     const iterationControls = [
-        settingsSliderDef(manager, "m_velocityIterations", "Velocity Iters", 0, 50, 1),
-        settingsSliderDef(manager, "m_positionIterations", "Position Iters", 0, 50, 1),
-        settingsSliderDef(manager, "m_particleIterations", "Particle Iters", 0, 50, 1),
-        settingsSliderDef(manager, "m_hertz", "Hertz", 5, 120, 1),
+        settingsSliderDef(settings, "m_velocityIterations", "Velocity Iters", 0, 50, 1),
+        settingsSliderDef(settings, "m_positionIterations", "Position Iters", 0, 50, 1),
+        settingsSliderDef(settings, "m_particleIterations", "Particle Iters", 0, 50, 1),
+        settingsSliderDef(settings, "m_hertz", "Hertz", 5, 120, 1),
     ];
     const settingsControls = [
-        settingsCheckboxDef(manager, "m_enableSleep", "Sleep"),
-        settingsCheckboxDef(manager, "m_enableWarmStarting", "Warm Starting"),
-        settingsCheckboxDef(manager, "m_enableContinuous", "Time of Impact"),
-        settingsCheckboxDef(manager, "m_enableSubStepping", "Sub-Stepping"),
+        settingsCheckboxDef(settings, "m_enableSleep", "Sleep"),
+        settingsCheckboxDef(settings, "m_enableWarmStarting", "Warm Starting"),
+        settingsCheckboxDef(settings, "m_enableContinuous", "Time of Impact"),
+        settingsCheckboxDef(settings, "m_enableSubStepping", "Sub-Stepping"),
     ];
     const drawControls = [
-        settingsCheckboxDef(manager, "m_drawShapes", "Shapes"),
-        settingsCheckboxDef(manager, "m_drawParticles", "Particles"),
-        settingsCheckboxDef(manager, "m_drawJoints", "Joints"),
-        settingsCheckboxDef(manager, "m_drawAABBs", "AABBs"),
-        settingsCheckboxDef(manager, "m_drawContactPoints", "Contact Points"),
-        settingsCheckboxDef(manager, "m_drawContactNormals", "Contact Normals"),
-        settingsCheckboxDef(manager, "m_drawContactImpulse", "Contact Impulses"),
-        settingsCheckboxDef(manager, "m_drawFrictionImpulse", "Friction Impulses"),
-        settingsCheckboxDef(manager, "m_drawCOMs", "Center of Masses"),
+        settingsCheckboxDef(settings, "m_drawShapes", "Shapes"),
+        settingsCheckboxDef(settings, "m_drawParticles", "Particles"),
+        settingsCheckboxDef(settings, "m_drawJoints", "Joints"),
+        settingsCheckboxDef(settings, "m_drawAABBs", "AABBs"),
+        settingsCheckboxDef(settings, "m_drawContactPoints", "Contact Points"),
+        settingsCheckboxDef(settings, "m_drawContactNormals", "Contact Normals"),
+        settingsCheckboxDef(settings, "m_drawContactImpulse", "Contact Impulses"),
+        settingsCheckboxDef(settings, "m_drawFrictionImpulse", "Friction Impulses"),
+        settingsCheckboxDef(settings, "m_drawCOMs", "Center of Masses"),
     ];
     const overlayControls = [
-        settingsCheckboxDef(manager, "m_drawStats", "Statistics"),
-        settingsCheckboxDef(manager, "m_drawInputHelp", "Input Help"),
-        settingsCheckboxDef(manager, "m_drawProfile", "Profile"),
-        settingsCheckboxDef(manager, "m_drawFpsMeter", "FPS Meter"),
+        settingsCheckboxDef(settings, "m_drawStats", "Statistics"),
+        settingsCheckboxDef(settings, "m_drawInputHelp", "Input Help"),
+        settingsCheckboxDef(settings, "m_drawProfile", "Profile"),
+        settingsCheckboxDef(settings, "m_drawFpsMeter", "FPS Meter"),
     ];
     return (
         <div className="sidebar">

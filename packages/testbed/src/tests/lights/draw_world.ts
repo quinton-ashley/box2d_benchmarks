@@ -152,7 +152,7 @@ class DrawWorld extends AbstractLightTest {
             g_camera.getHeight(),
         );
 
-        this.renderLights(timeStep);
+        this.renderLights(settings, timeStep);
 
         return timeStep;
     }

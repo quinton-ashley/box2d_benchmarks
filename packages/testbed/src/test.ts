@@ -25,18 +25,19 @@ import {
     DrawCenterOfMasses,
     XY,
     b2LinearStiffness,
+    b2AABB,
 } from "@box2d/core";
 import { b2ParticleGroup, DrawParticleSystems } from "@box2d/particles";
 import { DrawControllers } from "@box2d/controllers";
 
 import { Settings } from "./settings";
-import { g_debugDraw } from "./utils/draw";
 import { hotKeyPress, HotKey } from "./utils/hotkeys";
 import { DefaultShader } from "./utils/gl/defaultShader";
 import { PreloadedTextures } from "./utils/gl/preload";
 import type { TestControlGroup } from "./ui";
 import { TestControl } from "./testControls";
 import { ParticleParameter } from "./utils/particles/particle_parameter";
+import { g_camera } from "./utils/camera";
 
 export interface TestContext {
     gl: WebGLRenderingContext;
@@ -438,23 +439,29 @@ export class Test extends b2ContactListener {
             particleIterations: settings.m_particleIterations,
         });
 
+        const draw = settings.m_debugDraw;
+        const aabb = new b2AABB();
+        g_camera.unproject({ x: 0, y: g_camera.getHeight() }, aabb.lowerBound);
+        g_camera.unproject({ x: g_camera.getWidth(), y: 0 }, aabb.upperBound);
+        draw.DrawAABB(aabb, b2Color.GREEN);
+
         if (settings.m_drawShapes) {
-            DrawShapes(g_debugDraw, this.m_world);
+            DrawShapes(draw, this.m_world, aabb);
         }
         if (settings.m_drawParticles) {
-            DrawParticleSystems(g_debugDraw, this.m_world);
+            DrawParticleSystems(draw, this.m_world);
         }
         if (settings.m_drawJoints) {
-            DrawJoints(g_debugDraw, this.m_world);
+            DrawJoints(draw, this.m_world);
         }
         if (settings.m_drawAABBs) {
-            DrawAABBs(g_debugDraw, this.m_world);
+            DrawAABBs(draw, this.m_world);
         }
         if (settings.m_drawCOMs) {
-            DrawCenterOfMasses(g_debugDraw, this.m_world);
+            DrawCenterOfMasses(draw, this.m_world);
         }
         if (settings.m_drawControllers) {
-            DrawControllers(g_debugDraw, this.m_world);
+            DrawControllers(draw, this.m_world);
         }
 
         if (timeStep > 0) {
@@ -552,10 +559,10 @@ export class Test extends b2ContactListener {
 
         if (this.m_bombSpawning) {
             const c = new b2Color(0, 0, 1);
-            g_debugDraw.DrawPoint(this.m_bombSpawnPoint, 4, c);
+            draw.DrawPoint(this.m_bombSpawnPoint, 4, c);
 
             c.SetRGB(0.8, 0.8, 0.8);
-            g_debugDraw.DrawSegment(this.m_mouseWorld, this.m_bombSpawnPoint, c);
+            draw.DrawSegment(this.m_mouseWorld, this.m_bombSpawnPoint, c);
         }
 
         if (settings.m_drawContactPoints) {
@@ -567,27 +574,27 @@ export class Test extends b2ContactListener {
 
                 if (point.state === b2PointState.b2_addState) {
                     // Add
-                    g_debugDraw.DrawPoint(point.position, 10, new b2Color(0.3, 0.95, 0.3));
+                    draw.DrawPoint(point.position, 10, new b2Color(0.3, 0.95, 0.3));
                 } else if (point.state === b2PointState.b2_persistState) {
                     // Persist
-                    g_debugDraw.DrawPoint(point.position, 5, new b2Color(0.3, 0.3, 0.95));
+                    draw.DrawPoint(point.position, 5, new b2Color(0.3, 0.3, 0.95));
                 }
 
                 if (settings.m_drawContactNormals) {
                     const p1 = point.position;
                     const p2 = b2Vec2.Add(p1, b2Vec2.Scale(k_axisScale, point.normal, b2Vec2.s_t0), new b2Vec2());
-                    g_debugDraw.DrawSegment(p1, p2, new b2Color(0.9, 0.9, 0.9));
+                    draw.DrawSegment(p1, p2, new b2Color(0.9, 0.9, 0.9));
                 } else if (settings.m_drawContactImpulse) {
                     const p1 = point.position;
                     const p2 = b2Vec2.AddScaled(p1, k_impulseScale * point.normalImpulse, point.normal, new b2Vec2());
-                    g_debugDraw.DrawSegment(p1, p2, new b2Color(0.9, 0.9, 0.3));
+                    draw.DrawSegment(p1, p2, new b2Color(0.9, 0.9, 0.3));
                 }
 
                 if (settings.m_drawFrictionImpulse) {
                     const tangent = b2Vec2.CrossVec2One(point.normal, new b2Vec2());
                     const p1 = point.position;
                     const p2 = b2Vec2.AddScaled(p1, k_impulseScale * point.tangentImpulse, tangent, new b2Vec2());
-                    g_debugDraw.DrawSegment(p1, p2, new b2Color(0.9, 0.9, 0.3));
+                    draw.DrawSegment(p1, p2, new b2Color(0.9, 0.9, 0.3));
                 }
             }
         }

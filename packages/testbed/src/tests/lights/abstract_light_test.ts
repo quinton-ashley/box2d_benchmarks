@@ -19,7 +19,6 @@
 import { BlendFunc, Light, lightSettings, RayHandler, RECOMMENDED_GAMMA_CORRECTION, XY } from "@box2d/lights";
 
 import { g_camera } from "../../utils/camera";
-import { g_debugDraw } from "../../utils/draw";
 import { RayHandlerImpl } from "../../utils/lights/RayHandlerImpl";
 import { clearGlCanvas } from "../../utils/gl/glUtils";
 import { Settings } from "../../settings";
@@ -115,7 +114,7 @@ export abstract class AbstractLightTest extends Test {
         clearGlCanvas(this.gl, 0, 0, 0, 1);
     }
 
-    public renderLights(timeStep: number) {
+    public renderLights(settings: Settings, timeStep: number) {
         const viewport = this.getViewportSize();
         this.rayHandler.setCombinedMatrix(g_camera.combined, viewport.x / 2, viewport.y / 2, viewport.x, viewport.y);
 
@@ -123,7 +122,8 @@ export abstract class AbstractLightTest extends Test {
         this.rayHandler.render();
 
         if (this.drawDebugLight) {
-            const drawPolygon = g_debugDraw.DrawPolygon.bind(g_debugDraw);
+            const draw = settings.m_debugDraw;
+            const drawPolygon = draw.DrawPolygon.bind(draw);
             for (const light of this.rayHandler.lightList) light.debugRender(drawPolygon);
         }
     }

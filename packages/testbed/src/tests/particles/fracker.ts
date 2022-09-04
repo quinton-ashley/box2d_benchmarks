@@ -33,12 +33,12 @@ import {
     b2World,
     XY,
     b2MakeArray,
+    b2Draw,
 } from "@box2d/core";
 import { b2ParticleGroup, b2ParticleGroupDef, b2ParticleFlag, b2ParticleSystem } from "@box2d/particles";
 
 import { registerTest } from "../../test";
 import { Settings } from "../../settings";
-import { g_debugDraw } from "../../utils/draw";
 import { RadialEmitter } from "../../utils/particles/particle_emitter";
 import { HotKey, hotKeyPress } from "../../utils/hotkeys";
 import { AbstractParticleTest } from "./abstract_particle_test";
@@ -773,25 +773,27 @@ class Fracker extends AbstractParticleTest {
         }
 
         // Draw everything.
-        this.DrawPlayer();
-        this.DrawWell();
+        const draw = settings.m_debugDraw;
+        this.DrawPlayer(draw);
+        this.DrawWell(draw);
         this.DrawScore();
     }
 
     /**
      * Render the well.
      */
-    public DrawWell(): void {
+    public DrawWell(draw: b2Draw): void {
         for (let y = this.m_wellBottom; y <= this.m_wellTop; ++y) {
-            this.DrawQuad(Fracker.TileToWorld(this.m_wellX, y), FrackerSettings.k_wellColor);
+            this.DrawQuad(draw, Fracker.TileToWorld(this.m_wellX, y), FrackerSettings.k_wellColor);
         }
     }
 
     /**
      * Render the player / fracker.
      */
-    public DrawPlayer(): void {
+    public DrawPlayer(draw: b2Draw): void {
         this.DrawQuad(
+            draw,
             this.m_player.GetTransform().p,
             Fracker.LerpColor(
                 FrackerSettings.k_playerColor,
@@ -814,7 +816,7 @@ class Fracker extends AbstractParticleTest {
      * Draw a quad at position of color that is either just an
      * outline (fill = false) or solid (fill = true).
      */
-    public DrawQuad(position: b2Vec2, color: b2Color, fill = false): void {
+    public DrawQuad(draw: b2Draw, position: b2Vec2, color: b2Color, fill = false): void {
         const verts = b2MakeArray(4, b2Vec2);
         const maxX = position.x + FrackerSettings.k_tileWidth;
         const maxY = position.y + FrackerSettings.k_tileHeight;
@@ -823,9 +825,9 @@ class Fracker extends AbstractParticleTest {
         verts[2].Set(maxX, position.y);
         verts[3].Set(maxX, maxY);
         if (fill) {
-            g_debugDraw.DrawPolygon(verts, 4, color);
+            draw.DrawPolygon(verts, 4, color);
         } else {
-            g_debugDraw.DrawSolidPolygon(verts, 4, color);
+            draw.DrawSolidPolygon(verts, 4, color);
         }
     }
 

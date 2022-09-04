@@ -33,7 +33,6 @@ import {
 
 import { registerTest, Test } from "../../test";
 import { Settings } from "../../settings";
-import { g_debugDraw } from "../../utils/draw";
 import { hotKeyPress, HotKey } from "../../utils/hotkeys";
 
 const temp = {
@@ -130,6 +129,7 @@ class DynamicTree extends Test {
         this.Query();
         this.RayCast();
 
+        const draw = settings.m_debugDraw;
         for (let i = 0; i < DynamicTree.e_actorCount; ++i) {
             const actor = this.m_actors[i];
             if (actor.proxyId === null) {
@@ -144,18 +144,18 @@ class DynamicTree extends Test {
             } else if (actor.overlap) {
                 c.SetRGB(0.6, 0.6, 0.9);
             }
-            g_debugDraw.DrawAABB(actor.aabb, c);
+            draw.DrawAABB(actor.aabb, c);
         }
 
         const c = new b2Color(0.7, 0.7, 0.7);
-        g_debugDraw.DrawAABB(this.m_queryAABB, c);
+        draw.DrawAABB(this.m_queryAABB, c);
 
-        g_debugDraw.DrawSegment(this.m_rayCastInput.p1, this.m_rayCastInput.p2, c);
+        draw.DrawSegment(this.m_rayCastInput.p1, this.m_rayCastInput.p2, c);
 
         const c1 = new b2Color(0.2, 0.9, 0.2);
         const c2 = new b2Color(0.9, 0.2, 0.2);
-        g_debugDraw.DrawPoint(this.m_rayCastInput.p1, 6, c1);
-        g_debugDraw.DrawPoint(this.m_rayCastInput.p2, 6, c2);
+        draw.DrawPoint(this.m_rayCastInput.p1, 6, c1);
+        draw.DrawPoint(this.m_rayCastInput.p2, 6, c2);
 
         if (this.m_rayActor) {
             const cr = new b2Color(0.2, 0.2, 0.9);
@@ -168,7 +168,7 @@ class DynamicTree extends Test {
                 ),
                 new b2Vec2(),
             );
-            g_debugDraw.DrawPoint(p, 6, cr);
+            draw.DrawPoint(p, 6, cr);
         }
 
         this.addDebug("Dynamic Tree Height", this.m_tree.GetHeight());
