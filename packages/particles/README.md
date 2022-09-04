@@ -2,7 +2,7 @@
 
 Particles for @box2d/core
 
-@box2d/lights is a TypeScript port of Googles [LiquidFun](https://github.com/google/liquidfun) particles.
+@box2d/particles is a TypeScript port of Googles [LiquidFun](https://github.com/google/liquidfun) particles.
 This is a fork of [box2d.ts](https://github.com/flyover/box2d.ts) from Isaac Burns (flyover) who did a huge job initially porting Box2D and [LiquidFun](https://github.com/google/liquidfun) to TypeScript.
 
 ## The @box2d Ecosystem
@@ -18,6 +18,7 @@ Other packages included in the ecosystem:
 - Controllers: From the LiquidFun project
 - Particles: Also from the LiquidFun project
 - Lights: [ported from LibGDX](https://github.com/libgdx/box2dlights)
+- DebugDraw: Debug drawing using a canvas
 - Testbed: A set of demos, partially ports of the original projects, partially new ones.
 
 # Contributing

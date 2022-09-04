@@ -39,6 +39,10 @@ import { TestControl } from "./testControls";
 import { ParticleParameter } from "./utils/particles/particle_parameter";
 import { g_camera } from "./utils/camera";
 
+const temp = {
+    aabb: new b2AABB(),
+};
+
 export interface TestContext {
     gl: WebGLRenderingContext;
     shader: DefaultShader;
@@ -440,10 +444,9 @@ export class Test extends b2ContactListener {
         });
 
         const draw = settings.m_debugDraw;
-        const aabb = new b2AABB();
+        const { aabb } = temp;
         g_camera.unproject({ x: 0, y: g_camera.getHeight() }, aabb.lowerBound);
         g_camera.unproject({ x: g_camera.getWidth(), y: 0 }, aabb.upperBound);
-        draw.DrawAABB(aabb, b2Color.GREEN);
 
         if (settings.m_drawShapes) {
             DrawShapes(draw, this.m_world, aabb);

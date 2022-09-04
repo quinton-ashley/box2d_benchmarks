@@ -26,8 +26,8 @@ import { b2CalculateParticleIterations } from "@box2d/particles";
 const noop = () => undefined;
 
 export interface TestDebugDraw extends b2Draw {
-    prepareCamera(centerX: number, centerY: number, zoom: number, flipY?: boolean): void;
-    finish(): void;
+    Prepare(centerX: number, centerY: number, zoom: number, flipY?: boolean): void;
+    Finish(): void;
     DrawStringWorld(x: number, y: number, message: string): void;
     DrawAABB(aabb: b2AABB, color: RGBA): void;
 }
@@ -91,8 +91,8 @@ export class Settings {
     public m_singleStep = false;
 
     public m_debugDraw: TestDebugDraw = {
-        prepareCamera: noop,
-        finish: noop,
+        Prepare: noop,
+        Finish: noop,
         PushTransform: noop,
         PopTransform: noop,
         DrawPolygon: noop,

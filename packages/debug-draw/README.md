@@ -1,8 +1,8 @@
-# @box2d/controllers
+# @box2d/core
 
-Controllers for @box2d/core
+Box2D is a 2D physics engine for games.
 
-@box2d/controllers is a TypeScript port of Googles [LiquidFun](https://github.com/google/liquidfun) controllers.
+@box2d/debug-draw is a TypeScript port of Erin Cattos debug drawing helper for [Box2D](https://github.com/erincatto/box2d).
 This is a fork of [box2d.ts](https://github.com/flyover/box2d.ts) from Isaac Burns (flyover) who did a huge job initially porting Box2D and [LiquidFun](https://github.com/google/liquidfun) to TypeScript.
 
 ## The @box2d Ecosystem

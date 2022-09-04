@@ -32,7 +32,7 @@ export class DebugDraw implements b2Draw {
         this.ctx = ctx;
     }
 
-    public prepareCamera(centerX: number, centerY: number, zoom: number, flipY = false) {
+    public Prepare(centerX: number, centerY: number, zoom: number, flipY = false) {
         this.center.Set(centerX, centerY);
         this.zoom = zoom;
 
@@ -49,7 +49,7 @@ export class DebugDraw implements b2Draw {
         this.ctx.translate(-centerX, -centerY);
     }
 
-    public finish() {
+    public Finish() {
         this.ctx.restore();
     }
 

@@ -54,6 +54,7 @@ Other packages included in the ecosystem:
 - Controllers: From the LiquidFun project
 - Particles: Also from the LiquidFun project
 - Lights: [ported from LibGDX](https://github.com/libgdx/box2dlights)
+- DebugDraw: Debug drawing using a canvas
 - Testbed: A set of demos, partially ports of the original projects, partially new ones.
 
 # Contributing

@@ -21,6 +21,9 @@ themeConfig:
       children:
       - core/
       - core/key-differences
+    - title: Debug Draw
+      children:
+      - debug-draw/
     - title: Lights
       children:
       - lights/

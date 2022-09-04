@@ -3,6 +3,7 @@
   "workspaces": [
     "packages/core",
     "packages/controllers",
+    "packages/debug-draw",
     "packages/particles",
     "packages/lights",
     "packages/testbed",
@@ -14,7 +15,7 @@
     "bench:web": "yarn workspace @box2d/benchmark start",
     "build": "yarn workspaces run build",
     "build:docs": "vuepress build packages/documentation -d docs/docs",
-    "build:libs": "yarn workspace @box2d/core build && yarn workspace @box2d/controllers build && yarn workspace @box2d/particles build && yarn workspace @box2d/lights build",
+    "build:libs": "yarn workspace @box2d/core build && yarn workspace @box2d/controllers build && yarn workspace @box2d/particles build && yarn workspace @box2d/lights build && yarn workspace @box2d/debug-draw build",
     "build:testbed": "yarn workspace @box2d/testbed build",
     "credit": "all-contributors add",
     "lint": "yarn run lint:es && yarn run lint:scss && yarn run lint:package && yarn run lint:style",

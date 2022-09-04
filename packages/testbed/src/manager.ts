@@ -1,4 +1,5 @@
 import { b2Vec2, b2Clamp, b2Color } from "@box2d/core";
+import { DebugDraw } from "@box2d/debug-draw";
 import { createContext, useContext } from "react";
 import { Signal } from "typed-signals";
 
@@ -12,7 +13,6 @@ import { getTestsGrouped, Test, TestConstructor, TestEntry } from "./test";
 import { FpsCalculator } from "./utils/FpsCalculator";
 import type { TextTable, TextTableSetter } from "./ui/Main";
 import type { TestControlGroup } from "./ui";
-import { DebugDraw } from "./utils/DebugDraw";
 import { ParticleParameter } from "./utils/particles/particle_parameter";
 
 import "./tests";
@@ -346,7 +346,7 @@ export class TestManager {
 
         const center = g_camera.getCenter();
         const zoom = g_camera.getZoom();
-        draw.prepareCamera(center.x, center.y, zoom, true);
+        draw.Prepare(center.x, center.y, zoom, true);
 
         this.m_test?.RunStep(this.m_settings);
         if (this.m_hoveringCanvas) {
@@ -355,7 +355,7 @@ export class TestManager {
             }
         }
 
-        draw.finish();
+        draw.Finish();
 
         if (this.m_settings.m_drawFpsMeter) this.DrawFpsMeter(this.m_ctx);
 

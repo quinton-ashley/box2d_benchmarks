@@ -19,3 +19,4 @@ You can install the other packages in exactly the same way:
 - `@box2d/lights`
 - `@box2d/particles`
 - `@box2d/controllers`
+- `@box2d/debug-draw`
