@@ -1,4 +1,4 @@
-# @box2d/core
+# @box2d/debug-draw
 
 Box2D is a 2D physics engine for games.
 
