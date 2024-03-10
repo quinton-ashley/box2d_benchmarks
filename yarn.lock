@@ -11733,12 +11733,12 @@ pkg-dir@^4.1.0, pkg-dir@^4.2.0:
   dependencies:
     find-up "^4.0.0"
 
-planck-js@^0.3.31:
-  version "0.3.31"
-  resolved "https://registry.yarnpkg.com/planck-js/-/planck-js-0.3.31.tgz#dc87a999f6d425633d7abd8c77078fcb5a9babd2"
-  integrity sha512-fwKYnL92pF2nXdMPeBq/Aipu+m8LztcEcNjdcrQm/sWKDR01Ej0g121KS1oO7NW23WnRzxw24a7V4KI2JlFpSg==
+planck@1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/planck/-/planck-1.0.0.tgz#65cbb10e5e3b70f2896e2bb0441f01ab06873a4a"
+  integrity sha512-XiHGJw23B7MVFGrvzs+sK9PowfStl8fUrB3p2ZsXWBCzUjdd9WJefKyISkjVvpkVM9b5XY2Tch1ATMXzbr5LsA==
   dependencies:
-    stage-js "^0.9.4"
+    stage-js "github:piqnt/stage.js#v1-alpha"
 
 pn@^1.1.0:
   version "1.1.0"
@@ -13805,10 +13805,9 @@ stack-utils@^1.0.1:
   dependencies:
     escape-string-regexp "^2.0.0"
 
-stage-js@^0.9.4:
-  version "0.9.4"
-  resolved "https://registry.yarnpkg.com/stage-js/-/stage-js-0.9.4.tgz#5d31eb8f33f1ca8d21c2043c6d21e47794b715f5"
-  integrity sha512-fNN6rkYD55T4NUxJE71hixXYS9DoyHVX5S8sQcq5yiozX1kqHP/wnByZwFfdAGNZjb5rROJ90zwb0EbM9U2Jqg==
+"stage-js@github:piqnt/stage.js#v1-alpha":
+  version "1.0.0-alpha.1"
+  resolved "https://codeload.github.com/piqnt/stage.js/tar.gz/15b1b4dee24c2b6853ec25a03db39417e5c37e1b"
 
 static-eval@^2.0.0:
   version "2.1.0"

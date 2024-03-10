@@ -1,6 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import { World, Vec2, Edge, Box } from "planck-js";
+import { World, Vec2, Edge, Box } from "planck";
 
 import { TestFactory } from "../types";
 

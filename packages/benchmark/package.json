@@ -38,7 +38,7 @@
     "@box2d/core": "^0.10.0",
     "@flyover/box2d": "^1.0.1",
     "box2d.js": "^1.0.4",
-    "planck-js": "^0.3.31"
+    "planck": "1.0.0"
   },
   "devDependencies": {
     "parcel-bundler": "^1.12.5",
